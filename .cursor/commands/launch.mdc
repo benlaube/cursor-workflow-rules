@@ -1,0 +1,80 @@
+---
+description: Launch the application (Dev or Prod) with standardized environment checks.
+globs: 
+---
+
+# Launch Application Command
+
+Use this command to reliably start the application. It handles stack detection, dependency installation, environment validation, and port management automatically.
+
+## Usage
+
+@agent: When asked to "start the app", "run the server", or "launch", follow this procedure.
+
+**Parameters:**
+- `env`: `dev` (default) or `prod`
+- `service`: (Optional) Sub-directory for monorepo services (e.g., `frontend`, `backend`)
+- `skip-tests`: `true` or `false` (default: `false`)
+- `skip-install`: `true` or `false` (default: `false`)
+
+---
+
+## Execution Steps
+
+### 1. Context & Stack Detection
+1.  **Service Selection:**
+    - If `service` argument is provided, `cd` into that directory.
+    - Else, detect if root is the app or a monorepo.
+2.  **Stack Identification:**
+    - **Node.js:** Look for `package.json`.
+    - **Python:** Look for `requirements.txt`, `pyproject.toml`, or `Pipfile`.
+    - **Docker:** Look for `docker-compose.yml`.
+
+### 2. Configuration Resolution
+1.  **Environment File:**
+    - Ensure `.env` (or `.env.local` for Next.js) exists.
+    - If missing, copy from `.env.example` (if available) and notify the user to fill secrets.
+2.  **Port & URL:**
+    - Read `PORT` and `PROJECT_ROOT_URL` from config.
+    - Default `PORT`: 3000 (Node), 8000 (Python/Django), 54321 (Supabase).
+    - Default `PROJECT_ROOT_URL`: `http://localhost:<PORT>`.
+
+### 3. Dependency Validation (Self-Healing)
+*Unless `skip-install=true`*
+1.  **Node:** Check `node_modules`. If missing/stale, run `npm install` (or `yarn`/`pnpm`).
+2.  **Python:** Check `.venv`. If missing, create it and run `pip install -r requirements.txt`.
+
+### 4. Pre-Flight Checks
+*Unless `skip-tests=true`*
+1.  Run fast checks: `npm run lint` or `npm test` (unit only).
+2.  If checks fail, **ABORT** and report errors.
+
+### 5. Launch Sequence
+
+#### A. Development (`env=dev`)
+*Command: `launch_application_dev`*
+
+1.  **Check Port:**
+    - If `PORT` is in use, use `self_healing` rule to kill the process or prompt user.
+2.  **Start Server:**
+    - **Node:** `npm run dev`
+    - **Python:** `python manage.py runserver` or `uvicorn main:app --reload`
+    - **Supabase:** `supabase start` (if applicable)
+3.  **Verification:**
+    - Monitor logs for "Server running" message.
+    - Output: "🚀 Application running at `PROJECT_ROOT_URL`"
+
+#### B. Production (`env=prod`)
+*Command: `launch_application_prod`*
+
+1.  **Build:** `npm run build` (Node) or compile steps.
+2.  **Start:** `npm start` or production runner (e.g., `gunicorn`).
+3.  **Note:** Ensure production env vars are loaded.
+
+---
+
+## Error Handling
+
+- **Port Conflicts:** "Port X is busy. Killing PID Y..." (Auto-fix)
+- **Missing Dependencies:** "node_modules missing. Installing..." (Auto-fix)
+- **Build Failures:** Stop and display log output.

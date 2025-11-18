@@ -1,0 +1,52 @@
+---
+description: Self-Healing Runtime & Error Recovery
+globs: "**/*"
+alwaysApply: true
+---
+
+# Self-Healing Runtime Rule
+
+The agent acts as an autonomous runtime manager. When errors occur, try to fix them automatically using these strategies.
+
+## 1. Fix Ports Automatically
+
+**Symptom:** `EADDRINUSE`, `Address already in use`, `Port 3000 is busy`.
+
+**Strategy:**
+1.  **Identify:** Find the process using the port.
+    - *Unix:* `lsof -i :<PORT>` or `netstat -an | grep <PORT>`
+2.  **Kill:** Terminate the process.
+    - `kill -9 <PID>`
+3.  **Retry:** Re-run the launch command.
+
+**Instruction:**
+> "If the port is busy, I will find the process occupying it, kill it, and restart the server."
+
+## 2. Dependency Self-Healing
+
+**Symptom:** `Module not found`, `ImportError`, `Cannot find package`.
+
+**Strategy:**
+1.  **Check:** Does `node_modules` or `.venv` exist?
+2.  **Install:** Run the install command.
+    - *Node:* `npm install` (or yarn/pnpm)
+    - *Python:* `pip install -r requirements.txt`
+3.  **Retry:** Re-run the command.
+
+**Instruction:**
+> "It seems a dependency is missing. I will install dependencies and retry."
+
+## 3. Database Connection Healing
+
+**Symptom:** `Connection refused`, `terminating connection`, `PrismaClientInitializationError`.
+
+**Strategy:**
+1.  **Check Service:** Is Docker/Supabase running?
+2.  **Wait:** Wait 5 seconds and retry (transient startup issue).
+3.  **Env Vars:** Verify `DATABASE_URL` matches the running service.
+
+## 4. General Error Recovery
+
+- **Syntax Errors:** Read the file, fix the syntax, retry build.
+- **Linter Errors:** auto-fix if possible (`npm run lint -- --fix`), otherwise manual fix.
+- **Env Missing:** Copy `.env.example` to `.env` if `.env` is missing.

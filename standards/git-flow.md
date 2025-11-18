@@ -1,130 +1,122 @@
-# Git_Repository_Standards_v1.0
+# Git_Repository_Standards_v1.1
 
 ## Metadata
-- **Created:** 2025-11-17 23:10
-- **Last Updated:** 2025-11-17 23:10
-- **Version:** 1.0
+- **Created:** 2025-11-17
+- **Last Updated:** 2025-11-18
+- **Version:** 1.1
 
 ## Description
-Standards and checklists for initializing and configuring new Git repositories, including structure, includes/excludes, and questions AI agents should ask before setup.
+Standards for Git usage, branching strategies, commit messages, and PR workflows. Adhering to this ensures history is readable and deployments are predictable.
 
 ---
 
 ## A. When to Apply This Rule
-
-A.1 Apply this rule whenever:
-  A.1.a A new project is created and needs its first Git repo.
-  A.1.b An existing unversioned codebase is being put under Git for the first time.
-  A.1.c An AI agent is asked to "set up a repo," "init a project," or "create a new codebase" for this ecosystem.
-
-A.2 This rule should be used together with the documentation standards for /docs and versioned docs.
+Apply this rule whenever:
+- Initializing a new repository.
+- Creating a new branch.
+- Committing code.
+- Opening or reviewing a Pull Request.
 
 ---
 
-## B. Default Repo Structure (What to Include)
+## B. Branching Strategy
 
-### B.1 Root-Level Required Files
+We use a simplified **Feature Branch Workflow**.
 
-B.1.a README.md
-  - Purpose: Human entrypoint for what this project is, how to run it, and current status.
-  - Must include:
-    - Project name and one-sentence description.
-    - Quickstart (install, run dev, run tests).
-    - Tech stack summary.
-    - Link to /docs for deeper info.
+### B.1 Main Branches
+- **`main`**: The production-ready state. Protected. No direct commits allowed.
+- **`develop`** (Optional): For larger teams, acts as a staging ground.
 
-B.1.b LICENSE (or LICENSE.md)
-  - Purpose: Defines how the code may be used and shared.
-  - For private/internal repos, this can still exist.
+### B.2 Feature Branches
+All work happens on short-lived feature branches.
+- **Format:** `{type}/{context}-{short-desc}`
+- **Examples:**
+  - `feat/user-auth-login`
+  - `fix/api-timeout-bug`
+  - `docs/update-readme`
+  - `chore/bump-dependencies`
 
-B.1.c .gitignore
-  - Purpose: Prevents junk, builds, and secrets from being committed.
-
-B.1.d .gitattributes
-
-B.1.e .editorconfig
-
-B.1.f Project-specific config
-
-B.1.g AI / Agent Files (if applicable)
+### B.3 Branch Lifecycle
+1.  Sync `main`: `git checkout main && git pull`
+2.  Create branch: `git checkout -b feat/my-feature`
+3.  Work & Commit.
+4.  Push: `git push -u origin feat/my-feature`
+5.  Open PR.
+6.  Merge (Squash & Merge recommended) & Delete branch.
 
 ---
 
-### B.2 Standard Directories
+## C. Commit Message Standards
 
-B.2.a /src
+We follow **Conventional Commits** to make history semantic and machine-readable.
 
-B.2.b /tests
+### C.1 Format
+```
+<type>(<scope>): <subject>
 
-B.2.c /docs
+[optional body]
 
-B.2.d /scripts
+[optional footer]
+```
 
-B.2.e /config (optional)
+### C.2 Types
+- **`feat`**: A new feature (correlates with MINOR in SemVer).
+- **`fix`**: A bug fix (correlates with PATCH in SemVer).
+- **`docs`**: Documentation only changes.
+- **`style`**: Formatting, missing semi-colons, etc (no code change).
+- **`refactor`**: A code change that neither fixes a bug nor adds a feature.
+- **`perf`**: A code change that improves performance.
+- **`test`**: Adding missing tests or correcting existing tests.
+- **`chore`**: Build process or auxiliary tool changes.
 
-B.2.f /public or /static (for web apps)
-
----
-
-## C. .gitignore – What to Exclude
-
-C.1 Always Exclude These
-
-C.1.a Build Artifacts
-C.1.b Dependencies
-C.1.c Local IDE/Editor Files
-C.1.d Local Environment & Secrets
-C.1.e Logs & Temp Files
-
-C.2 Conditionally Exclude
-C.2.a Large Binaries
-C.2.b Local Tool Config
+### C.3 Examples
+- `feat(auth): add google oauth login support`
+- `fix(api): handle null response in user profile`
+- `docs(readme): update installation instructions`
 
 ---
 
-## D. Secrets & Configuration
+## D. Pull Request (PR) Process
 
-D.1 Never Commit Real Secrets
-D.2 Use Example Files
-D.3 Document Secret Requirements
+### D.1 PR Title
+Use the Conventional Commit format for the PR title.
+- Bad: "Fixed the bug"
+- Good: "fix(payment): resolve double-charge issue on retry"
 
----
+### D.2 PR Description
+Every PR must include:
+- **Summary:** What changed?
+- **Type of Change:** (Feature, Fix, Refactor)
+- **Test Plan:** How was this tested? (Unit tests, Manual verification)
+- **Screenshots/Logs:** (If UI or Logic change)
 
-## E. Branching, Commits, and Defaults
-
-E.1 Default Branch = main
-
-E.2 Initial Commit Requirements
-
-E.3 Commit Style Requirements
-
----
-
-## F. Questions an AI Agent Should Ask Before Initializing a Repo
-
-F.1 Project Purpose & Scope
-F.2 Tech Stack & Language
-F.3 Testing & Quality
-F.4 Docs & Processes
-F.5 CI/CD & Hosting
-F.6 Secrets & Environment
-F.7 Repo Visibility & Licensing
+### D.3 Review Checklist
+Before merging, the Reviewer (AI or Human) must verify:
+- [ ] CI/CD checks pass.
+- [ ] No secrets are exposed.
+- [ ] Code follows style guide.
+- [ ] `checklists/pr-review-check.md` has been followed.
 
 ---
 
-## G. Initialization Checklist (Agent Playbook)
+## E. .gitignore Standards
 
-G.1 Setup
-G.2 Files & Structure
-G.3 Tooling
-G.4 First Commit
-G.5 Remote
+### E.1 Universal Excludes
+Every repo must exclude:
+- `node_modules/`, `venv/`, `.env` (and all variants).
+- OS files: `.DS_Store`, `Thumbs.db`.
+- Editor files: `.vscode/`, `.idea/` (unless shared settings).
+- Logs: `*.log`, `npm-debug.log`.
+
+### E.2 Security
+- Explicitly ignore `*.pem`, `*.key`, `credentials.json`.
+- Ensure `.env` is in `.gitignore` before the first commit.
 
 ---
 
-## H. Safety Rules for AI Agents
+## F. AI Agent Behavior
+- **Branch Creation:** Always ask for the task context to name the branch correctly.
+- **Commit Messages:** Always write semantic commit messages. Never use "update code" or "misc changes".
+- **PR Description:** Auto-generate a detailed PR description based on the diff.
 
-H.1 Don’t Commit Secrets
-H.2 Don’t Over-Engineer Day One
-H.3 Respect Existing Standards
-H.4 Ask Before Destroying
+# End of Rule – Git_Repository_Standards_v1.1

@@ -1,0 +1,34 @@
+---
+description: Runtime Expectations & Environment Setup
+globs: "**/*"
+alwaysApply: true
+---
+
+# Environment & Runtime Standards
+
+## 1. Runtime Expectations
+
+This project operates in a "Container-Like" local environment.
+- **Strict Isolation:** Dependencies must be local (`node_modules`, `.venv`). Do not rely on global system packages.
+- **Configuration:** All config comes from `.env` or the database. Hardcoded ports/URLs are forbidden.
+- **Launch:** Always use `.cursor/commands/launch.mdc` to start the app.
+
+## 2. Local Docker Dev Environment
+
+If `docker-compose.yml` is present:
+1.  **Prefer Docker:** Use Docker for databases (Postgres, Redis) and infrastructure.
+2.  **Hybrid App:** Run the *application code* locally (Node/Python) for faster HMR, but connect to *Dockerized services*.
+3.  **Logs:** View container logs via Docker Desktop or `docker logs`.
+
+## 3. MCP Loadout Instructions
+
+Ensure the following MCP servers are active if relevant:
+- **Supabase:** For database inspection and edge function management.
+- **Postgres:** For direct SQL execution if Supabase MCP is unavailable.
+- **Filesystem:** For reading/writing local files (standard).
+
+## 4. Dependency Management
+
+- **Node:** Use `npm` (default), `yarn`, or `pnpm` based on lockfile presence.
+- **Python:** Always use a virtual environment.
+- **Lockfiles:** Never delete lockfiles to "fix" errors. Fix the dependency conflict instead.

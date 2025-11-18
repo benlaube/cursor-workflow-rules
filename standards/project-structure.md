@@ -1,91 +1,102 @@
-# Rule: Project_File_Structure_Standards_v1.0
+# Rule: Project_File_Structure_Standards_v1.1
 
 ## Metadata
 - **Created:** 2025-11-17
-- **Last Updated:** 2025-11-17
-- **Version:** 1.0
+- **Last Updated:** 2025-11-18
+- **Version:** 1.1
 
 ## When to Apply This Rule
-Apply this rule whenever documentation is created, updated, reorganized, or found to be inconsistent, ensuring the project’s `/docs` structure remains clean, current, and aligned with these standards.
+Apply this rule whenever creating new projects, reorganizing files, or auditing the codebase structure. It ensures every file has a predictable home.
 
 ## 1. High-Level Goals
-- Keep the root directory clean and minimal.
-- Centralize application code under `/src`.
-- Centralize tests under `/tests`.
-- Centralize documentation under `/docs`.
-- Centralize AI / automation commands under `/commands`.
-- Use consistent naming conventions unless a framework requires otherwise.
-- Avoid large structural changes without explicit user approval.
+- **Predictability:** An agent or human should know exactly where to look for a file.
+- **Separation of Concerns:** Code, tests, docs, and config should not mix.
+- **Scalability:** The structure should work for small scripts and large monorepos.
 
 ## 2. Root Directory Standards
-The root contains:
-- README.md
-- package.json / requirements.txt
-- .gitignore
-- .env.example
-- .cursorrules
-- AGENTS.md
-- /src
-- /tests
-- /docs
-- /commands
-- /config
-- /scripts (optional)
+The root contains only essential project-level configuration and entry points.
 
-## 3. Core Directories
-### /src – Application Code
-Recommended structure:
-- /app
-- /api
-- /components
-- /lib
-- /services
-- /models
-- /hooks
-- /styles
-- /utils
-- /agents or /ai or /mcp (choose one)
+| File / Folder | Description |
+| :--- | :--- |
+| `README.md` | The project landing page. Must contain "What is this?" and "How to run it?". |
+| `package.json` / `requirements.txt` | Dependency definitions. |
+| `.gitignore` | Files to exclude from git. |
+| `.env.example` | Template for environment variables. **Never commit .env**. |
+| `.cursor/` | AI Agent rules and commands. |
+| `src/` | The actual application source code. |
+| `tests/` | Test suites (unit, integration, e2e). |
+| `docs/` | Documentation (specs, roadmap, standards). |
+| `commands/` | Scripts or markdown files for AI automation tasks. |
+| `config/` | Static configuration files (non-secret). |
+| `scripts/` | Maintenance or build scripts (e.g., database seeders). |
 
-### /tests
-- /unit
-- /integration
-- /e2e
+## 3. Core Directories & Usage
 
-### /docs
-Follows Documentation_Management_v1.X
-- Roadmap_vX.X.md
-- /roadmap
-- /specs
-- /process
-- /archive
+### 3.1 /src – Application Code
+This is where the logic lives.
 
-### /commands
-- user_commands_vX_X.md
-- project_commands_vX_X.md
-- doc_cleanup_command_vX_X.md
+**Standard Monolith Structure:**
+- `/app`: (Next.js/Remix) Application routes and pages.
+- `/api`: Backend API handlers or server entry points.
+- `/components`: Reusable UI components (React, Vue, etc.).
+- `/lib`: Core business logic, shared wrappers, and adapters.
+- `/services`: Modules that interact with external services (DB, Stripe, OpenAI).
+- `/models`: Database schemas or Typescript interfaces/types.
+- `/hooks`: Custom React hooks.
+- `/styles`: CSS, Tailwind config, or Sass files.
+- `/utils`: Pure helper functions (date formatting, string manipulation).
+- `/agents` or `/ai`: AI-specific logic (prompts, tools).
 
-### /config
-General config files.
+### 3.2 /tests
+Mirror the `src` structure where possible.
+- `/unit`: Tests for individual functions/classes.
+- `/integration`: Tests for module interactions (e.g., API + DB).
+- `/e2e`: Full browser-based tests (Playwright/Cypress).
 
-### /scripts
-Utility scripts.
+### 3.3 /docs
+Central knowledge base.
+- `Roadmap_vX.X.md`: High-level goals.
+- `/specs`: Technical design documents for features.
+- `/process`: Workflows (how we deploy, how we test).
+- `/archive`: Old docs that are no longer active but kept for history.
 
-## 4. Naming Conventions
-- snake_case for structure files.
-- Follow framework naming for forced conventions.
-- Code files follow ecosystem norms.
+### 3.4 /commands
+AI automation interface.
+- Stores `.mdc` or script files that agents use to run complex tasks (e.g., `launch.mdc`, `refactor_module.mdc`).
 
-## 5. AI Agent Behavior
-- Place new code into proper /src folders.
-- Create tests mirroring structure in /tests.
-- File new docs under /docs.
-- Place automation under /commands.
-- Avoid large restructures without approval.
+## 4. Alternative Structures
 
-## 6. Safety Rules
-- Do not delete items without explicit instruction.
-- Do not alter framework-required layouts.
-- Do not move CI/CD or tool-linked files without confirmation.
+### 4.1 Monorepo / Full Stack Split
+If the application has a distinct Frontend and Backend that are deployed separately or are complex enough to warrant separation:
 
-# End of Rule – Project_File_Structure_Standards_v1.0
+**Recommended Structure:**
+```
+/apps
+  /web          # Next.js / React Frontend
+  /api          # Node / Python Backend
+  /docs         # Documentation site
+/packages
+  /ui           # Shared UI components
+  /config       # Shared eslint/tsconfig
+  /utils        # Shared helper functions
+```
 
+In this case, `src` is replaced by `apps/` and `packages/`.
+
+## 5. Naming Conventions
+- **Directories:** `kebab-case` (e.g., `user-auth`, `data-processing`).
+- **Files:** `kebab-case` (TS/JS), `snake_case` (Python).
+- **React Components:** `PascalCase` (e.g., `SubmitButton.tsx`).
+
+## 6. AI Agent Behavior
+- **Place new code** into proper `src` folders. Do not dump files in root.
+- **Create tests** immediately in `/tests` when creating new modules.
+- **File new docs** under `/docs`.
+- **Refactor** large files (>200 lines) by extracting logic into `utils` or `components`.
+
+## 7. Safety Rules
+- **Do not delete** items without explicit instruction.
+- **Do not alter** framework-required layouts (e.g., Next.js `app` router).
+- **Do not move** CI/CD or tool-linked files without confirmation.
+
+# End of Rule – Project_File_Structure_Standards_v1.1

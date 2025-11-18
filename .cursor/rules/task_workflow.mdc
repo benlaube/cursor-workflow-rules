@@ -1,0 +1,32 @@
+---
+description: Standard Task Workflow
+globs: "**/*"
+alwaysApply: true
+---
+
+# Task Workflow Rule
+
+## 1. Before Starting a Task (Pre-Flight)
+
+Before writing code, the agent MUST:
+1.  **Check Structure:** specific to the project (see `standards/project-structure.md`).
+2.  **Run Pre-Flight:** Read and follow `checklists/pre-flight-check.md`.
+3.  **Verify Environment:** Ensure the app is launchable via `.cursor/commands/launch.mdc`.
+
+## 2. During Development
+
+1.  **Atomic Changes:** Make small, testable changes.
+2.  **Self-Correction:** If a command fails, attempt to self-heal (see `self_healing.mdc`) before asking the user.
+3.  **Tool Usage:** Use specialized tools (`read_file`, `grep`) over generic terminal commands.
+
+## 3. After Completing a Task (Post-Flight)
+
+Before confirming completion:
+1.  **Run Review:** Read and follow `checklists/pr-review-check.md`.
+2.  **Update Docs:** Update `CHANGELOG.md` and relevant `standards/` if architecture changed.
+3.  **Verify Launch:** Run `.cursor/commands/launch.mdc` one last time to ensure no regression.
+
+## 4. Documentation updates
+
+- Always update `CHANGELOG.md` with a timestamp and summary.
+- If you added a new feature, ensure it is documented in `standards/` or `docs/`.
