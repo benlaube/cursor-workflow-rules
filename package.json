@@ -1,0 +1,16 @@
+{
+  "name": "ai-agent-knowledge-base",
+  "version": "1.0.0",
+  "description": "Knowledge base and reusable modules for AI agents",
+  "private": true,
+  "workspaces": [
+    "modules/*"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+

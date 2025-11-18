@@ -1,0 +1,22 @@
+{
+  "name": "settings-management-module",
+  "version": "1.0.0",
+  "description": "Reusable settings and environment variables management module",
+  "main": "settings-manager.ts",
+  "files": [
+    "settings-manager.ts",
+    "encryption.ts",
+    "migrate-settings.ts",
+    "schema-example.ts",
+    "README.md",
+    "INTEGRATION_GUIDE.md",
+    "QUICK_REFERENCE.md"
+  ],
+  "dependencies": {
+    "uuid": "^9.0.1",
+    "crypto": "built-in"
+  },
+  "peerDependencies": {
+    "drizzle-orm": "^0.44.7"
+  }
+}
