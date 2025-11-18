@@ -1,8 +1,12 @@
 # Git_Repository_Standards_v1.0
 
-Description: Standards and checklists for initializing and configuring new Git repositories, including structure, includes/excludes, and questions AI agents should ask before setup.
-Created: 2025-11-17 23:10
-Last_Updated: 2025-11-17 23:10
+## Metadata
+- **Created:** 2025-11-17 23:10
+- **Last Updated:** 2025-11-17 23:10
+- **Version:** 1.0
+
+## Description
+Standards and checklists for initializing and configuring new Git repositories, including structure, includes/excludes, and questions AI agents should ask before setup.
 
 ---
 
@@ -124,4 +128,3 @@ H.1 Don’t Commit Secrets
 H.2 Don’t Over-Engineer Day One
 H.3 Respect Existing Standards
 H.4 Ask Before Destroying
-

@@ -1,5 +1,10 @@
 # Rule: Documentation_Management_v1.4
 
+## Metadata
+- **Created:** 2025-11-17 (Inferred)
+- **Last Updated:** 2025-11-17 (Inferred)
+- **Version:** 1.4
+
 ## When to Apply This Rule
 Apply this rule whenever documentation is created, updated, reorganized, or found to be inconsistent, ensuring the project’s `/docs` structure remains clean, current, and aligned with these standards.
 
@@ -42,9 +47,11 @@ Every documentation file must begin with the following block:
 ```
 # Title_With_Version_Number_vX.X
 
-Description: One sentence describing the purpose of this document.
-Created: YYYY-MM-DD HH:MM (24-hour format)
-Last_Updated: YYYY-MM-DD HH:MM (24-hour format)
+## Metadata
+- **Created:** YYYY-MM-DD
+- **Last Updated:** YYYY-MM-DD
+- **Version:** X.X
+- **Description:** One sentence describing the purpose of this document.
 ```
 
 ### 5. Naming Conventions
@@ -57,46 +64,3 @@ Last_Updated: YYYY-MM-DD HH:MM (24-hour format)
 
 #### 6.1 Organize Documentation
 - Move stray docs into appropriate `/docs` subfolders (except protected files).
-- Use purpose-based organization:
-  - `/roadmap` for roadmap and release planning
-  - `/specs` for technical specifications
-  - `/process` for workflows and operational rules
-  - `/archive` for deprecated content
-
-#### 6.2 Rename Files Correctly
-- Convert all non-protected doc names to snake_case.
-- Add or update version numbers in filenames.
-- Ensure the title inside the file matches the versioned filename.
-
-#### 6.3 Merge Duplicate Content
-- Identify duplicate or overlapping documentation.
-- Merge into a single authoritative file.
-- Remove redundant or outdated copies unless referenced.
-
-#### 6.4 Archive Old Documentation
-- Move outdated docs to `/docs/archive`.
-- Add an “Archived” indicator under the metadata block.
-
-#### 6.5 Normalize Formatting
-Ensure each document has:
-- A versioned title
-- Required metadata block
-- Clean, consistent heading levels
-- Uniform spacing and list formatting
-
-#### 6.6 Remove Low-Value Artifacts
-- Delete empty placeholders
-- Delete TODO-only files with no actionable content
-- Remove abandoned stubs with no purpose
-
-#### 6.7 Update Internal References
-- Fix internal links after reorganizing or renaming files.
-- Ensure no links break after cleanup.
-
-### 7. Safety Requirements
-
-- Never modify or move protected files.
-- If any action risks breaking build tools, imports, configs, or referenced paths, the agent must halt and request user confirmation.
-- When unsure about file dependencies, prefer minimal changes.
-
-# End of Rule – Documentation_Management_v1.4

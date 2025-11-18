@@ -1,9 +1,10 @@
-# Sitemap Auto-Generation Standard v1.0
+# Sitemap_Auto_Generation_with_Supabase_Triggers_and_Edge_Functions_v1.0
 
-## Metadata
-- **Created:** 2025-11-18
-- **Last Updated:** 2025-11-18
-- **Version:** 1.0
+Description: Comprehensive guide detailing how an AI Agent should design, implement, and maintain automatic sitemap.xml regeneration using Supabase database triggers and Edge Functions.
+Created: 2025-11-18 16:25
+Last_Updated: 2025-11-18 16:25
+
+---
 
 ## 1. Purpose of This Document
 
@@ -16,6 +17,8 @@ This guide teaches an AI Agent *exactly* how to:
 5. Avoid exposing any slow, “generate-on-request” sitemap endpoints.
 
 The goal: **Every time public-facing content changes, the XML file updates instantly without manual deployment.**
+
+---
 
 ## 2. Architectural Overview – High-Level Flow
 
@@ -342,3 +345,4 @@ This system:
 - Keeps search engines happy with fast access and no waiting.
 
 This file should be updated as your website evolves and as new AI workflow patterns emerge.
+
