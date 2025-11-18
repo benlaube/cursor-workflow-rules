@@ -346,3 +346,182 @@ This system:
 
 This file should be updated as your website evolves and as new AI workflow patterns emerge.
 
+
+---
+
+## v1.1 – Advanced Enhancements & Improvements
+
+This section expands the v1.0 architecture into a production‑grade, Google‑bot‑optimized sitemap automation system. These improvements should be implemented by the AI Agent in any project where SEO matters or where the site’s content model becomes more complex.
+
+### 1. Schema Discovery Protocol (New)
+The AI Agent must follow a repeatable workflow to identify sitemap‑relevant tables:
+
+1. Inspect Supabase schema (MCP or metadata).
+2. Identify candidate tables by naming conventions:
+   - `pages`, `posts`, `articles`, `routes`, `navigation`, `locations`, `properties`, etc.
+3. Identify key fields:
+   - URL fields: `slug`, `path`, `url`, `permalink`.
+   - Publish flags: `is_public`, `status`, `visibility`.
+   - Last modified: `updated_at`, `modified_at`.
+4. Detect nested routing:
+   - `parent_id` relationships.
+   - Category folders.
+   - Dynamic segments.
+
+The Agent may ask for clarification if multiple competing route tables exist.
+
+---
+
+### 2. Robust Error Handling, Logging & Dead‑Letter Queues
+To prevent silent sitemap failures:
+
+- Log every regeneration attempt into a `system_logs` table.
+- Track:
+  - trigger source table
+  - job ID
+  - runtime duration
+  - success/failure
+  - error message (if any)
+- Add a retry counter to `sitemap_jobs`:
+
+```sql
+ALTER TABLE sitemap_jobs ADD COLUMN retry_count int DEFAULT 0;
+ALTER TABLE sitemap_jobs ADD COLUMN error_message text;
+```
+
+- If an error occurs more than 3 times:
+  - Set `status = 'failed'`.
+  - Notify admin or AI Agent.
+
+---
+
+### 3. Multi‑Sitemap Index Support
+For large sites (> 50,000 URLs):
+
+1. Split routes into logical buckets:
+   - `sitemap-pages.xml`
+   - `sitemap-posts.xml`
+   - `sitemap-categories.xml`
+   - `sitemap-properties.xml`
+
+2. Generate a master index file:
+```xml
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap><loc>https://example.com/sitemap-pages.xml</loc></sitemap>
+  <sitemap><loc>https://example.com/sitemap-posts.xml</loc></sitemap>
+</sitemapindex>
+```
+
+3. AI Agent must generate this index whenever any child sitemap is updated.
+
+---
+
+### 4. Canonical URL Logic (Dynamic, Nested, Hierarchical Routing)
+The Agent must determine each page’s real URL:
+
+- If a table has `parent_id`, recursively build the full path.
+- If categories affect URL structure (e.g. `/guides/{category}/{slug}`), the agent must join tables.
+- If `canonical_url` exists, always prefer it.
+
+Example recursive model:
+```ts
+function buildPath(page) {
+  if (!page.parent) return page.slug;
+  return `${buildPath(page.parent)}/${page.slug}`;
+}
+```
+
+---
+
+### 5. Optional SEO Tags – priority, changefreq
+If tables include SEO metadata:
+
+- `<priority>` maps from numeric or heuristic values.
+- `<changefreq>` maps from enums like `daily`, `weekly`, `monthly`.
+
+If missing, omit from XML.
+
+---
+
+### 6. AI‑Assisted Dynamic Route Expansion
+The Agent should automatically include implicit dynamic routes:
+
+- `/blog/{slug}` for all posts
+- `/category/{slug}`
+- `/tag/{slug}`
+- `/location/{city}` if a `cities` or `markets` table exists
+- `/properties/{id}` or `{address}` for real estate
+
+The Agent should:
+- Detect patterns by inspecting Next.js/Remix route folders when possible
+- Or infer them by table names
+
+---
+
+### 7. Sitemap Versioning and Rollback
+Edge Function should:
+
+- Write a snapshot version: `sitemap-YYYYMMDD-HHMM.xml`
+- Keep the last 10 versions (configurable)
+- Roll back by copying an earlier version if the latest sitemap fails validation
+
+---
+
+### 8. Automatic Sitemap Validation
+Add an XML check:
+- Validate well‑formed XML with a DOM parser
+- Ensure each `<loc>` returns HTTP 200 (optional async check)
+- Detect duplicates
+- Detect sudden drops in URL count (SEO red flag)
+
+If validation fails:
+- Do not overwrite the production sitemap
+- Mark job as `failed`
+- Log error
+
+---
+
+### 9. Master “Force Regenerate” Command
+Provide an override flag:
+```
+POST /generate_sitemap?force=true
+```
+This rebuilds everything from scratch.
+
+---
+
+### 10. Dependent Regeneration Logic
+When certain tables affect routes indirectly:
+
+Examples:
+- Changing `category.slug` → all posts in that category must update URLs
+- Renaming a parent page → all child pages must be regenerated
+
+Agent should:
+- Query the dependency graph
+- Regenerate only affected URLs when possible (more efficient)
+- Fall back to full regeneration when unsure
+
+---
+
+### 11. Debounce / Rate‑Limit Protection
+Prevents triggering dozens of regeneration jobs during batch edits:
+
+Suggested logic:
+- When a job enters queue, set a `debounce_until = now() + interval '5 seconds'`
+- Only process jobs after that window closes
+- Group all pending jobs into a single regeneration
+
+---
+
+### 12. Final Recommendation for the AI Agent
+Your sitemap architecture should now support:
+- Multi‑table dynamic routing
+- Nested URL structures
+- Large‑scale sitemap indexes
+- Error handling, logging, rollback
+- Automated validation
+- Rate‑limited trigger-driven regeneration
+
+This ensures the sitemap remains highly reliable, SEO‑friendly, and future‑proof even as the project grows in complexity.
+
