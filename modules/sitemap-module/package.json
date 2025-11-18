@@ -1,0 +1,10 @@
+{
+  "name": "sitemap-module",
+  "version": "1.0.0",
+  "description": "Standardized sitemap generation module using Supabase Edge Functions",
+  "main": "index.ts",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.0.0"
+  }
+}
+

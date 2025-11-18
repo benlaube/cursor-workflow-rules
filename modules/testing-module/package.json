@@ -1,0 +1,10 @@
+{
+  "name": "testing-module",
+  "version": "1.0.0",
+  "description": "Standardized testing utilities and mocks",
+  "main": "index.ts",
+  "dependencies": {
+    "vitest": "^1.0.0"
+  }
+}
+
