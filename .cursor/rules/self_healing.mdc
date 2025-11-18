@@ -45,7 +45,21 @@ The agent acts as an autonomous runtime manager. When errors occur, try to fix t
 2.  **Wait:** Wait 5 seconds and retry (transient startup issue).
 3.  **Env Vars:** Verify `DATABASE_URL` matches the running service.
 
-## 4. General Error Recovery
+## 4. Logic & Application Errors (Auto-Debug)
+
+**Symptom:** Runtime crashes, logical bugs, unhandled exceptions (non-environment).
+
+**Strategy:** "Analyze & Propose" (Do NOT auto-fix logic without confirmation).
+1.  **Read Logs:** Capture the stack trace or error message.
+2.  **Locate:** Find the exact file and line number in the codebase.
+3.  **Context:** Read the surrounding code to understand the intent.
+4.  **Hypothesize:** Formulate a clear explanation of *why* it failed.
+5.  **Propose:** Generate a fix (show the code diff), but **ask the user** before applying it.
+
+**Instruction:**
+> "I found a bug in [file]. The issue is [reason]. I propose changing [old_code] to [new_code]. Shall I apply this fix?"
+
+## 5. General Error Recovery
 
 - **Syntax Errors:** Read the file, fix the syntax, retry build.
 - **Linter Errors:** auto-fix if possible (`npm run lint -- --fix`), otherwise manual fix.

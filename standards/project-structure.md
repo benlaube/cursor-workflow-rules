@@ -67,13 +67,14 @@ AI automation interface.
 ## 4. Alternative Structures
 
 ### 4.1 Monorepo / Full Stack Split
-If the application has a distinct Frontend and Backend that are deployed separately or are complex enough to warrant separation:
+If the application has a distinct Frontend (Marketing Site) and Backend (User Dashboard/API) that are deployed separately or are complex enough to warrant separation:
 
 **Recommended Structure:**
 ```
 /apps
-  /web          # Next.js / React Frontend
-  /api          # Node / Python Backend
+  /marketing    # Public facing marketing website (e.g., Next.js, Astro)
+  /dashboard    # Authenticated User Control Panel / App (e.g., React, Vue)
+  /api          # Shared Backend API (Node, Python)
   /docs         # Documentation site
 /packages
   /ui           # Shared UI components
