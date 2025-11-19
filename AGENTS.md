@@ -26,7 +26,10 @@ We are currently focusing on:
 - **Next Up:** [Insert Next Steps]
 
 ## 4. System Architecture Highlights
-*Quick reference for the agent.*
+*Quick reference for the agent. For full details, see `docs/TECH_STACK.md`.*
+
+> **Action:** Read `docs/TECH_STACK.md` now to understand the allowed tools and libraries.
+
 - **Frontend:** Next.js / React
 - **Backend:** Supabase (Edge Functions, Postgres)
 - **Auth:** Supabase Auth

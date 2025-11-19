@@ -57,6 +57,7 @@ Mirror the `src` structure where possible.
 ### 3.3 /docs
 Central knowledge base.
 - `Roadmap_vX.X.md`: High-level goals.
+- `TECH_STACK.md`: **(Required)** The single source of truth for the project's technology stack.
 - `/specs`: Technical design documents for features.
 - `/process`: Workflows (how we deploy, how we test).
 - `/archive`: Old docs that are no longer active but kept for history.
