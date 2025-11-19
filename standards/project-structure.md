@@ -29,6 +29,7 @@ The root contains only essential project-level configuration and entry points.
 | `commands/` | Scripts or markdown files for AI automation tasks. |
 | `config/` | Static configuration files (non-secret). |
 | `scripts/` | Maintenance or build scripts (e.g., database seeders). |
+| `logs/` | **Git-ignored** folder for debug outputs, migration logs, and agent scratchpads. |
 
 ## 3. Core Directories & Usage
 

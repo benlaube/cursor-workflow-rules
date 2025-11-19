@@ -1,0 +1,11 @@
+{
+  "name": "blog-engine-module",
+  "version": "1.0.0",
+  "description": "Standardized Blog/CMS schema and service layer for Supabase",
+  "main": "index.ts",
+  "types": "index.ts",
+  "peerDependencies": {
+    "@supabase/supabase-js": "^2.0.0"
+  }
+}
+

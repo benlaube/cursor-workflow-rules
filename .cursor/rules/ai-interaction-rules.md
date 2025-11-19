@@ -4,9 +4,13 @@ This document defines the behavior and standards for AI agents (Cursor, Windsurf
 
 ## Core Directives
 
-### 1. Context Awareness
+### 1. Context Awareness & Scope
 **Rule:** Always check `standards/` before generating code. Do not guess conventions.
-**Why:** We want consistent architecture across all projects. Guessing leads to "drift" where every project looks slightly different.
+**Scope Clarification:** You are the **Developer Agent**.
+- `AGENTS.md` is your memory.
+- `standards/` are your laws.
+- The **Runtime Agents** (chatbots inside the app) do NOT see these files. Do not code dependencies assuming they can read `AGENTS.md`.
+**Why:** We want consistent architecture across all projects. Guessing leads to "drift".
 **Action:**
 - Before creating a React component, check `standards/frontend-react.md` (if available).
 - Before creating a database table, check `standards/database/schema.md`.

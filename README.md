@@ -16,6 +16,11 @@ Instead of explaining your coding preferences to an AI agent every time, you sim
 │   ├── project-structure.md    # Standard file layout for new projects
 │   ├── configuration.md        # Rules for env vars and config files
 │   ├── sitemap.md              # How to build SEO-ready sitemaps
+│   ├── seo-automation.md       # Automated metadata generation & Schema.org
+│   ├── cms/
+│   │   └── blog-architecture.md # Standard Blog/CMS schema & workflow
+│   ├── ui/
+│   │   └── chat-interface.md   # Standard AI Chat UI (Bubbles, Uploads, Memory)
 │   ├── database/
 │   │   ├── schema.md           # SQL conventions, multi-tenancy, comments
 │   │   └── settings-schema.md  # Standard settings/env var table design
@@ -27,7 +32,9 @@ Instead of explaining your coding preferences to an AI agent every time, you sim
 │   ├── logger-module/          # Structured JSON logging (Pino wrapper)
 │   ├── error-handler/          # Result pattern, Circuit Breaker, Auto-retry
 │   ├── sitemap-module/         # Sitemap generator for Supabase Storage
-│   └── testing-module/         # Mocks for Supabase & Logging (Vitest)
+│   ├── testing-module/         # Mocks for Supabase & Logging (Vitest)
+│   ├── blog-engine/            # Full CMS schema & service layer
+│   └── ai-chat-ui/             # React components for Chat, Attachments, Memory
 │
 ├── checklists/                 # "The Process" - Quality Assurance
 │   ├── pre-flight-check.md     # Run this before writing code
@@ -46,8 +53,8 @@ Tell your AI Agent:
 
 ### 2. Adding Features with Modules
 Don't write boilerplate from scratch. Ask the Agent:
-> "I need to add logging to my backend. Implement the `modules/logger-module` from the standards repo."
-> "Implement a robust error handler using the `modules/error-handler` pattern, including the Circuit Breaker."
+> "I need to add a blog. Implement the `modules/blog-engine` including the schema migration and service layer."
+> "Build a Chat UI. Use the `modules/ai-chat-ui` components and the `useChatWithAttachments` hook."
 
 ### 3. Designing the Database
 Ensure consistency by referencing the schema guide:

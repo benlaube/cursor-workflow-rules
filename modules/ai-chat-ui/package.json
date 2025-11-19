@@ -1,0 +1,11 @@
+{
+  "name": "ai-chat-ui-module",
+  "version": "1.0.0",
+  "description": "Standardized React components and hooks for AI Chat interfaces",
+  "main": "index.ts",
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "ai": "^3.0.0" 
+  }
+}
+

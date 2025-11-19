@@ -26,7 +26,8 @@ Before confirming completion:
 2.  **Update Docs:** Update `CHANGELOG.md` and relevant `standards/` if architecture changed.
 3.  **Verify Launch:** Run `.cursor/commands/launch.mdc` one last time to ensure no regression.
 
-## 4. Documentation updates
+## 4. Documentation & Versioning
 
-- Always update `CHANGELOG.md` with a timestamp and summary.
-- If you added a new feature, ensure it is documented in `standards/` or `docs/`.
+- **Docs:** Always update `CHANGELOG.md` with a timestamp and summary.
+- **Versioning:** If editing a standard or documentation file, increment the `Version: X.X` metadata at the top of the file.
+- **New Features:** If you added a new feature, ensure it is documented in `standards/` or `docs/`.

@@ -1,0 +1,53 @@
+---
+description: Perform a security audit on the project.
+globs: 
+---
+
+# Security Audit Command
+
+Use this command to scan the project for common security vulnerabilities, secrets, and misconfigurations.
+
+## Usage
+
+@agent: When asked to "audit security", "check for secrets", or "scan", follow this procedure.
+
+**Parameters:**
+- `fix`: `true` or `false` (default: `false`). If true, attempt to fix minor issues (e.g., add to gitignore).
+
+---
+
+## Execution Steps
+
+### 1. Secrets Scan
+1.  **Check .gitignore:** Ensure `.env`, `logs/`, `credentials.json` are ignored.
+    - *Action:* If `fix=true` and entries are missing, append them.
+2.  **Grep for Keys:** Search for patterns like `sk_test`, `sk_live`, `ghp_`, `eyJ` (JWT).
+    - *Command:* `grep -rE "sk_live|ghp_|xoxb-" . --exclude-dir={node_modules,.git,dist} || true`
+    - *Action:* Report any findings immediately.
+
+### 2. Dependency Audit
+1.  **Node.js:** Run `npm audit` (or `yarn audit`, `pnpm audit`).
+2.  **Python:** Run `pip-audit` or `safety check` (if installed).
+    - *Action:* Summarize Critical/High vulnerabilities.
+
+### 3. Database & RLS Check (Supabase)
+1.  **Schema Inspection:** If Supabase is detected, ask the user if they want to scan the schema for RLS.
+2.  **RLS Check:** Look for `alter table ... enable row level security`.
+    - *Action:* Warn if RLS is missing on public tables.
+
+### 4. Configuration Review
+1.  **Check .env:** Ensure it exists and is not committed (check `git ls-files .env`).
+2.  **Check Headers:** Verify secure headers are configured in `next.config.js` or middleware (CSP, HSTS).
+
+### 5. Report Generation
+1.  **Output:** Create a report in `logs/security_audit_<TIMESTAMP>.md`.
+2.  **Summary:** Print a high-level summary to the chat.
+
+---
+
+## Self-Healing (if fix=true)
+- **Gitignore:** Add missing standard ignores.
+- **Packages:** Run `npm audit fix` if safe.
+
+## Manual Verification
+- Remind the user to manually review `checklists/security-audit-check.md` for logical flaws (e.g., bad RLS logic) that automated tools miss.
