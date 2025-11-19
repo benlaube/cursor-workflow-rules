@@ -41,3 +41,6 @@ export const MemoryWidget: React.FC<MemoryWidgetProps> = ({ memories, onDelete }
   );
 };
 
+
+
+

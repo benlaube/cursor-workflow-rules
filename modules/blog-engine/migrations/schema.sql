@@ -101,3 +101,6 @@ CREATE TRIGGER update_posts_updated_at
     FOR EACH ROW
     EXECUTE PROCEDURE update_updated_at_column();
 
+
+
+

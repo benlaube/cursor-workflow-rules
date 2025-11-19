@@ -61,3 +61,6 @@ export const MessageBubble: React.FC<MessageProps> = ({ role, content, attachmen
   );
 };
 
+
+
+

@@ -81,6 +81,24 @@ If the application has a distinct Frontend (Marketing Site) and Backend (User Da
   /ui           # Shared UI components
   /config       # Shared eslint/tsconfig
   /utils        # Shared helper functions
+
+### 4.2 Shared Libraries / Internal Modules
+For code that is reused across multiple projects (or is a candidate for extraction), use a dedicated modules directory.
+
+**Recommended Structure:**
+```
+/packages       # (Monorepo) Workspace packages
+  /logger       # e.g., @my-org/logger
+  /ui-kit       # e.g., @my-org/ui-kit
+
+-- OR --
+
+/src/modules    # (Monolith) Internal modules
+  /blog-engine  # Self-contained blog feature
+  /payment      # Payment processing logic
+```
+
+**Rule:** Any folder in `modules/` or `packages/` MUST follow `standards/module-structure.md`.
 ```
 
 In this case, `src` is replaced by `apps/` and `packages/`.
