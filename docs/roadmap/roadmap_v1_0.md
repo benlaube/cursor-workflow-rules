@@ -2,8 +2,9 @@
 
 ## Metadata
 - **Created:** 2025-11-18
+- **Last Updated:** 2025-01-27
 - **Version:** 1.0
-- **Status:** Active
+- **Status:** Superseded by v1.1
 
 ## High-Level Goals
 1.  **Foundation:** Establish a stable, self-healing dev environment (Done).
