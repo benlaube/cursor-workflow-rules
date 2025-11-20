@@ -4,7 +4,7 @@
 - **Created:** 2025-11-18
 - **Last Updated:** 2025-01-27
 - **Version:** 1.1
-- **Status:** Active
+- **Status:** Active (Updated with latest completions)
 
 ## High-Level Goals
 1.  **Foundation:** Establish a stable, self-healing dev environment (Done).
@@ -22,6 +22,9 @@
   - ✅ Email verification flow documentation and helpers
   - ✅ OAuth provider setup guides (Google, GitHub, etc.)
   - ✅ MFA (Multi-Factor Authentication) helpers
+  - ✅ Dev user setup with admin permissions (development only)
+  - ✅ Role-based access control using Supabase JWT claims
+  - ✅ Security best practices guide (leveraging Supabase built-in features)
 - [x] **Backend API Module:** Standardized API handler with Supabase SSR
   - ✅ Handler wrapper with error handling, validation, auth
   - ✅ Supabase SSR integration for automatic JWT handling
@@ -31,6 +34,13 @@
   - ✅ Database schema with triggers and job queue
   - ✅ Supabase Edge Function for generation
   - ✅ Integration guide and Next.js serving examples
+- [x] **Documentation & Standards:**
+  - ✅ CHANGELOG.md with Keep a Changelog format
+  - ✅ Documentation standards updated with changelog guidelines
+  - ✅ Task workflow updated (auto-launch dev server after tasks)
+  - ✅ Supabase local setup guide
+  - ✅ Supabase secrets management guide
+  - ✅ Supabase SSR API routes guide
 - [ ] **CI/CD:** GitHub Actions for automated testing.
 
 ### 2. MVP Features (Core Product)
@@ -49,10 +59,13 @@
 ### Completed in v1.1
 1. **Backend API Module** - Complete implementation with Supabase SSR integration
 2. **Auth System Enhancements** - Email verification, OAuth, and MFA support
-3. **Sitemap Automation** - Full automation with database triggers and Edge Function
-4. **Documentation** - Comprehensive guides for Supabase setup, secrets management, and SSR
-5. **Changelog Management** - Established CHANGELOG.md and documentation standards
-6. **Task Workflow** - Added auto-launch dev server after task completion
+3. **Auth Security Improvements** - Properly leveraging Supabase JWT claims for roles (secure RLS policies)
+4. **Dev User Setup** - Automated dev user creation with admin permissions
+5. **Sitemap Automation** - Full automation with database triggers and Edge Function
+6. **Documentation** - Comprehensive guides for Supabase setup, secrets management, and SSR
+7. **Supabase Best Practices** - Guide on leveraging built-in auth features vs. custom code
+8. **Changelog Management** - Established CHANGELOG.md and documentation standards
+9. **Task Workflow** - Added auto-launch dev server after task completion
 
 ### Next Steps (v1.2)
 1. **CI/CD Pipeline** - Set up GitHub Actions for automated testing and deployment
@@ -73,6 +86,24 @@
 ---
 
 ## Version History
-- **v1.1** (2025-01-27) - Backend API, Auth enhancements, Sitemap automation
+- **v1.1** (2025-01-27) - Backend API, Auth enhancements (including dev user setup and security improvements), Sitemap automation, Documentation standards
 - **v1.0** (2025-11-18) - Initial roadmap with foundation goals
+
+## Outstanding Work
+
+### High Priority
+- [ ] **CI/CD Pipeline** - GitHub Actions for automated testing
+- [ ] **Marketing Site** - Landing page with value proposition
+- [ ] **User Dashboard** - Auth-protected dashboard route
+
+### Medium Priority
+- [ ] **Subscription System** - Stripe integration
+- [ ] **Content Engine** - AI-powered text enrichment Edge Function
+
+### Low Priority / Future
+- [ ] Rate limiting middleware for Backend API module
+- [ ] Multi-sitemap support for large sites (>50k pages)
+- [ ] Mobile App (React Native)
+- [ ] Multi-tenant team accounts
+- [ ] Voice interface for the agent
 
