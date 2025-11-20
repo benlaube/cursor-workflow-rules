@@ -40,6 +40,12 @@ The module also provides comprehensive guides and helpers for:
   - Challenge and verification flows
   - Factor management
 
+- `dev-user-setup.md`: Development user setup guide
+  - Create default dev user with admin permissions
+  - Role-based access control (RBAC) system
+  - Automated setup script
+  - Security considerations
+
 ## Usage
 
 ### 1. Apply the Migration
@@ -76,6 +82,13 @@ See `mfa-helpers.ts` for:
 - Verifying MFA during sign-in
 - Managing multiple MFA factors
 - Syncing MFA status to profiles
+
+### 6. Dev User Setup (Development Only)
+See `dev-user-setup.md` for:
+- Creating a default dev user with admin permissions
+- Setting up role-based access control
+- Automated setup script
+- Security best practices
 
 ### 6. Customization
 To add more fields (e.g., `phone_number` or `role`), edit the `handle_new_user` function in `profile-sync.sql` to map additional fields from `new.raw_user_meta_data`.
