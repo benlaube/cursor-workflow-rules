@@ -114,7 +114,14 @@ The system supports role-based access control:
 
 ### 4.2 Role Storage
 
-Roles are stored in the `profiles.role` column. For security, roles should also be stored in JWT claims via `app_metadata`:
+**Primary Storage (Source of Truth):** Roles are stored in JWT claims via `app_metadata.role`. This is the secure, authoritative source.
+
+**Secondary Storage (Convenience):** Roles are also stored in `profiles.role` column for:
+- Easy queries (e.g., "get all admins")
+- UI display
+- Analytics
+
+**Important:** Always use `app_metadata.role` (from JWT) for security decisions. The `profiles.role` column is for convenience only and should not be trusted for authorization.
 
 ```typescript
 // When creating/updating user
@@ -130,14 +137,26 @@ await supabase.auth.admin.updateUserById(userId, {
 **In Database (RLS Policies):**
 
 ```sql
--- Check if user is admin
+-- Check if user is admin (uses JWT claims - secure)
 SELECT public.is_admin();
 
--- Use in RLS policy
+-- Use in RLS policy (uses JWT - cannot be tampered with)
+CREATE POLICY "Admins can see all"
+  ON some_table FOR SELECT
+  USING (
+    (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'
+  );
+
+-- Or use the helper function
 CREATE POLICY "Admins can see all"
   ON some_table FOR SELECT
   USING (public.is_admin());
 ```
+
+**Note:** The `is_admin()` function uses `auth.jwt() -> 'app_metadata' ->> 'role'` which reads from the JWT token. This is secure because:
+- JWT is signed by Supabase
+- Cannot be modified by the user
+- Always reflects the authoritative role from `app_metadata`
 
 **In Application Code:**
 

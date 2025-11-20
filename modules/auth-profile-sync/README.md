@@ -46,6 +46,12 @@ The module also provides comprehensive guides and helpers for:
   - Automated setup script
   - Security considerations
 
+- `supabase-auth-best-practices.md`: Guide for leveraging Supabase's built-in auth
+  - What Supabase provides vs. what we add
+  - Using JWT claims for roles (secure)
+  - RLS policies with JWT
+  - Best practices and anti-patterns
+
 ## Usage
 
 ### 1. Apply the Migration

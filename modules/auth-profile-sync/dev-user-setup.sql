@@ -74,37 +74,41 @@ DROP POLICY IF EXISTS "Public profiles are viewable by everyone." ON public.prof
 -- Create new select policy that allows:
 -- - Everyone to see public profiles (for basic user info)
 -- - Admins to see all profiles
+-- Uses JWT claims (app_metadata) for admin check - secure and cannot be tampered with
 CREATE POLICY "Profiles are viewable by everyone, admins see all"
   ON public.profiles FOR SELECT
   USING (
     true -- Public profiles visible to all
     OR 
-    (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin' -- Admins see all
+    (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin' -- Admins see all (from JWT)
   );
 
 -- Policy for admins to update any profile
+-- Uses JWT claims for security - profiles.role could be modified by user
 CREATE POLICY "Admins can update any profile"
   ON public.profiles FOR UPDATE
   USING (
-    (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin'
+    (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'
   )
   WITH CHECK (
-    (SELECT role FROM public.profiles WHERE id = auth.uid()) = 'admin'
+    (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'
   );
 
 -- 5. Helper function to check if current user is admin
+-- Uses JWT claims (app_metadata) for security - this is the source of truth
+-- The profiles.role column is for convenience/querying, but JWT is authoritative
 CREATE OR REPLACE FUNCTION public.is_admin()
 RETURNS boolean AS $$
 BEGIN
+  -- Check JWT claim first (secure, cannot be tampered with)
+  -- app_metadata.role is set when user is created/updated via Admin API
   RETURN (
-    SELECT role = 'admin'
-    FROM public.profiles
-    WHERE id = auth.uid()
+    (auth.jwt() -> 'app_metadata' ->> 'role') = 'admin'
   );
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-COMMENT ON FUNCTION public.is_admin IS 'Returns true if the current authenticated user has admin role.';
+COMMENT ON FUNCTION public.is_admin IS 'Returns true if the current authenticated user has admin role. Uses JWT app_metadata (secure) as source of truth.';
 
 -- 6. Example: Grant admin role to existing user by email
 -- Usage: SELECT public.grant_admin_role('user@example.com');
