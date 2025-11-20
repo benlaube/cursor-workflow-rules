@@ -1,8 +1,9 @@
 # Backend API Module (Plan)
 
 ## Metadata
-- **Status:** Proposed
+- **Status:** Implemented
 - **Dependencies:** Supabase, standard-error-handler, standard-logger
+- **Implementation:** See `modules/backend-api/`
 
 ## 1. Overview
 A standardized, type-safe backend framework for Next.js API routes or standalone Node.js services.

@@ -1,0 +1,17 @@
+{
+  "name": "@standards/backend-api",
+  "version": "1.0.0",
+  "description": "Standardized backend API handler wrapper for Next.js with Supabase SSR integration",
+  "main": "index.ts",
+  "dependencies": {
+    "@supabase/ssr": "^0.1.0",
+    "@supabase/supabase-js": "^2.39.0",
+    "zod": "^3.22.0",
+    "next": "^14.0.0"
+  },
+  "peerDependencies": {
+    "@modules/error-handler": "*",
+    "@modules/logger-module": "*"
+  }
+}
+

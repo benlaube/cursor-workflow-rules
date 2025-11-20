@@ -15,12 +15,22 @@ The agent acts as an autonomous runtime manager. When errors occur, try to fix t
 **Strategy:**
 1.  **Identify:** Find the process using the port.
     - *Unix:* `lsof -i :<PORT>` or `netstat -an | grep <PORT>`
-2.  **Kill:** Terminate the process.
-    - `kill -9 <PID>`
-3.  **Retry:** Re-run the launch command.
+    - *Docker:* `docker ps --filter "publish=<PORT>"`
+2.  **Verify Ownership (CRITICAL for Supabase ports):**
+    - If port is 54321, 54322, 54323, or other Supabase default ports:
+      - Check if it's a Supabase container: `supabase status`
+      - Verify it belongs to current project before stopping
+      - If it's another project's container, ask user which project should use the port
+    - For application ports (3000, 8000, etc.):
+      - Check if it's the current application instance
+      - If it's a stale process, proceed with termination
+3.  **Kill:** Terminate the process (only if verified as safe to do so).
+    - For Supabase: Use `supabase stop` (stops only current project)
+    - For other processes: `kill -9 <PID>`
+4.  **Retry:** Re-run the launch command.
 
 **Instruction:**
-> "If the port is busy, I will find the process occupying it, kill it, and restart the server."
+> "If the port is busy, I will identify the process and verify ownership before terminating. For Supabase ports, I will use `supabase stop` and verify project ownership. For other ports, I will check if it's a stale process before killing it."
 
 ## 2. Dependency Self-Healing
 
@@ -42,8 +52,11 @@ The agent acts as an autonomous runtime manager. When errors occur, try to fix t
 
 **Strategy:**
 1.  **Check Service:** Is Docker/Supabase running?
+   - For Supabase: Run `supabase status` to verify current project's services
+   - If not running, start with `supabase start` (only affects current project)
 2.  **Wait:** Wait 5 seconds and retry (transient startup issue).
 3.  **Env Vars:** Verify `DATABASE_URL` matches the running service.
+4.  **Container Isolation:** If multiple Supabase projects exist, ensure you're connecting to the correct project's database. Use `supabase status` to verify project identity.
 
 ## 4. Logic & Application Errors (Auto-Debug)
 
@@ -64,3 +77,33 @@ The agent acts as an autonomous runtime manager. When errors occur, try to fix t
 - **Syntax Errors:** Read the file, fix the syntax, retry build.
 - **Linter Errors:** auto-fix if possible (`npm run lint -- --fix`), otherwise manual fix.
 - **Env Missing:** Copy `.env.example` to `.env` if `.env` is missing.
+
+## 6. Docker/Supabase Container Management (CRITICAL)
+
+**Symptom:** Port conflicts, container won't start, "container already exists" errors.
+
+**Strategy - Container Isolation (MANDATORY):**
+
+1.  **Always use project-specific commands:**
+   - ✅ `supabase start` - Starts only current project's containers
+   - ✅ `supabase stop` - Stops only current project's containers
+   - ✅ `supabase status` - Shows only current project's status
+
+2.  **Port conflict resolution:**
+   - Identify which project owns the conflicting container using `supabase status`
+   - If it's the current project: Use `supabase stop` then `supabase start`
+   - If it's another project: Either change your project's port in `supabase/config.toml` or ask the user which project should use the port
+   - **NEVER** use `docker stop $(docker ps -q)` or similar broad commands
+
+3.  **If you must use Docker directly:**
+   - First, get project reference: `PROJECT_REF=$(cat supabase/.temp/project-ref 2>/dev/null || supabase status | grep "Project ID" | awk '{print $3}')`
+   - Filter by project: `docker ps --filter "name=supabase_${PROJECT_REF}"`
+   - Only stop/remove containers matching your project reference
+
+4.  **Container cleanup (only if necessary):**
+   - Use `supabase stop` first (safest)
+   - If containers are stuck, identify project-specific containers before removing
+   - Never remove all Supabase containers: `docker rm $(docker ps -a --filter "name=supabase" -q)` ❌
+
+**Instruction:**
+> "When managing Docker/Supabase containers, I will only affect containers belonging to the current project. I will use `supabase start/stop/status` commands, and if I must use Docker directly, I will filter by project reference. I will never stop or remove all containers."

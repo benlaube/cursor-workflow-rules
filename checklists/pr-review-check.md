@@ -22,7 +22,7 @@ Before marking a task as complete or submitting a PR, verify the following.
 ## 4. Documentation
 - [ ] **Docstrings:** Do exported functions have comments?
 - [ ] **Standards:** Did I update `standards/` if I changed architecture?
-- [ ] **Changelog:** Did I update `CHANGELOG.md` with a timestamp?
+- [ ] **Changelog:** Did I update `CHANGELOG.md` for user-facing changes? (See `standards/documentation.md` Section 7 for guidelines)
 - [ ] **TODOs:** Did I clean up or track leftover TODOs?
 
 ## 5. Final Verification

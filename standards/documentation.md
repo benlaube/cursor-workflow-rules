@@ -2,8 +2,8 @@
 
 ## Metadata
 - **Created:** 2025-11-17
-- **Last Updated:** 2025-11-18
-- **Version:** 1.5
+- **Last Updated:** 2025-01-27
+- **Version:** 1.6
 
 ## When to Apply This Rule
 Apply this rule whenever documentation is created, updated, reorganized, or found to be inconsistent. This standard is enforced by the **Task Workflow Rule**.
@@ -73,4 +73,83 @@ Every documentation file must begin with:
 - **Do not** move files referenced by external tools without updating the tool config.
 - **Do not** remove version numbers from filenames (they are crucial for history).
 
-# End of Rule – Documentation_Management_v1.5
+## 7. Changelog Management
+
+### 7.1 CHANGELOG.md Purpose
+
+The `CHANGELOG.md` file serves as a **user-facing summary** of notable changes to the project. It complements git history by providing:
+- High-level summaries of major changes
+- User-visible feature additions
+- Breaking changes and migration notes
+- Release notes format
+
+**Git history** remains the source of truth for:
+- Detailed technical changes
+- Code diffs
+- Commit-by-commit history
+- Pull request reviews
+
+### 7.2 When to Update CHANGELOG.md
+
+Update `CHANGELOG.md` for:
+
+- ✅ **New modules or major features** - When adding significant new functionality
+- ✅ **Breaking changes** - When changes require migration or configuration updates
+- ✅ **User-facing improvements** - Features that affect how the project is used
+- ✅ **Major documentation additions** - New comprehensive guides or standards
+- ✅ **Architecture changes** - Significant structural or design changes
+
+Do **not** update for:
+- ❌ Minor bug fixes (unless user-visible)
+- ❌ Internal refactoring
+- ❌ Documentation typo fixes
+- ❌ Test additions
+
+### 7.3 Changelog Format
+
+Follow the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format:
+
+```markdown
+## [Unreleased]
+
+### Added
+- New feature description
+
+### Changed
+- Change description
+
+### Fixed
+- Bug fix description
+
+## [1.0.0] - YYYY-MM-DD
+
+### Added
+- Initial release features
+```
+
+### 7.4 Update Process
+
+1. **Add entries to `[Unreleased]` section** as work is completed
+2. **Group changes by type** (Added, Changed, Fixed, etc.)
+3. **Use clear, user-friendly language** (avoid technical jargon when possible)
+4. **Link to related documentation** when helpful
+5. **When releasing**, move `[Unreleased]` to a versioned section with date
+
+### 7.5 Examples
+
+**Good Entry:**
+```markdown
+### Added
+- **Backend API Module** - Standardized API handler wrapper with Supabase SSR integration
+  - Automatic error handling and input validation
+  - Complete integration guide and examples
+```
+
+**Bad Entry:**
+```markdown
+### Added
+- Fixed bug in handler.ts line 45
+- Updated dependencies
+```
+
+# End of Rule – Documentation_Management_v1.6

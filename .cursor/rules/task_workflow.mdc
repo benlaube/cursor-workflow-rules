@@ -25,6 +25,7 @@ Before confirming completion:
 1.  **Run Review:** Read and follow `checklists/pr-review-check.md`.
 2.  **Update Docs:** Update `CHANGELOG.md` and relevant `standards/` if architecture changed.
 3.  **Verify Launch:** Run `.cursor/commands/launch.mdc` one last time to ensure no regression.
+4.  **Launch Dev Server:** After completing a task or integration, launch the development server using `.cursor/commands/launch.mdc` so the user can see changes and test them. This should be done automatically unless the user explicitly requests otherwise.
 
 ## 4. Documentation & Versioning
 

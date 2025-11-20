@@ -34,9 +34,13 @@ Use this command to reliably start the application. It handles stack detection, 
 1.  **Environment File:**
     - Ensure `.env` (or `.env.local` for Next.js) exists.
     - If missing, copy from `.env.example` (if available) and notify the user to fill secrets.
-2.  **Port & URL:**
+2.  **Supabase Setup Check:**
+    - If project uses Supabase, check if `supabase/` directory exists.
+    - If missing, notify user that Supabase must be initialized first (see `standards/architecture/supabase-local-setup.md`).
+    - Verify `.env.local` contains Supabase credentials (run `supabase status` if needed).
+3.  **Port & URL:**
     - Read `PORT` and `PROJECT_ROOT_URL` from config.
-    - Default `PORT`: 3000 (Node), 8000 (Python/Django), 54321 (Supabase).
+    - Default `PORT`: 3000 (Node), 8000 (Python/Django), 54321 (Supabase API).
     - Default `PROJECT_ROOT_URL`: `http://localhost:<PORT>`.
 
 ### 3. Dependency Validation (Self-Healing)
@@ -54,14 +58,20 @@ Use this command to reliably start the application. It handles stack detection, 
 #### A. Development (`env=dev`)
 *Command: `launch_application_dev`*
 
-1.  **Check Port:**
-    - If `PORT` is in use, use `self_healing` rule to kill the process or prompt user.
-2.  **Start Server:**
+1.  **Supabase Startup (if applicable):**
+    - If `supabase/` directory exists, check if Supabase is running: `supabase status`
+    - If not running, start with: `supabase start`
+    - **CRITICAL:** Only use `supabase start/stop` commands. Never use `docker stop $(docker ps -q)` as this affects all projects.
+    - Wait for Supabase services to be ready before starting the application.
+2.  **Check Port:**
+    - If `PORT` is in use, use `self_healing` rule to identify and handle the conflict.
+    - **For Supabase ports (54321, 54322, etc.):** Verify it's the current project's container using `supabase status` before stopping.
+3.  **Start Server:**
     - **Node:** `npm run dev`
     - **Python:** `python manage.py runserver` or `uvicorn main:app --reload`
-    - **Supabase:** `supabase start` (if applicable)
-3.  **Verification:**
+4.  **Verification:**
     - Monitor logs for "Server running" message.
+    - If Supabase is used, verify connection by checking for successful database/auth initialization.
     - Output: "🚀 Application running at `PROJECT_ROOT_URL`"
 
 #### B. Production (`env=prod`)
@@ -76,5 +86,35 @@ Use this command to reliably start the application. It handles stack detection, 
 ## Error Handling
 
 - **Port Conflicts:** "Port X is busy. Killing PID Y..." (Auto-fix)
+  - **For Supabase ports:** Verify container ownership with `supabase status` before stopping. Only stop containers belonging to the current project.
 - **Missing Dependencies:** "node_modules missing. Installing..." (Auto-fix)
 - **Build Failures:** Stop and display log output.
+- **Supabase Connection Errors:**
+  - Verify Supabase is running: `supabase status`
+  - Check `.env.local` has correct credentials from `supabase status`
+  - Ensure Docker is running if using local Supabase
+  - See `standards/architecture/supabase-local-setup.md` for troubleshooting
+
+## Container Isolation Rules (CRITICAL)
+
+When working with Supabase or Docker:
+
+1. **Always use project-specific commands:**
+   - ✅ `supabase start` - Starts only current project's containers
+   - ✅ `supabase stop` - Stops only current project's containers
+   - ✅ `supabase status` - Shows only current project's status
+
+2. **Never use broad Docker commands:**
+   - ❌ `docker stop $(docker ps -q)` - Affects ALL containers
+   - ❌ `docker-compose down` (if used globally) - Affects all projects
+
+3. **If you must use Docker directly:**
+   - Filter by project reference: `docker ps --filter "name=supabase_<project-ref>"`
+   - Verify container ownership with `supabase status` first
+
+4. **Port conflict resolution:**
+   - Identify which project owns the conflicting container
+   - Only stop containers belonging to the current project
+   - If unsure, ask the user which project should use the port
+
+See `standards/architecture/supabase-local-setup.md` Section 10 for detailed container management guidelines.

@@ -15,10 +15,23 @@ This project operates in a "Container-Like" local environment.
 
 ## 2. Local Docker Dev Environment
 
+### 2.1 Docker Compose Projects
+
 If `docker-compose.yml` is present:
 1.  **Prefer Docker:** Use Docker for databases (Postgres, Redis) and infrastructure.
 2.  **Hybrid App:** Run the *application code* locally (Node/Python) for faster HMR, but connect to *Dockerized services*.
 3.  **Logs:** View container logs via Docker Desktop or `docker logs`.
+
+### 2.2 Supabase Local Development
+
+If `supabase/` directory is present:
+1.  **Use Supabase CLI:** Always use `supabase start/stop/status` commands for container management.
+2.  **Container Isolation (CRITICAL):** Only affect containers belonging to the current project.
+   - ✅ Use `supabase start` - Starts only current project's containers
+   - ✅ Use `supabase stop` - Stops only current project's containers
+   - ❌ Never use `docker stop $(docker ps -q)` - This affects ALL containers across all projects
+3.  **Setup:** See `standards/architecture/supabase-local-setup.md` for complete installation and configuration guide.
+4.  **Environment Variables:** Retrieve local credentials with `supabase status` and configure in `.env.local`.
 
 ## 3. MCP Loadout Instructions
 
@@ -32,3 +45,24 @@ Ensure the following MCP servers are active if relevant:
 - **Node:** Use `npm` (default), `yarn`, or `pnpm` based on lockfile presence.
 - **Python:** Always use a virtual environment.
 - **Lockfiles:** Never delete lockfiles to "fix" errors. Fix the dependency conflict instead.
+
+## 5. Container Management Rules (CRITICAL)
+
+When working with Docker or Supabase containers in multi-project environments:
+
+1.  **Project-Specific Commands:**
+   - Always use project-specific commands (`supabase start/stop` for Supabase, filtered Docker commands for other services).
+   - Never use broad commands that affect all containers.
+
+2.  **Container Identification:**
+   - For Supabase: Use `supabase status` to identify current project's containers.
+   - For Docker Compose: Filter by project name or use project-specific compose files.
+
+3.  **Port Conflicts:**
+   - Identify which project owns the conflicting container before stopping.
+   - Only stop containers belonging to the current project.
+   - If unsure, ask the user which project should use the port.
+
+4.  **Error Recovery:**
+   - See `.cursor/rules/self_healing.mdc` Section 6 for detailed container management error recovery.
+   - See `standards/architecture/supabase-local-setup.md` Section 10 for Supabase-specific container isolation guidelines.
