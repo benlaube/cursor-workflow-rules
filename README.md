@@ -55,6 +55,13 @@ Instead of explaining your coding preferences to an AI agent every time, you sim
 
 ## 🚀 How to Use This Repository
 
+### For New Projects: Integration Guide
+
+**📖 See [`INTEGRATION_GUIDE.md`](./INTEGRATION_GUIDE.md) for complete instructions on applying these rules and commands to a new project.**
+
+Quick start for AI agents:
+> "Integrate the workflow rules from this repository. Copy `.cursor/rules/`, `.cursor/commands/`, `checklists/`, and `AGENTS.md`. Then adapt them for this project's stack and configuration."
+
 ### 1. Starting a New Project
 Tell your AI Agent:
 > "Initialize a new project following the structure in `standards/project-structure.md`. Use `templates/general/env.example` as the base configuration."
@@ -81,3 +88,25 @@ If you are an AI Agent reading this:
 2.  **Check `modules/` second.** Do not reinvent the wheel. Use `backend-api` for routes.
 3.  **Enforce Hygiene.** Always add comments to DB tables. Always update `CHANGELOG.md`.
 4.  **Self-Correct.** If you see a file >200 lines, refactor it. If a port is busy, kill the process (after verifying ownership).
+
+### For AI Agents Setting Up New Projects
+
+When integrating this repository into a new project, follow these steps:
+
+1. **Copy Essential Files:**
+   - Copy `.cursor/rules/` directory (all files)
+   - Copy `.cursor/commands/` directory (all files)
+   - Copy `checklists/` directory (all files)
+   - Copy `AGENTS.md` template
+
+2. **Adapt for Project:**
+   - Update `AGENTS.md` with project-specific context
+   - Review `.cursor/rules/environment.mdc` for stack-specific settings
+   - Review `.cursor/commands/launch.mdc` for startup process
+
+3. **Verify Integration:**
+   - Confirm rules are active (list `.cursor/rules/` files)
+   - Test launch command
+   - Verify self-healing rules work
+
+**See [`INTEGRATION_GUIDE.md`](./INTEGRATION_GUIDE.md) for detailed instructions and checklist.**

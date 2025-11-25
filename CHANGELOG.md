@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Integration Guide for New Projects** (`INTEGRATION_GUIDE.md`)
+  - Comprehensive guide for integrating rules, commands, and standards into new projects
+  - Step-by-step instructions for both developers and AI agents
+  - Integration checklist with verification steps
+  - Troubleshooting guide for common integration issues
+  - Best practices for maintaining rules across multiple projects
+  - Quick reference guide (`QUICK_INTEGRATION.md`) for fast setup
+
+- **Temporal Awareness for AI Agent** (`.cursor/rules/environment.mdc`)
+  - Added Section 5: Temporal Awareness (Date & Time) to environment rules
+  - Instructs AI agent to check current date when responding to time-sensitive prompts
+  - Guidelines for when to check date (deadlines, timestamps, relative dates, etc.)
+  - Instructions for getting current date via terminal commands
+  - Updated `AGENTS.md` with temporal awareness reminder in Rules of Engagement
+
+### Changed
+- **README.md** - Added integration guide references and AI agent setup instructions
+
 ## [1.3.0] - 2025-01-27
 
 ### Added

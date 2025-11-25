@@ -46,6 +46,7 @@ We are currently focusing on:
 2.  **Update Docs:** If you change the architecture, update the docs.
 3.  **Log Complex Logic:** If running a big migration, write to `/logs/migration_X.log` first.
 4.  **Safe Mode:** Do not delete data without confirmation.
+5.  **Temporal Awareness:** Always check the current date when responding to time-sensitive prompts. Use `date` command or system date functions. See `.cursor/rules/environment.mdc` Section 5 for details.
 
 ---
 *Last Updated: [Date]*

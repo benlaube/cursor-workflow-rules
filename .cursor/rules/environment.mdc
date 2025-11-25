@@ -46,7 +46,28 @@ Ensure the following MCP servers are active if relevant:
 - **Python:** Always use a virtual environment.
 - **Lockfiles:** Never delete lockfiles to "fix" errors. Fix the dependency conflict instead.
 
-## 5. Container Management Rules (CRITICAL)
+## 5. Temporal Awareness (Date & Time)
+
+**Rule:** The AI agent must be aware of the current date and time when responding to prompts, especially for time-sensitive information.
+
+**When to Check Current Date:**
+- When responding about deadlines, timelines, or scheduling
+- When updating `CHANGELOG.md` or documentation with timestamps
+- When discussing version releases, deprecations, or EOL dates
+- When calculating relative dates (e.g., "3 months ago", "next week")
+- When working with date-based logic or time-sensitive features
+
+**How to Get Current Date:**
+- Use terminal command: `date` (Unix/Mac) or `date /t` (Windows)
+- For ISO format: `date -u +"%Y-%m-%dT%H:%M:%SZ"` (Unix/Mac)
+- For timestamps in code: Use system date/time functions, not hardcoded values
+
+**Important Notes:**
+- Do not assume the current date from training data cutoff
+- Always verify the current date when time-sensitive information is involved
+- When updating `AGENTS.md` or `CHANGELOG.md`, use the actual current date, not placeholders
+
+## 6. Container Management Rules (CRITICAL)
 
 When working with Docker or Supabase containers in multi-project environments:
 
