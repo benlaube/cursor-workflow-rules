@@ -7,6 +7,134 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2025-01-27
+
+### Added
+- **Supabase Data API Documentation** (`standards/architecture/supabase-data-api.md`)
+  - Comprehensive guide to PostgREST auto-generated REST endpoints
+  - Explanation that tables automatically get REST API endpoints
+  - Query parameters reference (select, filter, order, pagination, relationships)
+  - Direct REST usage vs JavaScript client
+  - RLS integration with Data API
+  - AI Agent workflow: "Create table → REST endpoints exist automatically"
+  - Performance tips and best practices
+
+- **Multi-Tenancy Auth Guide** (`standards/architecture/supabase-multi-tenant-auth.md`)
+  - Complete guide for implementing multi-tenant authentication
+  - Architecture patterns (JWT claims, membership table, hybrid approach)
+  - Tenant context management (getting, setting, switching)
+  - RLS policies for multi-tenancy with helper functions
+  - Auth API patterns (sign up with tenant, invite users, accept invitation)
+  - Database schema templates (tenants, tenant_memberships, tenant-scoped tables)
+  - Frontend patterns (tenant selector component)
+  - Complete code examples for all patterns
+
+- **Database Functions Guide** (`standards/architecture/supabase-database-functions.md`)
+  - Decision tree: Database Functions vs Edge Functions
+  - When to use each (triggers, RLS helpers, external APIs, etc.)
+  - Database function patterns (SECURITY DEFINER/INVOKER, triggers, validation)
+  - Function security best practices
+  - Testing strategies
+  - Common patterns (auto-update timestamps, soft delete, job queues)
+  - AI Agent instructions and function templates
+
+- **Updated AI Agent Guide** (`standards/architecture/supabase-ai-agent-guide.md`)
+  - Added section on auto-generated Data API
+  - Added section on multi-tenancy implementation
+  - Added decision tree for Database Functions vs Edge Functions
+  - Added integration patterns for Data API and multi-tenancy
+  - Updated quick reference with new documentation
+  - Expanded additional resources section
+
+### Added
+- **Enhanced Supabase Core Features** (`modules/supabase-core/src/core/`)
+  - **Automatic Error Handling:**
+    - `safeQuery()`, `safeMutation()`, `safeStorage()`, `safeAuth()` - Result-pattern wrappers
+    - `createSafeClient()` - Safe client wrapper returning Result types
+    - Integration with `@modules/error-handler` (optional, with fallback)
+  - **Automatic Logging:**
+    - `EnhancedSupabaseClient` - Client with automatic structured logging
+    - Operation interceptors for custom logging logic
+    - Integration with `@modules/logger-module` (optional)
+  - **Performance Monitoring:**
+    - Automatic metrics collection (operation count, avg duration, error rate)
+    - `getMetrics()` - Retrieve performance metrics
+    - `resetMetrics()` - Reset metrics collection
+  - **Health Checks:**
+    - `checkSupabaseHealth()` - Comprehensive health check for all Supabase services
+    - `isSupabaseReachable()` - Simple connectivity check
+    - Configurable timeouts and service checks
+  - **Operation Interceptors:**
+    - `OperationInterceptor` - Middleware-like functionality
+    - `createDefaultInterceptor()` - Pre-configured interceptor with logging
+    - Custom interceptor support for rate limiting, caching, etc.
+  - **Enhanced Documentation:**
+    - `ENHANCED_FEATURES.md` - Complete guide to enhanced features
+    - Updated README with enhanced features section
+    - Integration examples with error-handler and logger modules
+
+### Changed
+- **Supabase Core Module** (`modules/supabase-core/`)
+  - Added peer dependencies for `@modules/error-handler` and `@modules/logger-module`
+  - Enhanced client now supports automatic error handling and logging
+  - All operations can now use Result pattern for safe error handling
+  - Retry utilities updated to integrate with error-handler module
+
+## [1.2.0] - 2025-01-27
+
+### Added
+- **Supabase Core Module** (`modules/supabase-core/`) - Phase 1 & 2 Complete
+  - Unified Supabase utilities module providing client factories, query builders, and storage helpers
+  - **Client Utilities:**
+    - `createClient()` - Automatic environment detection (local vs production)
+    - `createServerClient()` - Server-side client with SSR integration
+    - `createServiceRoleClient()` - Service role client (server-side only)
+  - **Database Utilities:**
+    - `QueryBuilder` - Fluent API for common query patterns
+    - `paginate()` - Built-in pagination helpers
+    - `executeTransaction()` - Transaction execution utilities
+    - RLS helpers (`checkRLSEnabled`, `getCurrentUserId`, `getCurrentUserRole`, `hasRole`)
+  - **Storage Utilities:**
+    - `uploadFile()` / `uploadFiles()` - File upload with validation
+    - `downloadFile()` - File download utilities
+    - `getImageUrl()` / `getThumbnailUrl()` - Image transformation helpers
+    - `getSignedUrl()` - Signed URL generation for private files
+  - **Real-time Utilities:**
+    - `SubscriptionManager` - Subscription lifecycle management
+    - Event handler utilities (filtered, debounced, conditional)
+  - **Utility Functions:**
+    - `normalizeError()` - Consistent error handling
+    - `withRetry()` - Retry logic for transient errors
+    - `QueryCache` - Query result caching
+  - **Type Generation:**
+    - Type generation setup and instructions
+    - Placeholder database types file
+  - Comprehensive README with usage examples
+
+- **Supabase AI Agent Guide** (`standards/architecture/supabase-ai-agent-guide.md`)
+  - Comprehensive guide for AI Agents on using Supabase modules
+  - Module decision tree (which module to use when)
+  - Integration patterns with complete code examples
+  - Best practices and common pitfalls
+  - Troubleshooting guide
+  - Quick reference and common commands
+
+- **Supabase Module Enhancement Plan** (`standards/architecture/supabase-module-enhancement-plan.md`)
+  - Roadmap for Supabase module improvements
+  - Current state analysis and gap identification
+  - Implementation priorities and success criteria
+
+### Changed
+- **Backend API Module** (`modules/backend-api/`)
+  - Now uses `supabase-core`'s `createServerClient` instead of direct `@supabase/ssr` usage
+  - Updated auth middleware to leverage `supabase-core` utilities
+  - Added `@modules/supabase-core` as peer dependency
+  - Updated README to reference `supabase-core` integration
+
+- **Auth Profile Sync Module** (`modules/auth-profile-sync/`)
+  - Updated README to reference `supabase-core` module
+  - Added note about using `supabase-core` utilities for client creation and RLS helpers
+
 ### Added
 - **Backend API Module** (`modules/backend-api/`)
   - Standardized API handler wrapper for Next.js with Supabase SSR integration

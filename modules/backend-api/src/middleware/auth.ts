@@ -1,57 +1,38 @@
 /**
  * Authentication middleware using Supabase SSR.
  * 
- * This middleware leverages @supabase/ssr to automatically handle:
+ * This middleware leverages supabase-core's createServerClient to automatically handle:
  * - JWT extraction from cookies
  * - Token verification
  * - Token refresh
  * - User object creation
  * 
- * Dependencies: @supabase/ssr, @supabase/supabase-js
+ * Dependencies: @modules/supabase-core
  */
 
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { createServerClient, getServerUser } from '@modules/supabase-core'
 import type { User, SupabaseClient } from '@supabase/supabase-js'
 import type { AuthContext } from '../context'
 
 /**
- * Create an authenticated Supabase client using SSR helpers.
+ * Create an authenticated Supabase client using supabase-core SSR helpers.
  * 
- * This function handles all the complexity of:
+ * This function uses supabase-core's createServerClient which handles:
  * - Reading cookies
  * - Creating Supabase client with cookie management
  * - Automatic token refresh
+ * - Environment detection (local vs production)
  * 
  * @returns Authenticated Supabase client or null if not authenticated
  */
 export async function createAuthenticatedClient(): Promise<SupabaseClient | null> {
-  const cookieStore = await cookies()
-  
-  const supabase = createServerClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
-          } catch {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing user sessions.
-            // The middleware will handle cookie updates.
-          }
-        },
-      },
-    }
-  )
-
-  return supabase
+  try {
+    const supabase = await createServerClient()
+    return supabase
+  } catch (error) {
+    console.error('Failed to create authenticated client:', error)
+    return null
+  }
 }
 
 /**
@@ -62,6 +43,8 @@ export async function createAuthenticatedClient(): Promise<SupabaseClient | null
  * - Extracts JWT from cookies
  * - Verifies the token
  * - Returns user and authenticated Supabase client
+ * 
+ * Uses supabase-core's createServerClient and getServerUser for consistent behavior.
  * 
  * @returns AuthContext with user and Supabase client, or null if not authenticated
  * 
@@ -80,14 +63,13 @@ export async function authenticateRequest(): Promise<AuthContext | null> {
     return null
   }
 
-  const { data: { user }, error } = await supabase.auth.getUser()
-
-  if (error || !user) {
+  const user = await getServerUser(supabase)
+  if (!user) {
     return null
   }
 
   return {
-    user,
+    user: user as User,
     supabase,
   }
 }

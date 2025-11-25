@@ -1,0 +1,16 @@
+{
+  "name": "@standards/supabase-core",
+  "version": "1.0.0",
+  "description": "Unified Supabase utilities module providing client factories, query builders, storage helpers, and real-time management",
+  "main": "index.ts",
+  "dependencies": {
+    "@supabase/ssr": "^0.1.0",
+    "@supabase/supabase-js": "^2.39.0"
+  },
+  "peerDependencies": {
+    "next": "^14.0.0",
+    "@modules/error-handler": "*",
+    "@modules/logger-module": "*"
+  }
+}
+

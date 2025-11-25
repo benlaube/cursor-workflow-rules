@@ -113,4 +113,5 @@ To add more fields (e.g., `phone_number` or `role`), edit the `handle_new_user` 
 - `standards/architecture/supabase-local-setup.md` - Supabase setup guide
 - `standards/security/access-control.md` - RLS and security standards
 - `modules/backend-api/` - API handler module with auth integration
+- `modules/supabase-core/` - Unified Supabase utilities (client factories, query builders, RLS helpers)
 

@@ -24,17 +24,25 @@ Instead of explaining your coding preferences to an AI agent every time, you sim
 │   ├── database/
 │   │   ├── schema.md           # SQL conventions, multi-tenancy, comments
 │   │   └── settings-schema.md  # Standard settings/env var table design
-│   └── architecture/
-│       └── backend-module-plan.md # Future backend architecture guide
+│   ├── architecture/
+│   │   ├── backend-module-plan.md      # Backend architecture guide
+│   │   ├── supabase-ssr-api-routes.md  # Supabase SSR API patterns
+│   │   ├── supabase-local-setup.md     # Local Dev & Container Isolation
+│   │   └── runtime-ai-agents.md        # AI Agent architecture
+│   └── security/
+│       └── access-control.md   # RLS and Authorization policies
 │
 ├── modules/                    # "The Tools" - Copy/Pasteable Code
+│   ├── backend-api/            # Next.js API route wrappers with Supabase SSR
+│   ├── auth-profile-sync/      # Auth & User Profile synchronization logic
+│   ├── ai-agent-kit/           # Runtime AI Agent framework (Prompts, Tools)
+│   ├── ai-chat-ui/             # React components for Chat, Attachments, Memory
+│   ├── blog-engine/            # Full CMS schema & service layer
 │   ├── settings-manager/       # Database-backed settings & secrets
 │   ├── logger-module/          # Structured JSON logging (Pino wrapper)
 │   ├── error-handler/          # Result pattern, Circuit Breaker, Auto-retry
 │   ├── sitemap-module/         # Sitemap generator for Supabase Storage
-│   ├── testing-module/         # Mocks for Supabase & Logging (Vitest)
-│   ├── blog-engine/            # Full CMS schema & service layer
-│   └── ai-chat-ui/             # React components for Chat, Attachments, Memory
+│   └── testing-module/         # Mocks for Supabase & Logging (Vitest)
 │
 ├── checklists/                 # "The Process" - Quality Assurance
 │   ├── pre-flight-check.md     # Run this before writing code
@@ -51,22 +59,25 @@ Instead of explaining your coding preferences to an AI agent every time, you sim
 Tell your AI Agent:
 > "Initialize a new project following the structure in `standards/project-structure.md`. Use `templates/general/env.example` as the base configuration."
 
-### 2. Adding Features with Modules
-Don't write boilerplate from scratch. Ask the Agent:
-> "I need to add a blog. Implement the `modules/blog-engine` including the schema migration and service layer."
-> "Build a Chat UI. Use the `modules/ai-chat-ui` components and the `useChatWithAttachments` hook."
+### 2. Building API Routes (Backend)
+Use the standardized handler that manages Auth, Validation, and Errors automatically:
+> "Create an API route for 'get-posts'. Use the `modules/backend-api` pattern with Zod validation and `requireAuth: true`. Ensure it uses Supabase SSR."
 
-### 3. Designing the Database
+### 3. Adding AI Features
+*   **Chat UI:** "Build a Chat UI using `modules/ai-chat-ui` components and the `useChatWithAttachments` hook."
+*   **Agent Logic:** "Set up a new Runtime Agent using `modules/ai-agent-kit`. Create a 'Support Agent' with tools to look up user orders."
+
+### 4. Designing the Database
 Ensure consistency by referencing the schema guide:
 > "Create a migration for a 'projects' table. Follow the conventions in `standards/database/schema.md`, specifically regarding the `tenant_id` column, RLS policies, and **mandatory SQL comments**."
 
-### 4. Automating SEO & Sitemaps
+### 5. Automating SEO & Sitemaps
 > "Set up sitemap auto-generation. Use the architecture defined in `standards/sitemap.md` and the code from `modules/sitemap-module`."
 
 ## 🤖 AI Agent Instructions (Meta-Rules)
 
 If you are an AI Agent reading this:
 1.  **Read `standards/` first.** Do not guess conventions.
-2.  **Check `modules/` second.** Do not reinvent the wheel.
+2.  **Check `modules/` second.** Do not reinvent the wheel. Use `backend-api` for routes.
 3.  **Enforce Hygiene.** Always add comments to DB tables. Always update `CHANGELOG.md`.
-4.  **Self-Correct.** If you see a file >200 lines, refactor it. If a port is busy, kill the process.
+4.  **Self-Correct.** If you see a file >200 lines, refactor it. If a port is busy, kill the process (after verifying ownership).
