@@ -90,3 +90,53 @@ export function logWithContext<T extends Record<string, unknown> = Record<string
   }
 }
 
+/**
+ * Logs a background job/cron execution with normalized metadata.
+ */
+export function logJobEvent(
+  logger: Logger,
+  level: LogLevel,
+  message: string,
+  jobName: string,
+  meta?: Record<string, unknown>
+): void {
+  logWithContext(
+    logger,
+    level,
+    message,
+    'system',
+    'job_run',
+    'backend',
+    {
+      job: jobName,
+      ...(meta || {}),
+    }
+  );
+}
+
+/**
+ * Logs an external service call with latency and retry metadata.
+ */
+export function logExternalServiceCall(
+  logger: Logger,
+  level: LogLevel,
+  service: string,
+  message: string,
+  meta?: Record<string, unknown>
+): void {
+  logWithContext(
+    logger,
+    level,
+    message,
+    'system',
+    'external_call',
+    'backend',
+    {
+      external_service: service,
+      latency_ms: (meta as any)?.latencyMs ?? (meta as any)?.durationMs,
+      retries: (meta as any)?.retries,
+      attempt: (meta as any)?.attempt,
+      ...meta,
+    }
+  );
+}

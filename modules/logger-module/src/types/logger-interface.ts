@@ -9,6 +9,7 @@
  */
 
 // LogLevel is not needed in the interface, but kept for potential future use
+import type { PartialLogContext } from './context';
 
 /**
  * Core logger interface matching the Logger class public API.
@@ -82,7 +83,22 @@ export interface ILogger {
    * @param bindings - Additional context/bindings for the child logger
    * @returns Child logger instance (same type as parent for type compatibility)
    */
-  child(bindings: Record<string, unknown>): this;
+  child(bindings?: Record<string, unknown>, context?: PartialLogContext): this;
+
+  /**
+   * Returns a child logger with merged default context (without new transports).
+   */
+  withContext(context: PartialLogContext): this;
+
+  /**
+   * Mutates default context for future log calls.
+   */
+  addContext(context: PartialLogContext): void;
+
+  /**
+   * Exposes diagnostic counters.
+   */
+  getStats(): { sampledOut: number; droppedFromQueue: number; flushErrors: number };
 
   /**
    * Gracefully shuts down the logger.
@@ -112,7 +128,9 @@ export function isILogger(obj: unknown): obj is ILogger {
     typeof logger.userAction === 'function' &&
     typeof logger.notice === 'function' &&
     typeof logger.success === 'function' &&
-    typeof logger.failure === 'function'
+    typeof logger.failure === 'function' &&
+    typeof logger.withContext === 'function' &&
+    typeof logger.addContext === 'function' &&
+    typeof logger.getStats === 'function'
   );
 }
-

@@ -5,10 +5,43 @@
  * Can be integrated into Express/Next.js apps or run as standalone service.
  */
 
-import { analyzeLogs, categorizeError, type LogError } from '../../error-handler/log-analyzer';
 import type { Logger } from '../logger';
 import * as path from 'path';
 import * as fs from 'fs';
+
+/**
+ * LogError interface (matches error-handler module).
+ * If error-handler is available, import from there instead.
+ */
+export interface LogError {
+  message: string;
+  stackTrace?: string;
+  filePath?: string;
+  lineNumber?: number;
+  errorCode?: string;
+  timestamp?: string;
+  level?: string;
+  context?: Record<string, unknown>;
+  count?: number;
+}
+
+/**
+ * Try to import analyzeLogs and categorizeError from error-handler module.
+ * Falls back to basic implementation if not available.
+ */
+let analyzeLogs: any;
+let categorizeError: any;
+
+try {
+  // Try to import from error-handler (adjust path based on project structure)
+  const errorHandler = require('../../../error-handler/log-analyzer');
+  analyzeLogs = errorHandler.analyzeLogs;
+  categorizeError = errorHandler.categorizeError;
+} catch {
+  // Fallback: will need to be provided via options or use basic implementation
+  analyzeLogs = null;
+  categorizeError = null;
+}
 
 export interface LogViewerOptions {
   /** Log directory path (default: './logs') */
@@ -25,6 +58,10 @@ export interface LogViewerOptions {
   timeRange?: number;
   /** Minimum log level to include (default: 'error') */
   minLevel?: 'error' | 'fatal' | 'warn' | 'info';
+  /** Custom analyzeLogs function (if error-handler not available) */
+  analyzeLogsFn?: (options: any) => Promise<{ ok: boolean; value?: LogError[]; error?: any }>;
+  /** Custom categorizeError function (if error-handler not available) */
+  categorizeErrorFn?: (error: LogError) => 'auto-fix' | 'propose-fix' | 'investigate';
 }
 
 /**
@@ -93,7 +130,15 @@ export async function getAnalyzedLogs(options: LogViewerOptions = {}): Promise<{
 }> {
   const finalOptions = { ...DEFAULT_OPTIONS, ...options };
   
-  const result = await analyzeLogs({
+  // Use provided function or try to use imported one
+  const analyzeFn = options.analyzeLogsFn || analyzeLogs;
+  const categorizeFn = options.categorizeErrorFn || categorizeError;
+  
+  if (!analyzeFn) {
+    throw new Error('analyzeLogs function not available. Please provide analyzeLogsFn in options or install error-handler module.');
+  }
+  
+  const result = await analyzeFn({
     logDir: finalOptions.logDir,
     maxEntries: finalOptions.maxEntries,
     timeRange: finalOptions.timeRange,
@@ -104,7 +149,7 @@ export async function getAnalyzedLogs(options: LogViewerOptions = {}): Promise<{
     throw new Error(result.error.message);
   }
   
-  const errors = result.value;
+  const errors = result.value || [];
   const summary = {
     total: errors.length,
     autoFixable: 0,
@@ -113,14 +158,17 @@ export async function getAnalyzedLogs(options: LogViewerOptions = {}): Promise<{
     byLevel: {} as Record<string, number>,
   };
   
-  for (const error of errors) {
-    const category = categorizeError(error);
-    if (category === 'auto-fix') summary.autoFixable++;
-    else if (category === 'propose-fix') summary.proposeFix++;
-    else summary.investigate++;
-    
-    const level = error.level || 'unknown';
-    summary.byLevel[level] = (summary.byLevel[level] || 0) + 1;
+  // Only categorize if function is available
+  if (categorizeFn) {
+    for (const error of errors) {
+      const category = categorizeFn(error);
+      if (category === 'auto-fix') summary.autoFixable++;
+      else if (category === 'propose-fix') summary.proposeFix++;
+      else summary.investigate++;
+      
+      const level = error.level || 'unknown';
+      summary.byLevel[level] = (summary.byLevel[level] || 0) + 1;
+    }
   }
   
   return { errors, summary };

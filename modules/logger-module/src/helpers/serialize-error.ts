@@ -22,10 +22,13 @@ export function serializeError(
     const base: Record<string, unknown> = {
       name: error.name,
       message: error.message,
+      fingerprint: createFingerprint(`${error.name}:${error.message}`),
     };
     
     if (error.stack) {
-      base.stack = sanitize ? sanitizeStackTrace(error.stack) : error.stack;
+      const stackValue = sanitize ? sanitizeStackTrace(error.stack) : error.stack;
+      base.stack = stackValue;
+      base.stack_preview = stackValue.split('\n').slice(0, 3).join('\n');
     }
     
     // Add any additional error properties
@@ -35,6 +38,13 @@ export function serializeError(
     
     if ((error as any).statusCode) {
       base.statusCode = (error as any).statusCode;
+    }
+    
+    if ((error as any).retryable !== undefined) {
+      base.retryable = (error as any).retryable;
+    } else if (base.statusCode) {
+      const status = Number(base.statusCode);
+      base.retryable = [429, 500, 502, 503, 504].includes(status);
     }
     
     if (error.cause) {
@@ -63,3 +73,14 @@ export function serializeError(
   };
 }
 
+/**
+ * Creates a lightweight fingerprint for grouping similar errors.
+ */
+function createFingerprint(value: string): string {
+  let hash = 0;
+  for (let i = 0; i < value.length; i++) {
+    hash = (hash << 5) - hash + value.charCodeAt(i);
+    hash |= 0;
+  }
+  return `err_${Math.abs(hash)}`;
+}

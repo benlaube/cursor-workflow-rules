@@ -23,6 +23,118 @@ If you need a standalone log viewer/analyzer, consider creating a separate servi
 - **Security**: PII scrubbing, error sanitization, circular reference handling
 - **Performance**: Log sampling, batched database writes, backpressure handling
 - **Framework Integration**: Express, Next.js, Fastify, and Browser middleware
+- **Enhanced Tracking (Phase 1)**: User/tenant IDs, request/response sizes, IP addresses, error categorization, performance metrics, business entity tracking
+
+## Enhanced Tracking Features (Phase 1)
+
+The logger module now includes enhanced tracking capabilities for better observability and debugging:
+
+### User & Tenant Tracking
+- **User ID**: Explicit `user_id` field (indexed in database)
+- **Tenant ID**: Multi-tenant support with `tenant_id` field (indexed in database)
+- Automatically captured from request context when using middleware
+
+### Request/Response Metrics
+- **Request Size**: Tracks request body size in bytes
+- **Response Size**: Tracks response payload size in bytes
+- **IP Address**: Client IP address (with proxy header support)
+- Automatically captured by Express, Next.js, and Fastify middleware
+
+### Error Categorization
+- **Error Categories**: Automatically categorizes errors as:
+  - `validation` - Input validation errors (400, 422)
+  - `network` - Network/connection errors (503, 504)
+  - `database` - Database query errors
+  - `authentication` - Auth failures (401)
+  - `authorization` - Permission errors (403)
+  - `rate_limit` - Rate limiting (429)
+  - `timeout` - Timeout errors (408)
+  - `business_logic` - Business rule violations (409)
+  - `unknown` - Unclassified errors
+- **Error Fingerprinting**: Generates hash-based fingerprints for grouping similar errors
+- Automatically applied when using `logger.error()`, `logger.fatal()`, or `logger.failure()`
+
+### Performance Metrics
+- **Duration**: Request/response duration in milliseconds
+- **Memory Usage**: Heap usage, RSS, external memory (Node.js only)
+- **Event Loop Lag**: Event loop delay tracking (Node.js only)
+- **Database Query Metrics**: Query duration, row count, query type
+- **API Call Metrics**: External API call duration, retries, status codes
+- **Connection Pool Stats**: Active, idle, waiting connections
+- Automatically captured by middleware and available via `createPerformanceMetrics()` helper
+
+### Business Entity Tracking
+- **Business Entity ID**: Track order IDs, customer IDs, transaction IDs, etc.
+- **Business Entity Type**: Type of entity (order, customer, transaction, etc.)
+- Set via context: `setLogContext({ businessEntity: { id: 'order-123', type: 'order' } })`
+
+### Feature Flags
+- **Feature Flags**: Track active feature flags for requests/operations
+- Set via context: `setLogContext({ featureFlags: { newCheckout: true, darkMode: false } })`
+
+### Usage Examples
+
+```typescript
+import { setupLogger, setLogContext } from './modules/logger-module';
+import { createPerformanceMetrics } from './modules/logger-module/helpers';
+
+const logger = setupLogger('my-app', {
+  env: 'development',
+  serviceName: 'api',
+});
+
+// Error logging with automatic categorization
+try {
+  await someOperation();
+} catch (error) {
+  // Error is automatically categorized and fingerprinted
+  logger.error('Operation failed', error);
+  // Logs include: error_category, error_fingerprint
+}
+
+// Business entity tracking
+setLogContext({
+  businessEntity: { id: 'order-12345', type: 'order' },
+  featureFlags: { newCheckout: true },
+});
+
+logger.info('Processing order');
+// Logs include: business_entity_id, business_entity_type, feature_flags
+
+// Performance tracking
+const startTime = Date.now();
+await someAsyncOperation();
+const metrics = await createPerformanceMetrics(Date.now() - startTime, {
+  database: { queryDuration: 45, rowCount: 100 },
+});
+
+setLogContext({ performanceMetrics: metrics });
+logger.info('Operation completed');
+// Logs include: performance_metrics with duration, memory, database stats
+```
+
+### Database Schema
+
+The enhanced fields are stored in the database with proper indexing:
+
+```sql
+-- Run the migration: migrations/logs-schema-v2.sql
+ALTER TABLE logs 
+  ADD COLUMN user_id UUID,
+  ADD COLUMN tenant_id VARCHAR(255),
+  ADD COLUMN ip_address INET,
+  ADD COLUMN request_size INTEGER,
+  ADD COLUMN response_size INTEGER,
+  ADD COLUMN error_category VARCHAR(50),
+  ADD COLUMN error_fingerprint VARCHAR(64),
+  ADD COLUMN business_entity_id VARCHAR(255),
+  ADD COLUMN business_entity_type VARCHAR(50),
+  ADD COLUMN feature_flags JSONB,
+  ADD COLUMN performance_metrics JSONB,
+  ADD COLUMN correlation_id UUID;
+
+-- Indexes are automatically created for efficient querying
+```
 
 ## Installation
 
@@ -663,37 +775,118 @@ FROM logs
 WHERE level = 'error' AND stack_trace IS NOT NULL;
 ```
 
-### Log Viewer Service (Optional)
+### Log Viewer Service (Built-in)
 
-If you need a standalone log viewer, you can create a simple Express service:
+The logger-module includes a built-in log viewer that can be integrated into your application or run standalone.
+
+#### Option 1: Integrated into Express App (Recommended)
+
+Add log viewer routes to your existing Express application:
 
 ```typescript
-// log-viewer.ts
+// app.ts or server.ts
 import express from 'express';
-import { analyzeLogs } from './modules/error-handler';
+import { setupLogger, createLogViewerRouter } from './modules/logger-module';
+import { analyzeLogs, categorizeError } from './modules/error-handler';
 
 const app = express();
-const PORT = process.env.LOG_VIEWER_PORT || 3001; // Different from main app
-
-app.get('/api/logs', async (req, res) => {
-  const result = await analyzeLogs({
-    logDir: './logs',
-    maxEntries: parseInt(req.query.limit as string) || 100,
-  });
-  
-  if (result.ok) {
-    res.json(result.value);
-  } else {
-    res.status(500).json({ error: result.error.message });
-  }
+const logger = setupLogger('api-server', {
+  env: 'development',
+  serviceName: 'my-api',
+  enableFile: true,
 });
 
-app.listen(PORT, () => {
-  console.log(`Log viewer running on port ${PORT}`);
+// Add log viewer at /logs endpoint
+app.use('/logs', createLogViewerRouter({
+  logDir: './logs',
+  logger,
+  analyzeLogsFn: analyzeLogs,
+  categorizeErrorFn: categorizeError,
+  enableDatabase: true, // Optional: if using Supabase
+  supabaseClient: supabase, // Optional: if using database logging
+}));
+
+app.listen(3000, () => {
+  logger.info('Server started on port 3000');
+  logger.info('Log viewer available at http://localhost:3000/logs');
 });
 ```
 
-**Note:** This is optional - the logger-module itself doesn't need a separate service. This is only if you want a dedicated log viewing endpoint.
+**Available endpoints:**
+- `GET /logs` - Get analyzed logs with summary
+- `GET /logs/files` - List available log files
+- `GET /logs/files/:filename` - Get specific log file content
+- `GET /logs/summary` - Get summary statistics
+- `GET /logs/database` - Query database logs (if enabled)
+
+#### Option 2: Standalone Service (Separate Port)
+
+Run log viewer as a separate service on a different port:
+
+```typescript
+// log-viewer.ts
+import { startLogViewer } from './modules/logger-module/viewer/standalone';
+import { analyzeLogs, categorizeError } from './modules/error-handler';
+
+startLogViewer({
+  port: 3001, // Different from main app
+  logDir: './logs',
+  analyzeLogsFn: analyzeLogs,
+  categorizeErrorFn: categorizeError,
+  enableDatabase: true,
+  supabaseClient: supabase,
+});
+
+// Service runs at http://localhost:3001/logs
+```
+
+#### Option 3: Next.js API Routes
+
+Create Next.js API routes for log viewing:
+
+```typescript
+// app/api/logs/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { getAnalyzedLogs } from '../../../../modules/logger-module/viewer';
+import { analyzeLogs, categorizeError } from '../../../../modules/error-handler';
+
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  
+  const result = await getAnalyzedLogs({
+    logDir: './logs',
+    maxEntries: parseInt(searchParams.get('limit') || '100'),
+    analyzeLogsFn: analyzeLogs,
+    categorizeErrorFn: categorizeError,
+  });
+  
+  return NextResponse.json(result);
+}
+```
+
+**Usage Examples:**
+
+```bash
+# Get analyzed logs
+curl http://localhost:3000/logs
+
+# Get logs with limit
+curl http://localhost:3000/logs?limit=50&minLevel=error
+
+# List log files
+curl http://localhost:3000/logs/files
+
+# Get specific log file (last 100 lines)
+curl http://localhost:3000/logs/files/session_abc123.log?lines=100
+
+# Get summary
+curl http://localhost:3000/logs/summary
+
+# Query database logs
+curl http://localhost:3000/logs/database?limit=100&level=error
+```
+
+**Note:** The log viewer requires the `error-handler` module for log analysis. If not available, provide `analyzeLogsFn` and `categorizeErrorFn` in options.
 
 ## Related Documentation
 

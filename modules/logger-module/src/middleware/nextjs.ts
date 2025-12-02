@@ -6,7 +6,7 @@
 
 import type { NextRequest, NextResponse } from 'next/server';
 import type { Logger } from '../logger';
-import { setRequestContext, calculateDuration, type RequestInfo } from './base';
+import { setRequestContext, updateResponseContext, calculateDuration, type RequestInfo, type ResponseInfo } from './base';
 import { logApiCall } from '../helpers/log-api-call';
 import { getOpenTelemetryTraceId } from '../tracing/opentelemetry';
 
@@ -23,12 +23,23 @@ export function createNextJsMiddleware(logger: Logger) {
     // Get trace ID if available
     const traceId = getOpenTelemetryTraceId();
     
+    // Get IP address
+    const ipAddress = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+      request.headers.get('x-real-ip') ||
+      request.ip;
+    
+    // Calculate request size (if body is available)
+    const contentLength = request.headers.get('content-length');
+    const requestSize = contentLength ? parseInt(contentLength, 10) : undefined;
+    
     // Set request context
     const requestInfo: RequestInfo = {
       method: request.method,
       path: request.nextUrl.pathname,
       url: request.url,
       headers: Object.fromEntries(request.headers.entries()),
+      ipAddress,
+      requestSize,
     };
     
     setRequestContext(requestInfo, traceId);
@@ -69,12 +80,23 @@ export function withLogging<T extends NextRequest>(
     // Get trace ID if available
     const traceId = getOpenTelemetryTraceId();
     
+    // Get IP address
+    const ipAddress = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+      req.headers.get('x-real-ip') ||
+      req.ip;
+    
+    // Calculate request size
+    const contentLength = req.headers.get('content-length');
+    const requestSize = contentLength ? parseInt(contentLength, 10) : undefined;
+    
     // Set request context
     const requestInfo: RequestInfo = {
       method: req.method,
       path: new URL(req.url).pathname,
       url: req.url,
       headers: Object.fromEntries(req.headers.entries()),
+      ipAddress,
+      requestSize,
     };
     
     setRequestContext(requestInfo, traceId);
@@ -93,6 +115,20 @@ export function withLogging<T extends NextRequest>(
       const response = await handler(req);
       const duration = calculateDuration(startTime);
       
+      // Calculate response size (if available)
+      const contentLength = response.headers.get('content-length');
+      const responseSize = contentLength ? parseInt(contentLength, 10) : undefined;
+      
+      // Update context with response info
+      const responseInfo: ResponseInfo = {
+        statusCode: response.status,
+        duration,
+        headers: Object.fromEntries(response.headers.entries()),
+        responseSize,
+      };
+      
+      await updateResponseContext(responseInfo, startTime);
+      
       // Log response
       const level = response.status >= 500 ? 'error' : response.status >= 400 ? 'warn' : 'info';
       
@@ -106,6 +142,7 @@ export function withLogging<T extends NextRequest>(
         {
           statusCode: response.status,
           duration,
+          bytesOut: responseSize,
         }
       );
       

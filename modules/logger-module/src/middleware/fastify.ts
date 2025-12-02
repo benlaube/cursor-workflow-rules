@@ -4,7 +4,7 @@
 
 import type { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import type { Logger } from '../logger';
-import { setRequestContext, calculateDuration, type RequestInfo } from './base';
+import { setRequestContext, updateResponseContext, calculateDuration, type RequestInfo, type ResponseInfo } from './base';
 import { logApiCall } from '../helpers/log-api-call';
 import { getOpenTelemetryTraceId } from '../tracing/opentelemetry';
 
@@ -23,6 +23,20 @@ export function createFastifyPlugin(logger: Logger) {
       // Get trace ID if available
       const traceId = getOpenTelemetryTraceId();
       
+      // Get IP address
+      const ipAddress = request.ip ||
+        (request.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
+        (request.headers['x-real-ip'] as string) ||
+        request.socket?.remoteAddress;
+      
+      // Calculate request size
+      const contentLength = request.headers['content-length'];
+      const requestSize = contentLength 
+        ? parseInt(String(contentLength), 10) 
+        : request.body 
+          ? JSON.stringify(request.body).length 
+          : undefined;
+      
       // Set request context
       const requestInfo: RequestInfo = {
         method: request.method,
@@ -31,6 +45,8 @@ export function createFastifyPlugin(logger: Logger) {
         headers: request.headers as Record<string, string>,
         query: request.query as Record<string, unknown>,
         body: request.body,
+        ipAddress,
+        requestSize,
       };
       
       setRequestContext(requestInfo, traceId);
@@ -53,6 +69,22 @@ export function createFastifyPlugin(logger: Logger) {
       const startTime = (request as any).startTime || Date.now();
       const duration = calculateDuration(startTime);
       
+      // Calculate response size
+      const contentLength = reply.getHeader('content-length');
+      const responseSize = contentLength 
+        ? parseInt(String(contentLength), 10) 
+        : undefined;
+      
+      // Update context with response info
+      const responseInfo: ResponseInfo = {
+        statusCode: reply.statusCode,
+        duration,
+        headers: reply.getHeaders() as Record<string, string>,
+        responseSize,
+      };
+      
+      await updateResponseContext(responseInfo, startTime);
+      
       // Log response
       const level = reply.statusCode >= 500 ? 'error' : reply.statusCode >= 400 ? 'warn' : 'info';
       
@@ -66,6 +98,7 @@ export function createFastifyPlugin(logger: Logger) {
         {
           statusCode: reply.statusCode,
           duration,
+          bytesOut: responseSize,
         }
       );
     });

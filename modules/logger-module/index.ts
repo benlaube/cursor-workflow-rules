@@ -18,6 +18,10 @@ export type {
   Runtime,
   BrowserStorage,
   ILogger,
+  PerformanceMetrics,
+  BusinessEntity,
+  FeatureFlags,
+  ErrorCategory,
 } from './src/types';
 
 // Context management
@@ -52,6 +56,14 @@ export {
   logApiCall,
   createChildLogger,
   serializeError,
+  categorizeError,
+  fingerprintError,
+  getMemoryUsage,
+  getEventLoopLag,
+  createPerformanceMetrics,
+  trackDatabaseQuery,
+  trackApiCall,
+  trackConnectionPool,
 } from './src/helpers';
 
 // Middleware
@@ -114,3 +126,22 @@ export {
   type PerformanceMetrics,
   type LoggerHealth,
 } from './src/metrics';
+
+// Log Viewer
+export {
+  createLogViewerRouter,
+  getAnalyzedLogs,
+  getLogFiles,
+  getLogFileContent,
+  queryDatabaseLogs,
+  type LogViewerOptions,
+} from './src/viewer';
+
+export {
+  createLogViewerRouter as createExpressLogViewer,
+} from './src/viewer/express';
+
+export {
+  startLogViewer,
+  type StandaloneLogViewerOptions,
+} from './src/viewer/standalone';

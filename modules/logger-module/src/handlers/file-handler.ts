@@ -61,6 +61,7 @@ function setupRotation(logPath: string, config: FileRotationConfig): void {
   // For full rotation support, integrate with pino-roll or similar library
   const fs = require('fs');
   const path = require('path');
+  const zlib = require('zlib');
   
   // Check file size if maxSize is configured
   if (config.maxSize) {
@@ -75,8 +76,38 @@ function setupRotation(logPath: string, config: FileRotationConfig): void {
       
       // Compress if configured
       if (config.compress) {
-        // Compression would require additional library (e.g., zlib)
-        // For now, just rename
+        try {
+          const gzip = zlib.createGzip();
+          const source = fs.createReadStream(rotatedPath);
+          const destination = fs.createWriteStream(`${rotatedPath}.gz`);
+          source.pipe(gzip).pipe(destination);
+        } catch {
+          // Compression failures should not interrupt logging
+        }
+      }
+      
+      // Apply retention policy
+      if (config.retention) {
+        const retentionMs = parseDurationToMs(config.retention);
+        if (retentionMs > 0) {
+          try {
+            const dir = path.dirname(logPath);
+            const base = path.basename(logPath);
+            const files = fs.readdirSync(dir);
+            const now = Date.now();
+            files
+              .filter((file: string) => file.startsWith(base))
+              .forEach((file: string) => {
+                const fullPath = path.join(dir, file);
+                const stats = fs.statSync(fullPath);
+                if (now - stats.mtimeMs > retentionMs) {
+                  fs.unlinkSync(fullPath);
+                }
+              });
+          } catch {
+            // Retention clean failures are non-fatal
+          }
+        }
       }
     }
   }
@@ -103,3 +134,24 @@ function parseSize(size: string): number {
   return value * (multipliers[unit] || 1);
 }
 
+/**
+ * Parses simple duration strings (e.g., "90d", "24h") to milliseconds.
+ */
+function parseDurationToMs(duration: string): number {
+  const match = duration.match(/^(\d+)([smhd])$/i);
+  if (!match) {
+    return 0;
+  }
+  
+  const value = parseInt(match[1], 10);
+  const unit = match[2].toLowerCase();
+  
+  const multipliers: Record<string, number> = {
+    s: 1000,
+    m: 1000 * 60,
+    h: 1000 * 60 * 60,
+    d: 1000 * 60 * 60 * 24,
+  };
+  
+  return value * (multipliers[unit] || 0);
+}

@@ -8,6 +8,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Logger Module Phase 1 Enhancements** (2025-12-02 12:00:00)
+  - **Database Schema Enhancements:**
+    - Added migration `logs-schema-v2.sql` with new columns: `user_id`, `tenant_id`, `ip_address`, `request_size`, `response_size`, `error_category`, `error_fingerprint`, `business_entity_id`, `business_entity_type`, `feature_flags`, `performance_metrics`, `correlation_id`
+    - Added indexes for efficient querying on new columns
+    - Added composite indexes for common query patterns (user+timestamp, tenant+timestamp, error_category+timestamp, etc.)
+  - **Enhanced Type Definitions:**
+    - Extended `LogEntry` interface with Phase 1 fields (ip_address, request_size, response_size, error_category, error_fingerprint, business_entity_id, business_entity_type, feature_flags, performance_metrics, correlation_id)
+    - Extended `LogContext` interface with new context fields
+    - Added `PerformanceMetrics`, `BusinessEntity`, `FeatureFlags`, and `ErrorCategory` types
+  - **Error Categorization:**
+    - Created `error-categorization.ts` helper with `categorizeError()` function
+    - Automatically categorizes errors as: validation, network, database, authentication, authorization, rate_limit, timeout, business_logic, unknown
+    - Created `fingerprintError()` function for grouping similar errors using hash-based fingerprints
+    - Integrated into `logger.error()`, `logger.fatal()`, and `logger.failure()` methods
+  - **Performance Tracking:**
+    - Created `performance-tracking.ts` helper with performance metrics utilities
+    - `getMemoryUsage()` - Captures memory stats (Node.js only)
+    - `getEventLoopLag()` - Tracks event loop delay (Node.js only)
+    - `createPerformanceMetrics()` - Creates structured performance metrics with duration, memory, event loop lag
+    - `trackDatabaseQuery()` - Tracks database query performance
+    - `trackApiCall()` - Tracks external API call performance
+    - `trackConnectionPool()` - Tracks connection pool statistics
+  - **Middleware Enhancements:**
+    - Updated Express, Next.js, and Fastify middleware to capture:
+      - Client IP address (with proxy header support)
+      - Request body size in bytes
+      - Response payload size in bytes
+      - Performance metrics (duration, memory, event loop lag)
+    - Added `updateResponseContext()` function to update context with response information
+  - **Logger Core Updates:**
+    - Updated `formatMetadata()` to include new Phase 1 fields from context
+    - Updated `createLogEntry()` to populate new fields in log entries
+    - Enhanced error logging methods to automatically categorize and fingerprint errors
+  - **Documentation:**
+    - Added comprehensive "Enhanced Tracking Features (Phase 1)" section to README.md
+    - Documented all new fields, usage examples, and database schema changes
+    - Added examples for error categorization, performance tracking, business entity tracking, and feature flags
+  - **Exports:**
+    - Exported new helper functions from `index.ts`: `categorizeError`, `fingerprintError`, `getMemoryUsage`, `getEventLoopLag`, `createPerformanceMetrics`, `trackDatabaseQuery`, `trackApiCall`, `trackConnectionPool`
+    - Exported new types: `PerformanceMetrics`, `BusinessEntity`, `FeatureFlags`, `ErrorCategory`
+  - **Benefits:**
+    - Better debugging with more context (user IDs, tenant IDs, IP addresses)
+    - Automatic error categorization and fingerprinting for grouping similar errors
+    - Built-in performance tracking for monitoring application health
+    - Business entity tracking for correlating logs with business operations
+    - Feature flag tracking for understanding feature usage
+    - Improved observability with request/response size tracking
 - **Expanded Auto-Heal Runtime Rule** (2025-12-02 05:44:58)
   - **Major Expansion:** Updated `.cursor/rules/auto-heal.mdc` from v1.0.0 to v2.0.0 with comprehensive error recovery strategies
   - **New Error Types:**
@@ -52,6 +99,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Optional standalone log viewer service example (runs on separate port if needed)
   - **Troubleshooting Updates:** Added port conflict clarification (logger doesn't use ports), log directory creation, and file permissions guidance
   - **Benefits:** Clear understanding that logger integrates into applications, comprehensive launch instructions, multiple log viewing options
+
+- **Log Viewer Service Implementation** (2025-12-02 05:53:29)
+  - **Built-in Log Viewer:** Implemented complete log viewer service with HTTP endpoints
+  - **Express Integration:** Created `createLogViewerRouter()` for adding `/logs` routes to Express apps
+  - **Standalone Service:** Created `startLogViewer()` for running log viewer on separate port (e.g., 3001)
+  - **Next.js Support:** Created Next.js API route handlers for log viewing
+  - **Features:**
+    - `GET /logs` - Get analyzed logs with summary and categorization
+    - `GET /logs/files` - List available log files with metadata
+    - `GET /logs/files/:filename` - Get specific log file content (with line limit)
+    - `GET /logs/summary` - Get summary statistics (auto-fixable, propose-fix, investigate counts)
+    - `GET /logs/database` - Query database logs (if Supabase enabled)
+  - **Flexible Integration:**
+    - Can be integrated as routes in existing Express/Next.js apps (e.g., `/logs` endpoint)
+    - Can run as standalone service on separate port (e.g., port 3001)
+    - Works with or without error-handler module (can provide custom analysis functions)
+  - **Security:** Path validation to prevent directory traversal attacks
+  - **Exports:** Added to `modules/logger-module/index.ts` for easy import
+  - **Documentation:** Complete usage examples for all integration methods
+  - **Benefits:** Built-in log viewing without external tools, flexible deployment options, secure file access
 
 - **Error Handler Module Enhancement** (2025-12-02 05:44:58)
   - **Log Analyzer Utility:** Added `modules/error-handler/log-analyzer.ts` for log file analysis

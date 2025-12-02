@@ -89,5 +89,21 @@ export const LoggerOptionsSchema = z.object({
   
   // Edge-specific
   edgeOptimized: z.boolean().optional(),
-});
 
+  // Metadata enrichment
+  appVersion: z.string().optional(),
+  commitSha: z.string().optional(),
+  deploymentId: z.string().optional(),
+  region: z.string().optional(),
+  host: z.string().optional(),
+  runtimeVersion: z.string().optional(),
+  respectEnvLogLevel: z.boolean().optional(),
+
+  // Observability bridges
+  otlpLogExporter: z.function().optional(),
+  alertHandler: z.function().optional(),
+  metricsHandler: z.function().optional(),
+
+  // Security / PII controls
+  safeFieldAllowlist: z.array(z.string()).optional(),
+});

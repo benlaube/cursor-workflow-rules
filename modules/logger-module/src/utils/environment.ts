@@ -150,3 +150,101 @@ export function getRuntimeDefaults() {
   };
 }
 
+/**
+ * Gets the hostname/instance identifier when available.
+ */
+export function getHostName(): string | undefined {
+  if (isNode()) {
+    try {
+      const os = require('os');
+      return os.hostname();
+    } catch {
+      return undefined;
+    }
+  }
+  
+  const globalLocation = (globalThis as any).location;
+  if (globalLocation?.hostname) {
+    return globalLocation.hostname;
+  }
+  
+  return undefined;
+}
+
+/**
+ * Gets the runtime version string (Node.js, browser UA, or edge hint).
+ */
+export function getRuntimeVersionString(): string | undefined {
+  if (isNode()) {
+    return process.version;
+  }
+  
+  const nav = (globalThis as any).navigator;
+  if (nav?.userAgent) {
+    return nav.userAgent;
+  }
+  
+  const deno = (globalThis as any).Deno;
+  if (deno?.version?.deno) {
+    return `deno/${deno.version.deno}`;
+  }
+  
+  return undefined;
+}
+
+/**
+ * Gets region/zone information from common environment variables.
+ */
+export function getRegion(): string | undefined {
+  const env = typeof process !== 'undefined' ? process.env : undefined;
+  return env?.VERCEL_REGION ||
+    env?.FLY_REGION ||
+    env?.AWS_REGION ||
+    env?.AWS_DEFAULT_REGION ||
+    env?.GCP_REGION ||
+    env?.AZURE_REGION ||
+    env?.REGION;
+}
+
+/**
+ * Gets a deployment identifier from common CI/CD environments.
+ */
+export function getDeploymentId(): string | undefined {
+  const env = typeof process !== 'undefined' ? process.env : undefined;
+  return env?.VERCEL_DEPLOYMENT_ID ||
+    env?.RENDER_DEPLOY_ID ||
+    env?.DEPLOYMENT_ID ||
+    env?.RELEASE ||
+    env?.RELEASE_REVISION ||
+    env?.HEROKU_RELEASE_VERSION;
+}
+
+/**
+ * Gets process/thread identifiers when available.
+ */
+export function getProcessIdentifiers(): { pid?: number; threadId?: number } {
+  const pid = typeof process !== 'undefined' && process.pid ? process.pid : undefined;
+  let threadId: number | undefined;
+  
+  if (isNode()) {
+    try {
+      const workerThreads = require('worker_threads');
+      threadId = workerThreads?.threadId;
+    } catch {
+      threadId = undefined;
+    }
+  }
+  
+  return { pid, threadId };
+}
+
+/**
+ * Gets the package/app version when available (Node.js only).
+ */
+export function getPackageVersion(): string | undefined {
+  if (!isNode()) {
+    return undefined;
+  }
+  
+  return process.env.npm_package_version;
+}

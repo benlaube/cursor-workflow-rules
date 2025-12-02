@@ -42,6 +42,52 @@ export function logApiCall(
 ): void {
   // Map HTTP method to action
   const action = method ? METHOD_TO_ACTION[method.toUpperCase()] || 'api_request' : 'api_request';
+  const normalizedMeta: Record<string, unknown> = {
+    ...(meta || {}),
+    ...(endpoint && { endpoint }),
+    ...(method && { method: method.toUpperCase() }),
+  };
+  
+  if (meta?.statusCode !== undefined) {
+    normalizedMeta.status_code = meta.statusCode;
+  }
+  
+  const durationMs = (meta as any)?.durationMs ?? (meta as any)?.duration;
+  if (durationMs !== undefined) {
+    normalizedMeta.duration_ms = durationMs;
+  }
+  
+  if ((meta as any)?.bytesIn !== undefined) {
+    normalizedMeta.bytes_in = (meta as any).bytesIn;
+  }
+  
+  if ((meta as any)?.bytesOut !== undefined) {
+    normalizedMeta.bytes_out = (meta as any).bytesOut;
+  }
+  
+  if ((meta as any)?.userAgent) {
+    normalizedMeta.user_agent = (meta as any).userAgent;
+  }
+  
+  if ((meta as any)?.ip) {
+    normalizedMeta.ip = (meta as any).ip;
+  }
+  
+  if ((meta as any)?.referrer) {
+    normalizedMeta.referrer = (meta as any).referrer;
+  }
+  
+  if ((meta as any)?.retries !== undefined) {
+    normalizedMeta.retries = (meta as any).retries;
+  }
+  
+  if ((meta as any)?.attempt !== undefined) {
+    normalizedMeta.attempt = (meta as any).attempt;
+  }
+  
+  if ((meta as any)?.externalService) {
+    normalizedMeta.external_service = (meta as any).externalService;
+  }
   
   // Log with context
   logWithContext(
@@ -51,11 +97,6 @@ export function logApiCall(
     source,
     action,
     'backend',
-    {
-      ...meta,
-      ...(endpoint && { endpoint }),
-      ...(method && { method }),
-    }
+    normalizedMeta
   );
 }
-

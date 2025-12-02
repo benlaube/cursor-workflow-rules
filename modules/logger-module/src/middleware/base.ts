@@ -8,6 +8,7 @@ import { generateRequestId } from '../tracing/request-id';
 import { getOpenTelemetryTraceId } from '../tracing/opentelemetry';
 import { setLogContext } from '../context';
 import type { LogContext } from '../types/context';
+import { createPerformanceMetrics } from '../helpers/performance-tracking';
 
 export interface RequestInfo {
   method: string;
@@ -19,13 +20,21 @@ export interface RequestInfo {
   user?: {
     id: string;
     email?: string;
+    tenantId?: string;
+    orgId?: string;
   };
+  /** Client IP address */
+  ipAddress?: string;
+  /** Request body size in bytes */
+  requestSize?: number;
 }
 
 export interface ResponseInfo {
   statusCode: number;
   duration: number;
   headers?: Record<string, string>;
+  /** Response payload size in bytes */
+  responseSize?: number;
 }
 
 /**
@@ -71,6 +80,39 @@ export function setRequestContext(
     endpoint: request.path,
     requestId,
     ...(traceId && { traceId }),
+    ...(request.user?.id && { userId: request.user.id }),
+    ...(request.user?.tenantId && { tenantId: request.user.tenantId }),
+    ...(request.user?.orgId && { orgId: request.user.orgId }),
+    // Phase 1 Enhancements
+    ...(request.ipAddress && { ipAddress: request.ipAddress }),
+    ...(request.requestSize !== undefined && { requestSize: request.requestSize }),
+  };
+  
+  setLogContext(context);
+}
+
+/**
+ * Updates log context with response information.
+ */
+export async function updateResponseContext(
+  response: ResponseInfo,
+  startTime: number
+): Promise<void> {
+  const duration = calculateDuration(startTime);
+  
+  // Import dynamically to avoid circular dependency
+  const { getLogContext, setLogContext } = await import('../context');
+  
+  // Get current context
+  const currentContext = getLogContext() || {};
+  
+  // Create performance metrics
+  const performanceMetrics = await createPerformanceMetrics(duration);
+  
+  const context: Partial<LogContext> = {
+    ...currentContext,
+    ...(response.responseSize !== undefined && { responseSize: response.responseSize }),
+    performanceMetrics,
   };
   
   setLogContext(context);
@@ -82,4 +124,3 @@ export function setRequestContext(
 export function calculateDuration(startTime: number): number {
   return Date.now() - startTime;
 }
-

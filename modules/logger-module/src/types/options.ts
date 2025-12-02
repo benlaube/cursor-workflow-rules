@@ -77,5 +77,21 @@ export interface LoggerOptions {
   
   // Edge-specific
   edgeOptimized?: boolean; // Use smaller batches, faster flush for edge (default: true in edge runtime)
-}
 
+  // Metadata enrichment
+  appVersion?: string; // Application/package version
+  commitSha?: string; // Git commit SHA
+  deploymentId?: string; // Deployment identifier (CI/CD run, release id)
+  region?: string; // Region/zone identifier
+  host?: string; // Hostname/instance id
+  runtimeVersion?: string; // Runtime version (Node.js, browser UA, edge runtime)
+  respectEnvLogLevel?: boolean; // If true, honors LOG_LEVEL env override (default: true in Node)
+
+  // Observability bridges
+  otlpLogExporter?: (logEntry: LogEntry & { resource?: Record<string, unknown> }) => Promise<void> | void;
+  alertHandler?: (logEntry: LogEntry) => Promise<void> | void; // High severity sink (PagerDuty/webhook)
+  metricsHandler?: (logEntry: LogEntry) => Promise<void> | void; // Optional metrics correlation hook
+
+  // Security / PII controls
+  safeFieldAllowlist?: string[]; // Only allow listed metadata fields; scrub others
+}

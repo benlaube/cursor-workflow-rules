@@ -18,6 +18,8 @@ export interface DatabaseHandlerOptions {
   flushInterval?: number;
   maxQueueSize?: number;
   retryConfig?: RetryConfig;
+  onQueueDrop?: (entry: LogEntry) => void;
+  onFlushError?: (error: unknown, batch: LogEntry[]) => void;
 }
 
 /**
@@ -34,6 +36,8 @@ export class DatabaseLogHandler {
   private supabaseClient?: SupabaseClient;
   private persistLog?: (logEntry: LogEntry) => Promise<void>;
   private runtime: 'node' | 'browser' | 'edge';
+  private onQueueDrop?: (entry: LogEntry) => void;
+  private onFlushError?: (error: unknown, batch: LogEntry[]) => void;
 
   constructor(options: DatabaseHandlerOptions) {
     this.runtime = getRuntime();
@@ -51,6 +55,8 @@ export class DatabaseLogHandler {
     
     this.supabaseClient = options.supabaseClient;
     this.persistLog = options.persistLog;
+    this.onQueueDrop = options.onQueueDrop;
+    this.onFlushError = options.onFlushError;
     
     // Start background flush
     this.start();
@@ -63,7 +69,14 @@ export class DatabaseLogHandler {
     // Check backpressure
     if (this.batchQueue.length >= this.maxQueueSize) {
       // Drop oldest entries or log warning
-      this.batchQueue.shift();
+      const dropped = this.batchQueue.shift();
+      if (dropped && this.onQueueDrop) {
+        try {
+          this.onQueueDrop(dropped);
+        } catch {
+          // noop
+        }
+      }
     }
     
     this.batchQueue.push(entry);
@@ -134,6 +147,13 @@ export class DatabaseLogHandler {
     try {
       await this.flushBatch(batch);
     } catch (error) {
+      if (this.onFlushError) {
+        try {
+          this.onFlushError(error, batch);
+        } catch {
+          // noop
+        }
+      }
       // Retry with exponential backoff
       await this.retryFlush(batch);
     } finally {
@@ -182,6 +202,13 @@ export class DatabaseLogHandler {
     try {
       await this.flushBatch(batch);
     } catch (error) {
+      if (this.onFlushError) {
+        try {
+          this.onFlushError(error, batch);
+        } catch {
+          // noop
+        }
+      }
       await this.retryFlush(batch, attempt + 1);
     }
   }
@@ -193,4 +220,3 @@ export class DatabaseLogHandler {
 export function createDatabaseHandler(options: DatabaseHandlerOptions): DatabaseLogHandler {
   return new DatabaseLogHandler(options);
 }
-

@@ -23,18 +23,5 @@ export function createChildLogger(
   logger: Logger,
   context: PartialLogContext & Record<string, unknown>
 ): Logger {
-  // Get the parent logger's name and create a new logger with merged context
-  const pinoLogger = logger.getPinoLogger();
-  const parentName = pinoLogger.bindings().name as string || 'unknown';
-  
-  // Create child logger using Pino's child method
-  const childPino = pinoLogger.child(context);
-  
-  // For now, return a new Logger instance
-  // In a full implementation, we'd need to extract options from parent
-  // This is a simplified version that creates a new logger with the child Pino instance
-  const childLogger = Object.create(logger);
-  childLogger.pinoLogger = childPino;
-  
-  return childLogger;
+  return logger.child(context, context);
 }
