@@ -1,0 +1,696 @@
+---
+description: Auto-heal Runtime & Error Recovery
+version: 2.0.0
+lastUpdated: 2025-01-27
+globs: "**/*"
+alwaysApply: true
+---
+
+# Auto-Healing Runtime Rule
+
+The agent acts as an autonomous runtime manager. When errors occur, try to fix them automatically using these strategies.
+
+## Table of Contents
+
+1. [Fix Ports Automatically](#1-fix-ports-automatically)
+2. [Dependency Self-Healing](#2-dependency-self-healing)
+3. [Database Connection Healing](#3-database-connection-healing)
+4. [Logic & Application Errors (Auto-Debug)](#4-logic--application-errors-auto-debug)
+5. [General Error Recovery](#5-general-error-recovery)
+6. [Docker/Supabase Container Management](#6-dockersupabase-container-management-critical)
+7. [File System Errors](#7-file-system-errors)
+8. [Build/Compilation Errors](#8-buildcompilation-errors)
+9. [Network/API Errors](#9-networkapi-errors)
+10. [Cache Issues](#10-cache-issues)
+11. [Environment Variable Issues](#11-environment-variable-issues)
+12. [Cross-Platform Considerations](#12-cross-platform-considerations)
+13. [Runtime Error Handling Patterns](#13-runtime-error-handling-patterns)
+14. [Process Management](#14-process-management)
+15. [Migration Errors](#15-migration-errors)
+16. [Log Analysis & Auto-Fix](#16-log-analysis--auto-fix)
+
+---
+
+## 1. Fix Ports Automatically
+
+**Symptom:** `EADDRINUSE`, `Address already in use`, `Port 3000 is busy`.
+
+**Note:** Port numbers range from 1-65535 (1-5 digits). Common ports:
+- **Well-known ports (0-1023):** System services (e.g., 80, 443, 5432)
+- **Registered ports (1024-49151):** Application services (e.g., 3000, 8000, 54321)
+- **Dynamic/Private ports (49152-65535):** Ephemeral ports
+
+**Strategy:**
+1.  **Identify:** Find the process using the port.
+    - *Unix/Mac:* `lsof -i :<PORT>` or `netstat -an | grep <PORT>`
+    - *Windows:* `netstat -ano | findstr :<PORT>`
+    - *Docker:* `docker ps --filter "publish=<PORT>"`
+    - **Note:** Port numbers can be 1-5 digits (1-65535), ensure full port number is captured
+2.  **Verify Ownership (CRITICAL for Supabase ports):**
+    - If port is 54321, 54322, 54323, or other Supabase default ports (5 digits):
+      - Check if it's a Supabase container: `supabase status`
+      - Verify it belongs to current project before stopping
+      - If it's another project's container, ask user which project should use the port
+    - For application ports (any port number, commonly 3000, 8000, 8080, etc.):
+      - Check if it's the current application instance
+      - If it's a stale process, proceed with termination
+3.  **Kill:** Terminate the process (only if verified as safe to do so).
+    - For Supabase: Use `supabase stop` (stops only current project)
+    - For other processes: 
+      - *Unix/Mac:* `kill -9 <PID>`
+      - *Windows:* `taskkill /PID <PID> /F`
+4.  **Retry:** Re-run the launch command.
+
+**Instruction:**
+> "If the port is busy, I will identify the process and verify ownership before terminating. For Supabase ports, I will use `supabase stop` and verify project ownership. For other ports, I will check if it's a stale process before killing it."
+
+---
+
+## 2. Dependency Self-Healing
+
+**Symptom:** `Module not found`, `ImportError`, `Cannot find package`, `Package not found`.
+
+**Strategy:**
+1.  **Check:** Does `node_modules` or `.venv` exist?
+2.  **Check Lockfile Conflicts:**
+    - If multiple lockfiles exist (`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`), identify which package manager is being used
+    - Remove conflicting lockfiles (keep only the one matching the package manager)
+3.  **Check Virtual Environment (Python):**
+    - If Python project and `.venv` missing, create virtual environment: `python -m venv .venv`
+    - Activate virtual environment before installing
+4.  **Install:** Run the install command.
+    - *Node (npm):* `npm install`
+    - *Node (yarn):* `yarn install`
+    - *Node (pnpm):* `pnpm install`
+    - *Python:* `pip install -r requirements.txt` (or `pip install -r pyproject.toml` if using Poetry)
+5.  **Check Version Conflicts:**
+    - If installation fails due to version conflicts, check `package.json` or `requirements.txt`
+    - Suggest compatible versions or update dependency ranges
+6.  **Retry:** Re-run the command.
+
+**Instruction:**
+> "It seems a dependency is missing. I will check for lockfile conflicts, ensure virtual environment exists (Python), install dependencies, and retry."
+
+---
+
+## 3. Database Connection Healing
+
+**Symptom:** `Connection refused`, `terminating connection`, `PrismaClientInitializationError`, `ECONNREFUSED`.
+
+**Strategy:**
+1.  **Check Service:** Is Docker/Supabase running?
+   - For Supabase: Run `supabase status` to verify current project's services
+   - If not running, start with `supabase start` (only affects current project)
+   - For Docker Compose: Check `docker-compose ps`
+2.  **Wait:** Wait 5 seconds and retry (transient startup issue).
+3.  **Check Connection Pool:**
+   - If "too many connections" error, check connection pool settings
+   - Verify connections are being closed properly
+   - Consider increasing pool size or reducing connection lifetime
+4.  **Check Migration State:**
+   - Verify database migrations are up to date
+   - Check for failed migrations: `supabase migration list` or `prisma migrate status`
+   - If migrations failed, suggest rollback or fix migration
+5.  **Env Vars:** Verify `DATABASE_URL` matches the running service.
+   - Check `.env` file has correct connection string
+   - Verify credentials match local Supabase instance (use `supabase status` for local credentials)
+6.  **Container Isolation:** If multiple Supabase projects exist, ensure you're connecting to the correct project's database. Use `supabase status` to verify project identity.
+7.  **Check RLS Policies:**
+   - If connection succeeds but queries fail, check Row Level Security policies
+   - Verify user has proper permissions
+
+**Instruction:**
+> "I will check if the database service is running, verify connection pool settings, check migration state, validate environment variables, and ensure proper container isolation."
+
+---
+
+## 4. Logic & Application Errors (Auto-Debug)
+
+**Symptom:** Runtime crashes, logical bugs, unhandled exceptions (non-environment).
+
+**Strategy:** "Analyze & Propose" (Do NOT auto-fix logic without confirmation).
+1.  **Read Logs:** Capture the stack trace or error message.
+2.  **Categorize Error:**
+    - *Operational Error:* Expected runtime error (e.g., validation failed, not found) - can be handled gracefully
+    - *Programmer Error:* Bug in code (e.g., undefined is not a function) - may require crash/restart
+    - Reference `modules/error-handler/index.ts` for error categorization patterns
+3.  **Locate:** Find the exact file and line number in the codebase.
+4.  **Context:** Read the surrounding code to understand the intent.
+5.  **Check Error Handling:**
+    - Verify if Result pattern is being used (see `modules/error-handler/index.ts`)
+    - Suggest using `safe()` wrapper for promises
+    - Suggest using `withRetry()` for transient failures
+6.  **Hypothesize:** Formulate a clear explanation of *why* it failed.
+7.  **Propose:** Generate a fix (show the code diff), but **ask the user** before applying it.
+
+**Instruction:**
+> "I found a bug in [file]. The issue is [reason]. I propose changing [old_code] to [new_code]. I also suggest using the Result pattern from `modules/error-handler` for better error handling. Shall I apply this fix?"
+
+---
+
+## 5. General Error Recovery
+
+**Syntax Errors:**
+- Read the file, identify syntax issue
+- Fix the syntax, retry build
+- *TypeScript:* Run `tsc --noEmit` to check types
+- *Python:* Run `python -m py_compile <file>` to check syntax
+
+**Linter Errors:**
+- Auto-fix if possible (`npm run lint -- --fix`, `prettier --write .`, `black .`, `ruff check --fix`)
+- Otherwise manual fix
+- Check linting configuration matches project standards (see `standards/process/linting.md`)
+
+**Env Missing:**
+- Copy `.env.example` to `.env` if `.env` is missing
+- Check for required environment variables (see Section 11)
+
+**Formatting Errors:**
+- Detect formatter: Prettier (JS/TS), Black (Python), etc.
+- Run appropriate formatter: `prettier --write .`, `black .`
+- Verify formatter is configured in project
+
+**Cross-Platform Path Issues:**
+- Use platform-agnostic path utilities (`path.join()` in Node, `os.path.join()` in Python)
+- Avoid hardcoded path separators (`/` or `\`)
+- See Section 12 for platform-specific considerations
+
+**Instruction:**
+> "I will fix syntax errors, auto-fix linter issues when possible, create missing `.env` files, format code, and handle cross-platform path issues."
+
+---
+
+## 6. Docker/Supabase Container Management (CRITICAL)
+
+**Symptom:** Port conflicts, container won't start, "container already exists" errors.
+
+**Strategy - Container Isolation (MANDATORY):**
+
+1.  **Always use project-specific commands:**
+   - ✅ `supabase start` - Starts only current project's containers
+   - ✅ `supabase stop` - Stops only current project's containers
+   - ✅ `supabase status` - Shows only current project's status
+
+2.  **Port conflict resolution:**
+   - Identify which project owns the conflicting container using `supabase status`
+   - If it's the current project: Use `supabase stop` then `supabase start`
+   - If it's another project: Either change your project's port in `supabase/config.toml` or ask the user which project should use the port
+   - **NEVER** use `docker stop $(docker ps -q)` or similar broad commands
+
+3.  **If you must use Docker directly:**
+   - First, get project reference: `PROJECT_REF=$(cat supabase/.temp/project-ref 2>/dev/null || supabase status | grep "Project ID" | awk '{print $3}')`
+   - Filter by project: `docker ps --filter "name=supabase_${PROJECT_REF}"`
+   - Only stop/remove containers matching your project reference
+
+4.  **Container cleanup (only if necessary):**
+   - Use `supabase stop` first (safest)
+   - If containers are stuck, identify project-specific containers before removing
+   - Never remove all Supabase containers: `docker rm $(docker ps -a --filter "name=supabase" -q)` ❌
+
+**Instruction:**
+> "When managing Docker/Supabase containers, I will only affect containers belonging to the current project. I will use `supabase start/stop/status` commands, and if I must use Docker directly, I will filter by project reference. I will never stop or remove all containers."
+
+---
+
+## 7. File System Errors
+
+**Symptom:** `ENOENT` (file/directory not found), `EACCES` (permission denied), `ENOSPC` (disk full), `EMFILE` (too many open files).
+
+**Strategy:**
+
+1.  **Missing Files/Directories (`ENOENT`):**
+    - Identify required directories from error message or code
+    - Create missing directories: `mkdir -p <path>` (Unix/Mac) or `mkdir <path>` (Windows)
+    - Verify file paths are correct (check for typos)
+    - Check if file should exist based on project structure (see `standards/project-structure.md`)
+
+2.  **Permission Denied (`EACCES`):**
+    - Check file permissions: `ls -l <file>` (Unix/Mac) or `icacls <file>` (Windows)
+    - Fix permissions: `chmod +x <file>` or `chmod 644 <file>` (Unix/Mac)
+    - Check if running with correct user permissions
+    - For log directories: Ensure write permissions on `./logs` directory
+
+3.  **Disk Full (`ENOSPC`):**
+    - Check available disk space: `df -h` (Unix/Mac) or `wmic logicaldisk get size,freespace` (Windows)
+    - Suggest cleanup strategies:
+      - Remove `node_modules` and reinstall
+      - Clear build artifacts (`.next`, `dist`, `build`, `.turbo`)
+      - Clear package manager caches
+      - Remove old log files (see Section 10 for cache clearing)
+
+4.  **Too Many Open Files (`EMFILE`):**
+    - Check for file handle leaks in code
+    - Verify files are being closed properly
+    - Increase file descriptor limit: `ulimit -n <number>` (Unix/Mac)
+    - Check for unclosed database connections or file streams
+
+**Instruction:**
+> "I will create missing directories, fix permission issues, check disk space and suggest cleanup, and identify file handle leaks for EMFILE errors."
+
+---
+
+## 8. Build/Compilation Errors
+
+**Symptom:** TypeScript errors, Python syntax errors, build failures, compilation timeouts.
+
+**Strategy:**
+
+1.  **TypeScript Errors:**
+    - Run type check: `tsc --noEmit` to see all type errors
+    - Check `tsconfig.json` configuration
+    - Verify module resolution paths are correct
+    - Check for missing type definitions: `npm install --save-dev @types/<package>`
+    - Clear TypeScript build cache: Remove `.tsbuildinfo` files
+
+2.  **Python Syntax Errors:**
+    - Run syntax check: `python -m py_compile <file>` or `python -m py_compile -q .`
+    - Check Python version compatibility
+    - Verify virtual environment is activated
+    - Check for indentation errors (Python is indentation-sensitive)
+
+3.  **Build Cache Issues:**
+    - Clear build artifacts:
+      - *Next.js:* Remove `.next` directory
+      - *React/Vite:* Remove `dist` or `build` directory
+      - *Turbo:* Clear `.turbo` cache
+      - *TypeScript:* Remove `.tsbuildinfo` files
+    - Rebuild from scratch
+
+4.  **Module Resolution Errors:**
+    - Check `tsconfig.json` paths configuration
+    - Verify imports use correct paths (relative vs absolute)
+    - Check for circular dependencies
+    - Verify package exports in `package.json`
+
+5.  **Build Timeouts:**
+    - Check for infinite loops or long-running processes
+    - Verify build configuration is correct
+    - Consider increasing timeout or optimizing build process
+
+**Instruction:**
+> "I will run type/syntax checks, clear build caches, verify module resolution, and check for build configuration issues."
+
+---
+
+## 9. Network/API Errors
+
+**Symptom:** `ETIMEDOUT`, `ECONNREFUSED`, `ENOTFOUND`, rate limiting (429), service unavailable (503).
+
+**Strategy:**
+
+1.  **Timeouts (`ETIMEDOUT`):**
+    - Implement retry with exponential backoff (reference `modules/error-handler/retry.ts`)
+    - Check network connectivity
+    - Verify service is running and accessible
+    - Consider increasing timeout values for slow networks
+    - Use `withRetry()` from error-handler module
+
+2.  **Connection Refused (`ECONNREFUSED`):**
+    - Verify service is running: Check process, Docker container, or service status
+    - Check firewall rules
+    - Verify port is correct
+    - Check if service is listening on expected interface (localhost vs 0.0.0.0)
+
+3.  **Host Not Found (`ENOTFOUND`):**
+    - Verify DNS resolution: `nslookup <hostname>` or `ping <hostname>`
+    - Check if hostname is correct
+    - Verify network connectivity
+
+4.  **Rate Limiting (429):**
+    - Implement exponential backoff with jitter
+    - Check rate limit headers (`X-RateLimit-*`)
+    - Respect `Retry-After` header if present
+    - Use circuit breaker pattern for repeated rate limits (reference `modules/error-handler/circuit-breaker.ts`)
+
+5.  **Service Unavailable (503):**
+    - Implement retry with backoff
+    - Use circuit breaker to prevent cascading failures
+    - Check service health endpoint if available
+    - Verify upstream dependencies are healthy
+
+**Instruction:**
+> "I will implement retry logic with exponential backoff for timeouts and 503 errors, use circuit breaker for repeated failures, verify connectivity for connection errors, and respect rate limits with proper backoff."
+
+---
+
+## 10. Cache Issues
+
+**Symptom:** Stale data, corrupted cache, build inconsistencies, outdated dependencies.
+
+**Strategy:**
+
+1.  **Node.js Caches:**
+    - Clear `node_modules/.cache` directory
+    - Clear Next.js cache: Remove `.next/cache`
+    - Clear Turbo cache: Remove `.turbo`
+    - Clear package manager caches:
+      - *npm:* `npm cache clean --force`
+      - *yarn:* `yarn cache clean`
+      - *pnpm:* `pnpm store prune`
+
+2.  **Python Caches:**
+    - Clear `__pycache__` directories: `find . -type d -name __pycache__ -exec rm -r {} +`
+    - Clear `.pytest_cache`: Remove `.pytest_cache` directory
+    - Clear pip cache: `pip cache purge`
+
+3.  **Build Artifacts:**
+    - Remove build directories: `dist`, `build`, `.next`, `out`
+    - Clear TypeScript build info: Remove `.tsbuildinfo` files
+    - Clear compiled Python files: Remove `.pyc` files
+
+4.  **Log Files:**
+    - Check `./logs` directory for old log files
+    - Rotate or archive old logs if they're taking up space
+    - Clear session logs if they're corrupted (see Section 16 for log analysis)
+
+5.  **Reinstall Dependencies:**
+    - After clearing caches, reinstall: `npm install`, `pip install -r requirements.txt`
+    - Verify lockfiles are up to date
+
+**Instruction:**
+> "I will clear Node.js/Python caches, remove build artifacts, clean up old log files, and reinstall dependencies after cache clearing."
+
+---
+
+## 11. Environment Variable Issues
+
+**Symptom:** Missing required env vars, invalid format, type mismatches, undefined values.
+
+**Strategy:**
+
+1.  **Missing Variables:**
+    - Check `.env.example` or `.env.template` for required variables
+    - Compare with `.env` file to identify missing variables
+    - Check `standards/configuration.md` for expected environment variables
+    - Create or update `.env` file with missing variables
+    - Use default values where appropriate (document in `.env.example`)
+
+2.  **Format Validation:**
+    - **URLs:** Verify format (must start with `http://` or `https://`)
+    - **Ports:** Verify numeric value and valid range (1-65535)
+    - **Booleans:** Verify `true`/`false` or `1`/`0` format
+    - **Numbers:** Verify numeric format
+    - **Dates:** Verify ISO 8601 format if required
+
+3.  **Type Checking:**
+    - Validate numeric values are actually numbers
+    - Verify boolean values are properly formatted
+    - Check array/object formats if using JSON parsing
+
+4.  **Cross-Reference:**
+    - Check `standards/configuration.md` for expected variables
+    - Verify environment-specific variables (`.env.local`, `.env.development`, etc.)
+    - Check if variables are set in multiple places (system env, `.env`, config files)
+
+5.  **Sensitive Variables:**
+    - Verify secrets are not hardcoded
+    - Check if variables should use encryption (see `modules/settings-manager`)
+    - Ensure `.env` is in `.gitignore`
+
+**Instruction:**
+> "I will check for missing environment variables by comparing with `.env.example`, validate formats (URLs, ports, booleans), verify types, and cross-reference with configuration standards."
+
+---
+
+## 12. Cross-Platform Considerations
+
+**Symptom:** Commands fail on different platforms, path issues, process management differences.
+
+**Strategy:**
+
+1.  **Path Handling:**
+    - Use platform-agnostic path utilities:
+      - *Node.js:* `path.join()`, `path.resolve()` (never use `/` or `\` directly)
+      - *Python:* `os.path.join()`, `pathlib.Path`
+    - Avoid hardcoded path separators
+    - Handle both absolute and relative paths correctly
+
+2.  **Process Management:**
+    - *Unix/Mac:* Use `ps`, `lsof`, `kill`
+    - *Windows:* Use `tasklist`, `netstat`, `taskkill`
+    - Detect platform: `process.platform` (Node) or `platform.system()` (Python)
+    - Use cross-platform libraries when available
+
+3.  **Command Execution:**
+    - Use shell-agnostic commands when possible
+    - For platform-specific commands, detect platform first
+    - Consider using cross-platform tools (e.g., `cross-env` for environment variables)
+
+4.  **File Permissions:**
+    - *Unix/Mac:* Use `chmod`, `chown`
+    - *Windows:* Use `icacls` or PowerShell `Set-Acl`
+    - Verify permissions work on target platform
+
+5.  **Line Endings:**
+    - Be aware of CRLF vs LF differences
+    - Use `.gitattributes` to normalize line endings
+    - Check if line ending issues are causing problems
+
+**Instruction:**
+> "I will use platform-agnostic path utilities, detect platform before running platform-specific commands, and handle file permissions appropriately for each platform."
+
+---
+
+## 13. Runtime Error Handling Patterns
+
+**Integration with Error-Handler Module:**
+
+When encountering runtime errors, leverage patterns from `modules/error-handler/`:
+
+1.  **Result Pattern:**
+    - Use `Result<T, E>` type instead of throwing exceptions
+    - Import from `modules/error-handler/index.ts`
+    - Use `safe()` wrapper for promises: `const result = await safe(promise)`
+    - Check `result.ok` before accessing `result.value`
+
+2.  **Retry Logic:**
+    - Use `withRetry()` from `modules/error-handler/retry.ts` for transient failures
+    - Configure exponential backoff: `{ retries: 3, delay: 1000, backoffFactor: 2 }`
+    - Use `shouldRetry` predicate to skip retries for non-retryable errors (e.g., 400 Bad Request)
+
+3.  **Circuit Breaker:**
+    - Use `CircuitBreaker` from `modules/error-handler/circuit-breaker.ts` for failing services
+    - Prevents cascading failures by stopping calls to failing services
+    - Configure threshold and reset timeout appropriately
+
+4.  **Error Categorization:**
+    - Distinguish operational errors (expected, handled) from programmer errors (bugs)
+    - Use `AppError` class with appropriate `isOperational` flag
+    - See `modules/error-handler/index.ts` for error class structure
+
+**Example Usage:**
+```typescript
+import { safe, withRetry } from './modules/error-handler';
+import { CircuitBreaker } from './modules/error-handler/circuit-breaker';
+
+// Use Result pattern
+const result = await safe(apiCall());
+if (!result.ok) {
+  console.error(result.error.message);
+  return;
+}
+
+// Use retry for transient failures
+const retryResult = await withRetry(
+  () => fetch('https://api.example.com/data'),
+  { retries: 3, delay: 1000, shouldRetry: (e) => e.status === 503 }
+);
+
+// Use circuit breaker for failing services
+const breaker = new CircuitBreaker(5, 10000);
+const data = await breaker.execute(() => apiCall());
+```
+
+**Instruction:**
+> "When encountering runtime errors, I will suggest using the Result pattern, retry logic, and circuit breaker from `modules/error-handler/` for robust error handling. See `modules/error-handler/README.md` for usage examples."
+
+---
+
+## 14. Process Management
+
+**Symptom:** Stuck processes, zombie processes, resource exhaustion, orphaned processes.
+
+**Strategy:**
+
+1.  **Stuck Processes:**
+    - Identify stuck processes: `ps aux | grep <process>` (Unix/Mac) or `tasklist | findstr <process>` (Windows)
+    - Check process state (running, sleeping, zombie)
+    - Terminate if necessary: `kill -9 <PID>` (Unix/Mac) or `taskkill /PID <PID> /F` (Windows)
+    - Verify process is actually stuck (check CPU/memory usage)
+
+2.  **Zombie Processes:**
+    - Identify zombie processes: `ps aux | grep Z` (Unix/Mac)
+    - Check parent process and clean up
+    - Verify child processes are being properly reaped
+
+3.  **Resource Exhaustion:**
+    - **Memory:** Check available memory, identify memory leaks
+    - **CPU:** Check CPU usage, identify CPU-intensive processes
+    - **File Descriptors:** Check open file limit (see Section 7 for EMFILE)
+    - **Disk I/O:** Check disk usage and I/O wait times
+
+4.  **Orphaned Processes:**
+    - Identify processes without parent (PPID = 1)
+    - Clean up orphaned background processes
+    - Verify process cleanup in code (proper signal handling)
+
+5.  **Process Cleanup:**
+    - Ensure processes are properly terminated on exit
+    - Use process managers (PM2, supervisor) for long-running processes
+    - Implement graceful shutdown handlers
+
+**Instruction:**
+> "I will identify and terminate stuck processes, clean up zombie processes, check resource usage (memory, CPU, file descriptors), and verify proper process cleanup."
+
+---
+
+## 15. Migration Errors
+
+**Symptom:** Database migration failures, migration conflicts, migration state errors.
+
+**Strategy:**
+
+1.  **Migration Failures:**
+    - Check migration error message and stack trace
+    - Verify migration SQL syntax is correct
+    - Check for dependency issues (missing tables, columns, etc.)
+    - Verify database connection is working
+
+2.  **Migration State:**
+    - Check migration status: `supabase migration list` or `prisma migrate status`
+    - Identify failed migrations
+    - Check migration history for conflicts
+
+3.  **Rollback Strategies:**
+    - If migration fails, rollback to previous state
+    - For Supabase: Use `supabase migration repair` if needed
+    - For Prisma: Use `prisma migrate resolve` to mark migrations as applied or rolled back
+    - Verify data integrity after rollback
+
+4.  **Migration Conflicts:**
+    - Detect conflicting migrations (same timestamp, different changes)
+    - Resolve conflicts by renaming or merging migrations
+    - Verify migration order is correct
+
+5.  **Migration Order:**
+    - Verify migrations are applied in correct sequence
+    - Check for dependencies between migrations
+    - Ensure migration timestamps are sequential
+
+6.  **Data Migration Issues:**
+    - Verify data transformations are correct
+    - Check for data loss or corruption
+    - Test migrations on development database first
+
+**Instruction:**
+> "I will check migration status, identify failed migrations, suggest rollback strategies, resolve migration conflicts, verify migration order, and check for data migration issues."
+
+---
+
+## 16. Log Analysis & Auto-Fix
+
+**Symptom:** Errors in log files, recurring patterns, code issues identified from logs.
+
+**Strategy:**
+
+1.  **Locate Log Files:**
+    - Check common log directories: `./logs`, `logs/`, `/var/log/`
+    - Check for session logs: `logs/session_*.log` (from logger-module)
+    - Check application-specific log locations
+    - Check database logs if using Supabase (via `supabase logs` or database `logs` table)
+    - Check build/compilation logs: `.next`, `dist`, build output
+
+2.  **Analyze Log Patterns:**
+    - Read recent log entries (last 100 lines or last hour)
+    - Identify error patterns:
+      - Repeated errors (same error multiple times)
+      - Error frequency (errors per minute/hour)
+      - Error types (network, database, application)
+      - Stack traces pointing to specific files
+    - Look for correlation between errors and recent code changes
+
+3.  **Extract Error Information:**
+    - Parse error messages and stack traces
+    - Identify file paths and line numbers from stack traces
+    - Extract error codes (HTTP status, database error codes)
+    - Identify error context (request IDs, trace IDs, session IDs)
+
+4.  **Categorize Errors:**
+    - **Auto-Fixable:** Syntax errors, missing imports, type errors, configuration issues
+    - **Propose Fix:** Logic errors, business rule violations, architectural issues
+    - **Require Investigation:** Unknown errors, complex failures, data corruption
+
+5.  **Auto-Fix Strategies:**
+    - **Syntax Errors:** Fix syntax issues in identified files
+    - **Missing Imports:** Add missing imports based on error messages
+    - **Type Errors:** Fix type mismatches, add type assertions
+    - **Configuration Errors:** Fix incorrect config values, add missing config
+    - **Missing Files:** Create missing files or fix file paths
+    - **Permission Errors:** Fix file permissions (see Section 7)
+
+6.  **Propose Fix Strategies:**
+    - **Logic Errors:** Analyze code, propose fix with explanation
+    - **Business Rule Violations:** Identify rule violation, suggest correction
+    - **Architectural Issues:** Propose refactoring or pattern improvements
+    - **Performance Issues:** Identify bottlenecks, suggest optimizations
+
+7.  **Verify Fixes:**
+    - After auto-fixing, verify fix by:
+      - Re-running the command/process that generated the error
+      - Checking if error no longer appears in logs
+      - Running tests if available
+      - Checking build/compilation succeeds
+
+8.  **Log Rotation & Cleanup:**
+    - If logs are too large, suggest log rotation
+    - Archive old logs if needed
+    - Clear corrupted log files
+    - Check log file permissions (see Section 7)
+
+**Log Analysis Workflow:**
+1. Check `./logs` directory for log files
+2. Read most recent error entries
+3. Parse stack traces to identify file and line
+4. Categorize error (auto-fix vs propose fix)
+5. Apply fix or propose fix to user
+6. Verify fix by re-running process
+7. Monitor logs to confirm error is resolved
+
+**Instruction:**
+> "When errors occur, I will check log files in `./logs` or application log directories, analyze error patterns, extract error information from stack traces, categorize errors as auto-fixable or requiring proposal, apply fixes for syntax/import/type/config errors, propose fixes for logic/architectural issues, and verify fixes by re-running processes and monitoring logs."
+
+---
+
+## Recovery Verification
+
+After applying any auto-healing strategy, verify the fix worked:
+
+1.  **Re-run the Command:** Execute the original command that failed
+2.  **Check Logs:** Verify no new errors appear in logs
+3.  **Test Functionality:** If possible, run a quick test to verify functionality
+4.  **Monitor:** Watch for recurring errors that might indicate a deeper issue
+
+---
+
+## Prevention Strategies
+
+To avoid common errors:
+
+1.  **Pre-Flight Checks:** Run `pre-flight-check` command before starting work (see `.cursor/commands/pre-flight-check.md`)
+2.  **Environment Validation:** Verify environment is properly configured
+3.  **Dependency Management:** Keep dependencies up to date, use lockfiles
+4.  **Error Handling:** Use Result pattern and proper error handling from the start
+5.  **Logging:** Implement proper logging to catch issues early (see `modules/logger-module`)
+6.  **Testing:** Write tests to catch errors before deployment
+7.  **Code Quality:** Follow linting and formatting standards (see `standards/process/linting.md`)
+
+---
+
+## Related Documentation
+
+- **Error Handler Module:** `modules/error-handler/README.md` - Runtime error handling patterns
+- **Logger Module:** `modules/logger-module/README.md` - Logging and log file management
+- **Task Workflow:** `.cursor/rules/task-workflow.mdc` - Integration with development workflow
+- **Environment Setup:** `.cursor/rules/environment.mdc` - Environment and container management
+- **Linting Standards:** `standards/process/linting.md` - Code quality and linting requirements
+- **Configuration Standards:** `standards/configuration.md` - Environment variable standards

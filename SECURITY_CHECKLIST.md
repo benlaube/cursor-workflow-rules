@@ -2,7 +2,7 @@
 
 This document provides a comprehensive security checklist for both `supabase-core-typescript` and `supabase-core-python` modules.
 
-**Last Updated:** 2025-01-27
+**Last Updated:** 2025-12-02
 
 ---
 

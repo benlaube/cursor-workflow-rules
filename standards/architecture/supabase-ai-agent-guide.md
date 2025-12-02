@@ -31,8 +31,8 @@ This guide helps AI Agents understand:
 | `modules/backend-api/` | Standardized API handlers | Next.js API routes requiring auth, validation, error handling |
 | `modules/sitemap-module/` | Sitemap automation | Auto-generating sitemap.xml from database content |
 | `modules/settings-manager/` | Encrypted settings storage | User-configurable secrets, runtime configuration, multi-tenant settings |
-| `modules/supabase-core/` | TypeScript/Next.js utilities | Next.js projects, TypeScript backends, client-side and server-side |
-| `modules/supabase-core-python/` | Python backend utilities | Django, FastAPI, Flask backends, Python server-side only |
+| `modules/supabase-core-typescript/` | TypeScript/Next.js utilities | Next.js projects, TypeScript backends, client-side and server-side |
+| `modules/supabase-core-typescript-python/` | Python backend utilities | Django, FastAPI, Flask backends, Python server-side only |
 
 ### 2.2 Supporting Standards
 
@@ -54,11 +54,11 @@ This guide helps AI Agents understand:
 
 ```
 What is your backend language?
-├─ TypeScript/JavaScript → Use `modules/supabase-core/`
+├─ TypeScript/JavaScript → Use `modules/supabase-core-typescript/`
 │   ├─ Next.js project? → Use `createServerClient()` for SSR
 │   ├─ Client-side React? → Use `createClient()`
 │   └─ Edge Functions? → Use `createServiceRoleClient()`
-└─ Python → Use `modules/supabase-core-python/`
+└─ Python → Use `modules/supabase-core-typescript-python/`
     ├─ FastAPI? → Use `framework.fastapi.get_authenticated_supabase`
     ├─ Django? → Use `framework.django.get_supabase_client`
     └─ Flask? → Use `framework.flask.get_supabase_client`
@@ -155,19 +155,19 @@ Need server-side logic?
 
 ```
 Using Python backend?
-├─ FastAPI → Use `modules/supabase-core-python/`
+├─ FastAPI → Use `modules/supabase-core-typescript-python/`
 │   ├─ Install: `pip install fastapi supabase`
 │   ├─ Use dependency: `get_authenticated_supabase`
-│   └─ See `modules/supabase-core-python/README.md`
-├─ Django → Use `modules/supabase-core-python/`
+│   └─ See `modules/supabase-core-typescript-python/README.md`
+├─ Django → Use `modules/supabase-core-typescript-python/`
 │   ├─ Install: `pip install django supabase`
 │   ├─ Use helper: `get_supabase_client(request, require_auth=True)`
-│   └─ See `modules/supabase-core-python/README.md`
-├─ Flask → Use `modules/supabase-core-python/`
+│   └─ See `modules/supabase-core-typescript-python/README.md`
+├─ Flask → Use `modules/supabase-core-typescript-python/`
 │   ├─ Install: `pip install flask supabase`
 │   ├─ Use helper: `get_supabase_client(require_auth=True)`
-│   └─ See `modules/supabase-core-python/README.md`
-└─ See `modules/supabase-core-python/INTEGRATION_GUIDE.md` for complete setup
+│   └─ See `modules/supabase-core-typescript-python/README.md`
+└─ See `modules/supabase-core-typescript-python/INTEGRATION_GUIDE.md` for complete setup
 ```
 
 **Key Differences from TypeScript:**
@@ -196,7 +196,7 @@ Using Python backend?
 // - DELETE /rest/v1/posts?id=eq.1
 
 // Use via JavaScript client (recommended)
-import { createClient } from '@/modules/supabase-core'
+import { createClient } from '@/modules/supabase-core-typescript'
 
 const supabase = createClient()
 
@@ -343,14 +343,14 @@ EXECUTE FUNCTION public.pages_sitemap_trigger();
 **Use Case:** Querying data scoped to a specific tenant in a multi-tenant application.
 
 **Modules Used:**
-- `modules/supabase-core/` - Client creation
+- `modules/supabase-core-typescript/` - Client creation
 - RLS policies for tenant isolation
 
 **Example:**
 ```typescript
 // app/api/posts/route.ts
 import { createApiHandler } from '@/modules/backend-api'
-import { getServerUser } from '@/modules/supabase-core'
+import { getServerUser } from '@/modules/supabase-core-typescript'
 
 export const GET = createApiHandler({
   requireAuth: true,

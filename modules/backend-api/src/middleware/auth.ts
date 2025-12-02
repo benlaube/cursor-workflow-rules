@@ -1,23 +1,23 @@
 /**
  * Authentication middleware using Supabase SSR.
  * 
- * This middleware leverages supabase-core's createServerClient to automatically handle:
+ * This middleware leverages supabase-core-typescript's createServerClient to automatically handle:
  * - JWT extraction from cookies
  * - Token verification
  * - Token refresh
  * - User object creation
  * 
- * Dependencies: @modules/supabase-core
+ * Dependencies: @modules/supabase-core-typescript
  */
 
-import { createServerClient, getServerUser } from '@modules/supabase-core'
+import { createServerClient, getServerUser } from '@modules/supabase-core-typescript'
 import type { User, SupabaseClient } from '@supabase/supabase-js'
 import type { AuthContext } from '../context'
 
 /**
  * Create an authenticated Supabase client using supabase-core SSR helpers.
  * 
- * This function uses supabase-core's createServerClient which handles:
+ * This function uses supabase-core-typescript's createServerClient which handles:
  * - Reading cookies
  * - Creating Supabase client with cookie management
  * - Automatic token refresh
@@ -44,7 +44,7 @@ export async function createAuthenticatedClient(): Promise<SupabaseClient | null
  * - Verifies the token
  * - Returns user and authenticated Supabase client
  * 
- * Uses supabase-core's createServerClient and getServerUser for consistent behavior.
+ * Uses supabase-core-typescript's createServerClient and getServerUser for consistent behavior.
  * 
  * @returns AuthContext with user and Supabase client, or null if not authenticated
  * 

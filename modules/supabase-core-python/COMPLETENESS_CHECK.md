@@ -86,7 +86,7 @@ Before using this module:
 - [ ] Generate database types: `supabase gen types python --local > types/database_types.py`
 - [ ] Replace placeholder `Database` type in `types/database_types.py`
 - [ ] Configure environment variables (SUPABASE_URL, SUPABASE_ANON_KEY, etc.)
-- [ ] Copy module to your project: `cp -r modules/supabase-core-python lib/supabase_core_python`
+- [ ] Copy module to your project: `cp -r modules/supabase-core-typescript-python lib/supabase_core_python`
 
 ---
 

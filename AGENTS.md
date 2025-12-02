@@ -1,5 +1,11 @@
 # AI Agent Context & Memory (AGENTS.md)
 
+## Metadata
+- **Created:** 2025-01-27
+- **Last Updated:** 2025-12-02
+- **Version:** 1.0
+- **Description:** Project context and memory for AI Developer Agent
+
 > **CRITICAL NOTE:** This file is for the **AI Developer Agent** (the entity writing code in the IDE) ONLY.
 > - It is **NOT** accessible to runtime AI agents (e.g., chatbots embedded in the web app).
 > - It contains build-time context, architectural decisions, and developer memory.
@@ -10,44 +16,64 @@
 ---
 
 ## 1. Project Mission
-**[One-Sentence Mission Statement Here]**
-*Example: Build a scalable, AI-powered CRM that automates data enrichment for real estate professionals.*
+**Build a comprehensive AI Agent Knowledge Base & Standards Library that provides reusable rules, standards, commands, checklists, and code modules to ensure consistent, secure, and efficient development across all projects.**
 
-## 2. Current Phase: [Phase Name, e.g., "Foundation"]
+## 2. Current Phase: Maintenance & Enhancement
 We are currently focusing on:
-- [ ] Setting up the core infrastructure (Supabase, Next.js).
-- [ ] Establishing coding standards.
-- [ ] Building the first "vertical slice" (Auth + Profile).
+- [x] Core infrastructure established (rules, commands, checklists, standards)
+- [x] Module library created (backend-api, auth-profile-sync, logger-module, etc.)
+- [x] Documentation system implemented (AGENTS.md, INTEGRATION_GUIDE.md, etc.)
+- [ ] Continuous improvement of standards and modules
+- [ ] Expanding module library based on common patterns
+- [ ] Refining integration process based on usage feedback
 
 ## 3. Active Context (The "Now")
-*What is being worked on right now? Keep this fresh.*
-- **Latest Task:** [Insert Task]
-- **Blocking Issues:** [Insert Blockers]
-- **Next Up:** [Insert Next Steps]
+*What is being worked on right now? Keep this fresh - update at the start of each session.*
+
+- **Latest Task:** Created workflow-standards-documentation-maintenance rule and separated AGENTS.md template
+- **Blocking Issues:** None currently
+- **Next Up:** Continue refining documentation and standards based on usage
+- **Context Notes:** [Optional: Any important context for the current work]
 
 ## 4. System Architecture Highlights
-*Quick reference for the agent. For full details, see `docs/TECH_STACK.md`.*
+*Quick reference for the agent. For full details, see `standards/tech-stack-document.md`.*
 
-> **Action:** Read `docs/TECH_STACK.md` now to understand the allowed tools and libraries.
+> **Note:** This repository is a standards library, not a runtime application. It contains:
+> - Documentation standards and guides
+> - Reusable code modules
+> - Cursor rules and commands
+> - Integration templates
 
-- **Frontend:** Next.js / React
-- **Backend:** Supabase (Edge Functions, Postgres)
-- **Auth:** Supabase Auth
-- **Styling:** Tailwind CSS
+- **Purpose:** Template/standard library repository for integration into other projects
+- **Modules:** TypeScript/JavaScript modules for common patterns (backend-api, logger-module, etc.)
+- **Standards:** Comprehensive coding standards and architectural patterns
+- **Documentation:** Integration guides, checklists, and process documentation
 
 ## 5. Persistent Memory (Learnings & Patterns)
-*Record things that are not obvious from code but are important.*
-- "We decided to use `kebab-case` for all files."
-- "Do not use the `fs` module in Edge Functions; use Supabase Storage."
-- "When testing, always mock the database using `modules/testing-module`."
+*Record things that are not obvious from code but are important. Add entries as you discover them.*
+
+**What to Record:**
+- Architectural decisions and their rationale
+- Naming conventions specific to this project
+- Gotchas or common pitfalls
+- Integration patterns that work well
+- Things that differ from standard practices
+
+**Current Learnings:**
+- "This repository serves as a template/standard library - it's meant to be copied into other projects, not run as an application itself."
+- "AGENTS.md is project-specific (this repository), while templates/general/AGENTS-TEMPLATE.md is the template for other projects."
+- "Rules in `.cursor/rules/` are auto-applied when this repository is integrated into other projects."
+- "The workflow-standards-documentation-maintenance rule is specific to this repository and should be adapted or removed when integrating into other projects."
+- "All documentation follows the standards defined in `standards/documentation.md`."
+- "Module READMEs should focus on usage, while standards focus on creation/structure patterns."
 
 ## 6. Standard Developer Lifecycle
 
 Follow this lifecycle for all development work. Each step has a corresponding command and checklist.
 
 ### 6.1 Before Coding
-**Command:** `pre_flight_check`  
-**Checklist:** `docs/process/checklists/pre_flight_checklist_v1_0.md`
+**Command:** `pre-flight-check` (`.cursor/commands/pre-flight-check.md`)  
+**Checklist:** `standards/development-checklists/pre-flight-checklist.md`
 
 **Always run this first.** Validates:
 - Git branch and working tree status
@@ -56,14 +82,18 @@ Follow this lifecycle for all development work. Each step has a corresponding co
 - Baseline tests and build pass
 
 ### 6.2 Launch Development Environment
-**Command:** `launch_application_dev`  
+**Script:** `./start_app.sh` (or `./scripts/start_dev.sh` for direct dev launch)  
+**Command:** `create-start-scripts` (`.cursor/commands/create-start-scripts.md`) - Run this if `start_app.sh` doesn't exist  
 **Standard:** `standards/deployment/application-launch.md`
 
-After pre-flight passes, launch the dev environment. Handles:
-- Stack detection (Node.js, Python, Docker)
-- Dependency installation
-- Port management
-- Supabase startup (if applicable)
+After pre-flight passes, launch the dev environment:
+- **If `start_app.sh` exists:** Run `./start_app.sh dev` (or `./start_app.sh` and select dev mode)
+- **If `start_app.sh` doesn't exist:** Run `create-start-scripts` command to generate launch scripts
+- Handles:
+  - Stack detection (Node.js, Python, Docker)
+  - Dependency installation
+  - Port management
+  - Supabase startup (if applicable)
 
 ### 6.3 While Coding
 **Standards:** Review relevant files in `standards/` before implementing
@@ -72,8 +102,8 @@ After pre-flight passes, launch the dev environment. Handles:
 - Use module patterns from `standards/module-structure.md`
 
 ### 6.4 Before PR
-**Command:** `pr_review_check`  
-**Checklist:** `docs/process/checklists/pr_review_checklist_v1_0.md`
+**Command:** `pr-review-check` (`.cursor/commands/pr-review-check.md`)  
+**Checklist:** `standards/development-checklists/pr-review-checklist.md`
 
 **Required before every PR.** Validates:
 - Code quality (lint, format, types)
@@ -83,15 +113,16 @@ After pre-flight passes, launch the dev environment. Handles:
 
 ### 6.5 Periodic / Before Releases
 **Commands:**
-- `project_audit` - Full project structure validation
-- `security_audit` - Security vulnerabilities scan
-- `rls_policy_review` - Deep RLS policy analysis
-- `full_project_health_check` - Run all audits together
+- `project-audit` (`.cursor/commands/project-audit.md`) - Full project structure validation
+- `security_audit` (`.cursor/commands/audit-security.mdc`) - Security vulnerabilities scan
+- `full-project-health-check` - Run all audits together
 
 **Checklists:**
-- `docs/process/checklists/project_audit_checklist_v1_0.md`
-- `docs/process/checklists/security_audit_checklist_v1_0.md`
-- `docs/process/checklists/rls_policy_review_checklist_v1_0.md`
+- `standards/development-checklists/project-audit-checklist.md`
+- `standards/security/security-audit-checklist.md`
+
+**Rules (Auto-Applied):**
+- `.cursor/rules/supabase-rls-policy-review.mdc` - Deep RLS policy analysis (applies automatically when Supabase is detected)
 
 Run these:
 - When onboarding a new repository
@@ -104,7 +135,7 @@ Run these:
 ## 7. Agent Rules of Engagement
 
 ### 7.1 Pre-Flight (Before Any Coding)
-1. **Always run `pre_flight_check`** before starting significant work
+1. **Always run `pre-flight-check`** (`.cursor/commands/pre-flight-check.md`) before starting significant work
    - Ensures clean environment and baseline integrity
    - Prevents working on broken codebase
 
@@ -114,23 +145,24 @@ Run these:
    - Coding patterns: `standards/` (root level)
    - Database: `standards/database/`
    - Security: `standards/security/`
+   - **Documentation Index:** See `docs/DOCUMENTATION_STANDARDS.md` for comprehensive documentation guide
 
 ### 7.3 Project Onboarding
-3. **For new repositories or major refactors, run `project_audit`**
+3. **For new repositories or major refactors, run `project-audit`**
    - Validates structure against standards
    - Identifies gaps and action items
-   - Use `full_project_health_check` for comprehensive review
+   - Use `full-project-health-check` for comprehensive review
 
 ### 7.4 Pre-PR Validation
-4. **Before merging, always run `pr_review_check`**
+4. **Before merging, always run `pr-review-check`**
    - Ensures code quality and security
    - Validates documentation and changelog
    - Prevents broken code from entering main branch
 
 ### 7.5 Security-Sensitive Changes
-5. **For security-sensitive changes, run `security_audit` and `rls_policy_review`**
+5. **For security-sensitive changes, run `security_audit`**
    - Validates no secrets are committed
-   - Checks RLS policies are secure
+   - Checks RLS policies are secure (via `.cursor/rules/supabase-rls-policy-review.mdc` if Supabase detected)
    - Ensures input validation and rate limiting
 
 ### 7.6 Documentation
@@ -138,6 +170,8 @@ Run these:
    - Update `standards/` if architecture changes
    - Update `CHANGELOG.md` for user-facing changes
    - See `standards/documentation.md` Section 7 for changelog guidelines
+   - **Follow `.cursor/rules/workflow-standards-documentation-maintenance.mdc`** for comprehensive documentation update requirements
+   - **See `standards/documentation.md`** for complete documentation management standards
 
 ### 7.7 Safe Operations
 7. **Safe Mode:** Do not delete data without confirmation
@@ -153,45 +187,57 @@ Run these:
 ## 8. Related Checklists & Commands
 
 ### 8.1 Checklists (Human-Readable Validation)
-All checklists are located in `docs/process/checklists/`:
+All checklists are located in `standards/process/checklists/`:
 
-- **Pre-Flight:** `docs/process/checklists/pre_flight_checklist_v1_0.md`
+- **Pre-Flight:** `standards/process/checklists/pre_flight_checklist_v1_0.md`
   - Validates environment and repo state before coding
-  - Related command: `pre_flight_check`
+  - Related command: `pre-flight-check` (`.cursor/commands/pre-flight-check.md`)
 
-- **PR Review:** `docs/process/checklists/pr_review_checklist_v1_0.md`
+- **PR Review:** `standards/process/checklists/pr_review_checklist_v1_0.md`
   - Validates code quality, security, and documentation before PR
-  - Related command: `pr_review_check`
+  - Related command: `pr-review-check` (`.cursor/commands/pr-review-check.md`)
 
-- **Project Audit:** `docs/process/checklists/project_audit_checklist_v1_0.md`
+- **Linting:** `standards/process/checklists/linting_checklist_v1_0.md`
+  - Validates code quality through linting at different stages
+  - Related command: `lint-check` (`.cursor/commands/lint-check.md`)
+  - Related standard: `standards/process/linting.md`
+
+- **Project Audit:** `standards/process/checklists/project_audit_checklist_v1_0.md`
   - Audits project structure, modules, database, and code hygiene
-  - Related command: `project_audit`
+  - Related command: `project-audit` (`.cursor/commands/project-audit.md`)
 
-- **Security Audit:** `docs/process/checklists/security_audit_checklist_v1_0.md`
+- **Security Audit:** `standards/security/security-audit-checklist.md`
   - Validates security posture (secrets, dependencies, RLS, API security)
-  - Related command: `security_audit`
-  - Related standard: `docs/process/security_audit_standards_v1_0.md`
+  - Related command: `security_audit` (`.cursor/commands/audit-security.mdc`)
 
-- **RLS Policy Review:** `docs/process/checklists/rls_policy_review_checklist_v1_0.md`
+- **RLS Policy Review:** `.cursor/rules/supabase-rls-policy-review.mdc`
   - Deep-dive RLS policy analysis and validation
-  - Related command: `rls_policy_review`
+  - Auto-applied when Supabase is detected in the project
+  - Related standard: `standards/security/access-control.md`
 
 ### 8.2 Commands (Executable Workflows)
 All commands are located in `.cursor/commands/`:
 
-- **`pre_flight_check`** - Environment validation before coding
-- **`launch_application_dev`** - Launch development environment
-- **`pr_review_check`** - Pre-PR validation
-- **`project_audit`** - Project structure and standards validation
-- **`security_audit`** - Security vulnerabilities and secrets scan
-- **`rls_policy_review`** - Deep RLS policy analysis
-- **`full_project_health_check`** - Run all audits together (meta-command)
+- **`pre-flight-check`** (`.cursor/commands/pre-flight-check.md`) - Environment validation before coding
+- **`create-start-scripts`** (`.cursor/commands/create-start-scripts.md`) - Generate launch scripts (`start_app.sh` and `scripts/*.sh`)
+- **`pr-review-check`** (`.cursor/commands/pr-review-check.md`) - Pre-PR validation
+- **`lint-check`** (`.cursor/commands/lint-check.md`) - Standalone lint check command
+- **`project-audit`** (`.cursor/commands/project-audit.md`) - Project structure and standards validation
+- **`security_audit`** (`.cursor/commands/audit-security.mdc`) - Security vulnerabilities and secrets scan
+- **`full-project-health-check`** - Run all audits together (meta-command)
 - **`verify_access_control`** - Access control validation
+
+**Rules (Auto-Applied):**
+- **`.cursor/rules/linting.mdc`** - Linting behavior and expectations for AI agents (applies automatically)
+- **`.cursor/rules/supabase-rls-policy-review.mdc`** - Deep RLS policy analysis (applies automatically when Supabase detected)
+- **`.cursor/rules/workflow-standards-documentation-maintenance.mdc`** - Documentation maintenance requirements (project-specific to Workflow Rules repository)
 
 ### 8.3 Standards (Governing Documents)
 All standards are located in `standards/`:
 
 - **Documentation:** `standards/documentation.md` - Documentation management rules
+- **Documentation Index:** `docs/DOCUMENTATION_STANDARDS.md` - Comprehensive documentation guide and index
+- **Linting:** `standards/process/linting.md` - Linting requirements, tools, and policies
 - **Project Structure:** `standards/project-structure.md` - File organization standards
 - **Module Structure:** `standards/module-structure.md` - Module organization standards
 - **Security:** `standards/security/access-control.md` - Access control and RLS standards
@@ -204,14 +250,19 @@ All standards are located in `standards/`:
 
 | Situation | Command | Checklist | Standard |
 |-----------|---------|-----------|----------|
-| Starting new task | `pre_flight_check` | `pre_flight_checklist_v1_0.md` | - |
-| Launching dev env | `launch_application_dev` | - | `application-launch.md` |
-| Before PR | `pr_review_check` | `pr_review_checklist_v1_0.md` | - |
-| Onboarding repo | `project_audit` | `project_audit_checklist_v1_0.md` | `project-structure.md` |
-| Security review | `security_audit` | `security_audit_checklist_v1_0.md` | `security_audit_standards_v1_0.md` |
-| RLS deep dive | `rls_policy_review` | `rls_policy_review_checklist_v1_0.md` | `access-control.md` |
-| Full health check | `full_project_health_check` | All checklists | All standards |
+| Starting new task | `pre-flight-check` (`.cursor/commands/pre-flight-check.md`) | `pre_flight_checklist_v1_0.md` | - |
+| Launching dev env | `./start_app.sh dev` (or `create-start-scripts` if missing) | - | `application-launch.md` |
+| Before PR | `pr-review-check` (`.cursor/commands/pr-review-check.md`) | `pr_review_checklist_v1_0.md` | - |
+| Lint check | `lint-check` (`.cursor/commands/lint-check.md`) | `linting_checklist_v1_0.md` | `linting.md` |
+| Onboarding repo | `project-audit` (`.cursor/commands/project-audit.md`) | `project_audit_checklist_v1_0.md` | `project-structure.md` |
+| Security review | `security_audit` (`.cursor/commands/audit-security.mdc`) | `security-audit-checklist.md` | - |
+| RLS deep dive | Auto (Supabase rule) | `.cursor/rules/supabase-rls-policy-review.mdc` | `access-control.md` |
+| Full health check | `full-project-health-check` | All checklists | All standards |
+
+**Note:** Commands are located in `.cursor/commands/`, checklists in `standards/process/checklists/`, and standards in `standards/`.
 
 ---
 
-*Last Updated: 2025-11-25*
+*Last Updated: 2025-12-02*
+
+**Maintenance:** Update the "Last Updated" date whenever you modify this file. See `.cursor/rules/workflow-standards-documentation-maintenance.mdc` for comprehensive documentation update requirements.

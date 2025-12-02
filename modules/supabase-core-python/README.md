@@ -35,7 +35,7 @@ This module provides a comprehensive set of utilities for working with Supabase 
 Copy this module to your project:
 
 ```bash
-cp -r modules/supabase-core-python /path/to/your/project/lib/supabase_core_python
+cp -r modules/supabase-core-typescript-python /path/to/your/project/lib/supabase_core_python
 ```
 
 Install dependencies:
@@ -378,7 +378,7 @@ supabase gen types python --local > types/database_types.py
 
 ## Related Modules
 
-- `modules/supabase-core/` - TypeScript/Next.js version
+- `modules/supabase-core-typescript/` - TypeScript/Next.js version
 - `modules/auth-profile-sync/` - Authentication and profile management
 - `modules/backend-api/` - Standardized API handlers (TypeScript)
 

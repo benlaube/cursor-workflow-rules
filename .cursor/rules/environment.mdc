@@ -2,16 +2,73 @@
 description: Runtime Expectations & Environment Setup
 globs: "**/*"
 alwaysApply: true
+version: 1.1
+lastUpdated: 2025-12-02
 ---
 
 # Environment & Runtime Standards
+
+## Metadata
+- **Created:** 2025-11-17
+- **Last Updated:** 2025-12-02
+- **Version:** 1.1
+- **Description:** Runtime expectations, environment setup, and version numbering standards
+
+## Version Numbering Rules
+
+### Rule Files (`.cursor/rules/*.mdc`)
+- **Format:** Semantic versioning (X.Y.Z)
+- **Major (X):** Breaking changes or major architectural changes
+- **Minor (Y):** New features or significant additions
+- **Patch (Z):** Bug fixes, clarifications, or minor updates
+- **Update Required:** Version must be incremented whenever the file content changes
+- **Metadata:** Include version in frontmatter: `version: X.Y.Z`
+- **Example:** If adding a new section → increment minor version (1.0.0 → 1.1.0)
+
+### Command Files (`.cursor/commands/*.md`)
+- **Format:** Semantic versioning (X.Y.Z)
+- **Update Required:** Version must be incremented when:
+  - Command behavior changes
+  - New parameters or options are added
+  - Output format changes
+  - Dependencies or prerequisites change
+- **Metadata:** Include version in frontmatter or header comment
+- **Example:** `# Command: command-name v2.0.0`
+
+### Standards Files (`standards/**/*.md`)
+- **Format:** Semantic versioning (X.Y)
+- **Major (X):** Breaking changes or major standard revisions
+- **Minor (Y):** New guidelines, clarifications, or additions
+- **Update Required:** Version must be incremented when:
+  - New requirements are added
+  - Existing requirements are modified
+  - Examples or patterns are significantly updated
+- **Metadata:** Include in document header: `Version: X.Y`
+- **Example:** `# Standard_Name_v1.2`
+
+### Checklist Files (`docs/process/checklists/*.md`)
+- **Format:** Semantic versioning (X.Y)
+- **Update Required:** Version must be incremented when:
+  - New checklist items are added
+  - Existing items are modified or removed
+  - Validation criteria change
+- **Naming:** Include version in filename: `checklist_name_v1_0.md`
+- **Metadata:** Include in document header: `Version: X.Y`
+
+### General Guidelines
+- **Always increment version** when making changes (no exceptions)
+- **Update "Last Updated" date** in metadata when version changes
+- **Document version changes** in CHANGELOG.md for significant updates
+- **Consistent format:** Use semantic versioning across all file types
+- **Version in filename:** For checklists, include version in filename (e.g., `_v1_0.md`)
+- **Version in metadata:** For rules, commands, and standards, include in frontmatter or header
 
 ## 1. Runtime Expectations
 
 This project operates in a "Container-Like" local environment.
 - **Strict Isolation:** Dependencies must be local (`node_modules`, `.venv`). Do not rely on global system packages.
 - **Configuration:** All config comes from `.env` or the database. Hardcoded ports/URLs are forbidden.
-- **Launch:** Always use `.cursor/commands/launch.mdc` to start the app.
+- **Launch:** Always use `./start_app.sh` to start the app. If `start_app.sh` doesn't exist, run the `create-start-scripts` command (`.cursor/commands/create-start-scripts.md`) to generate it.
 
 ## 2. Local Docker Dev Environment
 
@@ -86,5 +143,5 @@ When working with Docker or Supabase containers in multi-project environments:
    - If unsure, ask the user which project should use the port.
 
 4.  **Error Recovery:**
-   - See `.cursor/rules/self_healing.mdc` Section 6 for detailed container management error recovery.
+   - See `.cursor/rules/auto-heal.mdc` Section 6 for detailed container management error recovery.
    - See `standards/architecture/supabase-local-setup.md` Section 10 for Supabase-specific container isolation guidelines.

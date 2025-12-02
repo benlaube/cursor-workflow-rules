@@ -22,7 +22,9 @@ import { createMockSupabase, createMockLogger } from './modules/testing-module';
 
 ## Dependencies
 
-- `vitest` - Testing framework (required)
+- `vitest` (^2.0.0) - Testing framework (required, peer dependency)
+  - Must be installed in your project: `npm install -D vitest`
+  - See [INTEGRATION_GUIDE.md](INTEGRATION_GUIDE.md) for setup instructions
 
 ## Usage
 

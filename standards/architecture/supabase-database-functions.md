@@ -316,7 +316,7 @@ GENERATED ALWAYS AS (public.calculate_reading_time(content)) STORED;
 ### 6.1 From JavaScript Client
 
 ```typescript
-import { createClient } from '@/modules/supabase-core'
+import { createClient } from '@/modules/supabase-core-typescript'
 
 const supabase = createClient()
 
@@ -468,7 +468,7 @@ $$;
 
 ```typescript
 // tests/database-functions.test.ts
-import { createServiceRoleClient } from '@/modules/supabase-core'
+import { createServiceRoleClient } from '@/modules/supabase-core-typescript'
 
 describe('Database Functions', () => {
   it('should validate email correctly', async () => {

@@ -6,14 +6,14 @@ Complete guide for integrating the Supabase Core Python module into your Python 
 
 ### 1. Copy Module Files
 
-Copy the entire `modules/supabase-core-python/` directory to your project:
+Copy the entire `modules/supabase-core-typescript-python/` directory to your project:
 
 ```bash
 # Option 1: Copy to lib directory
-cp -r modules/supabase-core-python lib/supabase_core_python
+cp -r modules/supabase-core-typescript-python lib/supabase_core_python
 
 # Option 2: Copy to src directory
-cp -r modules/supabase-core-python src/supabase_core_python
+cp -r modules/supabase-core-typescript-python src/supabase_core_python
 ```
 
 ### 2. Install Dependencies

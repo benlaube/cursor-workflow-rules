@@ -36,13 +36,13 @@
 
 ## 2. Proposed Enhancements
 
-### 2.1 Create `modules/supabase-core/` - Unified Utilities Module
+### 2.1 Create `modules/supabase-core-typescript/` - Unified Utilities Module
 
 **Purpose:** Centralized Supabase utilities that all other modules can use.
 
 **Structure:**
 ```
-modules/supabase-core/
+modules/supabase-core-typescript/
 ├── README.md
 ├── package.json
 ├── index.ts
@@ -182,7 +182,7 @@ modules/ai-agent-kit/
 ## 3. Implementation Priority
 
 ### Phase 1: Foundation (High Priority)
-1. ✅ Create `modules/supabase-core/` with basic utilities
+1. ✅ Create `modules/supabase-core-typescript/` with basic utilities
 2. ✅ Create `standards/architecture/supabase-ai-agent-guide.md`
 3. ✅ Add type generation setup
 4. ✅ Enhance error handling utilities

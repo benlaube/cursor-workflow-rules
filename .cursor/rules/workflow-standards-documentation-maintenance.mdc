@@ -1,0 +1,248 @@
+---
+description: Workflow Standards Project Documentation Maintenance & Update Requirements
+version: 1.0.0
+lastUpdated: 2025-12-02
+globs: "**/*"
+alwaysApply: true
+---
+
+# Workflow Standards Documentation Maintenance Rule
+
+> **NOTE:** This rule is specific to the **Workflow Rules / Coding Standards** repository. When this repository is integrated into other projects, this rule should be adapted or removed as it references project-specific documentation files (AGENTS.md, INTEGRATION_GUIDE.md, QUICK_INTEGRATION.md, etc.).
+
+## 1. When to Update Documentation
+
+**This rule applies specifically to the Workflow Rules / Coding Standards repository.**
+
+The AI agent MUST review and update documentation whenever:
+
+- **Feature Changes:** New features, modules, or capabilities are added
+- **Architecture Changes:** System architecture, patterns, or design decisions change
+- **Standards Updates:** Coding standards, conventions, or best practices are modified
+- **Process Changes:** Development workflows, commands, or checklists are updated
+- **Module Changes:** Modules are added, removed, or significantly modified
+- **API Changes:** API endpoints, interfaces, or contracts change
+- **Configuration Changes:** Environment variables, settings, or configuration patterns change
+- **Breaking Changes:** Any change that affects backward compatibility
+
+## 2. Required Documentation Files to Update
+
+When making any documentation or feature change, review and update these files as applicable:
+
+### 2.1 Root-Level Documentation
+
+1. **`AGENTS.md`** - Project context and memory (project-specific file)
+   - **When:** Architecture changes, new patterns, major milestones
+   - **What to Update:**
+     - Section 1: Project Mission (if mission changes)
+     - Section 2: Current Phase (when phase changes)
+     - Section 3: Active Context (keep fresh with current work)
+     - Section 4: System Architecture Highlights (when stack/architecture changes)
+     - Section 5: Persistent Memory (add learnings and patterns)
+     - Section 6: Standard Developer Lifecycle (if workflow changes)
+     - Section 8: Related Checklists & Commands (if commands/checklists change)
+     - Section 9: Quick Reference table (if commands/checklists change)
+   - **Note:** `templates/general/AGENTS-TEMPLATE.md` is the template version for other projects
+
+2. **`CHANGELOG.md`** - Change history
+   - **When:** ANY feature, change, or significant update
+   - **What to Update:**
+     - Add entry under `[Unreleased]` section
+     - Include timestamp (format: `YYYY-MM-DD HH:MM:SS`)
+     - Categorize as: Added, Changed, Deprecated, Removed, Fixed, Security
+     - Provide clear description of what changed and why
+     - Reference related files, modules, or standards
+   - **Format:** See `standards/documentation.md` Section 7 for changelog guidelines
+
+3. **`README.md`** - Project overview and quick start
+   - **When:** Project structure, modules, or quick start instructions change
+   - **What to Update:**
+     - Directory layout (if structure changes)
+     - Module list (if modules added/removed)
+     - Quick start instructions (if setup process changes)
+     - AI Agent Instructions (if workflow changes)
+   - **Note:** Keep high-level; detailed instructions belong in `INTEGRATION_GUIDE.md`
+
+4. **`INTEGRATION_GUIDE.md`** - Detailed integration instructions
+   - **When:** Integration process, commands, or file structure changes
+   - **What to Update:**
+     - File lists and verification steps (if files change)
+     - Integration steps (if process changes)
+     - Adaptation instructions (if configuration changes)
+     - Troubleshooting section (if new issues discovered)
+     - Checklist items (if requirements change)
+
+5. **`QUICK_INTEGRATION.md`** - Quick reference for integration
+   - **When:** Integration file lists or quick steps change
+   - **What to Update:**
+     - Copy commands (if file paths change)
+     - Verification checklist (if files change)
+     - Required adaptations list (if configuration changes)
+   - **Note:** Keep concise; detailed instructions in `INTEGRATION_GUIDE.md`
+
+### 2.2 Module-Level Documentation
+
+6. **Module README.md files** (`modules/{module-name}/README.md`)
+   - **When:** Module features, API, or usage changes
+   - **What to Update:**
+     - Feature list (if capabilities change)
+     - API documentation (if interfaces change)
+     - Usage examples (if usage patterns change)
+     - Installation/setup instructions (if setup changes)
+     - Integration guide (if integration process changes)
+   - **Location:** Each module should have its own README.md
+
+7. **Module Integration Guides** (`modules/{module-name}/INTEGRATION_GUIDE.md`)
+   - **When:** Module integration process or requirements change
+   - **What to Update:**
+     - Step-by-step integration instructions
+     - Configuration requirements
+     - Dependencies and prerequisites
+     - Troubleshooting section
+
+## 3. Update Process
+
+### 3.1 Before Making Changes
+
+1. **Identify Impact:** Determine which documentation files are affected
+2. **Read Current Docs:** Review existing documentation to understand current state
+3. **Plan Updates:** Note what needs to be updated in each file
+
+### 3.2 During Changes
+
+1. **Update Code/Features First:** Make the actual changes
+2. **Update Documentation Simultaneously:** Don't leave documentation for later
+3. **Keep Documentation in Sync:** Update docs as you make changes
+
+### 3.3 After Making Changes
+
+1. **Review All Affected Files:** Check each file listed in Section 2
+2. **Update Timestamps:** Update "Last Updated" metadata where applicable
+3. **Update Version Numbers:** Increment version in metadata if significant change
+4. **Verify Cross-References:** Ensure all links and references are correct
+5. **Check Consistency:** Ensure information is consistent across all files
+
+## 4. Documentation Update Checklist
+
+When making a change, use this checklist:
+
+- [ ] **AGENTS.md** - Updated if architecture, patterns, or workflow changed
+- [ ] **CHANGELOG.md** - Always updated with timestamp and description
+- [ ] **README.md** - Updated if structure, modules, or quick start changed
+- [ ] **INTEGRATION_GUIDE.md** - Updated if integration process changed
+- [ ] **QUICK_INTEGRATION.md** - Updated if file lists or quick steps changed
+- [ ] **Module README.md** - Updated if module features or API changed
+- [ ] **Module INTEGRATION_GUIDE.md** - Updated if module integration changed
+- [ ] **Cross-references** - All links and references verified
+- [ ] **Timestamps** - "Last Updated" metadata updated
+- [ ] **Version numbers** - Incremented if significant change
+
+## 5. Documentation Standards
+
+Follow these standards when updating documentation:
+
+- **Format:** Follow `standards/documentation.md` for format requirements
+- **Metadata:** Include Created, Last Updated, Version, Description in frontmatter
+- **Versioning:** Use semantic versioning (X.Y format) for standards
+- **Timestamps:** Use format `YYYY-MM-DD HH:MM:SS` in CHANGELOG.md
+- **Naming:** Use underscore-separated, versioned titles (e.g., `Documentation_Guide_v1.0`)
+- **Cross-References:** Always use relative paths and verify links work
+- **Consistency:** Ensure information is consistent across all documentation
+
+## 6. Special Cases
+
+### 6.1 Breaking Changes
+
+For breaking changes, additionally:
+- Add "BREAKING" prefix in CHANGELOG.md
+- Update migration guides if applicable
+- Update version numbers (major version bump)
+- Add deprecation notices if applicable
+
+### 6.2 New Modules
+
+When adding a new module:
+- Create `modules/{module-name}/README.md`
+- Create `modules/{module-name}/INTEGRATION_GUIDE.md` (if needed)
+- Update `README.md` directory layout
+- Update `AGENTS.md` if module affects architecture
+- Add entry to `CHANGELOG.md`
+
+### 6.3 Removed Features
+
+When removing features:
+- Mark as "Deprecated" in CHANGELOG.md first (if possible)
+- Add "Removed" entry in CHANGELOG.md
+- Remove from README.md and other documentation
+- Update any code examples or references
+
+## 7. Verification
+
+After updating documentation:
+
+1. **Readability Check:** Read through updated sections for clarity
+2. **Completeness Check:** Ensure all relevant information is included
+3. **Accuracy Check:** Verify technical details are correct
+4. **Consistency Check:** Ensure information matches across files
+5. **Link Check:** Verify all cross-references work
+
+## 8. Integration with Task Workflow
+
+This rule integrates with `task-workflow.mdc`:
+
+- **Before Task:** Review relevant documentation to understand current state
+- **During Task:** Update documentation as you make changes
+- **After Task:** Complete documentation update checklist before marking task complete
+
+## 9. Examples
+
+### Example 1: Adding a New Module
+
+**Changes Made:**
+- Created `modules/new-module/` with implementation
+- Added new module to project
+
+**Documentation Updates Required:**
+- ✅ `CHANGELOG.md` - Add "Added" entry with timestamp
+- ✅ `README.md` - Add to modules list in directory layout
+- ✅ `modules/new-module/README.md` - Create new README
+- ✅ `AGENTS.md` - Update if module affects architecture (Section 4 or 5)
+
+### Example 2: Updating a Command
+
+**Changes Made:**
+- Modified `.cursor/commands/pre_flight_check.md`
+- Updated checklist path references
+
+**Documentation Updates Required:**
+- ✅ `CHANGELOG.md` - Add "Changed" entry with timestamp
+- ✅ `AGENTS.md` - Update Section 8.2 if command description changed
+- ✅ `INTEGRATION_GUIDE.md` - Update if command integration changed
+- ✅ `QUICK_INTEGRATION.md` - Update if command file name changed
+
+### Example 3: Architecture Change
+
+**Changes Made:**
+- Changed from single-tenant to multi-tenant architecture
+- Updated database schema
+
+**Documentation Updates Required:**
+- ✅ `CHANGELOG.md` - Add "Changed" entry (potentially "BREAKING")
+- ✅ `AGENTS.md` - Update Section 4 (Architecture) and Section 5 (Memory)
+- ✅ `README.md` - Update if architecture affects quick start
+- ✅ `standards/architecture/` - Update relevant architecture docs
+- ✅ Any module READMEs affected by the change
+
+---
+
+## 10. Project-Specific Note
+
+**This rule is designed for the Workflow Rules / Coding Standards repository.**
+
+When integrating this repository into other projects:
+- **Adapt this rule** to match the target project's documentation structure
+- **Remove references** to files that don't exist in the target project (e.g., `INTEGRATION_GUIDE.md`, `QUICK_INTEGRATION.md`)
+- **Add references** to project-specific documentation files
+- **Keep the core principle:** Update documentation when features or architecture change
+
+**Remember:** Documentation is part of the code. Keep it updated, accurate, and consistent. If you're unsure whether to update a file, err on the side of updating it.

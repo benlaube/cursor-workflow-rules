@@ -12,7 +12,7 @@
   "peerDependencies": {
     "@modules/error-handler": "*",
     "@modules/logger-module": "*",
-    "@modules/supabase-core": "*"
+    "@modules/supabase-core-typescript": "*"
   }
 }
 

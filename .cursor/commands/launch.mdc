@@ -1,11 +1,13 @@
 ---
-description: Launch the application (Dev or Prod) with standardized environment checks.
+description: Launch the application (Dev or Prod) using start_app.sh script. Generates launch scripts if missing.
+version: 2.0.0
+lastUpdated: 2025-12-02
 globs: 
 ---
 
 # Launch Application Command
 
-Use this command to reliably start the application. It handles stack detection, dependency installation, environment validation, and port management automatically.
+Use this command to reliably start the application. It uses the `start_app.sh` script (or generates it if missing) to handle stack detection, dependency installation, environment validation, and port management automatically.
 
 ## Usage
 
@@ -21,7 +23,30 @@ Use this command to reliably start the application. It handles stack detection, 
 
 ## Execution Steps
 
-### 1. Context & Stack Detection
+### 0. Check for Launch Scripts (CRITICAL FIRST STEP)
+1. **Check if `start_app.sh` exists:**
+   - Run: `test -f ./start_app.sh`
+   - If **exists**: Proceed to Step 1 (Launch using script)
+   - If **missing**: Run `create-start-scripts` command (`.cursor/commands/create-start-scripts.md`) first
+     - This will generate `start_app.sh` and `scripts/start_dev.sh`, `scripts/start_prod.sh`
+     - After generation, proceed to Step 1
+
+### 1. Launch Using start_app.sh
+1. **Determine mode:**
+   - Use `env` parameter: `dev` (default) or `prod`
+   - If `env` not provided, default to `dev`
+2. **Execute launch script:**
+   - For dev: `./start_app.sh dev [SERVICE]`
+   - For prod: `./start_app.sh prod [SERVICE]`
+   - If `service` parameter provided, pass it as second argument
+3. **Verify execution:**
+   - Check that script runs successfully
+   - Monitor output for any errors
+   - Script handles all stack detection, dependencies, and port management internally
+
+### 2. Fallback: Manual Launch (if start_app.sh fails)
+*Only use if start_app.sh fails and cannot be fixed*
+
 1.  **Service Selection:**
     - If `service` argument is provided, `cd` into that directory.
     - Else, detect if root is the app or a monorepo.
@@ -30,7 +55,9 @@ Use this command to reliably start the application. It handles stack detection, 
     - **Python:** Look for `requirements.txt`, `pyproject.toml`, or `Pipfile`.
     - **Docker:** Look for `docker-compose.yml`.
 
-### 2. Configuration Resolution
+### 3. Configuration Resolution (Fallback Only)
+*Only used if start_app.sh fails*
+
 1.  **Environment File:**
     - Ensure `.env` (or `.env.local` for Next.js) exists.
     - If missing, copy from `.env.example` (if available) and notify the user to fill secrets.
@@ -43,20 +70,22 @@ Use this command to reliably start the application. It handles stack detection, 
     - Default `PORT`: 3000 (Node), 8000 (Python/Django), 54321 (Supabase API).
     - Default `PROJECT_ROOT_URL`: `http://localhost:<PORT>`.
 
-### 3. Dependency Validation (Self-Healing)
-*Unless `skip-install=true`*
+### 4. Dependency Validation (Fallback Only)
+*Only used if start_app.sh fails. Unless `skip-install=true`*
+
 1.  **Node:** Check `node_modules`. If missing/stale, run `npm install` (or `yarn`/`pnpm`).
 2.  **Python:** Check `.venv`. If missing, create it and run `pip install -r requirements.txt`.
 
-### 4. Pre-Flight Checks
-*Unless `skip-tests=true`*
+### 5. Pre-Flight Checks (Fallback Only)
+*Only used if start_app.sh fails. Unless `skip-tests=true`*
+
 1.  Run fast checks: `npm run lint` or `npm test` (unit only).
 2.  If checks fail, **ABORT** and report errors.
 
-### 5. Launch Sequence
+### 6. Manual Launch Sequence (Fallback Only)
+*Only use if start_app.sh fails and cannot be fixed*
 
 #### A. Development (`env=dev`)
-*Command: `launch_application_dev`*
 
 1.  **Supabase Startup (if applicable):**
     - If `supabase/` directory exists, check if Supabase is running: `supabase status`
@@ -75,7 +104,6 @@ Use this command to reliably start the application. It handles stack detection, 
     - Output: "🚀 Application running at `PROJECT_ROOT_URL`"
 
 #### B. Production (`env=prod`)
-*Command: `launch_application_prod`*
 
 1.  **Build:** `npm run build` (Node) or compile steps.
 2.  **Start:** `npm start` or production runner (e.g., `gunicorn`).
@@ -85,6 +113,13 @@ Use this command to reliably start the application. It handles stack detection, 
 
 ## Error Handling
 
+### Primary (start_app.sh)
+- **Script Missing:** Automatically run `create-start-scripts` command to generate launch scripts
+- **Script Execution Failure:** Check script permissions (`chmod +x start_app.sh`), verify script syntax, check error output
+- **Port Conflicts:** Handled by start_app.sh scripts (auto-fix via self-healing)
+- **Missing Dependencies:** Handled by start_app.sh scripts (auto-install)
+
+### Fallback (Manual Launch)
 - **Port Conflicts:** "Port X is busy. Killing PID Y..." (Auto-fix)
   - **For Supabase ports:** Verify container ownership with `supabase status` before stopping. Only stop containers belonging to the current project.
 - **Missing Dependencies:** "node_modules missing. Installing..." (Auto-fix)

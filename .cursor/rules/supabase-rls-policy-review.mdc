@@ -1,0 +1,256 @@
+---
+description: Supabase Row Level Security (RLS) Policy Review - Deep-dive validation of database security policies. Applies when Supabase is detected in the project.
+version: 1.0.0
+lastUpdated: 2025-12-02
+globs: "**/*.sql"
+alwaysApply: false
+---
+
+# Supabase RLS Policy Review Rule
+
+**When to Apply:** This rule applies automatically when:
+- `supabase/` directory is present in the project, OR
+- `SUPABASE_URL` or `SUPABASE_ANON_KEY` environment variables are detected, OR
+- Working on database security, RLS policies, or Supabase-related database tasks
+
+**Reference Standard:** `standards/security/access-control.md`
+
+---
+
+## Purpose
+
+This rule guides the AI agent to perform comprehensive reviews of Row Level Security (RLS) policies in Supabase/PostgreSQL databases. It validates enablement, policy logic, mutation safety, role-based access, and leakage prevention.
+
+## When to Review RLS Policies
+
+Review RLS policies when:
+- Creating or modifying database tables
+- Adding or updating RLS policies
+- Performing security audits
+- Before deploying database changes
+- When asked to "review RLS policies", "check database security", or "audit RLS"
+
+---
+
+## Review Procedure
+
+### 1. Enumerate Tables with RLS
+
+**Using Supabase MCP or direct database connection:**
+
+1. **List All Tables:**
+   - Query: `SELECT tablename FROM pg_tables WHERE schemaname = 'public'`
+   - For each table, check RLS status: `SELECT tablename, rowsecurity FROM pg_tables WHERE schemaname = 'public' AND tablename = '<table>'`
+
+2. **Identify Tables Without RLS:**
+   - List tables where `rowsecurity = false`
+   - Warn: "⚠️ Table `<table>` does not have RLS enabled"
+   - **Action:** Enable RLS immediately: `ALTER TABLE <table> ENABLE ROW LEVEL SECURITY;`
+
+3. **Output:**
+   - ✅ "RLS enabled on all public tables"
+   - Or list tables without RLS with suggested fixes
+
+### 2. Policy Enumeration
+
+1. **Get All Policies:**
+   - Query: `SELECT schemaname, tablename, policyname, permissive, roles, cmd, qual, with_check FROM pg_policies WHERE schemaname = 'public'`
+   - Group by table
+
+2. **Policy Analysis:**
+   - For each policy, extract:
+     - Policy name
+     - Operation (SELECT, INSERT, UPDATE, DELETE, ALL)
+     - `qual` (USING clause)
+     - `with_check` (WITH CHECK clause)
+     - Roles
+
+### 3. Policy Logic Validation
+
+#### 3.1 Tenancy Check
+**Check for Tenant Enforcement:**
+- Look for `tenant_id` in policy conditions
+- Pattern: `tenant_id = (select tenant_id from auth_users where id = auth.uid())`
+- Report policies missing tenant checks on multi-tenant tables
+- **Action:** Add tenant isolation for multi-tenant tables
+
+#### 3.2 Ownership Check
+**Check for User Ownership:**
+- Look for `user_id = auth.uid()` or `created_by = auth.uid()`
+- Report policies missing ownership checks
+- **Action:** Add ownership checks to prevent unauthorized access
+
+#### 3.3 Public Data Validation
+**Check for `using (true)`:**
+- If found, verify it's ONLY for SELECT operations
+- Warn if `using (true)` is used for INSERT/UPDATE/DELETE
+- **Critical:** `using (true)` on mutations allows anyone to modify data
+- **Action:** Restrict `using (true)` to SELECT-only policies
+
+#### 3.4 Recursion Check
+**Check for Recursive Queries:**
+- Look for policies that query the same table they protect
+- Example: `using (id in (select id from same_table where ...))`
+- Warn about potential infinite recursion
+- **Action:** Refactor recursive policies to use joins or functions
+
+### 4. Mutation Safety Validation
+
+#### 4.1 UPDATE Scope Check
+**Check WITH CHECK Clauses:**
+- Verify UPDATE policies have `WITH CHECK` clauses
+- Check if `WITH CHECK` prevents ownership changes
+- Pattern: `WITH CHECK (user_id = auth.uid())` prevents changing `user_id`
+- **Risk:** User A can change `user_id` to User B, stealing the record
+- **Action:** Add `WITH CHECK` clauses to prevent ownership changes
+
+#### 4.2 INSERT Integrity Check
+**Check INSERT Policies:**
+- Verify INSERT policies force `user_id` to match `auth.uid()`
+- Pattern: `WITH CHECK (user_id = auth.uid())`
+- Report policies missing user_id enforcement
+- **Action:** Enforce user_id matching on INSERT
+
+### 5. Role-Based Access Validation
+
+#### 5.1 Source of Truth Check
+**Check Role Sources:**
+- Look for policies using `auth.jwt() ->> 'role'` (✅ Secure)
+- Look for policies using `SELECT role FROM profiles WHERE id = auth.uid()` (❌ Insecure)
+- **Why:** Users can edit their profile table, making role checks insecure
+- **Action:** Use `auth.jwt()` claims for role checks, not public table columns
+
+**Pattern Matching:**
+- ✅ Secure: `(auth.jwt() ->> 'role') = 'admin'`
+- ❌ Insecure: `(SELECT role FROM profiles WHERE id = auth.uid()) = 'admin'`
+
+### 6. Leakage Prevention Check
+
+#### 6.1 Error Message Analysis
+**Check Error Handling:**
+- Verify RLS failures return empty sets `[]`, not detailed errors
+- Detailed errors reveal record existence (information leakage)
+- This is typically handled at application level, but document expectation
+
+#### 6.2 Views Security
+**Check View Security:**
+- Query: `SELECT viewname, viewowner FROM pg_views WHERE schemaname = 'public'`
+- Check if views use `security_invoker`
+- Report views that may bypass RLS
+- **Action:** Ensure views inherit RLS from underlying tables
+
+### 7. Generate Policy Health Report
+
+1. **Create Table Summary:**
+   ```
+   | Table | RLS Enabled | Policies | Tenant Check | Ownership Check | Mutation Safe | Role Source | Status |
+   |-------|-------------|----------|--------------|-----------------|---------------|-------------|--------|
+   | users | ✅          | 3        | ✅           | ✅              | ✅            | ✅          | ✅      |
+   | posts | ✅          | 2        | ❌           | ✅              | ⚠️            | ✅          | ⚠️      |
+   ```
+
+2. **Generate Suggestions:**
+   - Provide policy patterns for missing/weak policies
+   - Include example SQL for fixing issues
+   - Reference `standards/security/access-control.md` for patterns
+
+---
+
+## Output Format
+
+### Success Case
+```
+✅ RLS Policy Review complete.
+
+Summary:
+- All tables have RLS enabled
+- All policies enforce tenant isolation
+- All policies enforce ownership
+- Mutation policies are secure
+- Role sources are secure (using auth.jwt())
+
+Database security is strong.
+```
+
+### Failure Case
+```
+⚠️ RLS Policy Review found issues.
+
+Issues Found:
+
+**Tables Without RLS:**
+- ❌ `public.audit_logs` - RLS not enabled
+
+**Missing Tenant Checks:**
+- ⚠️ `public.posts` - INSERT policy missing tenant_id check
+- ⚠️ `public.comments` - UPDATE policy missing tenant_id check
+
+**Missing Ownership Checks:**
+- ⚠️ `public.posts` - UPDATE policy allows changing user_id
+
+**Insecure Role Sources:**
+- ❌ `public.admin_settings` - Policy uses `SELECT role FROM profiles` instead of `auth.jwt()`
+
+**Mutation Safety Issues:**
+- ⚠️ `public.posts` - UPDATE policy missing WITH CHECK clause
+
+---
+
+Suggested Fixes:
+
+1. Enable RLS on `public.audit_logs`:
+```sql
+ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
+```
+
+2. Add tenant check to `public.posts` INSERT policy:
+```sql
+CREATE POLICY "posts_insert_tenant" ON public.posts
+  FOR INSERT
+  WITH CHECK (
+    tenant_id = (SELECT tenant_id FROM auth.users WHERE id = auth.uid())
+  );
+```
+
+3. Fix ownership change prevention on `public.posts`:
+```sql
+ALTER POLICY "posts_update" ON public.posts
+  USING (user_id = auth.uid())
+  WITH CHECK (user_id = auth.uid());
+```
+```
+
+---
+
+## Integration with Other Workflows
+
+This rule is automatically applied when:
+- Running `security_audit` (deep mode)
+- Running `project_audit` (deep mode)
+- Running `full_project_health_check`
+- Working on database migrations or schema changes
+- Creating or modifying RLS policies
+
+---
+
+## Related Standards
+
+- `standards/security/access-control.md` - Access control and RLS standards
+- `standards/database/schema.md` - Database schema conventions
+
+---
+
+## Agent Instructions
+
+**When reviewing RLS policies:**
+1. Check if Supabase is present in the project
+2. If yes, automatically apply this review procedure
+3. Use Supabase MCP or direct database connection to query policies
+4. Generate a comprehensive report with specific SQL fixes
+5. Reference `standards/security/access-control.md` for secure patterns
+
+**When creating new tables:**
+1. Always enable RLS immediately: `ALTER TABLE <table> ENABLE ROW LEVEL SECURITY;`
+2. Create policies following patterns in `standards/security/access-control.md`
+3. Verify policies prevent ownership changes and enforce tenant isolation
+4. Use `auth.jwt()` for role checks, not public table columns

@@ -1,3 +1,9 @@
+---
+description: Create or update a Project Rule that binds this repo to a Notion Dev Project.
+version: 2.0.0
+lastUpdated: 2025-12-02
+---
+
 # notion-create-project-binding-rule
 
 # Command: notion-create-project-binding-rule

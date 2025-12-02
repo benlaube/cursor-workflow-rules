@@ -1,3 +1,9 @@
+---
+description: Sync project metadata (status, last updated, repository info, etc.) to the bound Notion Dev Project.
+version: 1.0.0
+lastUpdated: 2025-12-02
+---
+
 # notion-sync-project-metadata
 
 # Command: notion-sync-project-metadata

@@ -95,7 +95,7 @@ Before merging, the Reviewer (AI or Human) must verify:
 - [ ] CI/CD checks pass.
 - [ ] No secrets are exposed.
 - [ ] Code follows style guide.
-- [ ] `docs/process/checklists/pr_review_checklist_v1_0.md` has been followed.
+- [ ] `standards/development-checklists/pr-review-checklist.md` has been followed.
 
 ---
 

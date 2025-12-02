@@ -38,7 +38,7 @@ Store `tenant_id` in `app_metadata` so it's available in every JWT token.
 
 ```typescript
 // When user joins/creates tenant
-import { createServiceRoleClient } from '@/modules/supabase-core'
+import { createServiceRoleClient } from '@/modules/supabase-core-typescript'
 
 const adminSupabase = createServiceRoleClient()
 
@@ -122,7 +122,7 @@ Combine JWT claims (for active tenant) with membership table (for all tenants).
 ### 3.1 Getting Current Tenant
 
 ```typescript
-import { createServerClient, getServerUser } from '@/modules/supabase-core'
+import { createServerClient, getServerUser } from '@/modules/supabase-core-typescript'
 
 // In API route or Server Component
 const supabase = await createServerClient()
@@ -144,7 +144,7 @@ if (!tenantId) {
 
 ```typescript
 // When user switches tenants
-import { createServiceRoleClient } from '@/modules/supabase-core'
+import { createServiceRoleClient } from '@/modules/supabase-core-typescript'
 
 const adminSupabase = createServiceRoleClient()
 
@@ -296,8 +296,8 @@ USING (
 
 ```typescript
 // User signs up and creates a new tenant
-import { createClient } from '@/modules/supabase-core'
-import { createServiceRoleClient } from '@/modules/supabase-core'
+import { createClient } from '@/modules/supabase-core-typescript'
+import { createServiceRoleClient } from '@/modules/supabase-core-typescript'
 
 const supabase = createClient()
 
@@ -349,7 +349,7 @@ await adminSupabase.from('tenant_memberships').insert({
 
 ```typescript
 // Admin invites user to tenant
-import { createServiceRoleClient } from '@/modules/supabase-core'
+import { createServiceRoleClient } from '@/modules/supabase-core-typescript'
 
 const adminSupabase = createServiceRoleClient()
 
@@ -419,8 +419,8 @@ async function inviteUserToTenant(
 
 ```typescript
 // User accepts invitation and sets tenant as active
-import { createClient } from '@/modules/supabase-core'
-import { createServiceRoleClient } from '@/modules/supabase-core'
+import { createClient } from '@/modules/supabase-core-typescript'
+import { createServiceRoleClient } from '@/modules/supabase-core-typescript'
 
 const supabase = createClient()
 const adminSupabase = createServiceRoleClient()
@@ -465,7 +465,7 @@ async function acceptTenantInvitation(userId: string, tenantId: string) {
 
 ```typescript
 // Get all tenants a user belongs to
-import { createServerClient, getServerUser } from '@/modules/supabase-core'
+import { createServerClient, getServerUser } from '@/modules/supabase-core-typescript'
 
 const supabase = await createServerClient()
 const user = await getServerUser(supabase)
@@ -487,8 +487,8 @@ const availableTenants = user.app_metadata?.available_tenants || []
 
 ```typescript
 // User switches to a different tenant
-import { createClient } from '@/modules/supabase-core'
-import { createServiceRoleClient } from '@/modules/supabase-core'
+import { createClient } from '@/modules/supabase-core-typescript'
+import { createServiceRoleClient } from '@/modules/supabase-core-typescript'
 
 const supabase = createClient()
 const adminSupabase = createServiceRoleClient()
@@ -685,7 +685,7 @@ export const POST = createApiHandler({
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClient } from '@/modules/supabase-core'
+import { createClient } from '@/modules/supabase-core-typescript'
 
 export function TenantSelector() {
   const [tenants, setTenants] = useState([])

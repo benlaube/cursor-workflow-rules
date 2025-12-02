@@ -12,7 +12,7 @@
 # From the new project root, assuming this repo is cloned or accessible:
 cp -r /path/to/workflow-standards/.cursor .cursor
 cp -r /path/to/workflow-standards/docs/process docs/process
-cp /path/to/workflow-standards/AGENTS.md AGENTS.md
+cp /path/to/workflow-standards/templates/general/AGENTS-TEMPLATE.md AGENTS.md
 cp /path/to/workflow-standards/CHANGELOG.md CHANGELOG.md
 ```
 
@@ -22,18 +22,18 @@ After copying, verify:
 
 ```bash
 # Check rules exist
-ls .cursor/rules/        # Should show: ai-interaction-rules.md, environment.mdc, self_healing.mdc, task_workflow.mdc
+ls .cursor/rules/        # Should show: ai-interaction-rules.md, environment.mdc, self-healing.mdc, task-workflow.mdc
 
 # Check commands exist
 ls .cursor/commands/     # Should show: launch.mdc, security-audit.mdc, verify-access-control.mdc
 
 # Check checklists exist
-ls docs/process/checklists/  # Should show: pre_flight_checklist_v1_0.md, pr_review_checklist_v1_0.md, etc.
+ls standards/development-checklists/  # Should show: pre-flight-checklist.md, pr-review-checklist.md, project-audit-checklist.md
 ```
 
 ## Required Adaptations
 
-1. **AGENTS.md** - Fill in project mission, phase, and architecture
+1. **AGENTS.md** (copied from templates/general/AGENTS-TEMPLATE.md) - Fill in project mission, phase, and architecture
 2. **.cursor/rules/environment.mdc** - Verify ports and stack match
 3. **.cursor/commands/launch.mdc** - Verify startup process matches
 

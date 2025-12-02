@@ -1,0 +1,97 @@
+---
+description: Standard Task Workflow
+version: 1.1.0
+lastUpdated: 2025-12-02
+globs: "**/*"
+alwaysApply: true
+---
+
+# Task Workflow Rule
+
+## 1. Before Starting a Task (Pre-Flight)
+
+Before writing code, the agent MUST:
+1.  **Check Structure:** specific to the project (see `standards/project-structure.md`).
+2.  **Run Pre-Flight:** Use `.cursor/commands/pre-flight-check.md` command or manually review `standards/development-checklists/pre-flight-checklist.md`.
+3.  **Verify Environment:** Ensure the app is launchable via `.cursor/commands/launch.mdc`. If `start_app.sh` doesn't exist, run `create-start-scripts` command (`.cursor/commands/create-start-scripts.md`) to generate launch scripts.
+4.  **Temporal Awareness:** For time-sensitive tasks, verify current date using `date` command (see `.cursor/rules/environment.mdc` Section 5).
+5.  **Check Notion Tasks (If Project is Bound):** If a Notion Project Binding rule exists:
+    - Query the Notion "Dev Tasks" database for open tasks linked to this project.
+    - Review any high-priority or in-progress tasks that might be relevant to current work.
+    - Consider whether the current task should be tracked in Notion.
+
+## 2. During Development
+
+1.  **Atomic Changes:** Make small, testable changes.
+2.  **Self-Correction:** If a command fails, attempt to self-heal (see `.cursor/rules/auto-heal.mdc`) before asking the user.
+3.  **Tool Usage:** Use specialized tools (`read_file`, `grep`) over generic terminal commands.
+4.  **Function Documentation:** Every function must have comments with description and dependencies (per user rules).
+5.  **Database Schema Requirements:** When creating/modifying database tables:
+    - Ensure tables and fields have descriptions
+    - Use descriptive names (not abbreviated)
+    - Include `created_at` and `updated_at` columns
+    - See user rules for complete requirements
+6.  **Notion Task Creation (If Project is Bound):** If a Notion Project Binding rule exists:
+    - When discovering bugs that can't be fixed immediately, create a task in Notion "Dev Tasks" database.
+    - When work is incomplete and must be paused, create a task to track the remaining work.
+    - When identifying future development items or technical debt, create tasks proactively.
+    - Follow the guidelines in the Notion Task Creation rule (created by `.cursor/commands/notion-task-creation`).
+
+## 3. After Completing a Task (Post-Flight)
+
+Before confirming completion:
+1.  **Run Review:** Use `.cursor/commands/pr-review-check.md` command or manually review `standards/development-checklists/pr-review-checklist.md`.
+2.  **Update Docs:** 
+    - Update `CHANGELOG.md` for user-facing changes (see `standards/documentation.md` Section 7 for format guidelines).
+    - For database schema changes, update `CHANGELOG-DATABASE.md` with timestamped entries (per user rules).
+    - Update relevant `standards/` if architecture changed.
+    - Follow `.cursor/rules/workflow-standards-documentation-maintenance.mdc` for comprehensive documentation update requirements.
+3.  **Verify Launch:** Run `.cursor/commands/launch.mdc` one last time to ensure no regression.
+4.  **Launch & Debug Dev Server:** After completing a task or integration:
+    - Launch the development server using `.cursor/commands/launch.mdc` so the user can see changes and test them. This should be done automatically unless the user explicitly requests otherwise.
+    - If errors occur during launch, use `launch-debug-fix` command (`.cursor/commands/launch-debug-fix.md` - if available) to iteratively debug and auto-heal errors until the dev environment is healthy.
+    - The `launch-debug-fix` command integrates with `.cursor/rules/auto-heal.mdc` for automatic error recovery (port conflicts, missing dependencies, database connections, etc.).
+5.  **Update Notion (If Project is Bound):** If a Notion Project Binding rule exists:
+    - Update any related Notion tasks: Set status to "Done" and add a comment with commit hash/PR number.
+    - Sync project metadata to Notion "Dev Projects" database if significant changes occurred (see `.cursor/commands/notion-sync-project-metadata`).
+    - Create new tasks for any follow-up work or technical debt discovered during the task.
+
+## 4. Periodic Maintenance & Audits
+
+Before major releases, refactoring, or weekly/monthly for active projects, run periodic audits:
+
+- **Project Audit:** Run `project-audit` command (`.cursor/commands/project-audit.md`) for full project structure validation.
+- **Security Audit:** Run `security_audit` command (`.cursor/commands/audit-security.mdc`) for security vulnerabilities scan.
+- **Full Health Check:** Run `full-project-health-check` meta-command to run all audits together.
+
+**Checklists:**
+- `standards/development-checklists/project-audit-checklist.md`
+- `standards/security/security-audit-checklist.md`
+
+**When to Run:**
+- When onboarding a new repository
+- Before major refactoring
+- Before major releases
+- Weekly/monthly for active projects
+
+See `AGENTS.md` Section 6.5 for full lifecycle context.
+
+## 5. Documentation & Versioning
+
+- **Documentation Standards:** Follow `standards/documentation.md` for documentation management rules.
+- **Documentation Maintenance:** Follow `.cursor/rules/workflow-standards-documentation-maintenance.mdc` for comprehensive documentation update requirements.
+- **Changelogs:** 
+  - Update `CHANGELOG.md` for user-facing changes (see `standards/documentation.md` Section 7 for format guidelines).
+  - Update `CHANGELOG-DATABASE.md` for database schema changes (per user rules).
+- **Versioning:** If editing a standard or documentation file, increment the version metadata at the top of the file (see `.cursor/rules/environment.mdc` for version numbering rules).
+- **New Features:** If you added a new feature, ensure it is documented in `standards/` or `docs/`.
+
+## 6. Related Rules & Standards
+
+This rule integrates with the following related rules and standards:
+
+- **`.cursor/rules/auto-heal.mdc`** - Error recovery strategies and autonomous runtime management (auto-healing for ports, dependencies, database connections, containers)
+- **`.cursor/rules/environment.mdc`** - Environment setup, versioning standards, temporal awareness, and container management
+- **`.cursor/rules/workflow-standards-documentation-maintenance.mdc`** - Comprehensive documentation maintenance requirements
+- **`AGENTS.md` Section 6** - Standard Developer Lifecycle with complete command and checklist references
+- **`standards/documentation.md`** - Documentation management standards and changelog format guidelines

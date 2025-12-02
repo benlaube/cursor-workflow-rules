@@ -44,9 +44,9 @@ Instead of explaining your coding preferences to an AI agent every time, you sim
 │   ├── sitemap-module/         # Sitemap generator for Supabase Storage
 │   └── testing-module/         # Mocks for Supabase & Logging (Vitest)
 │
-├── docs/process/checklists/    # "The Process" - Quality Assurance Checklists
-│   ├── pre-flight-check.md     # Run this before writing code
-│   └── pr-review-check.md      # Run this before merging code
+├── standards/development-checklists/    # "The Process" - Quality Assurance Checklists
+│   ├── pre-flight-checklist.md     # Run this before writing code
+│   └── pr-review-checklist.md      # Run this before merging code
 │
 └── .cursor/                    # "The Persona" - AI Instructions
     └── rules/                  # Auto-loaded rules for Cursor
@@ -60,7 +60,7 @@ Instead of explaining your coding preferences to an AI agent every time, you sim
 **📖 See [`INTEGRATION_GUIDE.md`](./INTEGRATION_GUIDE.md) for complete instructions on applying these rules and commands to a new project.**
 
 Quick start for AI agents:
-> "Integrate the workflow rules from this repository. Copy `.cursor/rules/`, `.cursor/commands/`, `docs/process/checklists/`, and `AGENTS.md`. Then adapt them for this project's stack and configuration."
+> "Integrate the workflow rules from this repository. Copy `.cursor/rules/`, `.cursor/commands/`, `standards/development-checklists/`, and `templates/general/AGENTS-TEMPLATE.md` (rename to `AGENTS.md`). Then adapt them for this project's stack and configuration."
 
 ### 1. Starting a New Project
 Tell your AI Agent:
@@ -96,8 +96,8 @@ When integrating this repository into a new project, follow these steps:
 1. **Copy Essential Files:**
    - Copy `.cursor/rules/` directory (all files)
    - Copy `.cursor/commands/` directory (all files)
-   - Copy `docs/process/checklists/` directory (all files)
-   - Copy `AGENTS.md` template
+   - Copy `standards/development-checklists/` directory (all files)
+   - Copy `templates/general/AGENTS-TEMPLATE.md` and rename to `AGENTS.md`
 
 2. **Adapt for Project:**
    - Update `AGENTS.md` with project-specific context

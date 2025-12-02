@@ -67,3 +67,15 @@ export async function safe<T>(promise: Promise<T>): Promise<Result<T, AppError>>
     return err(new AppError(e.message || 'Unknown error', 'UNKNOWN_ERROR'));
   }
 }
+
+// Export log analyzer utilities
+export {
+  analyzeLogs,
+  parseLogLine,
+  parseStackTrace,
+  parseStackLine,
+  extractErrorCode,
+  categorizeError,
+  type LogError,
+  type LogAnalyzerOptions,
+} from './log-analyzer';

@@ -8,6 +8,234 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Expanded Auto-Heal Runtime Rule** (2025-12-02 05:44:58)
+  - **Major Expansion:** Updated `.cursor/rules/auto-heal.mdc` from v1.0.0 to v2.0.0 with comprehensive error recovery strategies
+  - **New Error Types:**
+    - File System Errors (Section 7): ENOENT, EACCES, ENOSPC, EMFILE handling
+    - Build/Compilation Errors (Section 8): TypeScript, Python, build cache issues
+    - Network/API Errors (Section 9): Timeouts, connection refused, rate limiting, service unavailable
+    - Cache Issues (Section 10): Node.js, Python, build artifact cache clearing
+    - Environment Variable Issues (Section 11): Missing vars, format validation, type checking
+    - Cross-Platform Considerations (Section 12): Windows, Unix, Mac path and process handling
+    - Process Management (Section 14): Stuck processes, zombie processes, resource exhaustion
+    - Migration Errors (Section 15): Database migration failures, conflicts, rollback strategies
+    - Log Analysis & Auto-Fix (Section 16): Parse log files, extract errors, categorize for auto-fix vs propose-fix
+  - **Enhanced Existing Sections:**
+    - Dependency Self-Healing: Added lockfile conflict detection, virtual environment handling, version conflict resolution
+    - Database Connection Healing: Added connection pool handling, migration state verification, RLS policy checks
+    - Logic & Application Errors: Added error categorization (operational vs programmer), Result pattern suggestions
+    - General Error Recovery: Expanded with formatting, cross-platform path handling, TypeScript/Python specific checks
+  - **Integration Improvements:**
+    - Runtime Error Handling Patterns (Section 13): Integration with `modules/error-handler/` (Result pattern, retry, circuit breaker)
+    - References to error-handler module patterns and usage examples
+    - Table of contents for easier navigation
+    - Recovery verification and prevention strategies sections
+  - **Log Analysis Feature:**
+    - Added comprehensive log analysis section (Section 16)
+    - Strategies for locating, analyzing, and categorizing errors from log files
+    - Auto-fix vs propose-fix categorization
+    - Integration with logger-module log file locations
+  - **Related Updates:**
+    - Fixed reference in `.cursor/rules/environment.mdc` (changed `self-healing.mdc` to `auto-heal.mdc`)
+    - Updated version metadata and lastUpdated timestamp
+  - **Port Number Handling:** Clarified that port numbers range from 1-65535 (1-5 digits), added note about port number ranges and common port categories
+  - **Benefits:** Comprehensive error recovery coverage, better integration with existing modules, log-based error detection and auto-fix, accurate port number handling
+
+- **Logger Module Integration & Launch Guide** (2025-12-02 05:48:39)
+  - **Clarified Integration Model:** Added prominent section explaining logger-module is a library that integrates INTO applications, not a standalone service
+  - **Quick Launch Guide:** Added comprehensive "Quick Launch / Integration Guide" section with step-by-step instructions
+  - **Framework-Specific Examples:** Added complete integration examples for Express.js, Next.js, and standalone Node.js scripts
+  - **Log Viewing Section:** Added "Viewing and Analyzing Logs" section with:
+    - Direct log file viewing commands (tail, grep, etc.)
+    - Log analyzer usage examples using error-handler module
+    - Database log query examples (SQL)
+    - Optional standalone log viewer service example (runs on separate port if needed)
+  - **Troubleshooting Updates:** Added port conflict clarification (logger doesn't use ports), log directory creation, and file permissions guidance
+  - **Benefits:** Clear understanding that logger integrates into applications, comprehensive launch instructions, multiple log viewing options
+
+- **Error Handler Module Enhancement** (2025-12-02 05:44:58)
+  - **Log Analyzer Utility:** Added `modules/error-handler/log-analyzer.ts` for log file analysis
+  - **Features:**
+    - `analyzeLogs()`: Read and analyze log files to extract errors
+    - `parseLogLine()`: Parse individual log lines (JSON and plain text)
+    - `parseStackTrace()`: Extract file paths and line numbers from stack traces
+    - `parseStackLine()`: Parse individual stack trace lines
+    - `extractErrorCode()`: Extract error codes from messages and metadata
+    - `categorizeError()`: Categorize errors as auto-fix, propose-fix, or investigate
+  - **LogError Interface:** Type-safe error representation with message, stack trace, file path, line number, error code, timestamp, and context
+  - **LogAnalyzerOptions:** Configurable options for log directory, max entries, time range, log level, file pattern
+  - **Integration:**
+    - Exported from `modules/error-handler/index.ts` for easy access
+    - Updated `modules/error-handler/README.md` with log analysis usage examples
+  - **Benefits:** Enables log-based error detection and auto-fix strategies referenced in auto-heal rule
+
+### Added
+- **Comprehensive Linting System** (2025-12-02 05:28:12)
+  - **Linting Standard:** Created `standards/process/linting.md` - Comprehensive linting standard defining requirements, tools, policies, and AI agent behavior expectations
+  - **Linting Rule:** Created `.cursor/rules/linting.mdc` - Auto-applied rule that guides AI agent behavior around linting (always applies)
+  - **Linting Command:** Created `.cursor/commands/lint-check.md` - Standalone executable workflow for running lint checks independently or as part of pre-flight and PR review
+  - **Linting Checklist:** Created `standards/process/checklists/linting_checklist_v1_0.md` - Human-readable validation checklist for linting at different stages
+  - **Integration:** Updated `pre-flight-check` and `pr-review-check` commands to reference linting standard
+  - **Checklist Updates:** Updated pre-flight and PR review checklists to reference linting standard for detailed requirements
+  - **AGENTS.md Updates:** Added linting references to Section 8 (Checklists, Commands, Standards) and Section 9 (Quick Reference table)
+  - **Checklist Location:** Moved checklists from `docs/process/checklists/` to `standards/process/checklists/` for better organization
+  - **Features:**
+    - Pre-flight light lint pass (baseline validation)
+    - PR review strict lint pass (full validation)
+    - Auto-fix capabilities
+    - Warnings policy (strict vs relaxed)
+    - Integration with existing workflows
+    - AI agent behavior guidelines (no noisy spam, respect configs, fix in files touched)
+  - **Benefits:** Unified linting approach, clear expectations for AI agents, integrated with development lifecycle, reduces lint-related friction
+
+### Changed
+- **Documentation Standards Consolidation** (2025-12-02)
+  - **Fixed Incorrect Checklist Locations:** Corrected all checklist references across documentation files
+    - `standards/documentation.md` Section 3: Removed incorrect `/docs/standards/development-checklists/` path
+    - `docs/DOCUMENTATION_STANDARDS.md`: Updated all references from `docs/process/checklists/` to `standards/development-checklists/`
+  - **Resolved Naming Convention Conflicts:** Aligned naming conventions across all documentation files
+    - Standardized on `snake_case` for new files per `standards/documentation.md`
+    - Added exception for existing `UPPER_SNAKE_CASE` files in `docs/` directory
+    - Updated `docs/DOCUMENTATION_STANDARDS.md` Section 7.1 to reference authoritative rules
+  - **Standardized Checklist Metadata Format:** Added "Related Standard" field to checklist format in `standards/documentation.md` Section 4.2
+  - **Enhanced Cross-References:** Added explicit role definitions and cross-references between documentation files
+    - `standards/documentation.md` = Governing rules and management standards (includes three-layer system explanation and AI agent navigation)
+    - `docs/DOCUMENTATION_STANDARDS.md` = Comprehensive reference and checklist (includes file locations quick reference)
+  - **Consolidated Documentation Structure:** Integrated content from `docs/process/DOCUMENTATION_STRUCTURE.md` into main documentation files
+    - Added AI Agent Navigation section to `standards/documentation.md` (Section 10)
+    - Added File Locations Quick Reference to `docs/DOCUMENTATION_STANDARDS.md` (Section 10)
+    - Removed all references to `docs/process/DOCUMENTATION_STRUCTURE.md`
+    - Deleted `docs/process/` folder (content fully integrated)
+  - **Version Updates:**
+    - `standards/documentation.md`: v1.7 → v1.8
+    - `docs/DOCUMENTATION_STANDARDS.md`: v1.0 → v1.1
+  - **Benefits:** Consistent documentation structure, clear role definitions, resolved conflicts, accurate checklist locations
+
+- **Command and Rule Filenames Standardized to Use Dashes** (2025-12-02 05:01:46)
+  - **Renamed Commands:**
+    - `pre_flight_check.md` → `pre-flight-check.md`
+    - `pr_review_check.md` → `pr-review-check.md`
+    - `project_audit.md` → `audit-project.md` (note: already used audit- prefix)
+    - `full_project_health_check.md` → `full-project-health-check.md`
+  - **Renamed Rules:**
+    - `self_healing.mdc` → `self-healing.mdc`
+    - `task_workflow.mdc` → `task-workflow.mdc`
+  - **Updated References:** All references to these files updated across:
+    - AGENTS.md and AGENTS-TEMPLATE.md
+    - All checklist files
+    - INTEGRATION_GUIDE.md and QUICK_INTEGRATION.md
+    - Standards documentation
+    - CHANGELOG.md
+    - Internal command and rule file references
+  - **Benefits:** Consistent naming convention using dashes, better readability, aligns with modern file naming standards
+
+### Changed
+- **Launch Command Updated to Use start_app.sh** (2025-12-02 04:49:00)
+  - **launch.mdc:** Updated `.cursor/commands/launch.mdc` to use `start_app.sh` as primary launch method
+  - **Auto-Generation:** Command now automatically runs `create-start-scripts` if `start_app.sh` doesn't exist
+  - **Workflow:** Step 0 added to check for `start_app.sh`, generate if missing, then launch using script
+  - **Fallback:** Manual launch steps retained as fallback if script execution fails
+  - **Version:** Updated to 2.0.0 to reflect breaking change in launch workflow
+  - **Benefits:** Consistent launch process, automatic script generation, better maintainability
+
+- **Launch Script Migration and Environment Rules Update** (2025-12-02 04:25:27)
+  - **AGENTS.md:** Updated to reference `start_app.sh` instead of deprecated `launch.mdc`
+  - **Launch Logic:** Added instruction to run `create-start-scripts` command if `start_app.sh` doesn't exist
+  - **Documentation Index:** Added reference to `docs/DOCUMENTATION_STANDARDS.md` in AGENTS.md and template
+  - **Environment Rule:** Updated `.cursor/rules/environment.mdc` to reference `start_app.sh` instead of `launch.mdc`
+  - **Version Numbering Rules:** Added comprehensive version numbering standards to `environment.mdc`:
+    - Rule files (`.cursor/rules/*.mdc`) - Semantic versioning (X.Y.Z)
+    - Command files (`.cursor/commands/*.md`) - Semantic versioning (X.Y.Z)
+    - Standards files (`standards/**/*.md`) - Semantic versioning (X.Y)
+    - Checklist files (`docs/process/checklists/*.md`) - Semantic versioning (X.Y)
+    - Guidelines for when to increment versions
+  - **New Command:** Created `create-start-scripts` command (`.cursor/commands/create-start-scripts.md`) for generating launch scripts
+  - **Template Updated:** AGENTS-TEMPLATE.md updated with same changes for consistency
+  - **Benefits:** Modernized launch process, clear versioning standards, better documentation navigation
+
+- **AGENTS.md and AGENTS-TEMPLATE.md Improvements** (2025-12-02 04:16:38)
+  - **Metadata Headers:** Added proper metadata sections (Created, Last Updated, Version, Description) to both files per documentation standards
+  - **Command Path References:** Updated all command references to include actual file paths (e.g., `pre-flight-check` → `pre-flight-check` (`.cursor/commands/pre-flight-check.md`))
+  - **Template Integration Guidance:** Added template note at top of AGENTS-TEMPLATE.md with clear integration instructions
+  - **Enhanced Placeholders:** Improved template placeholders with better examples and guidance
+  - **Active Context Section:** Enhanced with "Context Notes" field and clearer instructions
+  - **Persistent Memory Section:** Added "What to Record" guidance and better structure
+  - **Tech Stack Reference:** Fixed template to reference both `standards/tech-stack-document.md` and `docs/TECH_STACK.md` with guidance
+  - **Documentation Cross-References:** Added links to documentation standards throughout
+  - **Quick Reference Table:** Added note about command/checklist/standard locations
+  - **Maintenance Guidance:** Added instructions for keeping "Last Updated" dates current
+  - **Missing Rule Reference:** Added workflow-standards-documentation-maintenance rule to template
+  - **Benefits:** Better clarity, easier integration, consistent documentation structure, improved maintainability
+
+### Added
+- **AGENTS.md Template Separation** (2025-01-27)
+  - **Template Created:** Created `templates/general/AGENTS-TEMPLATE.md` as the template version for integration into other projects
+  - **Project-Specific AGENTS.md:** Updated root `AGENTS.md` with actual project content for Workflow Rules / Coding Standards repository
+  - **Clear Separation:** `AGENTS.md` is now project-specific, while `templates/general/AGENTS-TEMPLATE.md` is the template to copy
+  - **Updated References:** Updated all documentation (README.md, INTEGRATION_GUIDE.md, QUICK_INTEGRATION.md) to reference the template file
+  - **Benefits:** Clear distinction between template and project-specific content, easier integration process
+
+- **Workflow Standards Documentation Maintenance Rule** (2025-01-27)
+  - **New Rule:** Created `.cursor/rules/workflow-standards-documentation-maintenance.mdc`
+  - **Purpose:** Ensures AI agents automatically review and update project documentation when features or architecture change
+  - **Scope:** Project-specific rule for Workflow Rules / Coding Standards repository
+  - **Documentation Files Covered:**
+    - `AGENTS.md` - Project context and memory
+    - `CHANGELOG.md` - Change history
+    - `README.md` - Project overview
+    - `INTEGRATION_GUIDE.md` - Integration instructions
+    - `QUICK_INTEGRATION.md` - Quick reference
+    - Module README.md files - Module documentation
+  - **Features:**
+    - Automatic documentation update checklist
+    - Clear guidelines on when to update each file
+    - Integration with task workflow
+    - Examples for common scenarios
+    - Project-specific note for integration into other projects
+  - **Benefits:** Ensures documentation stays in sync with code changes, reduces documentation debt
+
+### Changed
+- **Module Renaming - supabase-core to supabase-core-typescript** (2025-12-02 02:35:33)
+  - **Renamed Module:** `modules/supabase-core/` → `modules/supabase-core-typescript/` for clarity and consistency
+  - **Updated Package Name:** Changed from `@standards/supabase-core` to `@standards/supabase-core-typescript`
+  - **Updated All References:** Updated imports, documentation, and references across the codebase
+  - **Breaking Change:** All imports from `@modules/supabase-core` must be updated to `@modules/supabase-core-typescript`
+  - **Benefits:** Clear language distinction between TypeScript and Python versions, consistent naming pattern
+  - **Related Files:** Updated `modules/backend-api/`, `modules/auth-profile-sync/`, all documentation, and standards files
+  - **Migration Guide:** See `RENAMING_GUIDE.md` for detailed migration instructions
+
+### Changed
+- **Security Audit Standards - Moved to Standards Directory** (2025-12-02 02:14:31)
+  - **Reorganized Structure:** Moved `docs/process/security_audit_standards_v1_0.md` to `standards/security/security-audit.md`
+  - **Rationale:** Security audit standards are governing standards about security requirements, not process documentation
+  - **Updated References:** Updated all references in `AGENTS.md`, `standards/documentation.md`, `docs/DOCUMENTATION_STANDARDS.md`, checklists, and commands
+  - **New Location:** `standards/security/security-audit.md` (alongside `standards/security/access-control.md`)
+  - **Benefits:** Better organization - domain standards (security) are now in `standards/security/`, while process documentation (checklists, guides) remains in `docs/process/`
+
+- **Security Audit - Updated RLS References** (2025-12-02 02:08:13)
+  - **Updated Command References:** Updated `security-audit.mdc`, `project-audit.md`, and `full-project-health-check.md` to reference the new RLS rule instead of deprecated command
+  - **Intelligent RLS Integration:** Security audit now automatically applies `.cursor/rules/supabase-rls-policy-review.mdc` when Supabase is detected
+  - **Maintained Command/Checklist Pattern:** Security audit remains as command/checklist since it's generic (applies to all projects), unlike RLS which is project-specific
+  - **Updated Checklist Reference:** Fixed checklist reference to point to correct command file name (`security-audit.mdc`)
+
+- **RLS Policy Review - Converted to Auto-Applied Rule** (2025-12-02 02:03:39)
+  - **Converted Command to Rule:** Moved RLS policy review from command/checklist pattern to auto-applied rule
+  - **New Location:** `.cursor/rules/supabase-rls-policy-review.mdc`
+  - **Intelligent Application:** Rule automatically applies when Supabase is detected (via `supabase/` directory or environment variables)
+  - **Removed Redundancy:** Deleted `docs/process/checklists/rls_policy_review_checklist_v1_0.md` as it was redundant for project-specific functionality
+  - **Updated References:** Updated `AGENTS.md`, `INTEGRATION_GUIDE.md`, `docs/DOCUMENTATION_STANDARDS.md`, and `standards/documentation.md` to reference the new rule
+  - **Benefits:** Rule applies automatically when relevant, reducing manual intervention and ensuring RLS security is always considered for Supabase projects
+
+### Added
+- **Documentation Standards Guide** (2025-12-02)
+  - **Comprehensive Documentation Requirements:** Added `docs/DOCUMENTATION_STANDARDS.md` with complete list of standard documents every application should have
+  - **Subfolder Structure:** Detailed subfolder structure within `/docs` directory organized by category (architecture, api, deployment, development, database, security, user, integration, project, process, specialized)
+  - **Priority Matrix:** Documentation organized by priority levels (P0-P4) to help determine what to create based on project stage
+  - **Application Type Guides:** Specific documentation requirements for web applications, APIs, libraries, and monorepos
+  - **Quick Reference Checklist:** Actionable checklist for auditing and creating documentation
+  - **Examples:** Sample folder structures for small, medium, and large projects
+  - **Cross-References:** Links to related documentation standards and processes
+
 - **Logger Module - ILogger Interface** (2025-12-01 22:38:43)
   - **ILogger Interface:** Added `ILogger` interface for dependency injection and type safety
   - **Type Guard:** Added `isILogger()` function to check if an object implements the logger interface
@@ -115,11 +343,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Checklists provide validation (`docs/process/checklists/*_checklist_v*.md`)
     - Commands automate execution (`.cursor/commands/*.md`)
   - **New Commands:**
-    - `pre_flight_check` - Environment validation before coding
-    - `pr_review_check` - Pre-PR validation (code quality, security, docs)
-    - `project_audit` - Project structure and standards validation
+    - `pre-flight-check` - Environment validation before coding
+    - `pr-review-check` - Pre-PR validation (code quality, security, docs)
+    - `project-audit` - Project structure and standards validation
     - `rls_policy_review` - Deep RLS policy analysis
-    - `full_project_health_check` - Meta-command running all audits together
+    - `full-project-health-check` - Meta-command running all audits together
   - **Reorganized Structure:**
     - Moved all checklists to `docs/process/checklists/`
     - Created `docs/process/security_audit_standards_v1_0.md` (comprehensive security standard)
@@ -146,7 +374,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Added Section 9 to `standards/documentation.md` explaining distinction
     - Module docs (`modules/*/README.md`) = How to USE a module
     - Standards (`standards/module-structure.md`) = How to CREATE/STRUCTURE modules
-    - Created `docs/process/DOCUMENTATION_STRUCTURE.md` guide for AI agents
+    - Added AI Agent Navigation guide to `standards/documentation.md` Section 10
   - **No Duplication Policy:**
     - Established clear rule: each document exists in exactly one canonical location
     - All references updated to point to canonical locations
@@ -182,7 +410,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.0] - 2025-01-27
 
 ### Added
-- **Supabase Core Python Module (`modules/supabase-core-python/`)**
+- **Supabase Core Python Module (`modules/supabase-core-typescript-python/`)**
   - Complete Python backend support for Django, FastAPI, and Flask
   - Client factories with environment detection (local vs production)
   - Query builder with fluent API
@@ -239,7 +467,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Expanded additional resources section
 
 ### Added
-- **Enhanced Supabase Core Features** (`modules/supabase-core/src/core/`)
+- **Enhanced Supabase Core Features** (`modules/supabase-core-typescript/src/core/`)
   - **Automatic Error Handling:**
     - `safeQuery()`, `safeMutation()`, `safeStorage()`, `safeAuth()` - Result-pattern wrappers
     - `createSafeClient()` - Safe client wrapper returning Result types
@@ -266,7 +494,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Integration examples with error-handler and logger modules
 
 ### Changed
-- **Supabase Core Module** (`modules/supabase-core/`)
+- **Supabase Core Module** (`modules/supabase-core-typescript/`)
   - Added peer dependencies for `@modules/error-handler` and `@modules/logger-module`
   - Enhanced client now supports automatic error handling and logging
   - All operations can now use Result pattern for safe error handling
@@ -275,7 +503,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.2.0] - 2025-01-27
 
 ### Added
-- **Supabase Core Module** (`modules/supabase-core/`) - Phase 1 & 2 Complete
+- **Supabase Core Module** (`modules/supabase-core-typescript/`) - Phase 1 & 2 Complete
   - Unified Supabase utilities module providing client factories, query builders, and storage helpers
   - **Client Utilities:**
     - `createClient()` - Automatic environment detection (local vs production)
@@ -320,7 +548,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Backend API Module** (`modules/backend-api/`)
   - Now uses `supabase-core`'s `createServerClient` instead of direct `@supabase/ssr` usage
   - Updated auth middleware to leverage `supabase-core` utilities
-  - Added `@modules/supabase-core` as peer dependency
+  - Added `@modules/supabase-core-typescript` as peer dependency
   - Updated README to reference `supabase-core` integration
 
 - **Auth Profile Sync Module** (`modules/auth-profile-sync/`)
@@ -367,7 +595,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Container Isolation Rules**
   - Updated `.cursor/rules/environment.mdc` with container management rules
   - Updated `.cursor/commands/launch.mdc` with Supabase startup checks
-  - Updated `.cursor/rules/self_healing.mdc` with container-specific error recovery
+  - Updated `.cursor/rules/self-healing.mdc` with container-specific error recovery
   - Ensures AI agents only affect project-specific Docker/Supabase containers
 
 ### Changed

@@ -17,7 +17,7 @@ Standardized API handler wrapper for Next.js with Supabase SSR integration, auto
 - `@supabase/supabase-js` - Supabase client library
 - `zod` - Schema validation
 - `next` - Next.js framework
-- `@modules/supabase-core` (peer dependency) - Unified Supabase utilities
+- `@modules/supabase-core-typescript` (peer dependency) - Unified Supabase utilities
 
 ## Installation
 
@@ -33,7 +33,7 @@ Install dependencies:
 npm install @supabase/ssr @supabase/supabase-js zod
 ```
 
-**Note:** This module now uses `@modules/supabase-core` for client creation. Ensure `supabase-core` is available in your project (see `modules/supabase-core/README.md`).
+**Note:** This module now uses `@modules/supabase-core-typescript` for client creation. Ensure `supabase-core-typescript` is available in your project (see `modules/supabase-core-typescript/README.md`).
 
 ## Usage
 

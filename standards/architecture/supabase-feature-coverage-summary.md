@@ -34,19 +34,19 @@
 | - MFA/2FA | ✅ | ✅ | `mfa-helpers.ts` |
 | - JWT Claims | ✅ | ✅ | Role-based access control |
 | - Multi-Tenancy Auth | ✅ | ✅ | `supabase-multi-tenant-auth.md` (NEW) |
-| **Database** | ✅ 100% | ✅ Complete | `supabase-core/`, `database/schema.md` |
+| **Database** | ✅ 100% | ✅ Complete | `supabase-core-typescript/`, `database/schema.md` |
 | - PostgreSQL Queries | ✅ | ✅ | Query builder, pagination |
 | - RLS Policies | ✅ | ✅ | `rls-helpers.ts`, `access-control.md` |
 | - Migrations | ✅ | ✅ | `supabase-local-setup.md` |
 | - Type Generation | ✅ | ✅ | `generate-types.ts` |
 | - **PostgREST Data API** | ✅ | ✅ | `supabase-data-api.md` (NEW) |
 | - **Database Functions** | ✅ | ✅ | `supabase-database-functions.md` (NEW) |
-| **Storage** | ✅ 100% | ✅ Complete | `supabase-core/src/storage/` |
+| **Storage** | ✅ 100% | ✅ Complete | `supabase-core-typescript/src/storage/` |
 | - File Upload | ✅ | ✅ | `upload-helpers.ts` |
 | - File Download | ✅ | ✅ | `download-helpers.ts` |
 | - Image Processing | ✅ | ✅ | `image-processing.ts` |
 | - Bucket Management | ✅ | ✅ | Basic usage documented |
-| **Real-time** | ✅ 100% | ✅ Complete | `supabase-core/src/realtime/` |
+| **Real-time** | ✅ 100% | ✅ Complete | `supabase-core-typescript/src/realtime/` |
 | - Subscriptions | ✅ | ✅ | `subscription-manager.ts` |
 | - Event Handlers | ✅ | ✅ | `event-handlers.ts` |
 | **Edge Functions** | ✅ 100% | ✅ Complete | `supabase-edge-functions.md`, `sitemap-module/` |
@@ -153,12 +153,12 @@
 
 | Supabase Feature | Coverage | Documentation | Module |
 |-------------------|----------|--------------|--------|
-| **PostgreSQL Database** | ✅ 100% | ✅ | `supabase-core/`, `database/schema.md` |
+| **PostgreSQL Database** | ✅ 100% | ✅ | `supabase-core-typescript/`, `database/schema.md` |
 | **PostgREST (REST API)** | ✅ 100% | ✅ | `supabase-data-api.md` (NEW) |
 | **Authentication** | ✅ 100% | ✅ | `auth-profile-sync/` |
 | **Multi-Tenancy Auth** | ✅ 100% | ✅ | `supabase-multi-tenant-auth.md` (NEW) |
-| **Storage** | ✅ 100% | ✅ | `supabase-core/src/storage/` |
-| **Real-time** | ✅ 100% | ✅ | `supabase-core/src/realtime/` |
+| **Storage** | ✅ 100% | ✅ | `supabase-core-typescript/src/storage/` |
+| **Real-time** | ✅ 100% | ✅ | `supabase-core-typescript/src/realtime/` |
 | **Edge Functions** | ✅ 100% | ✅ | `supabase-edge-functions.md` |
 | **Database Functions** | ✅ 100% | ✅ | `supabase-database-functions.md` (NEW) |
 | **RLS (Row Level Security)** | ✅ 100% | ✅ | `rls-helpers.ts`, `access-control.md` |

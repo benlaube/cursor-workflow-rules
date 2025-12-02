@@ -1,6 +1,6 @@
 # Error Handler & Auto-Healing Module
 
-Standardized error handling patterns and retry logic for robust applications.
+Standardized error handling patterns, retry logic, and log analysis for robust applications.
 
 ## Usage
 
@@ -28,5 +28,22 @@ const result = await withRetry(
   () => fetch('https://api.example.com/data'),
   { retries: 3, delay: 1000 }
 );
+```
+
+### Log Analysis
+Analyze log files to extract errors and identify issues.
+
+```typescript
+import { analyzeLogs, categorizeError } from './modules/error-handler';
+
+// Analyze logs in ./logs directory
+const result = await analyzeLogs({ logDir: './logs', maxEntries: 100 });
+
+if (result.ok) {
+  for (const error of result.value) {
+    const category = categorizeError(error);
+    console.log(`${category}: ${error.message} at ${error.filePath}:${error.lineNumber}`);
+  }
+}
 ```
 

@@ -823,11 +823,11 @@ describe('Authentication E2E', () => {
 
 ### 10.2 Module References
 - **Testing Utilities:** `modules/testing-module/README.md`
-- **Python Testing:** `modules/supabase-core-python/README_TESTING.md`
+- **Python Testing:** `modules/supabase-core-typescript-python/README_TESTING.md`
 
 ### 10.3 Workflow Integration
-- **Pre-PR Validation:** `.cursor/commands/pr_review_check.md` (requires tests to pass)
-- **Pre-Flight Check:** `.cursor/commands/pre_flight_check.md` (validates test setup)
+- **Pre-PR Validation:** `.cursor/commands/pr-review-check.md` (requires tests to pass)
+- **Pre-Flight Check:** `.cursor/commands/pre-flight-check.md` (validates test setup)
 - **Agent Workflow:** `AGENTS.md` (Section 6.4 - Pre-PR validation)
 
 ## 11. Common Patterns and Examples

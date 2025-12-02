@@ -1,3 +1,9 @@
+---
+description: Create a project rule that guides the AI agent on when and how to create tasks in Notion for bugs, incomplete work, and future development.
+version: 1.0.0
+lastUpdated: 2025-12-02
+---
+
 # notion-task-creation
 
 # Command: notion-task-creation
