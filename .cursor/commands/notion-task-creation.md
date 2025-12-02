@@ -30,8 +30,8 @@ Your tasks:
 
 3. Search for "Dev Tasks" database in Notion
    - Use the Notion MCP to find the "Dev Tasks" database:
-     a. Use `mcp_notionApi_API-post-search` with query: "Dev Tasks" and filter by object type "database".
-     b. If found, retrieve the database schema using `mcp_notionApi_API-retrieve-a-database` to understand:
+     a. Use `API-post-search` with query: "Dev Tasks" and filter by object type "database".
+     b. If found, retrieve the database schema using `API-retrieve-a-database` to understand:
         - Required fields (e.g., "Title", "Status", "Project", "Priority", "Type")
         - Field types and options (e.g., Status options: "Backlog", "In Progress", "Done")
         - Relations (e.g., relation to "Dev Projects" database)
@@ -74,7 +74,7 @@ Your tasks:
      **How to Create Tasks:**
      
      1. **Use Notion MCP to create tasks:**
-        - Use `mcp_notionApi_API-post-page` to create a new page in the "Dev Tasks" database.
+        - Use `API-post-page` to create a new page in the "Dev Tasks" database.
         - Set the parent to the "Dev Tasks" database ID.
         - Include required properties:
           - **Title:** Clear, descriptive task title (e.g., "Fix memory leak in contact sync service")
@@ -82,7 +82,7 @@ Your tasks:
           - **Status:** Set to "Backlog" for new tasks, "In Progress" if actively working on it
           - **Type:** "Bug", "Feature", "Refactor", "Documentation", or "Technical Debt" as appropriate
           - **Priority:** "Low", "Medium", "High", or "Critical" based on impact
-          - **Description:** Detailed description in the page body using `mcp_notionApi_API-patch-block-children`:
+          - **Description:** Detailed description in the page body using `API-patch-block-children`:
             - Include context about where the issue was found (file paths, function names)
             - Explain why it needs to be addressed
             - Include any relevant code snippets or error messages
@@ -132,7 +132,7 @@ Your tasks:
      - Group related issues into a single task when they share a root cause.
      - Use clear, searchable titles that will be easy to find later.
      - Include enough context that someone else can pick up the task later.
-     - Don't create duplicate tasks—search existing tasks first using `mcp_notionApi_API-post-database-query`.
+     - Don't create duplicate tasks—search existing tasks first using `API-post-database-query`.
      
      **Error Handling:**
      

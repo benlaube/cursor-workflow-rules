@@ -21,10 +21,10 @@ Your tasks:
 3. Search for existing Notion projects
    - Use the Notion MCP to search for existing projects:
      a. First, try to find the "Dev Projects" database by searching Notion:
-        - Use `mcp_notionApi_API-post-search` with query: "Dev Projects" and filter by object type "database".
-        - If found, query the database using `mcp_notionApi_API-post-database-query` to list all projects.
+        - Use `API-post-search` with query: "Dev Projects" and filter by object type "database".
+        - If found, query the database using `API-post-database-query` to list all projects.
      b. If "Dev Projects" database is not found, search for projects by the derived project name:
-        - Use `mcp_notionApi_API-post-search` with the derived project name as the query.
+        - Use `API-post-search` with the derived project name as the query.
         - Look for pages or databases that match the project name.
    - Collect all matching projects and their details (name, ID, URL if available).
 
