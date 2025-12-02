@@ -223,6 +223,256 @@ Phase 2 fields are stored in the `meta` JSONB column:
 
 These fields are automatically captured by middleware and don't require additional database schema changes (stored in existing `meta` JSONB field).
 
+## Enhanced Tracking Features (Phase 3)
+
+Phase 3 adds advanced features for cross-service tracing, compliance, and specialized integrations:
+
+### Cross-Service Context Propagation
+- **HTTP Header Propagation**: Automatically propagate context via HTTP headers (x-request-id, x-trace-id, x-correlation-id, etc.)
+- **Message Queue Propagation**: Propagate context through message queue metadata (RabbitMQ, Kafka, etc.)
+- **Context Extraction**: Extract context from incoming HTTP requests or messages
+- **Context Injection**: Inject context into outgoing HTTP requests or messages
+
+### Audit Logging
+- **Separate Audit Stream**: Dedicated audit log handler for compliance requirements
+- **Compliance Markers**: Mark logs with compliance standards (GDPR, HIPAA, PCI-DSS, etc.)
+- **Data Retention**: Configurable retention periods (default: 7 years for compliance)
+- **Audit Method**: `logger.audit()` method for explicit audit logging
+
+### Performance Baselines
+- **Baseline Tracking**: Track performance baselines for operations
+- **Performance Comparison**: Compare current metrics against historical baselines
+- **Degradation Detection**: Automatically detect performance degradation
+- **Alert Thresholds**: Configure alerts based on P50, P95, P99 thresholds
+
+### GraphQL Integration
+- **Operation Logging**: Log GraphQL queries, mutations, and subscriptions
+- **Resolver Logging**: Track individual resolver execution times
+- **Apollo Server Plugin**: Ready-to-use plugin for Apollo Server
+- **Error Tracking**: Track GraphQL errors with full context
+
+### gRPC Integration
+- **Call Logging**: Log gRPC service calls with metadata
+- **Interceptor**: gRPC interceptor for automatic logging
+- **Status Tracking**: Track gRPC status codes and messages
+- **Performance Metrics**: Duration and error tracking for gRPC calls
+
+### Usage Examples
+
+```typescript
+import { 
+  setupLogger, 
+  extractContextFromHeaders, 
+  injectContextToHeaders,
+  createAuditHandler,
+  logGraphQLOperation,
+  createGraphQLLoggingPlugin,
+  updateBaseline,
+  compareToBaseline,
+} from './modules/logger-module';
+
+const logger = setupLogger('my-app', {
+  env: 'development',
+  serviceName: 'api',
+});
+
+// Cross-service context propagation
+// In incoming request handler:
+const context = extractContextFromHeaders(req.headers);
+setLogContext(context);
+
+// In outgoing HTTP request:
+const headers = injectContextToHeaders(getLogContext());
+fetch(url, { headers });
+
+// Audit logging
+logger.audit('User accessed sensitive data', {
+  userId: 'user-123',
+  dataType: 'pii',
+}, ['GDPR', 'HIPAA']);
+
+// Performance baselines
+updateBaseline('api_query', { duration: 150 });
+const comparison = compareToBaseline('api_query', { duration: 300 });
+if (comparison?.degraded) {
+  logger.warn('Performance degraded', { comparison });
+}
+
+// GraphQL logging
+import { createGraphQLLoggingPlugin } from './modules/logger-module/integrations/graphql';
+const server = new ApolloServer({
+  plugins: [createGraphQLLoggingPlugin(logger)],
+});
+
+// gRPC logging
+import { createGRPCInterceptor } from './modules/logger-module/integrations/grpc';
+const interceptor = createGRPCInterceptor(logger);
+```
+
+## Enhanced Tracking Features (Phase 4)
+
+Phase 4 adds specialized integrations for common infrastructure components:
+
+### Message Queue Logging
+- **Operation Tracking**: Log publish, consume, ack, nack, reject operations
+- **Context Propagation**: Automatically propagate context through message metadata
+- **Performance Metrics**: Track message processing duration and retry counts
+- **Queue System Support**: RabbitMQ, Kafka, and other message queue systems
+
+### Database Query Logging
+- **Automatic SQL Logging**: Track all database queries with parameters
+- **Query Sanitization**: Automatically redact sensitive data from query parameters
+- **Performance Tracking**: Query duration, row count, query type
+- **Database System Support**: PostgreSQL, MySQL, MongoDB, etc.
+
+### Cache Logging
+- **Operation Tracking**: Log cache get, set, delete, invalidate, clear operations
+- **Hit/Miss Detection**: Track cache hit rates and performance
+- **Cache System Support**: Redis, Memcached, and other cache systems
+- **TTL Tracking**: Monitor cache expiration and TTL values
+
+### WebSocket Logging
+- **Connection Tracking**: Log WebSocket connect, disconnect, message, error events
+- **Message Tracking**: Track message sizes and counts
+- **Connection Lifetime**: Monitor connection duration and health
+- **Close Code Tracking**: Track WebSocket close codes and reasons
+
+### Data Retention Policies
+- **Automatic Retention**: Configurable retention periods by log level
+- **Archive Before Delete**: Optional archival before deletion
+- **Default Policies**: Sensible defaults (7 years for audit/fatal, 3 months for info, etc.)
+- **Archive Filename Generation**: Automatic archive filename generation
+
+### Usage Examples
+
+```typescript
+import {
+  logMessageQueueOperation,
+  logDatabaseQuery,
+  logCacheOperation,
+  logWebSocketOperation,
+  getRetentionPolicy,
+  shouldArchive,
+} from './modules/logger-module';
+
+// Message Queue logging
+await logMessageQueueOperation(logger, {
+  queueName: 'orders',
+  routingKey: 'order.created',
+  operation: 'publish',
+  messageSize: 1024,
+  queueSystem: 'rabbitmq',
+}, 50);
+
+// Database query logging
+await logDatabaseQuery(logger, {
+  query: 'SELECT * FROM users WHERE id = $1',
+  params: [userId],
+  queryType: 'SELECT',
+  databaseSystem: 'postgres',
+  tables: ['users'],
+  duration: 45,
+  rowCount: 1,
+  success: true,
+});
+
+// Cache logging
+await logCacheOperation(logger, {
+  key: 'user:123',
+  operation: 'get',
+  result: 'hit',
+  cacheSystem: 'redis',
+  duration: 2,
+  valueSize: 512,
+});
+
+// WebSocket logging
+await logWebSocketOperation(logger, {
+  connectionId: 'ws-123',
+  operation: 'connect',
+  duration: 3600000, // 1 hour
+  messageCount: 150,
+});
+
+// Retention policies
+const policy = getRetentionPolicy('error');
+if (shouldArchive(logEntry.timestamp, 'error')) {
+  // Archive log entry
+}
+```
+
+## Enhanced Tracking Features (Phase 5)
+
+Phase 5 adds advanced user context, geolocation, error correlation, and nested context support:
+
+### Enhanced User/Session Context
+- **User Agent Parsing**: Parse user agent into browser, OS, device type
+- **Session Events**: Track login, logout, timeout, refresh, expired events
+- **Session Duration**: Calculate and track session lifetime
+- **Device Information**: Extract device type, model, screen size (browser)
+
+### Geolocation (Privacy-Aware)
+- **IP-Based Geolocation**: Get country, region, city from IP address
+- **Privacy Modes**: Full, country-only, or none (respects user privacy)
+- **IP Anonymization**: Automatically anonymize IP addresses based on privacy mode
+- **Timezone Detection**: Extract timezone information
+
+### Advanced Error Context
+- **Error Correlation**: Link related errors across services using correlation IDs
+- **Error Impact Scoring**: Calculate impact scores (0-100) based on frequency, user impact, service impact
+- **Affected User Tracking**: Track how many users are affected by errors
+- **Service Impact Analysis**: Identify which services are affected by errors
+
+### Nested Context Support
+- **Context Scopes**: Support for nested context scopes with automatic merging
+- **Context Inheritance**: Better context merging strategies
+- **Context Breadcrumbs**: Track context changes over time
+- **Multiple Nesting Levels**: Support for deeply nested contexts
+
+### Usage Examples
+
+```typescript
+import {
+  parseUserAgent,
+  createSessionInfo,
+  getGeolocation,
+  linkError,
+  calculateErrorImpact,
+  withNestedContext,
+} from './modules/logger-module';
+
+// User agent parsing
+const uaInfo = parseUserAgent(req.headers['user-agent']);
+// Returns: { browser: 'Chrome', os: 'macOS', deviceType: 'desktop', ... }
+
+// Session tracking
+const sessionInfo = createSessionInfo(
+  sessionId,
+  userId,
+  startTime,
+  'login',
+  userAgent,
+  ipAddress
+);
+
+// Geolocation (privacy-aware)
+const geo = await getGeolocation(ipAddress, 'country-only');
+// Returns: { country: 'US', ipAnonymized: true, ... }
+
+// Error correlation
+linkError(errorId, correlationId, 'api-service', userId);
+const correlation = getErrorCorrelation(correlationId);
+const impact = calculateErrorImpact(correlation, errorEntries);
+// Returns: { score: 75, severity: 'high', affectedUsers: 150, ... }
+
+// Nested context
+withNestedContext({ component: 'payment' }, () => {
+  withNestedContext({ action: 'process' }, () => {
+    logger.info('Payment processing'); // Has both component and action
+  });
+});
+```
+
 ## Installation
 
 ```bash
@@ -981,3 +1231,37 @@ curl http://localhost:3000/logs/database?limit=100&level=error
 - [Supabase Integration](../../standards/architecture/supabase-local-setup.md)
 - [Testing Module](../testing-module/README.md)
 - [Error Handler Module](../error-handler/README.md) - Log analysis utilities
+
+## Possible Enhancements
+
+### Short-term Improvements
+
+- **Log Compression** - Automatic compression of old log files
+- **Log Rotation Policies** - More granular rotation policies (by size, time, or both)
+- **Log Retention** - Automatic cleanup of old logs based on retention policies
+- **Log Aggregation** - Aggregate logs from multiple services/instances
+- **Performance Metrics** - Track logging performance (latency, throughput)
+- **Custom Formatters** - Support for custom log formatters beyond JSON/pretty
+- **Log Sampling** - Advanced sampling strategies (adaptive, priority-based)
+
+### Medium-term Enhancements
+
+- **Distributed Tracing** - Full OpenTelemetry integration with trace correlation
+- **Log Correlation** - Correlate logs across services using trace IDs
+- **Real-time Log Streaming** - WebSocket-based real-time log streaming
+- **Log Search** - Full-text search across log files with indexing
+- **Log Alerts** - Alert on error patterns or threshold breaches
+- **Log Dashboards** - Pre-built dashboards for common log metrics
+- **Log Export** - Export logs to external systems (Elasticsearch, Splunk, etc.)
+- **Multi-tenant Logging** - Tenant isolation in multi-tenant applications
+
+### Long-term Enhancements
+
+- **AI-Powered Log Analysis** - Machine learning for anomaly detection
+- **Predictive Logging** - Predict and log before errors occur
+- **Log Playback** - Replay logs for debugging and testing
+- **Log Visualization** - Advanced visualizations (timeline, heatmaps, etc.)
+- **Compliance Logging** - Built-in compliance features (GDPR, HIPAA, etc.)
+- **Log Encryption at Rest** - Encrypt log files on disk
+- **Log Streaming to Cloud** - Direct streaming to cloud log services
+- **Log Cost Optimization** - Optimize log storage costs with intelligent archiving

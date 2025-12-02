@@ -138,4 +138,10 @@ export interface LogEntry {
   performance_metrics?: PerformanceMetrics;
   /** Correlation ID for cross-service tracing */
   correlation_id?: string;
+  
+  // Phase 3 Enhancements
+  /** Compliance standards (GDPR, HIPAA, PCI-DSS, etc.) */
+  compliance_standards?: string[];
+  /** Whether this is an audit log */
+  is_audit?: boolean;
 }

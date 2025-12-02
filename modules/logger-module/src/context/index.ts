@@ -110,3 +110,46 @@ export async function withLogContextAsync<T>(
   }
 }
 
+/**
+ * Creates a nested context scope.
+ * Context is merged with parent context and automatically restored after the function completes.
+ * Supports multiple levels of nesting.
+ * 
+ * @param context - Additional context to merge with parent
+ * @param fn - Function to execute with nested context
+ * @returns Result of the function
+ * 
+ * @example
+ * withNestedContext({ component: 'subsystem' }, () => {
+ *   withNestedContext({ action: 'process' }, () => {
+ *     logger.info('Nested context'); // Has both component and action
+ *   });
+ * });
+ */
+export function withNestedContext<T>(
+  context: PartialLogContext,
+  fn: () => T
+): T {
+  const current = getLogContext() || {};
+  const merged = { ...current, ...context };
+  return withLogContext(merged, fn);
+}
+
+/**
+ * Creates a nested context scope for async functions.
+ * Context is merged with parent context and automatically restored after the function completes.
+ * Supports multiple levels of nesting.
+ * 
+ * @param context - Additional context to merge with parent
+ * @param fn - Async function to execute with nested context
+ * @returns Promise that resolves to the result of the function
+ */
+export async function withNestedContextAsync<T>(
+  context: PartialLogContext,
+  fn: () => Promise<T>
+): Promise<T> {
+  const current = getLogContext() || {};
+  const merged = { ...current, ...context };
+  return withLogContextAsync(merged, fn);
+}
+

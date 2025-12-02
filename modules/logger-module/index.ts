@@ -31,6 +31,8 @@ export {
   clearLogContext,
   withLogContext,
   withLogContextAsync,
+  withNestedContext,
+  withNestedContextAsync,
 } from './src/context';
 
 // Session management
@@ -71,6 +73,17 @@ export {
   extractResponseHeaders,
   getCacheStatus,
   getRateLimitInfo,
+  extractContextFromHeaders,
+  injectContextToHeaders,
+  extractContextFromMessage,
+  injectContextToMessage,
+  CONTEXT_HEADERS,
+  updateBaseline,
+  getBaseline,
+  compareToBaseline,
+  shouldAlert,
+  getAllBaselines,
+  clearBaselines,
 } from './src/helpers';
 
 // Middleware
@@ -152,3 +165,94 @@ export {
   startLogViewer,
   type StandaloneLogViewerOptions,
 } from './src/viewer/standalone';
+
+// Audit Handler
+export {
+  AuditLogHandler,
+  createAuditHandler,
+  type AuditHandlerOptions,
+} from './src/handlers/audit-handler';
+
+// Integrations
+export {
+  logGraphQLOperation,
+  logGraphQLResolver,
+  createGraphQLLoggingPlugin,
+  type GraphQLOperation,
+  type GraphQLResolver,
+} from './src/integrations/graphql';
+
+export {
+  logGRPCCall,
+  createGRPCInterceptor,
+  type GRPCCall,
+} from './src/integrations/grpc';
+
+export {
+  logMessageQueueOperation,
+  injectContextToQueueMessage,
+  type MessageQueueInfo,
+  type MessageQueueOperation,
+} from './src/integrations/message-queue';
+
+export {
+  logDatabaseQuery,
+  type DatabaseQueryInfo,
+} from './src/integrations/database-query';
+
+export {
+  logCacheOperation,
+  type CacheOperationInfo,
+  type CacheOperation,
+  type CacheResult,
+} from './src/integrations/cache';
+
+export {
+  logWebSocketOperation,
+  type WebSocketInfo,
+  type WebSocketOperation,
+} from './src/integrations/websocket';
+
+// Performance Baselines
+export type {
+  PerformanceBaseline,
+  PerformanceComparison,
+} from './src/helpers/performance-baselines';
+
+// Error Correlation
+export {
+  linkError,
+  getErrorCorrelation,
+  calculateErrorImpact,
+  getAllErrorCorrelations,
+  clearErrorCorrelations,
+  type ErrorCorrelation,
+  type ErrorImpact,
+} from './src/helpers/error-correlation';
+
+// User Context
+export {
+  parseUserAgent,
+  createSessionInfo,
+  type UserAgentInfo,
+  type SessionInfo,
+  type SessionEvent,
+} from './src/helpers/user-context';
+
+// Geolocation
+export {
+  getGeolocation,
+  anonymizeIp,
+  type GeolocationInfo,
+  type PrivacyMode,
+} from './src/helpers/geolocation';
+
+// Log Retention
+export {
+  getRetentionPolicy,
+  shouldArchive,
+  shouldDelete,
+  generateArchiveFilename,
+  DEFAULT_RETENTION_POLICIES,
+  type RetentionPolicy,
+} from './src/helpers/log-retention';

@@ -78,6 +78,15 @@ export interface ILogger {
   failure(message: string, error?: Error | unknown, meta?: Record<string, unknown>): void;
 
   /**
+   * Logs an audit entry with compliance markers.
+   * 
+   * @param message - Audit log message
+   * @param meta - Additional metadata (optional)
+   * @param complianceStandards - Compliance standards (GDPR, HIPAA, PCI-DSS, etc.) (optional)
+   */
+  audit?(message: string, meta?: Record<string, unknown>, complianceStandards?: string[]): void;
+
+  /**
    * Creates a child logger with additional context.
    * 
    * @param bindings - Additional context/bindings for the child logger
@@ -129,6 +138,7 @@ export function isILogger(obj: unknown): obj is ILogger {
     typeof logger.notice === 'function' &&
     typeof logger.success === 'function' &&
     typeof logger.failure === 'function' &&
+    (typeof logger.audit === 'function' || logger.audit === undefined) &&
     typeof logger.withContext === 'function' &&
     typeof logger.addContext === 'function' &&
     typeof logger.getStats === 'function'

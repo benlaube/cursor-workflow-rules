@@ -9,4 +9,6 @@ export * from './serialize-error';
 export * from './error-categorization';
 export * from './performance-tracking';
 export * from './request-tracking';
+export * from './context-propagation';
+export * from './performance-baselines';
 

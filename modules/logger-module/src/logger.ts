@@ -745,6 +745,33 @@ export class Logger implements ILogger {
     this.log('success', message, meta);
   }
 
+  /**
+   * Logs an audit entry with compliance markers.
+   * 
+   * @param message - Audit log message
+   * @param meta - Additional metadata
+   * @param complianceStandards - Compliance standards (GDPR, HIPAA, PCI-DSS, etc.)
+   */
+  audit(message: string, meta?: Record<string, unknown>, complianceStandards?: string[]): void {
+    const context = this.getContext();
+    const auditMeta = {
+      ...meta,
+      audit: true,
+      compliance_standards: complianceStandards || [],
+    };
+    
+    // Set audit context
+    setLogContext({
+      ...context,
+      tags: {
+        ...context.tags,
+        audit: true,
+      },
+    });
+    
+    this.log('info', message, auditMeta);
+  }
+
   failure(message: string, error?: Error | unknown, meta?: Record<string, unknown>): void {
     const serializedError = serializeError(error, this.options.sanitizeErrors);
     const errorCode = (serializedError as any).code || (error as any)?.code;
