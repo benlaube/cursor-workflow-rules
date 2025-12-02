@@ -45,6 +45,15 @@ This document defines the behavior and standards for AI agents (Cursor, Windsurf
 **Rule:** Every database migration must include `COMMENT ON` statements for every table and column created.
 **Why:** To ensure the database is self-documenting for future AI agents and developers.
 
+### Notion Integration (When Project is Bound)
+**Rule:** If a Notion Project Binding rule exists (see `.cursor/commands/notion-create-project-binding-rule`), integrate with Notion for task and project management.
+**Actions:**
+- **Task Creation:** When discovering bugs, incomplete work, or future development items, create tasks in Notion "Dev Tasks" database (see `.cursor/commands/notion-task-creation` for guidelines).
+- **Task Updates:** When completing work, update task status in Notion with commit/PR references.
+- **Project Metadata:** Sync project metadata (status, last updated, etc.) to Notion "Dev Projects" database when significant changes occur (see `.cursor/commands/notion-sync-project-metadata`).
+- **Check Existing Tasks:** Before starting work, check Notion "Dev Tasks" database for open tasks linked to this project.
+**Why:** Maintains visibility and traceability between code work and project management.
+
 ## Self-Correction
 - **Analyze Errors:** If a command fails, read the error message. Do not blindly retry the same command.
 - **Clarify Ambiguity:** If a user request conflicts with a rule in `standards/`, explicitly ask: "The standard says X, but you asked for Y. Should I update the standard or make an exception?"

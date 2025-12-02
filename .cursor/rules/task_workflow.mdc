@@ -12,12 +12,21 @@ Before writing code, the agent MUST:
 1.  **Check Structure:** specific to the project (see `standards/project-structure.md`).
 2.  **Run Pre-Flight:** Read and follow `checklists/pre-flight-check.md`.
 3.  **Verify Environment:** Ensure the app is launchable via `.cursor/commands/launch.mdc`.
+4.  **Check Notion Tasks (If Project is Bound):** If a Notion Project Binding rule exists:
+    - Query the Notion "Dev Tasks" database for open tasks linked to this project.
+    - Review any high-priority or in-progress tasks that might be relevant to current work.
+    - Consider whether the current task should be tracked in Notion.
 
 ## 2. During Development
 
 1.  **Atomic Changes:** Make small, testable changes.
 2.  **Self-Correction:** If a command fails, attempt to self-heal (see `self_healing.mdc`) before asking the user.
 3.  **Tool Usage:** Use specialized tools (`read_file`, `grep`) over generic terminal commands.
+4.  **Notion Task Creation (If Project is Bound):** If a Notion Project Binding rule exists:
+    - When discovering bugs that can't be fixed immediately, create a task in Notion "Dev Tasks" database.
+    - When work is incomplete and must be paused, create a task to track the remaining work.
+    - When identifying future development items or technical debt, create tasks proactively.
+    - Follow the guidelines in the Notion Task Creation rule (created by `.cursor/commands/notion-task-creation`).
 
 ## 3. After Completing a Task (Post-Flight)
 
@@ -26,6 +35,10 @@ Before confirming completion:
 2.  **Update Docs:** Update `CHANGELOG.md` and relevant `standards/` if architecture changed.
 3.  **Verify Launch:** Run `.cursor/commands/launch.mdc` one last time to ensure no regression.
 4.  **Launch Dev Server:** After completing a task or integration, launch the development server using `.cursor/commands/launch.mdc` so the user can see changes and test them. This should be done automatically unless the user explicitly requests otherwise.
+5.  **Update Notion (If Project is Bound):** If a Notion Project Binding rule exists:
+    - Update any related Notion tasks: Set status to "Done" and add a comment with commit hash/PR number.
+    - Sync project metadata to Notion "Dev Projects" database if significant changes occurred (see `.cursor/commands/notion-sync-project-metadata`).
+    - Create new tasks for any follow-up work or technical debt discovered during the task.
 
 ## 4. Documentation & Versioning
 

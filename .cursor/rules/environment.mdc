@@ -38,6 +38,7 @@ If `supabase/` directory is present:
 Ensure the following MCP servers are active if relevant:
 - **Supabase:** For database inspection and edge function management.
 - **Postgres:** For direct SQL execution if Supabase MCP is unavailable.
+- **Notion:** For project and task management integration (required if Notion Project Binding rule exists).
 - **Filesystem:** For reading/writing local files (standard).
 
 ## 4. Dependency Management
