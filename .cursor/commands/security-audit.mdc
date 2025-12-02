@@ -7,6 +7,10 @@ globs:
 
 Use this command to scan the project for common security vulnerabilities, secrets, and misconfigurations.
 
+**Source Checklist:** `docs/process/checklists/security_audit_checklist_v1_0.md`
+
+**Related Standard:** `docs/process/security_audit_standards_v1_0.md` (comprehensive standard)
+
 ## Usage
 
 @agent: When asked to "audit security", "check for secrets", or "scan", follow this procedure.
@@ -50,4 +54,10 @@ Use this command to scan the project for common security vulnerabilities, secret
 - **Packages:** Run `npm audit fix` if safe.
 
 ## Manual Verification
-- Remind the user to manually review `checklists/security-audit-check.md` for logical flaws (e.g., bad RLS logic) that automated tools miss.
+- Remind the user to manually review `docs/process/checklists/security_audit_checklist_v1_0.md` for logical flaws (e.g., bad RLS logic) that automated tools miss.
+- For deep RLS analysis, use `rls_policy_review` command.
+
+## Integration with Other Commands
+- This command performs a general security scan
+- For deep RLS analysis, also run `rls_policy_review`
+- For full project health, run `full_project_health_check` (includes this command)

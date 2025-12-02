@@ -1,9 +1,10 @@
-# create_application_launch_command_v1.2
+# Create_Application_Launch_Command_v1.2
 
-Description: Generate or update application-specific launch commands under `.cursor/commands/` that reliably start the project in development and production environments, using configuration (project root + port) sourced from env or a settings table instead of hard-coding.
-
-Created: 2025-11-18 10:45
-Last_Updated: 2025-11-18 11:10
+## Metadata
+- **Created:** 2025-11-18
+- **Last Updated:** 2025-11-18
+- **Version:** 1.2
+- **Description:** Guide for generating or updating application-specific launch commands under `.cursor/commands/` that reliably start the project in development and production environments, using configuration (project root + port) sourced from env or a settings table instead of hard-coding.
 
 ---
 

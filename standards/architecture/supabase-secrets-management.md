@@ -1,8 +1,10 @@
-# Supabase Secrets Management Guide v1.0
+# Supabase_Secrets_Management_Guide_v1.0
 
-Description: Comprehensive guide for managing secrets and sensitive configuration in Supabase projects, covering multiple storage options and when to use each.
-Created: 2025-01-27
-Last_Updated: 2025-01-27
+## Metadata
+- **Created:** 2025-01-27
+- **Last Updated:** 2025-01-27
+- **Version:** 1.0
+- **Description:** Comprehensive guide for managing secrets and sensitive configuration in Supabase projects, covering multiple storage options and when to use each.
 
 ---
 

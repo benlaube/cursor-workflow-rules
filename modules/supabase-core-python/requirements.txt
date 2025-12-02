@@ -1,0 +1,15 @@
+# Core dependencies
+supabase>=2.0.0
+pydantic>=2.0.0
+httpx>=0.24.0
+
+# Testing dependencies
+pytest>=7.0.0
+pytest-mock>=3.10.0
+pytest-asyncio>=0.21.0
+
+# Optional framework dependencies (install as needed)
+# Django: pip install -e ".[django]" or pip install django>=4.0.0
+# FastAPI: pip install -e ".[fastapi]" or pip install fastapi>=0.100.0
+# Flask: pip install -e ".[flask]" or pip install flask>=2.0.0
+

@@ -1,8 +1,10 @@
-# Runtime AI Agent Architecture v1.0
+# Runtime_AI_Agent_Architecture_v1.0
 
 ## Metadata
 - **Created:** 2025-11-18
+- **Last Updated:** 2025-11-18
 - **Version:** 1.0
+- **Description:** Standard defining how to architect Runtime Agents (AI features embedded in the application) as opposed to Developer Agents, ensuring agents are modular, secure, and provider-agnostic.
 
 ## 1. Purpose
 This standard defines how to architect **Runtime Agents** (AI features embedded in the application) as opposed to **Developer Agents** (coding assistants). It ensures agents are modular, secure, and provider-agnostic.

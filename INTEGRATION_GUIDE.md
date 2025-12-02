@@ -1,8 +1,10 @@
-# Integration Guide: Applying Rules & Commands to New Projects
+# Integration_Guide_v1.0
 
-**Purpose:** This guide explains how to integrate the Cursor rules, commands, and standards from this repository into a new project. It provides step-by-step instructions for both developers and AI agents.
-
-**Last Updated:** 2025-11-25
+## Metadata
+- **Created:** 2025-11-25
+- **Last Updated:** 2025-11-25
+- **Version:** 1.0
+- **Description:** Guide explaining how to integrate the Cursor rules, commands, and standards from this repository into a new project, with step-by-step instructions for both developers and AI agents.
 
 ---
 
@@ -30,7 +32,7 @@ Copy these directories and files to your new project:
 .cursor/
   ├── rules/              # Copy ALL files
   ├── commands/           # Copy ALL files
-checklists/               # Copy ALL files
+docs/process/checklists/ # Copy ALL files
 AGENTS.md                 # Copy and adapt
 CHANGELOG.md              # Copy template (optional)
 ```
@@ -43,7 +45,7 @@ After copying, verify the structure:
 # In your new project:
 ls -la .cursor/rules/     # Should show: ai-interaction-rules.md, environment.mdc, self_healing.mdc, task_workflow.mdc
 ls -la .cursor/commands/  # Should show: launch.mdc, security-audit.mdc, verify-access-control.mdc
-ls -la checklists/        # Should show: pre-flight-check.md, pr-review-check.md, etc.
+ls -la docs/process/checklists/  # Should show: pre_flight_checklist_v1_0.md, pr_review_checklist_v1_0.md, etc.
 ```
 
 ### Step 3: Adapt Project-Specific Content
@@ -142,13 +144,14 @@ The agent should reference `.cursor/rules/environment.mdc` and other rules.
 
 ### 4. Checklists Integration
 
-**Location:** `checklists/`
+**Location:** `docs/process/checklists/`
 
 **Files to Copy:**
-- `pre-flight-check.md` - Pre-development checklist
-- `pr-review-check.md` - Pre-merge checklist
-- `security-audit-check.md` - Security review checklist (if applicable)
-- `rls-policy-review.md` - RLS policy review (if using Supabase)
+- `pre_flight_checklist_v1_0.md` - Pre-development checklist
+- `pr_review_checklist_v1_0.md` - Pre-merge checklist
+- `security_audit_checklist_v1_0.md` - Security review checklist (if applicable)
+- `rls_policy_review_checklist_v1_0.md` - RLS policy review (if using Supabase)
+- `project_audit_checklist_v1_0.md` - Project structure audit checklist
 
 **What These Do:**
 - **Quality Assurance:** Ensure code quality before committing
@@ -231,7 +234,7 @@ Use this checklist to ensure complete integration:
 ### Phase 1: File Copy
 - [ ] Copied `.cursor/rules/` directory (all 4 files)
 - [ ] Copied `.cursor/commands/` directory (all 3 files)
-- [ ] Copied `checklists/` directory (all files)
+- [ ] Copied `docs/process/checklists/` directory (all files)
 - [ ] Copied `AGENTS.md` template
 - [ ] Copied `CHANGELOG.md` template (optional)
 
@@ -357,7 +360,7 @@ ln -s .workflow-standards/checklists checklists
 
 To integrate these rules and commands into a new project:
 
-1. **Copy** `.cursor/rules/`, `.cursor/commands/`, `checklists/`, and `AGENTS.md`
+1. **Copy** `.cursor/rules/`, `.cursor/commands/`, `docs/process/checklists/`, and `AGENTS.md`
 2. **Adapt** project-specific settings (ports, stack, Supabase usage)
 3. **Reference or Copy** relevant standards
 4. **Verify** rules are active and working

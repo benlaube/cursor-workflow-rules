@@ -1,7 +1,8 @@
-# Multi-Tenancy Auth API Guide v1.0
+# Multi_Tenancy_Auth_API_Guide_v1.0
 
 ## Metadata
 - **Created:** 2025-01-27
+- **Last Updated:** 2025-01-27
 - **Version:** 1.0
 - **Description:** Comprehensive guide for implementing multi-tenant authentication with Supabase
 

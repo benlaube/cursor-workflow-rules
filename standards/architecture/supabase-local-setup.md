@@ -1,8 +1,10 @@
-# Supabase Local Installation and Setup Guide v1.0
+# Supabase_Local_Installation_Setup_Guide_v1.0
 
-Description: Comprehensive guide for setting up Supabase locally for development, including container isolation rules for multi-project environments.
-Created: 2025-01-27
-Last_Updated: 2025-01-27
+## Metadata
+- **Created:** 2025-01-27
+- **Last Updated:** 2025-01-27
+- **Version:** 1.0
+- **Description:** Comprehensive guide for setting up Supabase locally for development, including container isolation rules for multi-project environments.
 
 ---
 

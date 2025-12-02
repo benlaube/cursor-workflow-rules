@@ -1,8 +1,10 @@
-# Access Control & RLS Standards v1.0
+# Access_Control_RLS_Standards_v1.0
 
 ## Metadata
 - **Created:** 2025-11-18
+- **Last Updated:** 2025-11-18
 - **Version:** 1.0
+- **Description:** Standards for access control and Row Level Security (RLS) using a defense-in-depth approach with endpoint security, data security, and audit logging.
 
 ## 1. Philosophy: Defense in Depth
 We do not rely on a single layer of security. We use a "Swiss Cheese" model:

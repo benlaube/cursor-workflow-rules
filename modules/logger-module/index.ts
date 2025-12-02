@@ -1,19 +1,116 @@
 /**
- * Configuration options for the Logger.
+ * Logger Module - Public API Exports
+ * 
+ * Universal logging system with multi-dimensional categorization,
+ * context propagation, and multi-destination output.
  */
-export interface LoggerOptions {
-  env: 'development' | 'production' | 'test';
-  serviceName: string;
-  /**
-   * Optional: Callback to persist logs to a remote service (e.g., Datadog, Sentry).
-   * This decouples the "how" of storage from the "what" of logging.
-   */
-  persistLog?: (logEntry: object) => Promise<void>;
-}
 
-// ... (existing imports and class structure)
+// Main logger
+export { Logger, setupLogger } from './src/logger';
 
-  // Inside Logger class methods (info, error, etc.):
-  // if (this.options.persistLog) {
-  //   this.options.persistLog({ level: 'info', message, meta, timestamp: new Date() });
-  // }
+// Types
+export type {
+  LoggerOptions,
+  LogLevel,
+  LogEntry,
+  LogContext,
+  PartialLogContext,
+  Runtime,
+  BrowserStorage,
+  ILogger,
+} from './src/types';
+
+// Context management
+export {
+  setLogContext,
+  getLogContext,
+  clearLogContext,
+  withLogContext,
+  withLogContextAsync,
+} from './src/context';
+
+// Session management
+export {
+  getSessionId,
+  getSessionLogPath,
+  clearSession,
+  resetSession,
+} from './src/session';
+
+// Tracing
+export {
+  generateRequestId,
+  getOrCreateRequestId,
+  getOpenTelemetryTraceId,
+  getOpenTelemetrySpanId,
+  getOpenTelemetryContext,
+} from './src/tracing';
+
+// Helpers
+export {
+  logWithContext,
+  logApiCall,
+  createChildLogger,
+  serializeError,
+} from './src/helpers';
+
+// Middleware
+export {
+  createExpressMiddleware,
+  createNextJsMiddleware,
+  withLogging as withNextJsLogging,
+  createFastifyPlugin,
+  setupBrowserLogging,
+} from './src/middleware';
+
+// Testing utilities
+export {
+  createMockLogger,
+  isMockLogger,
+  type MockLogger,
+} from './src/testing';
+
+// Utilities
+export {
+  getRuntime,
+  isNode,
+  isBrowser,
+  isEdge,
+  hasFeature,
+  getFeatureAvailability,
+  getRuntimeDefaults,
+} from './src/utils/environment';
+
+// Security utilities
+export {
+  scrubPII,
+  scrubObject,
+  DEFAULT_PII_PATTERNS,
+  DEFAULT_SCRUB_FIELDS,
+  sanitizeError,
+  sanitizeStackTrace,
+  safeSerialize,
+  safeStringify,
+} from './src/security';
+
+// Formatters
+export {
+  formatCategory,
+  formatCategoryFromContext,
+  getCurrentCategory,
+  formatMessage,
+  formatLogLevel,
+} from './src/formatters';
+
+// Metrics
+export {
+  recordMetric,
+  getMetrics,
+  resetMetrics,
+  timeOperation,
+  timeOperationSync,
+  checkLoggerHealth,
+  createHealthCheckHandler,
+  type PerformanceMetrics,
+  type LoggerHealth,
+} from './src/metrics';

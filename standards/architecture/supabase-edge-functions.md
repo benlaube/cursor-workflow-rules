@@ -1,8 +1,10 @@
 # When_to_use_Supabase_Edge_Functions_v1.0
 
-Description: Guide for when to use Supabase Edge Functions, and how an AI Agent should implement sitemap.xml regeneration using Supabase triggers.
-Created: 2025-11-18 16:15
-Last_Updated: 2025-11-18 16:15
+## Metadata
+- **Created:** 2025-11-18
+- **Last Updated:** 2025-11-18
+- **Version:** 1.0
+- **Description:** Guide for when to use Supabase Edge Functions, and how an AI Agent should implement sitemap.xml regeneration using Supabase triggers.
 
 ---
 

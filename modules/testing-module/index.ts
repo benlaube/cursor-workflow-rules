@@ -71,3 +71,38 @@ export class SupabaseMock {
 }
 
 export const createMockSupabase = () => new SupabaseMock();
+
+/**
+ * Creates a mock logger for testing.
+ * 
+ * Provides Vitest mock functions for all logger methods.
+ * 
+ * @returns Mock logger instance
+ * 
+ * @example
+ * ```typescript
+ * const mockLogger = createMockLogger();
+ * const service = new UserService(mockLogger);
+ * 
+ * service.login('user-1');
+ * 
+ * expect(mockLogger.info).toHaveBeenCalledWith('User logged in');
+ * ```
+ */
+export function createMockLogger() {
+  return {
+    trace: vi.fn(),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    fatal: vi.fn(),
+    userAction: vi.fn(),
+    notice: vi.fn(),
+    success: vi.fn(),
+    failure: vi.fn(),
+    child: vi.fn().mockReturnThis(),
+    getPinoLogger: vi.fn().mockReturnValue({}),
+    shutdown: vi.fn().mockResolvedValue(undefined),
+  };
+}

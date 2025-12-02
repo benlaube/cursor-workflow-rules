@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation Interface Launcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+        
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #374151;
+        }
+        
+        .command-box {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .command-box code {
+            flex: 1;
+            color: #1f2937;
+        }
+        
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: background 0.2s;
+            margin-left: 10px;
+        }
+        
+        .copy-btn:hover {
+            background: #5568d3;
+        }
+        
+        .copy-btn:active {
+            background: #4c51bf;
+        }
+        
+        .copy-btn.copied {
+            background: #10b981;
+        }
+        
+        .info-box {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .info-box p {
+            color: #1e40af;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .big-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .big-button:hover {
+            background: #5568d3;
+        }
+        
+        .platform-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 10px;
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .emoji {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+        
+        ul {
+            margin-left: 20px;
+            color: #4b5563;
+        }
+        
+        li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="emoji">📚</span> Documentation Interface</h1>
+        <p class="subtitle">Quick launch guide for the documentation interface</p>
+        
+        <div class="info-box">
+            <p><strong>📋 Prerequisites:</strong></p>
+            <ul>
+                <li>Node.js v18 or higher installed</li>
+                <li>Terminal or Command Prompt access</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">🚀 Quick Start</div>
+            
+            <div class="platform-tabs">
+                <div class="tab active" onclick="showPlatform('unix')">
+                    <strong>Unix/Mac/Linux</strong>
+                </div>
+                <div class="tab" onclick="showPlatform('windows')">
+                    <strong>Windows</strong>
+                </div>
+            </div>
+            
+            <div id="unix-content" class="tab-content active">
+                <p style="margin-bottom: 15px; color: #4b5563;">
+                    <strong>Step 1:</strong> Open Terminal in this directory
+                </p>
+                <div class="command-box">
+                    <code id="unix-cmd-1">cd modules/docs-interface</code>
+                    <button class="copy-btn" onclick="copyCommand('unix-cmd-1', this)">Copy</button>
+                </div>
+                
+                <p style="margin-bottom: 15px; margin-top: 20px; color: #4b5563;">
+                    <strong>Step 2:</strong> Run the launch script
+                </p>
+                <div class="command-box">
+                    <code id="unix-cmd-2">./launch-docs.sh</code>
+                    <button class="copy-btn" onclick="copyCommand('unix-cmd-2', this)">Copy</button>
+                </div>
+                
+                <p style="margin-top: 15px; color: #6b7280; font-size: 0.9rem;">
+                    <strong>Note:</strong> You may need to make the script executable first:
+                </p>
+                <div class="command-box">
+                    <code id="unix-cmd-3">chmod +x launch-docs.sh</code>
+                    <button class="copy-btn" onclick="copyCommand('unix-cmd-3', this)">Copy</button>
+                </div>
+            </div>
+            
+            <div id="windows-content" class="tab-content">
+                <p style="margin-bottom: 15px; color: #4b5563;">
+                    <strong>Step 1:</strong> Open Command Prompt in this directory
+                </p>
+                <div class="command-box">
+                    <code id="win-cmd-1">cd modules\docs-interface</code>
+                    <button class="copy-btn" onclick="copyCommand('win-cmd-1', this)">Copy</button>
+                </div>
+                
+                <p style="margin-bottom: 15px; margin-top: 20px; color: #4b5563;">
+                    <strong>Step 2:</strong> Run the launch script
+                </p>
+                <div class="command-box">
+                    <code id="win-cmd-2">launch-docs.bat</code>
+                    <button class="copy-btn" onclick="copyCommand('win-cmd-2', this)">Copy</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">🌐 Access the Interface</div>
+            <p style="margin-bottom: 15px; color: #4b5563;">
+                Once the server starts, open this URL in your browser:
+            </p>
+            <a href="http://localhost:3000/docs" target="_blank" class="big-button">
+                Open Documentation Interface →
+            </a>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">ℹ️ What the Launch Script Does</div>
+            <ul>
+                <li>✅ Checks Node.js and npm installation</li>
+                <li>✅ Verifies port 3000 is available</li>
+                <li>✅ Installs dependencies automatically</li>
+                <li>✅ Creates sample documentation if needed</li>
+                <li>✅ Checks git status</li>
+                <li>✅ Launches the interface</li>
+            </ul>
+        </div>
+        
+        <div class="info-box" style="background: #fef3c7; border-color: #fbbf24;">
+            <p style="color: #92400e;">
+                <strong>⚠️ Troubleshooting:</strong>
+            </p>
+            <p style="color: #92400e;">
+                If you encounter issues, see <code>SETUP.md</code> for detailed setup instructions and troubleshooting.
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        function showPlatform(platform) {
+            // Hide all tabs and contents
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Show selected platform
+            if (platform === 'unix') {
+                document.querySelector('.tab:nth-child(1)').classList.add('active');
+                document.getElementById('unix-content').classList.add('active');
+            } else {
+                document.querySelector('.tab:nth-child(2)').classList.add('active');
+                document.getElementById('windows-content').classList.add('active');
+            }
+        }
+        
+        function copyCommand(elementId, button) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '✓ Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy to clipboard. Please copy manually.');
+            });
+        }
+        
+        // Auto-detect platform
+        window.addEventListener('load', () => {
+            const platform = navigator.platform.toLowerCase();
+            if (platform.includes('win')) {
+                showPlatform('windows');
+            }
+        });
+    </script>
+</body>
+</html>
+

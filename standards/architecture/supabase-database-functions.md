@@ -1,7 +1,8 @@
-# Supabase Database Functions Guide v1.0
+# Supabase_Database_Functions_Guide_v1.0
 
 ## Metadata
 - **Created:** 2025-01-27
+- **Last Updated:** 2025-01-27
 - **Version:** 1.0
 - **Description:** Guide for when and how to use PostgreSQL database functions vs Supabase Edge Functions
 

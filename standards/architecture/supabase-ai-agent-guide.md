@@ -1,8 +1,9 @@
-# Supabase Modules: AI Agent Guide v1.0
+# Supabase_Modules_AI_Agent_Guide_v1.0
 
 ## Metadata
 - **Created:** 2025-01-27
-- **Version:** 1.0
+- **Last Updated:** 2025-01-27
+- **Version:** 1.1
 - **Description:** Comprehensive guide for AI Agents on how to use Supabase modules in this repository
 
 ---
@@ -30,6 +31,8 @@ This guide helps AI Agents understand:
 | `modules/backend-api/` | Standardized API handlers | Next.js API routes requiring auth, validation, error handling |
 | `modules/sitemap-module/` | Sitemap automation | Auto-generating sitemap.xml from database content |
 | `modules/settings-manager/` | Encrypted settings storage | User-configurable secrets, runtime configuration, multi-tenant settings |
+| `modules/supabase-core/` | TypeScript/Next.js utilities | Next.js projects, TypeScript backends, client-side and server-side |
+| `modules/supabase-core-python/` | Python backend utilities | Django, FastAPI, Flask backends, Python server-side only |
 
 ### 2.2 Supporting Standards
 
@@ -47,7 +50,21 @@ This guide helps AI Agents understand:
 
 ## 3. Decision Tree: Which Module to Use?
 
-### 3.1 Authentication Flow
+### 3.1 Language & Framework Selection
+
+```
+What is your backend language?
+├─ TypeScript/JavaScript → Use `modules/supabase-core/`
+│   ├─ Next.js project? → Use `createServerClient()` for SSR
+│   ├─ Client-side React? → Use `createClient()`
+│   └─ Edge Functions? → Use `createServiceRoleClient()`
+└─ Python → Use `modules/supabase-core-python/`
+    ├─ FastAPI? → Use `framework.fastapi.get_authenticated_supabase`
+    ├─ Django? → Use `framework.django.get_supabase_client`
+    └─ Flask? → Use `framework.flask.get_supabase_client`
+```
+
+### 3.2 Authentication Flow
 
 ```
 Need user authentication?
@@ -59,15 +76,21 @@ Need user authentication?
 └─ No → Skip auth module
 ```
 
-### 3.2 API Route Creation
+### 3.3 API Route Creation
 
 ```
-Creating Next.js API route?
-├─ Yes → Use `modules/backend-api/`
+Creating API route?
+├─ Next.js API route? → Use `modules/backend-api/`
 │   ├─ Needs auth? → Set `requireAuth: true`
 │   ├─ Needs validation? → Provide Zod schema
 │   └─ Needs error handling? → Automatic via handler
-└─ No → Use Supabase client directly
+├─ FastAPI route? → Use `supabase-core-python` with FastAPI dependencies
+│   ├─ Needs auth? → Use `get_authenticated_supabase` dependency
+│   └─ Needs validation? → Use Pydantic models
+├─ Django view? → Use `supabase-core-python` with Django helpers
+│   └─ Needs auth? → Use `get_supabase_client(request, require_auth=True)`
+└─ Flask route? → Use `supabase-core-python` with Flask helpers
+    └─ Needs auth? → Use `get_supabase_client(require_auth=True)`
 ```
 
 ### 3.3 Secrets Management
@@ -127,6 +150,31 @@ Need server-side logic?
 │   └─ See `supabase-edge-functions.md`
 └─ See `supabase-database-functions.md` for decision tree
 ```
+
+### 3.8 Python Backend Integration
+
+```
+Using Python backend?
+├─ FastAPI → Use `modules/supabase-core-python/`
+│   ├─ Install: `pip install fastapi supabase`
+│   ├─ Use dependency: `get_authenticated_supabase`
+│   └─ See `modules/supabase-core-python/README.md`
+├─ Django → Use `modules/supabase-core-python/`
+│   ├─ Install: `pip install django supabase`
+│   ├─ Use helper: `get_supabase_client(request, require_auth=True)`
+│   └─ See `modules/supabase-core-python/README.md`
+├─ Flask → Use `modules/supabase-core-python/`
+│   ├─ Install: `pip install flask supabase`
+│   ├─ Use helper: `get_supabase_client(require_auth=True)`
+│   └─ See `modules/supabase-core-python/README.md`
+└─ See `modules/supabase-core-python/INTEGRATION_GUIDE.md` for complete setup
+```
+
+**Key Differences from TypeScript:**
+- No SSR support (Python backends are server-side only)
+- Framework-specific helpers for JWT extraction
+- Same core utilities (query builder, pagination, storage, etc.)
+- Type generation: `supabase gen types python` (generates Pydantic models)
 
 ---
 
@@ -858,22 +906,83 @@ Before deploying, verify:
 
 ---
 
-## 14. Quick Reference
+## 14. Python Backend Quick Reference
+
+### 14.1 Framework Selection
+
+| Framework | Use Case | Integration |
+|-----------|----------|-------------|
+| **FastAPI** | Modern async API, type safety | `framework.fastapi.get_authenticated_supabase` |
+| **Django** | Full-stack framework, admin panel | `framework.django.get_supabase_client` |
+| **Flask** | Lightweight, flexible | `framework.flask.get_supabase_client` |
+
+### 14.2 Common Patterns (Python)
+
+**FastAPI Authentication:**
+```python
+from fastapi import Depends
+from supabase_core_python.framework.fastapi import get_authenticated_supabase
+from supabase import Client
+
+@app.get("/protected")
+async def protected_route(supabase: Client = Depends(get_authenticated_supabase)):
+    # User is authenticated, RLS policies apply
+    response = supabase.table("posts").select("*").execute()
+    return {"data": response.data}
+```
+
+**Django Authentication:**
+```python
+from supabase_core_python.framework.django import get_supabase_client
+
+def my_view(request):
+    supabase = get_supabase_client(request, require_auth=True)
+    response = supabase.table("posts").select("*").execute()
+    return JsonResponse({"data": response.data})
+```
+
+**Flask Authentication:**
+```python
+from supabase_core_python.framework.flask import get_supabase_client
+
+@app.route("/protected")
+def protected_route():
+    supabase = get_supabase_client(require_auth=True)
+    response = supabase.table("posts").select("*").execute()
+    return jsonify({"data": response.data})
+```
+
+### 14.3 Type Generation (Python)
+
+```bash
+# Generate Python types from Supabase schema
+supabase gen types python --local > types/database_types.py
+
+# Use in code
+from types.database_types import Database
+```
+
+---
+
+## 15. Quick Reference
 
 ### 12.1 Module Decision Matrix
 
-| Task | Module | Key File |
-|------|--------|----------|
-| User authentication | `auth-profile-sync` | `profile-sync.sql` |
-| API route with auth | `backend-api` | `src/handler.ts` |
-| Email verification | `auth-profile-sync` | `email-verification.md` |
-| OAuth setup | `auth-profile-sync` | `oauth-setup.md` |
-| MFA implementation | `auth-profile-sync` | `mfa-helpers.ts` |
-| Sitemap generation | `sitemap-module` | `INTEGRATION_GUIDE.md` |
-| Secrets storage | `settings-manager` | `settings-manager.ts` |
-| Local Supabase setup | Standards | `supabase-local-setup.md` |
-| Auto-generated REST API | Standards | `supabase-data-api.md` |
-| Multi-tenant auth | Standards | `supabase-multi-tenant-auth.md` |
+| Task | Module | Key File | Language |
+|------|--------|----------|----------|
+| User authentication | `auth-profile-sync` | `profile-sync.sql` | Both |
+| API route with auth (Next.js) | `backend-api` | `src/handler.ts` | TypeScript |
+| API route with auth (Python) | `supabase-core-python` | `framework/fastapi/dependencies.py` | Python |
+| Email verification | `auth-profile-sync` | `email-verification.md` | Both |
+| OAuth setup | `auth-profile-sync` | `oauth-setup.md` | Both |
+| MFA implementation | `auth-profile-sync` | `mfa-helpers.ts` | Both |
+| Sitemap generation | `sitemap-module` | `INTEGRATION_GUIDE.md` | TypeScript |
+| Secrets storage | `settings-manager` | `settings-manager.ts` | TypeScript |
+| Local Supabase setup | Standards | `supabase-local-setup.md` | Both |
+| Auto-generated REST API | Standards | `supabase-data-api.md` | Both |
+| Multi-tenant auth | Standards | `supabase-multi-tenant-auth.md` | Both |
+| Core utilities (TypeScript) | `supabase-core` | `README.md` | TypeScript |
+| Core utilities (Python) | `supabase-core-python` | `README.md` | Python |
 | Database functions | Standards | `supabase-database-functions.md` |
 
 ### 12.2 Common Commands

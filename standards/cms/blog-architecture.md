@@ -1,9 +1,10 @@
-# Blog & CMS Architecture Standard v1.0
+# Blog_CMS_Architecture_Standard_v1.0
 
 ## Metadata
 - **Created:** 2025-11-19
+- **Last Updated:** 2025-11-19
 - **Version:** 1.0
-- **Scope:** Marketing sites, Documentation hubs, Knowledge bases
+- **Description:** Standard defining database schema, content workflow, and API patterns for a robust CMS built on Supabase and Next.js. Scope: Marketing sites, Documentation hubs, Knowledge bases
 
 ## 1. Overview
 This standard defines the database schema, content workflow, and API patterns for a robust content management system (CMS) built on Supabase and Next.js.

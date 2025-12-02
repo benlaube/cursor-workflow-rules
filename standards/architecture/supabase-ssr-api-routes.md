@@ -1,8 +1,10 @@
-# Supabase SSR for Next.js API Routes v1.0
+# Supabase_SSR_Next_JS_API_Routes_v1.0
 
-Description: Guide explaining how Supabase's @supabase/ssr package simplifies API route handler creation in Next.js.
-Created: 2025-01-27
-Last_Updated: 2025-01-27
+## Metadata
+- **Created:** 2025-01-27
+- **Last Updated:** 2025-01-27
+- **Version:** 1.0
+- **Description:** Guide explaining how Supabase's @supabase/ssr package simplifies API route handler creation in Next.js.
 
 ---
 

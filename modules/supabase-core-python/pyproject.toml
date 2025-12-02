@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "supabase-core-python"
+version = "1.0.0"
+description = "Unified Supabase utilities module for Python backends (Django, FastAPI, Flask)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "ISC"}
+authors = [
+    {name = "AI Agent Knowledge Base"}
+]
+keywords = ["supabase", "database", "backend", "django", "fastapi", "flask"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "supabase>=2.0.0",
+    "pydantic>=2.0.0",
+    "httpx>=0.24.0",
+]
+
+[project.optional-dependencies]
+django = [
+    "django>=4.0.0",
+]
+fastapi = [
+    "fastapi>=0.100.0",
+]
+flask = [
+    "flask>=2.0.0",
+]
+all = [
+    "django>=4.0.0",
+    "fastapi>=0.100.0",
+    "flask>=2.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/benlaube/cursor-workflow-rules"
+Documentation = "https://github.com/benlaube/cursor-workflow-rules/tree/main/modules/supabase-core-python"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]
+

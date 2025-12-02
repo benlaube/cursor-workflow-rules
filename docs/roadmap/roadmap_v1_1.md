@@ -1,10 +1,10 @@
-# Project Roadmap (v1.1)
+# Project_Roadmap_v1.1
 
 ## Metadata
 - **Created:** 2025-11-18
-- **Last Updated:** 2025-01-27 10:30:00
+- **Last Updated:** 2025-01-27
 - **Version:** 1.1
-- **Status:** Active (Updated with latest completions)
+- **Description:** High-level project roadmap outlining foundation goals, MVP features, and AI features for Q4 2025. Status: Active (Updated with latest completions)
 
 ## High-Level Goals
 1.  **Foundation:** Establish a stable, self-healing dev environment (Done).

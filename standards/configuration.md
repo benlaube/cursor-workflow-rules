@@ -1,9 +1,10 @@
-# Configuration Standards v1.1
+# Configuration_Standards_v1.2
 
 ## Metadata
 - **Created:** 2025-11-17
 - **Last Updated:** 2025-01-27
 - **Version:** 1.2
+- **Description:** Standards for configuration management, distinguishing between secrets and settings, with centralized and type-safe approaches.
 
 ## 1. Core Philosophy
 Configuration should be centralized, type-safe, and separated from code. We distinguish between **Secrets** (credentials) and **Settings** (behavior).

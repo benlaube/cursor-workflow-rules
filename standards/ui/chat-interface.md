@@ -1,9 +1,10 @@
-# AI Chat Interface & Memory Standard v1.0
+# AI_Chat_Interface_Memory_Standard_v1.0
 
 ## Metadata
 - **Created:** 2025-11-19
+- **Last Updated:** 2025-11-19
 - **Version:** 1.0
-- **Dependencies:** `modules/ai-chat-ui`, `Vercel AI SDK`
+- **Description:** Standard defining UX/UI patterns for Smart Chat Interfaces with file uploads, citations, and persistent memory feedback loops. Dependencies: `modules/ai-chat-ui`, `Vercel AI SDK`
 
 ## 1. Overview
 This standard defines the UX/UI patterns for "Smart" Chat Interfaces. It goes beyond simple text bubbles to include File Uploads, Citations, and a Persistent Memory feedback loop.

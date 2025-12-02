@@ -1,8 +1,10 @@
-# Settings Schema Handling Standard v1.0
+# Settings_Schema_Handling_Standard_v1.0
 
-**Created:** November 18, 2025  
-**Purpose:** Standard guide for handling settings and configuration data in any application  
-**Scope:** Database schema, API design, UI patterns, security, and best practices
+## Metadata
+- **Created:** 2025-11-18
+- **Last Updated:** 2025-11-18
+- **Version:** 1.0
+- **Description:** Standard guide for handling settings and configuration data in any application, covering database schema, API design, UI patterns, security, and best practices.
 
 ---
 
