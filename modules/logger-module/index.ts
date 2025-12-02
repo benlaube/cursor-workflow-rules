@@ -60,10 +60,17 @@ export {
   fingerprintError,
   getMemoryUsage,
   getEventLoopLag,
+  getCpuUsage,
+  trackCpuUsage,
   createPerformanceMetrics,
   trackDatabaseQuery,
   trackApiCall,
   trackConnectionPool,
+  fingerprintRequest,
+  extractRequestHeaders,
+  extractResponseHeaders,
+  getCacheStatus,
+  getRateLimitInfo,
 } from './src/helpers';
 
 // Middleware

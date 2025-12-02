@@ -41,6 +41,29 @@ export interface LogContext {
   correlationId?: string;
   /** Context tags for flexible categorization */
   tags?: Record<string, string | number | boolean>;
+  
+  // Phase 2 Enhancements
+  /** Request headers (relevant ones) */
+  requestHeaders?: Record<string, string>;
+  /** Response headers (relevant ones) */
+  responseHeaders?: Record<string, string>;
+  /** Request fingerprint for duplicate detection */
+  requestFingerprint?: string;
+  /** Rate limiting information */
+  rateLimitInfo?: {
+    limit?: number;
+    remaining?: number;
+    reset?: number;
+    retryAfter?: number;
+  };
+  /** Cache status information */
+  cacheStatus?: {
+    hit?: boolean;
+    miss?: boolean;
+    status: 'hit' | 'miss' | 'unknown';
+    cacheControl?: string;
+    etag?: string;
+  };
 }
 
 export type PartialLogContext = Partial<LogContext>;

@@ -136,6 +136,93 @@ ALTER TABLE logs
 -- Indexes are automatically created for efficient querying
 ```
 
+## Enhanced Tracking Features (Phase 2)
+
+Phase 2 adds advanced request/response tracking and context management:
+
+### Enhanced Request/Response Context
+- **Request Headers**: Automatically extracts and tracks relevant request headers (content-type, accept, user-agent, referer, origin)
+- **Response Headers**: Tracks response headers (content-type, cache-control, etag, last-modified, expires, content-encoding)
+- **Request Fingerprinting**: Generates hash-based fingerprints for duplicate request detection
+- **Rate Limiting Info**: Extracts rate limit headers (x-ratelimit-limit, x-ratelimit-remaining, x-ratelimit-reset, retry-after)
+- **Cache Status**: Detects cache hit/miss from CDN/proxy headers (cf-cache-status, x-cache-status)
+
+### CPU Tracking
+- **CPU Usage**: Tracks CPU time for operations (Node.js only)
+- **CPU Metrics**: Integrated into performance metrics alongside memory and event loop lag
+
+### Context Tags System
+- **Flexible Tags**: Key-value tags for flexible categorization (already in Phase 1, enhanced usage)
+- **Tag Merging**: Tags are automatically merged into log metadata with `tag_` prefix
+
+### Usage Examples
+
+```typescript
+import { setupLogger, setLogContext } from './modules/logger-module';
+import { 
+  fingerprintRequest, 
+  getCacheStatus, 
+  getRateLimitInfo,
+  createPerformanceMetrics,
+  trackCpuUsage 
+} from './modules/logger-module/helpers';
+
+const logger = setupLogger('my-app', {
+  env: 'development',
+  serviceName: 'api',
+});
+
+// Enhanced request tracking (automatically done by middleware)
+// Middleware now captures:
+// - request_headers (content-type, accept, user-agent, etc.)
+// - response_headers (content-type, cache-control, etag, etc.)
+// - request_fingerprint (for duplicate detection)
+// - rate_limit_info (limit, remaining, reset, retry-after)
+// - cache_status (hit/miss, cache-control, etag)
+
+// CPU tracking
+const startCpu = process.cpuUsage();
+const startTime = Date.now();
+await someAsyncOperation();
+const metrics = await createPerformanceMetrics(
+  Date.now() - startTime,
+  undefined,
+  startCpu // Pass CPU usage at start
+);
+// metrics now includes cpuUsage
+
+// Context tags
+setLogContext({
+  tags: {
+    environment: 'production',
+    region: 'us-east-1',
+    deployment: 'v2.1.0',
+  },
+});
+logger.info('Deployment started');
+// Logs include: tag_environment, tag_region, tag_deployment
+
+// Manual request fingerprinting
+const fingerprint = fingerprintRequest(
+  'POST',
+  '/api/orders',
+  { 'content-type': 'application/json', 'user-agent': '...' },
+  { page: '1' }
+);
+// Returns: 'a1b2c3d4e5f6g7h8' (hash for duplicate detection)
+```
+
+### Database Storage
+
+Phase 2 fields are stored in the `meta` JSONB column:
+- `request_headers` - Relevant request headers
+- `response_headers` - Relevant response headers  
+- `request_fingerprint` - Request fingerprint hash
+- `rate_limit_info` - Rate limiting information
+- `cache_status` - Cache hit/miss status
+
+These fields are automatically captured by middleware and don't require additional database schema changes (stored in existing `meta` JSONB field).
+
 ## Installation
 
 ```bash

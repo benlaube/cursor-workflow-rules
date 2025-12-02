@@ -349,6 +349,13 @@ export class Logger implements ILogger {
       ));
     }
     
+    // Phase 2 Enhancements: Add enhanced request/response tracking
+    if (context.requestHeaders) metadata.request_headers = context.requestHeaders;
+    if (context.responseHeaders) metadata.response_headers = context.responseHeaders;
+    if (context.requestFingerprint) metadata.request_fingerprint = context.requestFingerprint;
+    if (context.rateLimitInfo) metadata.rate_limit_info = context.rateLimitInfo;
+    if (context.cacheStatus) metadata.cache_status = context.cacheStatus;
+    
     // Add tracing
     if (this.options.enableTracing) {
       const requestId = context.requestId || getOrCreateRequestId();

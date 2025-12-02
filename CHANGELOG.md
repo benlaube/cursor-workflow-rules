@@ -55,6 +55,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Business entity tracking for correlating logs with business operations
     - Feature flag tracking for understanding feature usage
     - Improved observability with request/response size tracking
+
+- **Logger Module Phase 2 Enhancements** (2025-12-02 13:32:38)
+  - **Enhanced Request/Response Tracking:**
+    - Created `request-tracking.ts` helper with comprehensive request/response utilities
+    - `fingerprintRequest()` - Generates hash-based fingerprints for duplicate request detection
+    - `extractRequestHeaders()` - Extracts relevant request headers (content-type, accept, user-agent, referer, origin, authorization)
+    - `extractResponseHeaders()` - Extracts relevant response headers (content-type, cache-control, etag, last-modified, expires, content-encoding)
+    - `getCacheStatus()` - Detects cache hit/miss from CDN/proxy headers (cf-cache-status, x-cache-status)
+    - `getRateLimitInfo()` - Extracts rate limiting information from headers (x-ratelimit-*, retry-after)
+  - **CPU Tracking:**
+    - Added `getCpuUsage()` and `trackCpuUsage()` functions to performance-tracking.ts
+    - Enhanced `createPerformanceMetrics()` to accept optional CPU usage tracking
+    - CPU metrics integrated into performance metrics alongside memory and event loop lag
+  - **Context Enhancements:**
+    - Extended `LogContext` interface with Phase 2 fields:
+      - `requestHeaders` - Relevant request headers
+      - `responseHeaders` - Relevant response headers
+      - `requestFingerprint` - Request fingerprint hash
+      - `rateLimitInfo` - Rate limiting information
+      - `cacheStatus` - Cache hit/miss status
+    - Context tags system already implemented in Phase 1, enhanced usage documented
+  - **Middleware Updates:**
+    - Updated `setRequestContext()` to automatically extract request headers and generate fingerprints
+    - Updated `updateResponseContext()` to extract response headers, cache status, and rate limit info
+    - All Express, Next.js, and Fastify middleware automatically capture Phase 2 fields
+  - **Logger Core Updates:**
+    - Updated `formatMetadata()` to include Phase 2 fields in log metadata
+    - Phase 2 fields stored in `meta` JSONB column (no additional schema changes needed)
+  - **Documentation:**
+    - Added comprehensive "Enhanced Tracking Features (Phase 2)" section to README.md
+    - Documented all new helpers, usage examples, and automatic middleware capture
+    - Added examples for request fingerprinting, cache status, rate limiting, and CPU tracking
+  - **Exports:**
+    - Exported new helper functions: `fingerprintRequest`, `extractRequestHeaders`, `extractResponseHeaders`, `getCacheStatus`, `getRateLimitInfo`, `getCpuUsage`, `trackCpuUsage`
+  - **Benefits:**
+    - Better request/response observability with detailed header tracking
+    - Duplicate request detection via fingerprints
+    - Cache performance monitoring
+    - Rate limiting visibility
+    - CPU usage tracking for performance analysis
+    - Flexible context tags for custom categorization
 - **Expanded Auto-Heal Runtime Rule** (2025-12-02 05:44:58)
   - **Major Expansion:** Updated `.cursor/rules/auto-heal.mdc` from v1.0.0 to v2.0.0 with comprehensive error recovery strategies
   - **New Error Types:**

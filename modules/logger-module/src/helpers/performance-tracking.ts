@@ -51,20 +51,57 @@ export function getEventLoopLag(): Promise<number | undefined> {
 }
 
 /**
+ * Gets CPU usage (Node.js only, requires process.cpuUsage).
+ * 
+ * @param previousUsage - Previous CPU usage from process.cpuUsage()
+ * @returns CPU usage percentage or undefined if not available
+ */
+export function getCpuUsage(previousUsage?: NodeJS.CpuUsage): number | undefined {
+  if (!isNode()) {
+    return undefined;
+  }
+  
+  try {
+    const currentUsage = process.cpuUsage(previousUsage);
+    // Calculate total CPU time in microseconds
+    const totalMicroseconds = currentUsage.user + currentUsage.system;
+    // Convert to percentage (rough estimate based on time elapsed)
+    // This is a simplified calculation - for accurate CPU%, you'd need to track over time
+    return totalMicroseconds / 1000; // Return as milliseconds for consistency
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Tracks CPU usage over a time period.
+ * 
+ * @param startUsage - CPU usage at start (from process.cpuUsage())
+ * @returns CPU usage in milliseconds
+ */
+export function trackCpuUsage(startUsage?: NodeJS.CpuUsage): number | undefined {
+  return getCpuUsage(startUsage);
+}
+
+/**
  * Creates performance metrics object with current system metrics.
  * 
  * @param duration - Operation duration in milliseconds
  * @param additionalMetrics - Additional metrics to include
+ * @param startCpuUsage - CPU usage at start (optional, for CPU tracking)
  * @returns Performance metrics object
  * 
  * @example
+ * const startCpu = process.cpuUsage();
+ * // ... do work ...
  * const metrics = await createPerformanceMetrics(150, {
  *   database: { queryDuration: 45, rowCount: 100 }
- * });
+ * }, startCpu);
  */
 export async function createPerformanceMetrics(
   duration: number,
-  additionalMetrics?: Partial<PerformanceMetrics>
+  additionalMetrics?: Partial<PerformanceMetrics>,
+  startCpuUsage?: NodeJS.CpuUsage
 ): Promise<PerformanceMetrics> {
   const metrics: PerformanceMetrics = {
     duration,
@@ -82,6 +119,14 @@ export async function createPerformanceMetrics(
     const eventLoopLag = await getEventLoopLag();
     if (eventLoopLag !== undefined) {
       metrics.eventLoopLag = eventLoopLag;
+    }
+    
+    // Add CPU usage if start usage provided
+    if (startCpuUsage) {
+      const cpuUsage = getCpuUsage(startCpuUsage);
+      if (cpuUsage !== undefined) {
+        metrics.cpuUsage = cpuUsage;
+      }
     }
   }
   

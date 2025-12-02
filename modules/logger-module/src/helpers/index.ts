@@ -8,4 +8,5 @@ export * from './create-child';
 export * from './serialize-error';
 export * from './error-categorization';
 export * from './performance-tracking';
+export * from './request-tracking';
 
