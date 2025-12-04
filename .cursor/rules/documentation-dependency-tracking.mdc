@@ -1,0 +1,453 @@
+# Documentation Dependency Tracking Rule
+
+## Metadata
+- **Version:** 1.0.0
+- **Created:** 2025-12-04
+- **Last Updated:** 2025-12-04
+- **Description:** Auto-applied rule that ensures documentation dependencies and cross-references are maintained when files are modified
+- **Applies To:** All documentation, standards, rules, and command files
+
+---
+
+## When This Rule Applies
+
+This rule **automatically applies** when:
+- Modifying any file in `standards/` directory
+- Modifying any file in `docs/` directory
+- Modifying any file in `.cursor/rules/` directory
+- Modifying any file in `.cursor/commands/` directory
+- Modifying any README.md that contains standards or integration guides
+
+---
+
+## Core Principle
+
+**Documentation is interconnected.** When you modify one document, you must:
+1. Update its own metadata (Last Updated, Version)
+2. Identify files that reference it (reverse dependencies)
+3. Identify files it references (forward dependencies)
+4. Update or verify those dependencies are still accurate
+
+---
+
+## Agent Responsibilities
+
+### 1. Before Modifying a Documentation File
+
+**Check the file's metadata for existing dependencies:**
+
+```markdown
+## Metadata
+- **Dependencies:**
+  - [file1.md](./path/file1.md) - Description
+  - [file2.md](../path/file2.md) - Description
+```
+
+**Action:**
+- Read these dependency files to understand the relationship
+- Consider if your changes will affect them
+
+### 2. While Modifying the File
+
+**Track new references you add:**
+- Are you mentioning another command?
+- Are you referencing another standard?
+- Are you linking to another module?
+- Are you citing another checklist?
+
+**Keep a mental note** (or literal note) of all files you reference.
+
+### 3. After Modifying the File
+
+**MANDATORY STEPS:**
+
+#### Step 3.1: Update the File's Own Metadata
+
+```markdown
+## Metadata
+- **Last Updated:** [Current Date/Time]
+- **Version:** [Incremented Version]
+- **Dependencies:**
+  - [existing-file.md](./path.md) - Existing dependency
+  - [new-file.md](./new-path.md) - NEW: Add if you referenced a new file
+```
+
+**Rules:**
+- Always increment version (see `.cursor/rules/environment.mdc` for versioning rules)
+- Always update "Last Updated" timestamp
+- Add new dependencies if you referenced new files
+- Remove dependencies if you removed references
+- Update dependency descriptions if relationships changed
+
+#### Step 3.2: Identify Reverse Dependencies
+
+**Search for files that reference the current file:**
+
+```bash
+# Use grep to find reverse dependencies
+grep -r "current-file-name.md" standards/ docs/ .cursor/
+```
+
+**Or use the grep tool:**
+- Search pattern: `current-file-name\.md`
+- Search in: `standards/`, `docs/`, `.cursor/rules/`, `.cursor/commands/`
+
+**Action for each file found:**
+- Does it need to be updated based on your changes?
+- Is the reference still accurate?
+- Should the description be updated?
+
+#### Step 3.3: Verify Forward Dependencies
+
+**For each file listed in your Dependencies section:**
+
+1. **Read the file** to verify:
+   - Does it still exist? (not moved/renamed/deleted)
+   - Is the reference still relevant?
+   - Has that file been updated recently (might need to read it again)?
+
+2. **Check if bidirectional reference is appropriate:**
+   - If you reference File B, should File B also reference you?
+   - Example: If `pre-flight-check.md` references `pre-flight-checklist.md`, then the checklist should reference the command
+
+3. **Update the dependency file if needed:**
+   - Add your file to its Dependencies section if it doesn't have it
+   - Update its "Last Updated" if you modify its metadata
+
+#### Step 3.4: Update Related Documentation
+
+**Check if these need updates based on your changes:**
+
+1. **`CHANGELOG.md`** (ALWAYS)
+   - Add entry with timestamp
+   - Describe what changed and why
+   - Format: See `standards/documentation.md` Section 7
+
+2. **`AGENTS.md`** (If architectural or workflow changes)
+   - Section 3: Active Context
+   - Section 5: Persistent Memory (if learning/pattern)
+   - Section 8: Related Checklists & Commands (if command/checklist changed)
+
+3. **Integration Guides** (If module or integration affected)
+   - Module README.md
+   - Module INTEGRATION_GUIDE.md
+   - Root INTEGRATION_GUIDE.md
+
+4. **README.md** (If affects quick start or structure)
+   - Update if directory structure changed
+   - Update if new modules/standards added
+
+---
+
+## Dependency Update Workflow
+
+### Example Scenario: Modifying `standards/process/linting.md`
+
+**1. Before Modifying:**
+```markdown
+# Current metadata shows dependencies:
+- **Dependencies:**
+  - [lint-check.md](../../.cursor/commands/lint-check.md) - Command that implements this standard
+  - [linting_checklist_v1_0.md](./checklists/linting_checklist_v1_0.md) - Validation checklist
+```
+
+**2. You Make Changes:**
+- Add new section on Python linting
+- Add reference to `ruff` configuration
+- Mention `.cursor/rules/linting.mdc`
+
+**3. After Modifying (MANDATORY):**
+
+**Step A: Update own metadata**
+```markdown
+## Metadata
+- **Last Updated:** 2025-12-04 14:30:00
+- **Version:** 1.3 (was 1.2, incremented minor version)
+- **Dependencies:**
+  - [lint-check.md](../../.cursor/commands/lint-check.md) - Command that implements this standard
+  - [linting_checklist_v1_0.md](./checklists/linting_checklist_v1_0.md) - Validation checklist
+  - [linting.mdc](../../.cursor/rules/linting.mdc) - NEW: Auto-applied linting rule for agents
+```
+
+**Step B: Find reverse dependencies**
+```bash
+# Search for files that reference linting.md
+grep -r "linting\.md" standards/ .cursor/
+```
+
+Found:
+- `.cursor/commands/lint-check.md` - References this standard
+- `.cursor/rules/linting.mdc` - References this standard
+- `AGENTS.md` - References this standard
+
+**Step C: Verify each reverse dependency**
+- Read `lint-check.md`: Does it need updates for Python linting? YES
+- Read `linting.mdc`: Does it need updates? Maybe, check content
+- Read `AGENTS.md`: Is reference still accurate? YES, but update if section numbers changed
+
+**Step D: Verify forward dependencies**
+- Check `lint-check.md` exists and is current ✓
+- Check `linting_checklist_v1_0.md` exists ✓
+- Check `linting.mdc` exists ✓ (just added)
+
+**Step E: Update related documentation**
+- Update `CHANGELOG.md`:
+  ```markdown
+  ### 2025-12-04 14:30:00 - Changed
+  - **standards/process/linting.md (v1.3):** Added Python linting section with ruff configuration
+  ```
+- Update `lint-check.md`: Add Python linting checks
+- Update `linting.mdc`: Add Python linting behavior notes
+
+---
+
+## Automation Helpers
+
+### Quick Grep Patterns
+
+**Find all references to current file:**
+```bash
+grep -r "current-filename\.md" standards/ docs/ .cursor/ --include="*.md" --include="*.mdc"
+```
+
+**Find all markdown links in a file:**
+```bash
+grep -o '\[.*\](.*\.md[^)]*)' file.md
+```
+
+**Find all dependencies in metadata:**
+```bash
+grep -A 20 "## Metadata" file.md | grep -E "^\s*-\s*\[.*\.md.*\]"
+```
+
+### Using the Grep Tool
+
+When searching for dependencies:
+
+```typescript
+// Find files that reference current file
+grep({
+  pattern: "current-filename\\.md",
+  path: "standards/",
+  output_mode: "files_with_matches"
+})
+
+// Find all links in a file
+grep({
+  pattern: "\\[.*\\]\\(.*\\.md",
+  path: "specific-file.md",
+  output_mode: "content"
+})
+```
+
+---
+
+## Dependency Types and When to Add Them
+
+### Type 1: Implementation Dependencies
+**Relationship:** "This standard is implemented by..."
+
+**Example:**
+- `standards/process/linting.md` is implemented by `.cursor/commands/lint-check.md`
+
+**Bidirectional:** YES
+- Standard should reference the command
+- Command should reference the standard
+
+### Type 2: Reference Dependencies
+**Relationship:** "This document explains/expands on..."
+
+**Example:**
+- `.cursor/rules/linting.mdc` references `standards/process/linting.md` for details
+
+**Bidirectional:** MAYBE
+- Rule should reference the standard
+- Standard might mention the rule exists (but not always necessary)
+
+### Type 3: Workflow Dependencies
+**Relationship:** "This step uses..."
+
+**Example:**
+- `AGENTS.md` Section 8 lists commands and their related checklists/standards
+
+**Bidirectional:** NO
+- Index/overview documents reference many files
+- Individual files don't usually reference the index
+
+### Type 4: Module Dependencies
+**Relationship:** "This module integrates with..."
+
+**Example:**
+- `modules/logger-module/README.md` mentions integration with `modules/error-handler/`
+
+**Bidirectional:** YES
+- Each module should reference the other if they integrate
+
+### Type 5: Hierarchical Dependencies
+**Relationship:** "This is a specific implementation of..."
+
+**Example:**
+- `standards/process/checklists/linting_checklist_v1_0.md` is derived from `standards/process/linting.md`
+
+**Bidirectional:** YES
+- Checklist should reference parent standard
+- Standard should reference specific checklist
+
+---
+
+## Common Mistakes to Avoid
+
+### ❌ Mistake 1: Forgetting to Update "Last Updated"
+```markdown
+## Metadata
+- **Last Updated:** 2025-01-15  # ← STALE! File was just modified today
+```
+
+**Fix:** Always update timestamp when modifying content.
+
+### ❌ Mistake 2: Adding Reference Without Adding Dependency
+```markdown
+# In content:
+See `.cursor/commands/new-command.md` for implementation details.
+
+# In metadata:
+- **Dependencies:**
+  - [old-command.md](../../.cursor/commands/old-command.md)
+  # ← Missing new-command.md!
+```
+
+**Fix:** Add all referenced files to Dependencies section.
+
+### ❌ Mistake 3: Not Checking Reverse Dependencies
+```markdown
+# You updated linting.md but didn't check if lint-check.md needs updating
+# Now lint-check.md references outdated section numbers or removed content
+```
+
+**Fix:** Always grep for reverse dependencies and verify them.
+
+### ❌ Mistake 4: Broken Links
+```markdown
+- **Dependencies:**
+  - [file.md](./wrong-path/file.md)  # ← File moved, link broken
+```
+
+**Fix:** Verify all dependency links after modifications.
+
+### ❌ Mistake 5: Not Incrementing Version
+```markdown
+## Metadata
+- **Version:** 1.2  # ← Should be 1.3 after adding new section
+```
+
+**Fix:** Always increment version (see `.cursor/rules/environment.mdc` for rules).
+
+---
+
+## Integration with Other Rules
+
+This rule works in conjunction with:
+
+### `.cursor/rules/workflow-standards-documentation-maintenance.mdc`
+- That rule defines WHICH files to update
+- This rule defines HOW to track dependencies
+
+### `.cursor/rules/task-workflow.mdc`
+- After completing a task, this rule ensures dependencies are updated
+- Section 3 (After Completing a Task) includes dependency verification
+
+### `.cursor/commands/audit-documentation-metadata.md`
+- Periodic command to verify all dependencies are correct
+- Complements this rule by catching missed updates
+
+### `standards/documentation.md`
+- Defines documentation standards and format
+- This rule ensures cross-references are maintained
+
+---
+
+## Agent Checklist
+
+When modifying any documentation file, the agent MUST:
+
+- [ ] **Update own metadata:**
+  - [ ] Increment version number
+  - [ ] Update "Last Updated" timestamp
+  - [ ] Add new dependencies if files referenced
+  - [ ] Remove stale dependencies if references removed
+
+- [ ] **Find reverse dependencies:**
+  - [ ] Grep for files that reference current file
+  - [ ] Verify each one still has accurate reference
+  - [ ] Update them if your changes affect them
+
+- [ ] **Verify forward dependencies:**
+  - [ ] Check all files in Dependencies section
+  - [ ] Verify links work (files exist at that path)
+  - [ ] Verify relationships are still accurate
+  - [ ] Add bidirectional references if appropriate
+
+- [ ] **Update related documentation:**
+  - [ ] Always update `CHANGELOG.md`
+  - [ ] Update `AGENTS.md` if workflow/architecture changed
+  - [ ] Update integration guides if applicable
+  - [ ] Update README.md if structure changed
+
+- [ ] **Verify no broken links:**
+  - [ ] All markdown links in content work
+  - [ ] All dependency links work
+  - [ ] All cross-references are accurate
+
+---
+
+## Reporting
+
+When the agent updates dependencies, it should report:
+
+```markdown
+## Dependency Update Report
+
+**File Modified:** `standards/process/linting.md`
+
+**Metadata Updates:**
+- Version: 1.2 → 1.3
+- Last Updated: 2025-12-04 14:30:00
+- New Dependencies: Added `.cursor/rules/linting.mdc`
+
+**Reverse Dependencies Checked:**
+- ✓ `.cursor/commands/lint-check.md` - Updated to include Python linting
+- ✓ `.cursor/rules/linting.mdc` - No changes needed
+- ✓ `AGENTS.md` - Verified references are accurate
+
+**Forward Dependencies Verified:**
+- ✓ `lint-check.md` - Exists and is current
+- ✓ `linting_checklist_v1_0.md` - Exists and is current
+- ✓ `linting.mdc` - Newly added, exists
+
+**Related Documentation Updated:**
+- ✓ `CHANGELOG.md` - Entry added
+- ✓ `lint-check.md` - Updated for Python linting
+- N/A `AGENTS.md` - No workflow changes
+
+All dependencies verified and updated.
+```
+
+---
+
+## Notes
+
+- **Be Thorough:** This rule prevents documentation drift and broken references
+- **Don't Skip Steps:** Even if you think a dependency doesn't need updating, verify it
+- **Bidirectional References:** When appropriate, ensure both files reference each other
+- **Link Validation:** Always verify links work after updating
+- **Grep is Your Friend:** Use grep to find all references efficiently
+
+---
+
+## Related Files
+
+- **Command:** `.cursor/commands/audit-documentation-metadata.md` - Periodic dependency audit command
+- **Rule:** `.cursor/rules/workflow-standards-documentation-maintenance.mdc` - Documentation maintenance requirements
+- **Rule:** `.cursor/rules/task-workflow.mdc` - Development lifecycle integration
+- **Rule:** `.cursor/rules/environment.mdc` - Version numbering rules
+- **Standard:** `standards/documentation.md` - Documentation management standards

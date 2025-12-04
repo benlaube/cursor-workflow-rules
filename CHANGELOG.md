@@ -8,6 +8,109 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Cursor Rules Standard & Creation Rule** (2025-12-04 16:00:00)
+  - **Standard:** Created `standards/process/cursor-rules-standards.md` - Comprehensive standard for creating and maintaining Cursor rules
+  - **Auto-Applied Rule:** Created `.cursor/rules/cursor-rule-creation.mdc` - Ensures all Cursor rules follow proper structure and metadata
+  - **Rule Types Defined:** 8 standard rule types with clear definitions and examples
+  - **YAML Frontmatter Structure:** Defined required and optional fields for rule metadata
+  - **New Metadata Fields:**
+    - `type:` - Document type and intended audience (REQUIRED for rules)
+    - `relatedCommands:` - Array of related command filenames
+    - `relatedRules:` - Array of related rule filenames
+    - `relatedStandards:` - Array of related standard paths
+  - **Rule Template:** Complete template for creating new rules with all required sections
+  - **Validation Checklist:** Comprehensive checklist for validating rule structure before publishing
+  - **Best Practices:** Guidelines for writing clear, effective rules
+  - **Integration:** Rule automatically applies when creating/modifying `.cursor/rules/*.mdc` files
+  - **Benefits:**
+    - Consistent rule structure across all rules
+    - Clear metadata for understanding rule purpose and relationships
+    - Automatic validation when creating/modifying rules
+    - Easy navigation between related files
+    - Better AI agent guidance with structured rule format
+
+- **Documentation Metadata Audit System** (2025-12-04 15:30:00, Updated 16:00:00)
+  - **Audit Command:** Created `.cursor/commands/audit-documentation-metadata.md` (v1.1.0) - Comprehensive command for auditing and updating metadata across all documentation files
+  - **Dependency Tracking Rule:** Created `.cursor/rules/documentation-dependency-tracking.mdc` - Auto-applied rule that ensures documentation dependencies and cross-references are maintained when files are modified
+  - **Enhanced Metadata Requirements (v1.1.0):**
+    - Status (Active, Deprecated, Draft, Review)
+    - Created date
+    - Last Updated date (with timestamp)
+    - Version number (semantic versioning)
+    - Description (brief purpose)
+    - **Type** (NEW) - Document type and who should use it
+    - Applicability (when/where the document applies)
+    - **Related Cursor Commands** (NEW) - List of related command files
+    - **Related Cursor Rules** (NEW) - List of related rule files
+    - **Related Standards** (NEW) - List of related standard files
+    - Dependencies (linked list of all related files) - OR use separate "Related" fields
+    - **How to Use** (NEW) - Brief usage instructions
+  - **Audit Features:**
+    - Scans `standards/`, `docs/`, `.cursor/rules/`, `.cursor/commands/` directories
+    - Analyzes each file to find missing metadata
+    - Automatically extracts file references for Dependencies section
+    - Proposes complete metadata with confirmation before updating
+    - Validates cross-references and dependency links
+    - Generates comprehensive audit report with statistics and action items
+  - **Auto-Applied Rule Features:**
+    - Triggers when modifying any documentation/standards file
+    - Ensures agents update their own file's metadata (version, timestamp, dependencies)
+    - Finds reverse dependencies (files that reference current file) and verifies them
+    - Verifies forward dependencies (files referenced by current file) are accurate
+    - Defines 5 dependency types with bidirectional reference rules
+    - Includes grep helpers for finding dependencies
+    - Provides agent checklist for modification workflow
+  - **Integration:**
+    - Works with `.cursor/rules/workflow-standards-documentation-maintenance.mdc` for comprehensive documentation maintenance
+    - Complements `.cursor/rules/task-workflow.mdc` by ensuring dependencies are tracked
+    - References `standards/documentation.md` for format standards
+  - **Benefits:**
+    - Prevents documentation drift and broken references
+    - Maintains cross-reference integrity
+    - Enables automatic dependency tracking when files change
+    - Provides clear metadata for all documentation
+    - Supports markdown links for easy navigation between related files
+
+- **Standards Directory Organization** (2025-12-04 14:00:00)
+  - **New Directory Structure:**
+    - Created `standards/project-planning/` directory for project planning and setup standards
+    - Created `standards/templates/` directory for reusable template files
+    - Created `standards/README.md` - Comprehensive overview and navigation guide
+    - Created `standards/project-planning/README.md` - Guide to project planning standards
+    - Created `standards/templates/README.md` - Guide to template files
+  - **File Reorganization:**
+    - Moved `standards/documentation.md` → `standards/project-planning/documentation.md`
+    - Moved `standards/project-structure.md` → `standards/project-planning/project-structure.md`
+    - Moved `standards/tech-stack-document.md` → `standards/project-planning/tech-stack-document.md`
+    - Copied `docs/DOCUMENTATION_STANDARDS.md` → `standards/project-planning/documentation-standards.md`
+    - Moved `templates/general/AGENTS-TEMPLATE.md` → `standards/templates/AGENTS-TEMPLATE.md`
+    - Moved `templates/general/env.example` → `standards/templates/env.example`
+  - **Benefits:**
+    - Clearer separation between project planning standards and implementation standards
+    - Better organization with templates alongside the standards that reference them
+    - Easier navigation with dedicated README files for each major section
+    - Improved discoverability for AI agents and developers
+
+### Changed
+- **Standards Metadata Improvements** (2025-12-04 14:00:00)
+  - Fixed version inconsistency in `standards/project-planning/documentation.md` (title and metadata now both show v1.8)
+  - Added missing "Description" metadata field to multiple standards files:
+    - `standards/project-planning/documentation.md`
+    - `standards/git-flow.md`
+    - `standards/module-structure.md`
+    - `standards/sitemap.md`
+  - Updated all metadata "Last Updated" dates to reflect recent changes
+- **Cross-Reference Updates** (2025-12-04 14:00:00)
+  - Updated all file paths in core documentation files:
+    - `AGENTS.md` - Updated all standards paths to reflect new structure
+    - `INTEGRATION_GUIDE.md` - Updated template and standards paths
+    - `QUICK_INTEGRATION.md` - Updated copy commands and paths
+    - `README.md` - Updated AI agent integration instructions
+    - `standards/README.md` - Updated navigation and organization
+    - `standards/configuration.md` - Updated template reference
+    - `standards/testing.md` - Updated project structure references
+    - `docs/DOCUMENTATION_STANDARDS.md` - Added note about dual location
+  - All references now point to new `standards/project-planning/` and `standards/templates/` locations
 - **Logger Module Phase 1 Enhancements** (2025-12-02 12:00:00)
   - **Database Schema Enhancements:**
     - Added migration `logs-schema-v2.sql` with new columns: `user_id`, `tenant_id`, `ip_address`, `request_size`, `response_size`, `error_category`, `error_fingerprint`, `business_entity_id`, `business_entity_type`, `feature_flags`, `performance_metrics`, `correlation_id`

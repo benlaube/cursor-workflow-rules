@@ -1,0 +1,469 @@
+---
+description: Auto-applied rule for creating and modifying Cursor rules with proper metadata and structure
+version: 1.0.0
+lastUpdated: 2025-12-04
+globs: .cursor/rules/*.mdc
+alwaysApply: false
+type: Documentation Maintenance Rule - Ensures Cursor rules follow standards
+relatedCommands: [audit-documentation-metadata.md]
+relatedRules: [documentation-dependency-tracking.mdc, environment.mdc]
+relatedStandards: [process/cursor-rules-standards.md, project-planning/documentation.md]
+---
+
+# Cursor Rule Creation & Maintenance Rule
+
+## When This Rule Applies
+
+This rule **automatically applies** when:
+- Creating a new file in `.cursor/rules/` directory
+- Modifying any existing `.cursor/rules/*.mdc` file
+- Any Cursor rule file is opened for editing
+
+---
+
+## Core Principle
+
+**Cursor rules must be well-structured, consistently formatted, and properly documented.** This rule ensures all Cursor rules follow the standards defined in `standards/process/cursor-rules-standards.md`.
+
+---
+
+## Agent Responsibilities
+
+### 1. Before Creating a New Rule
+
+**Verify this should be a rule, not a command:**
+- ✅ Rule: Behavior applies automatically without user invocation
+- ❌ Command: User needs to decide when to run it
+
+**Check if similar rule exists:**
+- Search `.cursor/rules/` for related rules
+- Avoid duplicating existing rule functionality
+- Consider extending existing rule instead of creating new one
+
+**Determine rule type (from `cursor-rules-standards.md` Section 4):**
+1. Auto-Applied Behavioral Rule
+2. Environment/Configuration Rule
+3. Workflow Integration Rule
+4. Project-Specific Rule
+5. Conditional Rule (File-Specific)
+6. Error Recovery Rule
+7. Security/Compliance Rule
+8. Documentation Maintenance Rule
+
+### 2. While Creating/Modifying a Rule
+
+**MANDATORY: Include complete YAML frontmatter:**
+
+```yaml
+---
+description: Brief one-sentence description of what this rule does
+version: X.Y.Z (semantic versioning)
+lastUpdated: YYYY-MM-DD (ISO date format)
+globs: file/pattern (optional - omit if applies to all files, NO quotes)
+alwaysApply: true/false (true = applies to all files, false = only matching globs)
+type: Rule Type - Brief description (see cursor-rules-standards.md Section 4, NO quotes)
+relatedCommands: [command1.md, command2.md] (optional - related cursor commands)
+relatedRules: [rule1.mdc, rule2.mdc] (optional - other rules this interacts with)
+relatedStandards: [standard1.md, standard2.md] (optional - standards this implements)
+---
+```
+
+**MANDATORY: Include all required sections in content:**
+
+```markdown
+# Rule Title
+
+## When This Rule Applies
+
+[Clear description of when/where this rule triggers]
+
+---
+
+## Core Principle / Purpose
+
+[High-level explanation of what this rule achieves]
+
+---
+
+## Agent Responsibilities / Rule Behavior
+
+### Section 1: [First Responsibility]
+[Detailed explanation with examples]
+
+### Section 2: [Second Responsibility]
+[Detailed explanation with examples]
+
+---
+
+## Examples
+
+**Good Example:**
+```
+[Example of correct behavior]
+```
+
+**Bad Example:**
+```
+[Example of incorrect behavior]
+```
+
+---
+
+## Integration with Other Rules/Commands
+
+[How this rule works with other rules/commands/standards]
+
+---
+
+## Related Files
+
+- **Commands:** 
+  - [command.md](../commands/command.md) - Brief description
+- **Rules:** 
+  - [rule.mdc](./rule.mdc) - Brief description
+- **Standards:** 
+  - [standard.md](../../standards/standard.md) - Brief description
+
+---
+
+## How to Use This Rule
+
+[Clear instructions for agents on how to apply this rule]
+
+**This rule applies automatically when [condition]. Agents should [expected behavior].**
+```
+
+**Field-Specific Guidelines:**
+
+1. **description** (REQUIRED):
+   - One sentence max
+   - Starts with a verb
+   - Clearly states rule purpose
+   - Examples:
+     - ✅ Auto-applied rule for creating and modifying Cursor rules
+     - ❌ This rule helps with rules (too vague)
+
+2. **version** (REQUIRED):
+   - Format: `X.Y.Z` (semantic versioning)
+   - Start new rules at `1.0.0`
+   - See `.cursor/rules/environment.mdc` for version increment rules
+
+3. **lastUpdated** (REQUIRED):
+   - Format: `YYYY-MM-DD`
+   - Use current date (run `date` command to verify)
+   - Update EVERY time rule content changes
+
+4. **globs** (OPTIONAL):
+   - Omit if rule applies to all files
+   - Use glob patterns to target specific files (NO quotes in .mdc files)
+   - Examples:
+     - `**/*.ts` - All TypeScript files
+     - `**/*.{ts,tsx}` - TypeScript and TSX files
+     - `{standards/**/*.md,docs/**/*.md}` - Multiple patterns
+
+5. **alwaysApply** (REQUIRED):
+   - `true`: Applies to all files/situations (most common)
+   - `false`: Only applies to files matching `globs` pattern
+
+6. **type** (REQUIRED):
+   - Choose from 8 standard types (see `cursor-rules-standards.md` Section 4)
+   - Format: `Type Name - Brief description` (NO quotes in .mdc files)
+   - Examples:
+     - `Auto-Applied Behavioral Rule - Guides AI agent behavior`
+     - `Documentation Maintenance Rule - Tracks doc dependencies`
+
+7. **relatedCommands** (OPTIONAL):
+   - Array of command filenames (not full paths)
+   - Examples: `[pre-flight-check.md, pr-review-check.md]`
+   - List commands that:
+     - Implement this rule
+     - Are referenced by this rule
+     - Complement this rule
+
+8. **relatedRules** (OPTIONAL):
+   - Array of rule filenames (not full paths)
+   - Examples: `[environment.mdc, auto-heal.mdc]`
+   - List rules that:
+     - This rule depends on
+     - Interact with this rule
+     - Should be considered together
+
+9. **relatedStandards** (OPTIONAL):
+   - Array of standard paths (relative from `.cursor/rules/`)
+   - Examples: `[process/linting.md, project-planning/documentation.md]`
+   - List standards that:
+     - This rule implements
+     - Define requirements this rule enforces
+
+### 3. After Creating/Modifying a Rule
+
+**MANDATORY STEPS:**
+
+#### Step 3.1: Validate Rule Structure
+
+Run through this checklist:
+- [ ] YAML frontmatter is valid and complete
+- [ ] All required fields are present (description, version, lastUpdated, alwaysApply, type)
+- [ ] Version follows semantic versioning (X.Y.Z)
+- [ ] Type is declared and matches one of the 8 standard types
+- [ ] Related commands/rules/standards are listed (if applicable)
+- [ ] "When This Rule Applies" section is clear
+- [ ] "Core Principle" section explains purpose
+- [ ] "Agent Responsibilities" section has concrete guidance
+- [ ] Examples are provided (Good vs Bad)
+- [ ] "Related Files" section lists dependencies with descriptions
+- [ ] "How to Use This Rule" section provides clear instructions
+
+#### Step 3.2: Update Dependencies
+
+**If you modified relatedCommands, relatedRules, or relatedStandards:**
+1. Read each referenced file
+2. Check if they should reference this rule back (bidirectional)
+3. Update their metadata if needed
+
+**Example:** If your rule references `pre-flight-check.md`, check if that command should list your rule in its "Related Rules" section.
+
+#### Step 3.3: Update Related Documentation
+
+**Always update:**
+1. **`CHANGELOG.md`** - Add entry with timestamp
+   ```markdown
+   ### 2025-12-04 15:30:00 - Added
+   - **Cursor Rule:** `.cursor/rules/new-rule.mdc` (v1.0.0) - Brief description of purpose
+   ```
+
+**Update if applicable:**
+2. **`AGENTS.md`** - If rule affects workflow
+   - Section 3: Active Context (if currently working on rules)
+   - Section 5: Persistent Memory (if important learning)
+   - Section 8.2: Rules (Auto-Applied) list
+
+3. **Integration Guides** - If rule should be copied to other projects
+   - Update `INTEGRATION_GUIDE.md` to mention rule
+   - Update `QUICK_INTEGRATION.md` copy commands
+
+#### Step 3.4: Test the Rule
+
+**Validation steps:**
+1. **YAML Validation:** Ensure frontmatter parses correctly
+2. **Markdown Validation:** Check all links work
+3. **Logic Validation:** Does the rule trigger as expected?
+4. **Conflict Check:** Does it conflict with other rules?
+
+---
+
+## Version Management
+
+### When to Increment Version
+
+**Major version (X.0.0):**
+- Breaking changes in rule behavior
+- Major restructuring
+- Changed from conditional to always-apply (or vice versa)
+- Removed or significantly changed agent responsibilities
+
+**Minor version (X.Y.0):**
+- New sections added
+- New agent responsibilities
+- New related files added
+- Significant clarifications or expansions
+
+**Patch version (X.Y.Z):**
+- Typo fixes
+- Clarifications without behavior change
+- Formatting improvements
+- Fixed broken links
+
+**Always update both:**
+- `version:` field in YAML frontmatter
+- `lastUpdated:` field in YAML frontmatter
+
+---
+
+## Examples
+
+### Example 1: Creating a New Behavioral Rule
+
+**Good:**
+```yaml
+---
+description: Auto-applied rule for ensuring proper error handling in API routes
+version: 1.0.0
+lastUpdated: 2025-12-04
+globs: **/{app,pages}/api/**/*.{ts,js}
+alwaysApply: false
+type: Auto-Applied Behavioral Rule - Ensures API error handling
+relatedCommands: []
+relatedRules: [auto-heal.mdc]
+relatedStandards: [architecture/backend-module-plan.md]
+---
+
+# API Error Handling Rule
+
+## When This Rule Applies
+
+This rule applies automatically when creating or modifying API route handlers in:
+- `app/api/**/*.ts` (Next.js App Router)
+- `pages/api/**/*.js` (Next.js Pages Router)
+
+[Rest of content with clear examples...]
+```
+
+**Bad:**
+```yaml
+---
+description: Error handling
+version: 1
+lastUpdated: 12/04/2025
+type: API Rule
+---
+
+# Error Handling
+
+Handle errors in API routes.
+```
+❌ Problems:
+- Description too vague
+- Version not semantic (should be 1.0.0)
+- Date format wrong (should be YYYY-MM-DD)
+- Missing required fields (alwaysApply, globs for conditional rules)
+- Type doesn't match standard types (should be one of 8 types)
+- Missing relatedCommands, relatedRules, relatedStandards
+- Content structure incomplete (no examples, no "How to Use" section)
+
+### Example 2: Modifying an Existing Rule
+
+**Scenario:** Adding new section to `linting.mdc`
+
+**Before:**
+```yaml
+version: 1.0.0
+lastUpdated: 2025-12-02
+```
+
+**After:**
+```yaml
+version: 1.1.0  # ← Incremented minor version (new section)
+lastUpdated: 2025-12-04  # ← Updated date
+```
+
+**Also updated:**
+- Added new section: "## 7. TypeScript-Specific Linting"
+- Updated `CHANGELOG.md` with entry
+- Verified related commands still accurate
+
+---
+
+## Common Mistakes to Avoid
+
+### ❌ Mistake 1: Incomplete YAML Frontmatter
+```yaml
+---
+description: Some rule
+version: 1.0.0
+---
+```
+**Fix:** Include ALL required fields (lastUpdated, alwaysApply, type)
+
+### ❌ Mistake 2: Wrong Version Format
+```yaml
+version: 1  # ← Wrong
+version: 1.0  # ← Wrong
+```
+**Fix:** Always use semantic versioning: `1.0.0`
+
+### ❌ Mistake 3: Vague Type
+```yaml
+type: Rule for documentation  # ← Too vague
+```
+**Fix:** Use one of the 8 standard types from `cursor-rules-standards.md` (NO quotes in .mdc files)
+
+### ❌ Mistake 4: Missing "How to Use" Section
+**Fix:** Always include clear usage instructions at the end
+
+### ❌ Mistake 5: Not Updating lastUpdated
+```yaml
+lastUpdated: 2025-12-01  # ← Stale! Rule was just modified today
+```
+**Fix:** Always update when modifying content (use `date` command)
+
+### ❌ Mistake 6: Listing Full Paths in Related Files
+```yaml
+relatedCommands: [../../.cursor/commands/pre-flight-check.md]  # ← Wrong
+```
+**Fix:** Use filename only: `[pre-flight-check.md]`
+
+### ❌ Mistake 7: No Examples
+**Fix:** Always provide "Good" vs "Bad" examples
+
+---
+
+## Integration with Other Rules
+
+This rule works in conjunction with:
+
+### `.cursor/rules/documentation-dependency-tracking.mdc`
+- That rule tracks dependencies when ANY documentation is modified
+- This rule focuses specifically on Cursor rules (`.mdc` files)
+- Both rules ensure metadata is complete
+
+### `.cursor/rules/environment.mdc`
+- Defines version numbering standards
+- Referenced for version increment rules
+
+### `.cursor/commands/audit-documentation-metadata.md`
+- Periodic audit command
+- Validates rule metadata completeness
+
+### `standards/process/cursor-rules-standards.md`
+- Governing standard for rule creation
+- This rule implements that standard's requirements
+
+---
+
+## Related Files
+
+- **Commands:**
+  - [audit-documentation-metadata.md](../commands/audit-documentation-metadata.md) - Audits rule metadata completeness
+- **Rules:**
+  - [documentation-dependency-tracking.mdc](./documentation-dependency-tracking.mdc) - Tracks doc dependencies
+  - [environment.mdc](./environment.mdc) - Version numbering standards
+- **Standards:**
+  - [cursor-rules-standards.md](../../standards/process/cursor-rules-standards.md) - Governing standard for rule creation
+  - [documentation.md](../../standards/project-planning/documentation.md) - General documentation standards
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically when creating or modifying Cursor rules (`.cursor/rules/*.mdc` files).**
+
+**Agents should:**
+1. Verify complete YAML frontmatter with all required fields before creating rule
+2. Use standard rule structure from `cursor-rules-standards.md`
+3. Declare rule type from the 8 standard types
+4. Include "How to Use This Rule" section with clear instructions
+5. Update version and lastUpdated when modifying existing rules
+6. Update `CHANGELOG.md` after creating/modifying rules
+7. Follow `documentation-dependency-tracking.mdc` for dependency management
+
+**Validation checklist after creating/modifying:**
+- [ ] YAML frontmatter complete and valid
+- [ ] Version incremented (if modification)
+- [ ] lastUpdated updated
+- [ ] Type declared (one of 8 standard types)
+- [ ] Related files listed
+- [ ] Examples provided
+- [ ] "How to Use" section present
+- [ ] `CHANGELOG.md` updated
+- [ ] Dependencies verified
+
+---
+
+## Notes
+
+- **Be thorough:** Rule quality directly impacts AI agent behavior
+- **Provide examples:** Agents need concrete guidance
+- **Test before publishing:** Verify rule doesn't conflict with others
+- **Keep focused:** Each rule should have a single, clear purpose
+- **Document integrations:** Explain how rule works with other rules/commands

@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Created:** 2025-01-27
-- **Last Updated:** 2025-12-02
+- **Last Updated:** 2025-12-04
 - **Version:** 1.0
 - **Description:** Project context and memory for AI Developer Agent
 
@@ -30,13 +30,13 @@ We are currently focusing on:
 ## 3. Active Context (The "Now")
 *What is being worked on right now? Keep this fresh - update at the start of each session.*
 
-- **Latest Task:** Created workflow-standards-documentation-maintenance rule and separated AGENTS.md template
+- **Latest Task:** Created Cursor rules standard and creation rule (cursor-rules-standards.md and cursor-rule-creation.mdc)
 - **Blocking Issues:** None currently
-- **Next Up:** Continue refining documentation and standards based on usage
-- **Context Notes:** [Optional: Any important context for the current work]
+- **Next Up:** Update existing rules to use new metadata structure (Type, relatedCommands, relatedRules, relatedStandards)
+- **Context Notes:** New system defines 8 standard rule types and ensures all rules follow proper structure with enhanced metadata for better cross-referencing
 
 ## 4. System Architecture Highlights
-*Quick reference for the agent. For full details, see `standards/tech-stack-document.md`.*
+*Quick reference for the agent. For full details, see `standards/project-planning/tech-stack-document.md`.*
 
 > **Note:** This repository is a standards library, not a runtime application. It contains:
 > - Documentation standards and guides
@@ -61,11 +61,16 @@ We are currently focusing on:
 
 **Current Learnings:**
 - "This repository serves as a template/standard library - it's meant to be copied into other projects, not run as an application itself."
-- "AGENTS.md is project-specific (this repository), while templates/general/AGENTS-TEMPLATE.md is the template for other projects."
+- "AGENTS.md is project-specific (this repository), while standards/templates/AGENTS-TEMPLATE.md is the template for other projects."
 - "Rules in `.cursor/rules/` are auto-applied when this repository is integrated into other projects."
 - "The workflow-standards-documentation-maintenance rule is specific to this repository and should be adapted or removed when integrating into other projects."
-- "All documentation follows the standards defined in `standards/documentation.md`."
+- "All documentation follows the standards defined in `standards/project-planning/documentation.md`."
 - "Module READMEs should focus on usage, while standards focus on creation/structure patterns."
+- "Documentation dependencies are tracked bidirectionally - when File A references File B, both files should reference each other (if appropriate). The documentation-dependency-tracking rule ensures this automatically."
+- "Metadata in documentation files must include Dependencies field with markdown links - this enables easy navigation and ensures cross-reference integrity."
+- "Cursor rules (`.mdc` files) use YAML frontmatter for metadata, while standards/docs use Markdown headers - they have different but complementary metadata structures."
+- "Rules should declare their type from 8 standard types (Behavioral, Environment, Workflow, Project-Specific, Conditional, Error Recovery, Security, Documentation) to clarify purpose and audience."
+- "Enhanced metadata fields (Type, Related Commands/Rules/Standards, How to Use) improve cross-referencing and make documentation more navigable for both AI agents and developers."
 
 ## 6. Standard Developer Lifecycle
 
@@ -169,9 +174,9 @@ Run these:
 6. **Update Docs:** If you change the architecture, update the docs
    - Update `standards/` if architecture changes
    - Update `CHANGELOG.md` for user-facing changes
-   - See `standards/documentation.md` Section 7 for changelog guidelines
+   - See `standards/project-planning/documentation.md` Section 7 for changelog guidelines
    - **Follow `.cursor/rules/workflow-standards-documentation-maintenance.mdc`** for comprehensive documentation update requirements
-   - **See `standards/documentation.md`** for complete documentation management standards
+   - **See `standards/project-planning/documentation.md`** for complete documentation management standards
 
 ### 7.7 Safe Operations
 7. **Safe Mode:** Do not delete data without confirmation
@@ -224,6 +229,7 @@ All commands are located in `.cursor/commands/`:
 - **`lint-check`** (`.cursor/commands/lint-check.md`) - Standalone lint check command
 - **`project-audit`** (`.cursor/commands/project-audit.md`) - Project structure and standards validation
 - **`security_audit`** (`.cursor/commands/audit-security.mdc`) - Security vulnerabilities and secrets scan
+- **`audit-documentation-metadata`** (`.cursor/commands/audit-documentation-metadata.md`) - Audit and update metadata across all documentation files
 - **`full-project-health-check`** - Run all audits together (meta-command)
 - **`verify_access_control`** - Access control validation
 
@@ -231,14 +237,17 @@ All commands are located in `.cursor/commands/`:
 - **`.cursor/rules/linting.mdc`** - Linting behavior and expectations for AI agents (applies automatically)
 - **`.cursor/rules/supabase-rls-policy-review.mdc`** - Deep RLS policy analysis (applies automatically when Supabase detected)
 - **`.cursor/rules/workflow-standards-documentation-maintenance.mdc`** - Documentation maintenance requirements (project-specific to Workflow Rules repository)
+- **`.cursor/rules/documentation-dependency-tracking.mdc`** - Ensures documentation dependencies and cross-references are maintained when files are modified (applies automatically)
+- **`.cursor/rules/cursor-rule-creation.mdc`** - Ensures Cursor rules follow proper structure and metadata standards (applies when creating/modifying rules)
 
 ### 8.3 Standards (Governing Documents)
 All standards are located in `standards/`:
 
-- **Documentation:** `standards/documentation.md` - Documentation management rules
-- **Documentation Index:** `docs/DOCUMENTATION_STANDARDS.md` - Comprehensive documentation guide and index
+- **Documentation:** `standards/project-planning/documentation.md` - Documentation management rules
+- **Documentation Index:** `standards/project-planning/documentation-standards.md` - Comprehensive documentation guide and index (also at `docs/DOCUMENTATION_STANDARDS.md`)
+- **Cursor Rules:** `standards/process/cursor-rules-standards.md` - Standards for creating and maintaining Cursor rules
 - **Linting:** `standards/process/linting.md` - Linting requirements, tools, and policies
-- **Project Structure:** `standards/project-structure.md` - File organization standards
+- **Project Structure:** `standards/project-planning/project-structure.md` - File organization standards
 - **Module Structure:** `standards/module-structure.md` - Module organization standards
 - **Security:** `standards/security/access-control.md` - Access control and RLS standards
 - **Database:** `standards/database/schema.md` - Database schema conventions
