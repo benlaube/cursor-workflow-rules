@@ -1,12 +1,14 @@
 # AI Agent Context & Memory (AGENTS.md)
 
 ## Metadata
+
 - **Created:** 2025-01-27
 - **Last Updated:** 04-12-2025 16:46:02 EST
 - **Version:** 1.0
 - **Description:** Project context and memory for AI Developer Agent
 
 > **CRITICAL NOTE:** This file is for the **AI Developer Agent** (the entity writing code in the IDE) ONLY.
+>
 > - It is **NOT** accessible to runtime AI agents (e.g., chatbots embedded in the web app).
 > - It contains build-time context, architectural decisions, and developer memory.
 > - **Do not** store runtime secrets or user data here.
@@ -16,10 +18,13 @@
 ---
 
 ## 1. Project Mission
+
 **Build a comprehensive AI Agent Knowledge Base & Standards Library that provides reusable rules, standards, commands, checklists, and code modules to ensure consistent, secure, and efficient development across all projects.**
 
 ## 2. Current Phase: Maintenance & Enhancement
+
 We are currently focusing on:
+
 - [x] Core infrastructure established (rules, commands, checklists, standards)
 - [x] Module library created (backend-api, auth-profile-sync, logger-module, etc.)
 - [x] Documentation system implemented (AGENTS.md, STANDARDS_INTEGRATION_GUIDE.md, etc.)
@@ -28,7 +33,8 @@ We are currently focusing on:
 - [ ] Refining integration process based on usage feedback
 
 ## 3. Active Context (The "Now")
-*What is being worked on right now? Keep this fresh - update at the start of each session.*
+
+_What is being worked on right now? Keep this fresh - update at the start of each session._
 
 - **Latest Task:** Created Cursor rules standard and creation rule (cursor-rules-standards.md and cursor-rule-creation.mdc)
 - **Blocking Issues:** None currently
@@ -36,9 +42,11 @@ We are currently focusing on:
 - **Context Notes:** New system defines 8 standard rule types and ensures all rules follow proper structure with enhanced metadata for better cross-referencing
 
 ## 4. System Architecture Highlights
-*Quick reference for the agent. For full details, see `standards/project-planning/tech-stack-document.md`.*
+
+_Quick reference for the agent. For full details, see `standards/project-planning/tech-stack-document.md`._
 
 > **Note:** This repository is a standards library, not a runtime application. It contains:
+>
 > - Documentation standards and guides
 > - Reusable code modules
 > - Cursor rules and commands
@@ -50,9 +58,11 @@ We are currently focusing on:
 - **Documentation:** Integration guides, checklists, and process documentation
 
 ## 5. Persistent Memory (Learnings & Patterns)
-*Record things that are not obvious from code but are important. Add entries as you discover them.*
+
+_Record things that are not obvious from code but are important. Add entries as you discover them._
 
 **What to Record:**
+
 - Architectural decisions and their rationale
 - Naming conventions specific to this project
 - Gotchas or common pitfalls
@@ -60,6 +70,7 @@ We are currently focusing on:
 - Things that differ from standard practices
 
 **Current Learnings:**
+
 - "This repository serves as a template/standard library - it's meant to be copied into other projects, not run as an application itself. See `STANDARDS_INTEGRATION_GUIDE.md` for integration instructions."
 - "AGENTS.md is project-specific (this repository), while templates/file-templates/AGENTS-TEMPLATE.md is the template for other projects."
 - "Rules in `.cursor/rules/` are auto-applied when this repository is integrated into other projects."
@@ -80,21 +91,25 @@ We are currently focusing on:
 Follow this lifecycle for all development work. Each step has a corresponding command and checklist. See `.cursor/rules/task-workflow.mdc` for complete workflow details including git operations, launch procedures, and Notion integration.
 
 ### 6.1 Before Coding
+
 **Rule:** `pre-flight-check.mdc` (`.cursor/rules/pre-flight-check.mdc`) - Auto-applied  
 **Checklist:** `standards/process/checklists/pre_flight_checklist_v1_0.md`
 
 **Automatically validates before coding starts:**
+
 - Git branch and working tree status
 - Dependencies are installed
 - Environment is configured
 - Baseline tests and build pass
 
 ### 6.2 Launch Development Environment
+
 **Script:** `./start_app.sh` (or `./scripts/start_dev.sh` for direct dev launch)  
 **Command:** `create-start-scripts` (`.cursor/commands/create-start-scripts.md`) - Run this if `start_app.sh` doesn't exist  
 **Standard:** `standards/deployment/application-launch.md`
 
 After pre-flight passes, launch the dev environment:
+
 - **If `start_app.sh` exists:** Run `./start_app.sh dev` (or `./start_app.sh` and select dev mode)
 - **If `start_app.sh` doesn't exist:** Run `create-start-scripts` command to generate launch scripts
 - Handles:
@@ -104,35 +119,44 @@ After pre-flight passes, launch the dev environment:
   - Supabase startup (if applicable)
 
 ### 6.3 While Coding
+
 **Standards:** Review relevant files in `standards/` before implementing
+
 - Follow coding standards in `standards/`
 - Reference architecture docs in `standards/architecture/`
 - Use module patterns from `standards/module-structure.md`
 
 ### 6.4 Before PR
+
 **Rule:** `pr-review-check.mdc` (`.cursor/rules/pr-review-check.mdc`) - Auto-applied  
 **Checklist:** `standards/process/checklists/pr_review_checklist_v1_0.md`
 
 **Automatically validates before PR submission:**
+
 - Code quality (lint, format, types)
 - Functionality (build, tests)
 - Security (no secrets, input validation)
 - Documentation (functions documented, CHANGELOG updated)
 
 ### 6.5 Periodic / Before Releases
+
 **Commands:**
+
 - `project-audit` (`.cursor/commands/project-audit.md`) - Full project structure validation
 - `security_audit` (`.cursor/commands/audit-security.mdc`) - Security vulnerabilities scan
 - `full-project-health-check` - Run all audits together
 
 **Checklists:**
+
 - `standards/process/checklists/project_audit_checklist_v1_0.md`
 - `standards/security/security-audit-checklist.md`
 
 **Rules (Auto-Applied):**
+
 - `.cursor/rules/supabase-rls-policy-review.mdc` - Deep RLS policy analysis (applies automatically when Supabase is detected)
 
 Run these:
+
 - When onboarding a new repository
 - Before major refactoring
 - Before major releases
@@ -143,12 +167,14 @@ Run these:
 ## 7. Agent Rules of Engagement
 
 > **What the AI Agent Reviews First:**
+>
 > 1. **AGENTS.md** (this file) - Read at start of every session for project context and memory
 > 2. **`.cursor/rules/task-workflow.mdc`** - Auto-applied workflow rule that orchestrates the complete development lifecycle
 > 3. **Auto-applied rules** - Rules marked with `alwaysApply: true` are automatically active
 > 4. **Context-specific rules** - Rules that apply based on file patterns or operations being performed
 
 ### 7.1 Pre-Flight (Before Any Coding)
+
 1. **Pre-flight validation runs automatically** (`.cursor/rules/pre-flight-check.mdc`)
    - Triggered by `.cursor/rules/task-workflow.mdc` Section 1
    - Auto-validates environment and baseline integrity
@@ -156,6 +182,7 @@ Run these:
    - Self-heals common issues (dependencies, .env, linter)
 
 ### 7.2 Standards First
+
 2. **Check Standards First:** Look in `standards/` before guessing
    - Architecture decisions: `standards/architecture/`
    - Coding patterns: `standards/` (root level)
@@ -164,12 +191,14 @@ Run these:
    - **Documentation Index:** See `standards/project-planning/documentation-standards.md` for comprehensive documentation guide
 
 ### 7.3 Project Onboarding
+
 3. **For new repositories or major refactors, run `project-audit`**
    - Validates structure against standards
    - Identifies gaps and action items
    - Use `full-project-health-check` for comprehensive review
 
 ### 7.4 Pre-PR Validation
+
 4. **PR validation runs automatically before submission** (`.cursor/rules/pr-review-check.mdc`)
    - Auto-validates code quality and security
    - Checks documentation and changelog
@@ -177,12 +206,14 @@ Run these:
    - Auto-fixes common issues when possible
 
 ### 7.5 Security-Sensitive Changes
+
 5. **For security-sensitive changes, run `security_audit`**
    - Validates no secrets are committed
    - Checks RLS policies are secure (via `.cursor/rules/supabase-rls-policy-review.mdc` if Supabase detected)
    - Ensures input validation and rate limiting
 
 ### 7.6 Documentation
+
 6. **Update Docs:** If you change the architecture, update the docs
    - Update `standards/` if architecture changes
    - Update `CHANGELOG.md` for user-facing changes
@@ -191,10 +222,12 @@ Run these:
    - **See `standards/project-planning/documentation-management.md`** for complete documentation management standards
 
 ### 7.7 Safe Operations
+
 7. **Safe Mode:** Do not delete data without confirmation
 8. **Log Complex Logic:** If running a big migration, write to `/logs/migration_X.log` first
 
 ### 7.8 Temporal Awareness
+
 9. **Temporal Awareness:** Always check the current date when responding to time-sensitive prompts
    - Use `date` command or system date functions
    - See `.cursor/rules/date-time.mdc` for details
@@ -204,6 +237,7 @@ Run these:
 ## 8. Related Checklists & Commands
 
 ### 8.1 Checklists (Human-Readable Validation)
+
 All checklists are located in `standards/process/checklists/`:
 
 - **Pre-Flight:** `standards/process/checklists/pre_flight_checklist_v1_0.md`
@@ -233,6 +267,7 @@ All checklists are located in `standards/process/checklists/`:
   - Related standard: `standards/security/access-control.md`
 
 ### 8.2 Commands (Executable Workflows)
+
 All commands are located in `.cursor/commands/`:
 
 - **`create-start-scripts`** (`.cursor/commands/create-start-scripts.md`) - Generate launch scripts (`start_app.sh` and `scripts/*.sh`)
@@ -244,6 +279,7 @@ All commands are located in `.cursor/commands/`:
 - **`verify_access_control`** - Access control validation
 
 **Rules (Auto-Applied):**
+
 - **`.cursor/rules/task-workflow.mdc`** - **CRITICAL:** Complete development lifecycle workflow from pre-flight to post-flight. Orchestrates all development phases including git operations, launch procedures, and task completion. **Read this first when starting any task.**
 - **`.cursor/rules/pre-flight-check.mdc`** - Environment validation before coding starts (auto-applied at task start)
 - **`.cursor/rules/pr-review-check.mdc`** - Pre-PR validation (auto-applied when completing tasks)
@@ -265,6 +301,7 @@ All commands are located in `.cursor/commands/`:
   - **`.cursor/rules/git/git-workflow-integration.mdc`** - Coordinates git operations and validates git status (always active)
 
 ### 8.3 Standards (Governing Documents)
+
 All standards are located in `standards/`:
 
 - **Documentation:** `standards/project-planning/documentation-management.md` - Documentation management rules
@@ -281,22 +318,22 @@ All standards are located in `standards/`:
 
 ## 9. Quick Reference: When to Use What
 
-| Situation | Command | Checklist | Standard |
-|-----------|---------|-----------|----------|
-| Starting new task | Auto (`.cursor/rules/task-workflow.mdc` → `pre-flight-check.mdc`) | `pre_flight_checklist_v1_0.md` | - |
-| Launching dev env | `./start_app.sh dev` (or `create-start-scripts` if missing) | - | `application-launch.md` |
-| Before PR | Auto (`.cursor/rules/pr-review-check.mdc`) | `pr_review_checklist_v1_0.md` | - |
-| Lint check | Auto (`.cursor/rules/linting-behavior.mdc`) | `linting_checklist_v1_0.md` | `code-quality-linting-standards.md` |
-| Onboarding repo | `audit-project` (`.cursor/commands/audit-project.md`) | `project_audit_checklist_v1_0.md` | `project-structure.md` |
-| Security review | `security_audit` (`.cursor/commands/audit-security.mdc`) | `security-audit-checklist.md` | - |
-| README review | `audit-readmes` (`.cursor/commands/audit-readmes.md`) | - | `readme-standards.mdc` |
-| RLS deep dive | Auto (Supabase rule) | `.cursor/rules/supabase-rls-policy-review.mdc` | `access-control.md` |
-| Full health check | `full-project-health-check` | All checklists | All standards |
+| Situation         | Command                                                           | Checklist                                      | Standard                            |
+| ----------------- | ----------------------------------------------------------------- | ---------------------------------------------- | ----------------------------------- |
+| Starting new task | Auto (`.cursor/rules/task-workflow.mdc` → `pre-flight-check.mdc`) | `pre_flight_checklist_v1_0.md`                 | -                                   |
+| Launching dev env | `./start_app.sh dev` (or `create-start-scripts` if missing)       | -                                              | `application-launch.md`             |
+| Before PR         | Auto (`.cursor/rules/pr-review-check.mdc`)                        | `pr_review_checklist_v1_0.md`                  | -                                   |
+| Lint check        | Auto (`.cursor/rules/linting-behavior.mdc`)                       | `linting_checklist_v1_0.md`                    | `code-quality-linting-standards.md` |
+| Onboarding repo   | `audit-project` (`.cursor/commands/audit-project.md`)             | `project_audit_checklist_v1_0.md`              | `project-structure.md`              |
+| Security review   | `security_audit` (`.cursor/commands/audit-security.mdc`)          | `security-audit-checklist.md`                  | -                                   |
+| README review     | `audit-readmes` (`.cursor/commands/audit-readmes.md`)             | -                                              | `readme-standards.mdc`              |
+| RLS deep dive     | Auto (Supabase rule)                                              | `.cursor/rules/supabase-rls-policy-review.mdc` | `access-control.md`                 |
+| Full health check | `full-project-health-check`                                       | All checklists                                 | All standards                       |
 
 **Note:** Commands are located in `.cursor/commands/`, checklists in `standards/process/checklists/`, and standards in `standards/`.
 
 ---
 
-*Last Updated: 04-12-2025 16:46:02 EST*
+_Last Updated: 04-12-2025 16:46:02 EST_
 
 **Maintenance:** Update the "Last Updated" date whenever you modify this file. See `.cursor/rules/workflow-standards-documentation-maintenance.mdc` for comprehensive documentation update requirements.

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - **Git Hooks Configuration** (04-12-2025 16:40:36 EST)
   - **Added:** `.husky/pre-commit` - Pre-commit hook with security checks, linting, and formatting
   - **Added:** `.husky/commit-msg` - Commit message validation (Conventional Commits)
@@ -104,6 +105,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Impact:** All AI agents now actively check for existing content and reference instead of duplicating, making the codebase more maintainable
 
 ### Changed
+
 - **Git Rules Organization** (04-12-2025 16:34:28 EST)
   - **Reorganized:** Moved all git-related rules into `.cursor/rules/git/` subdirectory for better organization
   - **Files Moved:**
@@ -122,23 +124,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Versions:** Patch-bumped every rule and refreshed timestamps during link conversion.
 
 ### Changed
+
 - **Cursor Rules Created-Date Normalization** (12-04-2025 16:10:30 EST)
   - **Updated:** All `.cursor/rules/*.mdc` `created` fields set to `12-04-2025` (MM-DD-YYYY) to enforce consistent format; refreshed `lastUpdated` and patch-bumped versions.
 
 ### Changed
+
 - **Cursor Rules Date/Metadata Alignment** (12-04-2025 16:10:30 EST)
   - **Updated:** All `.cursor/rules/*.mdc` to normalize `created` to `MM-DD-YYYY`, refresh `lastUpdated`, and patch-bump versions.
   - **Format:** All timestamps now use `MM-DD-YYYY HH:MM:SS EST`.
 
 ### Changed
+
 - **Cursor Rules Standard Alignment** (12-04-2025 16:08:39 EST)
   - **Updated:** All `.cursor/rules/*.mdc` to match `cursor-rule-creation.mdc` standard (frontmatter order, required fields, date format MM-DD-YYYY HH:MM:SS EST).
   - **Versions:** Patch bumped each rule and refreshed timestamps.
   - **Template:** Confirmed `standards/templates/cursor-rule.mdc` uses correct field formats.
   - **Changelog:** Added this entry to record bulk alignment.
 
-
 ### Added
+
 - **Version Management Rule** (04-12-2025 15:54:51 EST)
   - **Added:** `.cursor/rules/version-management.mdc` (v1.0.0) - Semantic versioning standards for all documentation file types
   - **Updated:** (v1.1.0 - 04-12-2025 16:02:58 EST) - Removed version numbers from filenames; version numbers now only in metadata
@@ -213,6 +218,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Impact:** All new and modified commands will have consistent, complete metadata and structure
 
 ### Changed
+
 - **Project Structure Standard Enhanced** (04-12-2025 15:56:24 EST)
   - **Updated:** `standards/project-planning/project-structure.md` (v1.1 → v1.2)
   - **Enhanced Metadata:** Added Status, Type, Applicability, Related Standards, Related Cursor Rules, and How to Use fields
@@ -256,22 +262,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Maintains critical information (proper format examples + common mistakes)
     - References standards for comprehensive examples
     - All rules now well under 500-line limit
-  - **Pattern Used:** 
+  - **Pattern Used:**
     - Keep ONE good example showing proper structure
     - Replace verbose examples with bulleted "Common Mistakes" list
     - Reference `standards/process/cursor-rules-standards.md` for comprehensive examples
 
 ### Fixed
+
 - **Cursor Rule Creation Sync** (04-12-2025 15:28:12 EST)
   - **Fixed:** `.cursor/rules/cursor-rule-creation.mdc` (v1.2.1) - Updated YAML frontmatter reference to match v1.4 standard (added created date, applicability, dependencies, updated field order).
 
 ### Changed
+
 - **Cursor Rules Date Format Update** (04-12-2025 15:20:40 EST)
   - **Updated:** `standards/process/cursor-rules-standards.md` (v1.4)
   - **Date Format:** Standardized all date formats to `MM-DD-YYYY` and timestamps to `MM-DD-YYYY HH:MM:SS EST`
   - **Examples:** Clarified that examples in rules are optional but encouraged in the standard.
 
 ### Changed
+
 - **Cursor Rules Metadata Standard Update** (04-12-2025 15:16:50 EST)
   - **Updated:** `standards/process/cursor-rules-standards.md` (v1.3)
   - **Refined YAML Order:** `description, version, created, lastUpdated, alwaysApply, globs, type, applicability, dependencies, relatedCommands, relatedRules, relatedStandards`
@@ -279,6 +288,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Rule Reference:** Added explicit reference to `.cursor/rules/cursor-rule-creation.mdc` as the enforcing rule.
 
 ### Changed
+
 - **Cursor Rule Creation Condensed** (04-12-2025 15:08:01 EST)
   - **Updated:** `.cursor/rules/cursor-rule-creation.mdc` (v1.2.0)
   - **Change:** Significantly reduced file size by removing duplicated content from `cursor-rules-standards.md`.
@@ -286,10 +296,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Removed:** Detailed field definitions, nested rule templates, and verbose examples (now referenced in standard).
 
 ### Fixed
+
 - **Cursor Rule Creation Typos** (04-12-2025 15:03:31 EST)
   - **Fixed:** `.cursor/rules/cursor-rule-creation.mdc` (v1.1.2) - Fixed typo in "When This Rule Applies" section header
 
 ### Changed - BREAKING
+
 - **Date & Time Awareness Extracted to Dedicated Rule** (04-12-2025 13:17:07 EST)
   - **BREAKING:** Extracted Section 5 "Temporal Awareness (Date & Time)" from `environment.mdc` into dedicated rule
   - **Added:** `.cursor/rules/date-time.mdc` - New dedicated rule for date and time awareness
@@ -339,6 +351,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Migration:** Rules automatically apply - no manual migration needed. If you referenced `git-workflow` command, use the appropriate rule instead.
 
 ### Changed
+
 - **Tech Stack Standard Reformatted** (04-12-2025 16:00:00 EST)
   - **Updated:** `standards/project-planning/tech-stack-document.md` (v1.0 → v1.1)
   - **Fixed:** Mislabeled as "Rule" - now correctly labeled as "Standard"
@@ -358,6 +371,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Reason:** Align with new documentation metadata standards and provide more comprehensive guidance
 
 ### Added
+
 - **Roadmap Standard** (04-12-2025 15:45:00 EST)
   - **Created:** `standards/project-planning/roadmap-standard.md` (v1.0)
   - **Purpose:** Standard for creating and maintaining project roadmaps
@@ -382,6 +396,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Purpose:** Provides clear guidance on creating and maintaining documentation indexes
 
 ### Changed
+
 - **Consolidated Documentation Standards Files** (04-12-2025 15:30:00 EST)
   - **Deleted Redundant Files:**
     - `docs/DOCUMENTATION_STANDARDS.md` → Content maintained only in `standards/project-planning/documentation-standards.md`
@@ -401,6 +416,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Single Source of Truth:** All documentation standards now consolidated in `standards/project-planning/` directory
 
 ### Removed
+
 - **Project-Specific Roadmaps** (04-12-2025 15:45:00 EST)
   - **Deleted:**
     - `docs/roadmap/roadmap_v1_0.md`
@@ -411,6 +427,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Note:** Projects using this standards library should create their own roadmaps following the new standard
 
 ### Changed
+
 - **Renamed Integration Guide** (04-12-2025 12:14:38 EST)
   - **Renamed:** `INTEGRATION_GUIDE.md` → `STANDARDS_INTEGRATION_GUIDE.md`
   - **Title Updated:** `Integration_Guide_v1.1` → `Standards_Integration_Guide_v1.2`
@@ -440,6 +457,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Removed from commands list, added to rules list
 
 ### Added
+
 - **README Audit Command** (04-12-2025 12:03:35 EST)
   - **New Command:** Created `.cursor/commands/audit-readmes.md` - Comprehensive README validation command
   - **Automatic Type Detection:** Identifies README type (Root, Module, Standards, Feature) based on location
@@ -531,6 +549,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Improved onboarding experience for new developers
 
 ### Changed
+
 - **Documentation Metadata Audit Refactoring** (04-12-2025 11:12:43 EST)
   - **Refactored Audit Command:** Renamed and simplified `audit-documentation-metadata.md` → `audit-documentation-rules-metadata.md` (v2.0.0)
   - **New Architecture:** Command now orchestrates specialized rules/commands instead of duplicating validation logic
@@ -550,6 +569,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Old command file marked for deprecation
 
 ### Added
+
 - **Cursor Rules Standard & Creation Rule** (2025-12-04 16:00:00)
   - **Standard:** Created `standards/process/cursor-rules-standards.md` - Comprehensive standard for creating and maintaining Cursor rules
   - **Auto-Applied Rule:** Created `.cursor/rules/cursor-rule-creation.mdc` - Ensures all Cursor rules follow proper structure and metadata
@@ -634,6 +654,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Improved discoverability for AI agents and developers
 
 ### Changed
+
 - **Standards Metadata Improvements** (2025-12-04 14:00:00)
   - Fixed version inconsistency in `standards/project-planning/documentation-management.md` (title and metadata now both show v1.8)
   - Added missing "Description" metadata field to multiple standards files:
@@ -943,6 +964,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Benefits:** Enables log-based error detection and auto-fix strategies referenced in auto-heal rule
 
 ### Added
+
 - **Comprehensive Linting System** (2025-12-02 05:28:12)
   - **Linting Standard:** Created `standards/process/code-quality-linting-standards.md` (renamed from `linting.md`) - Comprehensive linting standard defining requirements, tools, policies, and AI agent behavior expectations
   - **Linting Rule:** Created `.cursor/rules/linting-behavior.mdc` (renamed from `linting.mdc`) - Auto-applied rule that guides AI agent behavior around linting (always applies)
@@ -962,6 +984,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Benefits:** Unified linting approach, clear expectations for AI agents, integrated with development lifecycle, reduces lint-related friction
 
 ### Changed
+
 - **Documentation Standards Consolidation** (2025-12-02)
   - **Fixed Incorrect Checklist Locations:** Corrected all checklist references across documentation files
     - `standards/project-planning/documentation-management.md` Section 3: Removed incorrect `/docs/standards/development-checklists/` path
@@ -1003,6 +1026,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Benefits:** Consistent naming convention using dashes, better readability, aligns with modern file naming standards
 
 ### Changed
+
 - **Launch Command Updated to Use start_app.sh** (2025-12-02 04:49:00)
   - **launch.mdc:** Updated `.cursor/commands/launch.mdc` to use `start_app.sh` as primary launch method
   - **Auto-Generation:** Command now automatically runs `create-start-scripts` if `start_app.sh` doesn't exist
@@ -1041,6 +1065,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Benefits:** Better clarity, easier integration, consistent documentation structure, improved maintainability
 
 ### Added
+
 - **AGENTS.md Template Separation** (2025-01-27)
   - **Template Created:** Created `templates/general/AGENTS-TEMPLATE.md` as the template version for integration into other projects
   - **Project-Specific AGENTS.md:** Updated root `AGENTS.md` with actual project content for Workflow Rules / Coding Standards repository
@@ -1068,6 +1093,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Benefits:** Ensures documentation stays in sync with code changes, reduces documentation debt
 
 ### Changed
+
 - **Module Renaming - supabase-core to supabase-core-typescript** (2025-12-02 02:35:33)
   - **Renamed Module:** `modules/supabase-core/` → `modules/supabase-core-typescript/` for clarity and consistency
   - **Updated Package Name:** Changed from `@standards/supabase-core` to `@standards/supabase-core-typescript`
@@ -1078,6 +1104,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Migration Guide:** See `RENAMING_GUIDE.md` for detailed migration instructions
 
 ### Changed
+
 - **Security Audit Standards - Moved to Standards Directory** (2025-12-02 02:14:31)
   - **Reorganized Structure:** Moved `docs/process/security_audit_standards_v1_0.md` to `standards/security/security-audit.md`
   - **Rationale:** Security audit standards are governing standards about security requirements, not process documentation
@@ -1100,6 +1127,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Benefits:** Rule applies automatically when relevant, reducing manual intervention and ensuring RLS security is always considered for Supabase projects
 
 ### Added
+
 - **Documentation Standards Guide** (2025-12-02)
   - **Comprehensive Documentation Requirements:** Added `docs/DOCUMENTATION_STANDARDS.md` with complete list of standard documents every application should have
   - **Subfolder Structure:** Detailed subfolder structure within `/docs` directory organized by category (architecture, api, deployment, development, database, security, user, integration, project, process, specialized)
@@ -1139,6 +1167,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Test Suite:** Unit and integration tests for all components and runtime-specific functionality
 
 ### Added
+
 - **Documentation Interface Launch Scripts & Bundled CSS** (2025-12-01 22:00:00)
   - **Interactive Background Mode Prompt:** Launch scripts now prompt user to choose foreground or background mode (y/n)
   - **README Changelog:** Added comprehensive changelog section to module README documenting all features and changes
@@ -1239,6 +1268,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Documented three-layer system relationship
 
 ### Changed
+
 - **Documentation Cleanup & Clarity** (2025-11-25 17:40:00)
   - **Removed Duplication:**
     - Deleted duplicate checklists from root `checklists/` directory (moved to `docs/process/checklists/`)
@@ -1262,6 +1292,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Security Audit:** Unified `security-audit` command with comprehensive `security_audit_standards_v1_0.md` standard
 
 ### Added
+
 - **Integration Guide for New Projects** (`STANDARDS_INTEGRATION_GUIDE.md`)
   - Comprehensive guide for integrating rules, commands, and standards into new projects
   - Step-by-step instructions for both developers and AI agents
@@ -1278,11 +1309,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated `AGENTS.md` with temporal awareness reminder in Rules of Engagement
 
 ### Changed
+
 - **README.md** - Added integration guide references and AI agent setup instructions
 
 ## [1.3.0] - 2025-01-27
 
 ### Added
+
 - **Supabase Core Python Module (`modules/supabase-core-typescript-python/`)**
   - Complete Python backend support for Django, FastAPI, and Flask
   - Client factories with environment detection (local vs production)
@@ -1340,6 +1373,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Expanded additional resources section
 
 ### Added
+
 - **Enhanced Supabase Core Features** (`modules/supabase-core-typescript/src/core/`)
   - **Automatic Error Handling:**
     - `safeQuery()`, `safeMutation()`, `safeStorage()`, `safeAuth()` - Result-pattern wrappers
@@ -1367,6 +1401,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Integration examples with error-handler and logger modules
 
 ### Changed
+
 - **Supabase Core Module** (`modules/supabase-core-typescript/`)
   - Added peer dependencies for `@modules/error-handler` and `@modules/logger-module`
   - Enhanced client now supports automatic error handling and logging
@@ -1376,6 +1411,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.2.0] - 2025-01-27
 
 ### Added
+
 - **Supabase Core Module** (`modules/supabase-core-typescript/`) - Phase 1 & 2 Complete
   - Unified Supabase utilities module providing client factories, query builders, and storage helpers
   - **Client Utilities:**
@@ -1418,6 +1454,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Implementation priorities and success criteria
 
 ### Changed
+
 - **Backend API Module** (`modules/backend-api/`)
   - Now uses `supabase-core`'s `createServerClient` instead of direct `@supabase/ssr` usage
   - Updated auth middleware to leverage `supabase-core` utilities
@@ -1429,6 +1466,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added note about using `supabase-core` utilities for client creation and RLS helpers
 
 ### Added
+
 - **Backend API Module** (`modules/backend-api/`)
   - Standardized API handler wrapper for Next.js with Supabase SSR integration
   - Automatic error handling, input validation (Zod), and authentication
@@ -1472,6 +1510,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Ensures AI agents only affect project-specific Docker/Supabase containers
 
 ### Changed
+
 - **Configuration Standards** (`standards/configuration.md`)
   - Added Supabase-specific configuration section
   - Updated to reference Supabase local setup guide
@@ -1482,12 +1521,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Included instructions for retrieving local credentials
 
 ### Fixed
+
 - Container management commands now only affect project-specific instances
 - Port conflict resolution now verifies container ownership before stopping
 
 ## [1.0.0] - 2025-01-27
 
 ### Added
+
 - Initial project structure and standards
 - Module structure standards
 - Auth profile sync module
@@ -1513,4 +1554,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ---
 
 *For detailed technical changes, see git commit history.*
-
