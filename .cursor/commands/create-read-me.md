@@ -1,5 +1,24 @@
 # create-read-me
 
+## Metadata
+- **Status:** Active
+- **Created:** 12-04-2025 14:32:51 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 1.0.0
+- **Description:** Review ONLY the codebase in the current directory. Treat this directory as a standalone Service. Generate a detailed, production-ready README.md for this Service with overview, limitations, technical breakdown, usage examples, and metadata.
+- **Type:** Executable Command
+- **Audience:** AI agents generating documentation
+- **Applicability:** When creating README files for services, modules, or standalone directories
+- **How to Use:** Run this command to generate a production-ready README.md for the current directory/service based on the codebase analysis
+- **Dependencies:** None
+- **Related Cursor Commands:** [audit-readmes.md](./audit-readmes.md)
+- **Related Cursor Rules:** [readme-standards.mdc](../rules/readme-standards.mdc)
+- **Related Standards:** [project-planning/documentation.md](../../standards/project-planning/documentation.md), [module-structure.md](../../standards/module-structure.md)
+
+---
+
+## Purpose
+
 You are reviewing ONLY the codebase in the current directory. Treat this directory as a standalone Service. Generate a detailed, production-ready README.md for this Service.
 
 README Requirements:

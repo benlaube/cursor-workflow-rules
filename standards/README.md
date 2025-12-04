@@ -34,7 +34,7 @@ A standard is an authoritative document that defines:
 
 ### `/project-planning`
 Project planning and setup standards
-- `documentation.md` - How to write and organize all documentation
+- `documentation-management.md` - How to write and organize all documentation
 - `documentation-standards.md` - Comprehensive guide to standard documentation files
 - `project-structure.md` - Where files should live
 - `tech-stack-document.md` - Tech stack documentation template
@@ -106,7 +106,7 @@ Content management standards
 
 ## Standard Metadata Requirements
 
-Every standard file must include metadata (per `documentation.md` Section 4.1):
+Every standard file must include metadata (per `documentation-management.md` Section 4.1):
 
 ```markdown
 # Standard_Name_vX.X
@@ -132,7 +132,7 @@ Every standard file must include metadata (per `documentation.md` Section 4.1):
 
 | Type | Location | Purpose | Example |
 |------|----------|---------|---------|
-| **Standard** | `standards/*.md` | Authoritative rules | `documentation.md` |
+| **Standard** | `standards/*.md` | Authoritative rules | `documentation-management.md` |
 | **Checklist** | `standards/process/checklists/*.md` | Validation items | `pr_review_checklist_v1_0.md` |
 | **Command** | `.cursor/commands/*.md` | Executable workflow | `pre-flight-check.md` |
 | **Reference Guide** | `standards/project-planning/*.md` | Comprehensive reference | `documentation-standards.md` |
@@ -144,7 +144,7 @@ Every standard file must include metadata (per `documentation.md` Section 4.1):
 
 ### Project Setup
 - `project-planning/project-structure.md` - File organization
-- `project-planning/documentation.md` - Documentation rules
+- `project-planning/documentation-management.md` - Documentation management rules
 - `project-planning/documentation-standards.md` - Documentation reference guide
 - `project-planning/tech-stack-document.md` - Tech stack documentation template
 - `configuration.md` - Configuration patterns
@@ -175,7 +175,7 @@ Every standard file must include metadata (per `documentation.md` Section 4.1):
 
 When updating or creating standards:
 
-1. **Follow the format** defined in `documentation.md`
+1. **Follow the format** defined in `documentation-management.md`
 2. **Include metadata** (Created, Last Updated, Version, Description)
 3. **Use semantic versioning** (X.Y format for standards)
 4. **Update CHANGELOG.md** for significant changes
@@ -189,7 +189,7 @@ When updating or creating standards:
 The following files have been audited for proper metadata compliance:
 
 ✅ **Compliant Files:**
-- `documentation.md` - Has metadata
+- `documentation-management.md` - Has metadata
 - `tech-stack-document.md` - Has metadata
 - `project-structure.md` - Has metadata
 

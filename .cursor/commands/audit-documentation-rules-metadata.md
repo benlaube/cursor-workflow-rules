@@ -1,29 +1,27 @@
-# Audit Documentation & Rules Metadata
+# audit-documentation-rules-metadata
 
 ## Metadata
 - **Status:** Active
-- **Created:** 04-12-2025
-- **Last Updated:** 04-12-2025 11:12:43 EST
-- **Version:** 2.0.0
-- **Description:** Command to audit and update metadata across all documentation and rule files by orchestrating the documentation-metadata and rule-metadata rules
-- **Type:** Executable Command - Used by AI agents for periodic documentation audits
+- **Created:** 12-04-2025 13:57:09 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 2.0.1
+- **Description:** Command to audit and update metadata across all documentation and rule files by orchestrating validation rules and commands. Systematically reviews all documentation and rule files to ensure they have complete, accurate metadata.
+- **Type:** Executable Command
+- **Audience:** AI agents performing documentation audits
 - **Applicability:** When performing periodic maintenance, after major updates, before releases, or when onboarding
-- **Related Cursor Rules:** 
-  - [documentation-metadata.mdc](../../.cursor/rules/documentation-metadata.mdc) - Validates .md file metadata
-  - [rule-metadata.mdc](../../.cursor/rules/rule-metadata.mdc) - Validates .mdc file metadata
-  - [documentation-dependency-tracking.mdc](../../.cursor/rules/documentation-dependency-tracking.mdc) - Tracks doc dependencies
-- **Related Standards:** 
-  - [process/cursor-rules-standards.md](../../standards/process/cursor-rules-standards.md) - Rule creation standards
-  - [project-planning/documentation.md](../../standards/project-planning/documentation.md) - Documentation management standards
 - **How to Use:** Run `audit-documentation-rules-metadata` to scan all documentation and rule files, then apply the appropriate metadata validation rules
+- **Dependencies:** None
+- **Related Cursor Commands:** [validate-rule-metadata.md](./validate-rule-metadata.md), [audit-command-metadata.md](./audit-command-metadata.md), [audit-readmes.md](./audit-readmes.md)
+- **Related Cursor Rules:** [documentation-metadata.mdc](../rules/documentation-metadata.mdc), [cursor-rule-creation.mdc](../rules/cursor-rule-creation.mdc), [documentation-dependency-tracking.mdc](../rules/documentation-dependency-tracking.mdc)
+- **Related Standards:** [process/cursor-rules-standards.md](../../standards/process/cursor-rules-standards.md), [project-planning/documentation.md](../../standards/project-planning/documentation.md)
 
 ---
 
 ## Purpose
 
-Systematically review all documentation and rule files to ensure they have complete, accurate metadata. This command orchestrates two specialized rules:
+Systematically review all documentation and rule files to ensure they have complete, accurate metadata. This command orchestrates validation:
 - **`documentation-metadata.mdc`** - Validates `.md` files (docs, standards, commands)
-- **`rule-metadata.mdc`** - Validates `.mdc` files (Cursor rules)
+- **`validate-rule-metadata.md`** - Validates `.mdc` files (Cursor rules) using requirements from `cursor-rule-creation.mdc`
 
 ---
 
@@ -96,7 +94,7 @@ For each `.md` file, apply the validation logic from `documentation-metadata.mdc
 
 ### Step 3: Apply Rule Metadata Rule
 
-For each `.mdc` file, apply the validation logic from `rule-metadata.mdc`:
+For each `.mdc` file, apply the validation logic from `validate-rule-metadata.md` command (which references requirements from `cursor-rule-creation.mdc` Section 2):
 
 1. **Check for YAML frontmatter:**
    - Look for `---` delimited YAML block at the top
@@ -278,11 +276,12 @@ This command orchestrates two specialized rules:
 - **Required fields:** Status, Created, Last Updated, Version, Description, Type, Applicability, How to Use
 - **See:** `.cursor/rules/documentation-metadata.mdc` for complete validation requirements
 
-### `rule-metadata.mdc`
+### `validate-rule-metadata.md`
 - **Applies to:** `.mdc` files in `.cursor/rules/`
 - **Validates:** YAML frontmatter format
 - **Required fields:** description, version, lastUpdated, globs, alwaysApply, type
-- **See:** `.cursor/rules/rule-metadata.mdc` for complete validation requirements
+- **References:** `.cursor/rules/cursor-rule-creation.mdc` Section 2 for complete metadata requirements
+- **See:** `.cursor/commands/validate-rule-metadata.md` for validation command details
 
 ---
 
@@ -295,7 +294,7 @@ audit-documentation-rules-metadata
 
 **AI Agent responds:**
 ```
-I'll audit all documentation and rule files for metadata completeness by applying the documentation-metadata and rule-metadata rules.
+I'll audit all documentation and rule files for metadata completeness by applying the documentation-metadata rule and validate-rule-metadata command.
 
 Scanning directories:
 - standards/ (15 files)
@@ -308,7 +307,7 @@ Total files to audit: 34
 - Rules (.mdc): 8 files
 
 [Applying documentation-metadata rule to .md files...]
-[Applying rule-metadata rule to .mdc files...]
+[Applying validate-rule-metadata command to .mdc files...]
 
 Audit complete! Here's the summary:
 - 34 files audited
@@ -359,7 +358,9 @@ When using this command in other projects (outside this standards library):
 
 - **Rules:**
   - [documentation-metadata.mdc](../../.cursor/rules/documentation-metadata.mdc) - Validates .md file metadata
-  - [rule-metadata.mdc](../../.cursor/rules/rule-metadata.mdc) - Validates .mdc file metadata
+  - [cursor-rule-creation.mdc](../../.cursor/rules/cursor-rule-creation.mdc) - Defines .mdc metadata requirements (Section 2)
+- **Commands:**
+  - [validate-rule-metadata.md](./validate-rule-metadata.md) - Validates .mdc file metadata
   - [documentation-dependency-tracking.mdc](../../.cursor/rules/documentation-dependency-tracking.mdc) - Tracks doc dependencies
 - **Standards:**
   - [cursor-rules-standards.md](../../standards/process/cursor-rules-standards.md) - Rule creation standards

@@ -1,8 +1,25 @@
 # launch-debug-fix
 
-# Command: launch-debug-fix
-# Version: 1.0.0
-# Purpose: Launch the app via start_app.sh, open it in the browser, and iteratively debug / auto-heal errors reported in the terminal or browser until the dev environment is healthy or no further safe fixes are obvious.
+## Metadata
+- **Status:** Active
+- **Created:** 12-04-2025 14:32:51 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 1.0.0
+- **Description:** Launch the app via start_app.sh, open it in the browser, and iteratively debug / auto-heal errors reported in the terminal or browser until the dev environment is healthy or no further safe fixes are obvious.
+- **Type:** Executable Command
+- **Audience:** AI agents launching and debugging applications
+- **Applicability:** When launching the dev environment and encountering errors, or when iteratively debugging application startup issues
+- **How to Use:** Run this command to launch the app, observe errors, and automatically fix issues where safe and unambiguous. The command will iterate until the app is healthy or reaches a reasonable limit
+- **Dependencies:** [create-start-scripts.md](./create-start-scripts.md)
+- **Related Cursor Commands:** [launch.md](./launch.md), [create-start-scripts.md](./create-start-scripts.md)
+- **Related Cursor Rules:** [auto-heal.mdc](../rules/auto-heal.mdc), [environment.mdc](../rules/environment.mdc)
+- **Related Standards:** [deployment/application-launch.md](../../standards/deployment/application-launch.md)
+
+---
+
+## Purpose
+
+Launch the app via start_app.sh, open it in the browser, and iteratively debug / auto-heal errors reported in the terminal or browser until the dev environment is healthy or no further safe fixes are obvious.
 
 You are working in the ROOT of a single project (e.g., /benlaube/apps/<project>).
 

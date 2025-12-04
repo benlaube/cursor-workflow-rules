@@ -927,7 +927,7 @@ npm run dev
 
 - `SETUP.md` - Complete setup guide with troubleshooting
 - `PORT_CONFIGURATION.md` - Port and URL path configuration guide
-- `standards/project-planning/documentation.md` - Documentation standards
+- `standards/project-planning/documentation-management.md` - Documentation management standards
 - `standards/project-structure.md` - Project structure standards
 - `standards/module-structure.md` - Module structure standards
 

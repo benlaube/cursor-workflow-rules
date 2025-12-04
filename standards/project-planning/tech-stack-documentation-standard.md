@@ -9,7 +9,7 @@
 - **Type:** Governing Standard - Defines requirements for documenting technology stack decisions
 - **Applicability:** Every project - TECH_STACK.md file is mandatory as single source of truth for technical decisions
 - **Dependencies:**
-  - [documentation.md](./documentation.md) - Documentation management standards
+  - [documentation-management.md](./documentation-management.md) - Documentation management standards
   - [documentation-standards.md](./documentation-standards.md) - Required documentation files (Section 2.2)
 - **Related Standards:**
   - [project-structure.md](./project-structure.md) - File organization standards
@@ -336,7 +336,7 @@ When creating or updating TECH_STACK.md:
 ## 10. Related Documentation
 
 - **Documentation Standards:** `standards/project-planning/documentation-standards.md` - Section 2.2 lists TECH_STACK.md as required
-- **Documentation Management:** `standards/project-planning/documentation.md` - Metadata and naming conventions
+- **Documentation Management:** `standards/project-planning/documentation-management.md` - Metadata and naming conventions
 - **Project Structure:** `standards/project-planning/project-structure.md` - Where TECH_STACK.md fits in project structure
 
 ---

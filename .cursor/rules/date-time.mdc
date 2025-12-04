@@ -1,22 +1,19 @@
 ---
 description: Ensures AI agents are aware of current date and time for time-sensitive operations. Applies automatically to all interactions.
-version: 1.0.0
-lastUpdated: 04-12-2025 13:17:07 EST
-globs: **/*
+version: 1.0.4
+created: 12-04-2025
+lastUpdated: 12-04-2025 16:13:13 EST
 alwaysApply: true
+globs: **/*
 type: Auto-Applied Behavioral Rule - Temporal awareness for AI agents
+applicability: When files matching globs are edited.
+dependencies: []
 relatedCommands: []
-relatedRules: [task-workflow.mdc, environment.mdc]
+relatedRules: [[task-workflow.mdc](./task-workflow.mdc), [environment.mdc](./environment.mdc)]
 relatedStandards: []
 ---
 
 # Date & Time Awareness Rule
-
-## Metadata
-- **Created:** 04-12-2025
-- **Last Updated:** 04-12-2025 13:17:07 EST
-- **Version:** 1.0.0
-- **Description:** Ensures AI agents are aware of current date and time when responding to time-sensitive prompts and updating documentation
 
 ## When This Rule Applies
 
@@ -145,7 +142,7 @@ This rule works with:
   - [task-workflow.mdc](./task-workflow.mdc) - References temporal awareness for time-sensitive tasks
   - [environment.mdc](./environment.mdc) - Environment standards (previously contained this content)
 - **Standards:**
-  - [documentation.md](../../standards/project-planning/documentation.md) - Documentation standards that require date timestamps
+  - [documentation-management.md](../../standards/project-planning/documentation-management.md) - Documentation standards that require date timestamps
 
 ---
 

@@ -1,12 +1,23 @@
----
-description: Generate or update launch shell scripts (start_app.sh + scripts/*.sh) and deprecate old .cursor launch commands.
-version: 2.0.0
-lastUpdated: 2025-12-02
+# create-start-scripts
+
+## Metadata
+- **Status:** Active
+- **Created:** 12-02-2025 00:00:00 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 2.0.0
+- **Description:** Generate or update launch shell scripts (start_app.sh + scripts/*.sh) and deprecate old .cursor launch commands. Detects stack and services, creates launch scripts, and handles port management.
+- **Type:** Executable Command
+- **Audience:** AI agents setting up development environments
+- **Applicability:** When launch scripts are missing, when setting up a new project, or when updating launch configuration
+- **How to Use:** Run this command to generate or update launch shell scripts. The command will detect stack, create start_app.sh and scripts/*.sh files, and migrate logic from old launch commands
+- **Dependencies:** None
+- **Related Cursor Commands:** [launch.md](./launch.md), [launch-debug-fix.md](./launch-debug-fix.md)
+- **Related Cursor Rules:** [environment.mdc](../rules/environment.mdc), [auto-heal.mdc](../rules/auto-heal.mdc)
+- **Related Standards:** [deployment/application-launch.md](../../standards/deployment/application-launch.md)
+
 ---
 
 # Command: create-start-scripts
-# Version: 2.0.0
-# Purpose: Generate or update launch shell scripts (start_app.sh + scripts/*.sh) and deprecate old .cursor launch commands.
 
 You are a repository-aware DevOps assistant working INSIDE a single project.
 Assume the current working directory is the project root.

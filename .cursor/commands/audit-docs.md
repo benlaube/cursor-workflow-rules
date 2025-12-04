@@ -1,8 +1,21 @@
 # audit-docs
 
-# DocsAudit Command (Version 1.1)
+## Metadata
+- **Status:** Active
+- **Created:** 12-01-2025 00:00:00 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 1.1.0
+- **Description:** Perform a complete audit of all documentation within the current project. Identify duplicates, inconsistencies, outdated materials, missing sections, and documentation that should be updated, merged, or archived. The goal is to eliminate documentation sprawl and ensure a clean, canonical documentation system.
+- **Type:** Executable Command
+- **Audience:** AI agents performing documentation audits
+- **Applicability:** When starting work on a repo with unclear documentation, reorganizing a monorepo, integrating multiple services, preparing for major development sprint, after significant refactor work, or when documents seem duplicated or inconsistent
+- **How to Use:** Run this command to perform complete documentation audit and generate structured report with inventory, duplicates, outdated docs, missing documentation, and recommended archival actions
+- **Dependencies:** None
+- **Related Cursor Commands:** [audit-readmes.md](./audit-readmes.md), [audit-documentation-rules-metadata.md](./audit-documentation-rules-metadata.md)
+- **Related Cursor Rules:** [documentation-metadata.mdc](../rules/documentation-metadata.mdc)
+- **Related Standards:** [project-planning/documentation.md](../../standards/project-planning/documentation.md)
 
-## Last Updated 12-1-2025
+---
 
 ## Purpose
 

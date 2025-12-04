@@ -1,13 +1,16 @@
 ---
 description: Deep-dive validation of Supabase Row Level Security database policies
-version: 1.1.0
-lastUpdated: 2025-12-04
-globs: **/*.sql
+version: 1.1.4
+created: 12-04-2025
+lastUpdated: 12-04-2025 16:13:13 EST
 alwaysApply: false
+globs: **/*.sql
 type: Security/Compliance Rule - Auto-applied when Supabase detected
-relatedCommands: [audit-security.mdc, project-audit.md]
+applicability: When files matching globs are edited.
+dependencies: []
+relatedCommands: [[audit-security.mdc](./audit-security.mdc), [project-audit.md](../commands/project-audit.md)]
 relatedRules: []
-relatedStandards: [security/access-control.md, architecture/supabase-local-setup.md]
+relatedStandards: [[security/access-control.md](../standards/security/access-control.md), [architecture/supabase-local-setup.md](../standards/architecture/supabase-local-setup.md)]
 ---
 
 # Supabase RLS Policy Review Rule

@@ -1,14 +1,25 @@
----
-description: Create a project rule that guides the AI agent on when and how to create tasks in Notion for bugs, incomplete work, and future development.
-version: 1.0.0
-lastUpdated: 2025-12-02
----
-
 # notion-task-creation
 
-# Command: notion-task-creation
-# Version: 1.0.0
-# Purpose: Create a project rule that guides the AI agent on when and how to create tasks in Notion for bugs, incomplete work, and future development.
+## Metadata
+- **Status:** Active
+- **Created:** 12-02-2025 00:00:00 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 1.0.0
+- **Description:** Create a project rule that guides the AI agent on when and how to create tasks in Notion for bugs, incomplete work, and future development. Establishes guidelines for task creation, linking, and updates in the Notion Dev Tasks database.
+- **Type:** Executable Command
+- **Audience:** AI agents setting up Notion task creation workflows
+- **Applicability:** When setting up Notion task creation for a project, or when establishing guidelines for when and how to create tasks in Notion
+- **How to Use:** Run this command to create a project rule that guides task creation in Notion. Requires a Notion Project Binding rule to exist first (see notion-create-project-binding-rule)
+- **Dependencies:** [notion-create-project-binding-rule.md](./notion-create-project-binding-rule.md)
+- **Related Cursor Commands:** [notion-create-project-binding-rule.md](./notion-create-project-binding-rule.md), [notion-sync-project-metadata.md](./notion-sync-project-metadata.md)
+- **Related Cursor Rules:** None
+- **Related Standards:** None
+
+---
+
+## Purpose
+
+Create a project rule that guides the AI agent on when and how to create tasks in Notion for bugs, incomplete work, and future development.
 
 You are working in the ROOT of a single project (e.g., /benlaube/apps/<project>).
 

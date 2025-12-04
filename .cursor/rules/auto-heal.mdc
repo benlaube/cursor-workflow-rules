@@ -1,13 +1,16 @@
 ---
 description: Autonomous runtime management and automatic error recovery strategies
-version: 2.1.0
-lastUpdated: 2025-12-04
-globs: **/*
+version: 2.1.4
+created: 12-04-2025
+lastUpdated: 12-04-2025 16:13:13 EST
 alwaysApply: true
+globs: **/*
 type: Error Recovery Rule - Automatic error detection and fixing
-relatedCommands: [pre-flight-check.md, launch-debug-fix.md]
-relatedRules: [environment.mdc, task-workflow.mdc]
-relatedStandards: [architecture/supabase-local-setup.md, process/code-quality-linting-standards.md]
+applicability: When files matching globs are edited.
+dependencies: []
+relatedCommands: [[pre-flight-check.md](../commands/pre-flight-check.md), [launch-debug-fix.md](../commands/launch-debug-fix.md)]
+relatedRules: [[environment.mdc](./environment.mdc), [task-workflow.mdc](./task-workflow.mdc)]
+relatedStandards: [[architecture/supabase-local-setup.md](../standards/architecture/supabase-local-setup.md), [process/code-quality-linting-standards.md](../standards/process/code-quality-linting-standards.md)]
 ---
 
 # Auto-Healing Runtime Rule

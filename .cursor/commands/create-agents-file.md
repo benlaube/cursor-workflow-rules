@@ -1,7 +1,25 @@
-# Command: app:create-project-agents-file
-Version: **v1.0.1**
+# create-agents-file
 
-Purpose: Create a project-specific `AGENTS.md` file in THIS repo, based on the shared `templates/AGENTS-TEMPLATE.md` from the `benlaube/cursor-workflow-rules` repo, **if `AGENTS.md` does not already exist**. The generated file is meant to be the **AI Developer Agent context & memory** document described in the template.
+## Metadata
+- **Status:** Active
+- **Created:** 12-04-2025 14:32:51 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 1.0.1
+- **Description:** Create a project-specific `AGENTS.md` file in THIS repo, based on the shared `templates/AGENTS-TEMPLATE.md` from the `benlaube/cursor-workflow-rules` repo, if `AGENTS.md` does not already exist. The generated file is meant to be the AI Developer Agent context & memory document described in the template.
+- **Type:** Executable Command
+- **Audience:** AI agents setting up new projects
+- **Applicability:** When setting up a new project that needs an AGENTS.md file, or when onboarding a project to the workflow rules system
+- **How to Use:** Run this command to create a project-specific AGENTS.md file based on the template. The command will adapt the template to the current project's structure and requirements
+- **Dependencies:** [templates/AGENTS-TEMPLATE.md](../../templates/general/AGENTS-TEMPLATE.md)
+- **Related Cursor Commands:** [integrate-cursor-workflow-standards.md](./integrate-cursor-workflow-standards.md)
+- **Related Cursor Rules:** None
+- **Related Standards:** [project-planning/documentation.md](../../standards/project-planning/documentation.md)
+
+---
+
+## Purpose
+
+Create a project-specific `AGENTS.md` file in THIS repo, based on the shared `templates/AGENTS-TEMPLATE.md` from the `benlaube/cursor-workflow-rules` repo, **if `AGENTS.md` does not already exist**. The generated file is meant to be the **AI Developer Agent context & memory** document described in the template.
 
 > NOTE: This command assumes the template has the structure shown in `templates/AGENTS-TEMPLATE.md` (sections 1–9: Project Mission, Current Phase, Active Context, Architecture Highlights, Persistent Memory, Developer Lifecycle, Agent Rules of Engagement, Checklists & Commands, Quick Reference).
 

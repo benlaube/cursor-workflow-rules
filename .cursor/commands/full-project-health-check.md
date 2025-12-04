@@ -1,8 +1,20 @@
----
-description: Run comprehensive project health check including project audit, security audit, and RLS policy review. Generates combined report.
-version: 1.0.0
-lastUpdated: 2025-12-02
-globs: 
+# full-project-health-check
+
+## Metadata
+- **Status:** Active
+- **Created:** 12-02-2025 00:00:00 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 1.0.0
+- **Description:** Run comprehensive project health check including project audit, security audit, and RLS policy review. Generates combined health report with all audit results.
+- **Type:** Executable Command
+- **Audience:** AI agents performing comprehensive project health checks
+- **Applicability:** Before major releases, during project onboarding, as part of periodic health checks, or after major refactoring
+- **How to Use:** Run this meta-command to run all project audits together. Use `fix=true` to attempt automatic fixes, `output=file` to save report to file
+- **Dependencies:** None
+- **Related Cursor Commands:** [audit-project.md](./audit-project.md), [audit-security.md](./audit-security.md), [pre-flight-check.md](./pre-flight-check.md)
+- **Related Cursor Rules:** [supabase-rls-policy-review.mdc](../rules/supabase-rls-policy-review.mdc)
+- **Related Standards:** [process/checklists/project_audit_checklist_v1_0.md](../../standards/process/checklists/project_audit_checklist_v1_0.md), [security/security-audit-checklist.md](../../standards/security/security-audit-checklist.md)
+
 ---
 
 # Full Project Health Check Command

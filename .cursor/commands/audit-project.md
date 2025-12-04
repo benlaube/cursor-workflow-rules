@@ -1,8 +1,20 @@
----
-description: Audit project structure, modules, database, code hygiene, and documentation against ai-agent-knowledge-base standards.
-version: 1.0.0
-lastUpdated: 2025-12-02
-globs: 
+# audit-project
+
+## Metadata
+- **Status:** Active
+- **Created:** 12-02-2025 00:00:00 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 1.0.0
+- **Description:** Audit project structure, modules, database, code hygiene, and documentation against ai-agent-knowledge-base standards. Ideal when onboarding a repo into the "Workflow Rules" universe or before major refactoring.
+- **Type:** Executable Command
+- **Audience:** AI agents performing project audits
+- **Applicability:** When onboarding a new repository, before major refactoring, before major releases, or for periodic health checks
+- **How to Use:** Run this command to audit an existing project against the ai-agent-knowledge-base standards. Use `fix=true` to attempt automatic fixes, `deep=true` for comprehensive audit including RLS review
+- **Dependencies:** None
+- **Related Cursor Commands:** [full-project-health-check.md](./full-project-health-check.md), [audit-security.md](./audit-security.md), [pre-flight-check.md](./pre-flight-check.md)
+- **Related Cursor Rules:** [supabase-rls-policy-review.mdc](../rules/supabase-rls-policy-review.mdc)
+- **Related Standards:** [process/checklists/project_audit_checklist_v1_0.md](../../standards/process/checklists/project_audit_checklist_v1_0.md), [project-planning/project-structure.md](../../standards/project-planning/project-structure.md), [database/schema.md](../../standards/database/schema.md)
+
 ---
 
 # Project Audit Command

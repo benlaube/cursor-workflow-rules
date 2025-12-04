@@ -1,12 +1,22 @@
-# Rule: Project_File_Structure_Standards_v1.1
+# Standard: Project_File_Structure_v1.2
 
 ## Metadata
-- **Created:** 2025-11-17
-- **Last Updated:** 2025-11-18
-- **Version:** 1.1
+- **Status:** Active
+- **Created:** 17-11-2025
+- **Last Updated:** 04-12-2025 15:43:15 EST
+- **Version:** 1.2
+- **Description:** Standards for organizing project files and directories to ensure predictability, separation of concerns, and scalability across projects of all sizes.
+- **Type:** Governing Standard - Defines requirements for project file organization
+- **Applicability:** When creating new projects, reorganizing files, auditing codebase structure, or establishing file conventions
+- **Related Standards:**
+  - [documentation-management.md](./documentation-management.md) - Documentation file organization
+  - [documentation-standards.md](./documentation-standards.md) - What documentation files should exist
+  - [../module-structure.md](../module-structure.md) - Module organization requirements
+- **Related Cursor Rules:** [file-naming.mdc]
+- **How to Use:** Reference this standard when creating project structure, organizing files, or validating project layout during audits
 
-## When to Apply This Rule
-Apply this rule whenever creating new projects, reorganizing files, or auditing the codebase structure. It ensures every file has a predictable home.
+## When to Apply This Standard
+Apply this standard whenever creating new projects, reorganizing files, or auditing the codebase structure. It ensures every file has a predictable home.
 
 ## 1. High-Level Goals
 - **Predictability:** An agent or human should know exactly where to look for a file.
@@ -120,4 +130,17 @@ In this case, `src` is replaced by `apps/` and `packages/`.
 - **Do not alter** framework-required layouts (e.g., Next.js `app` router).
 - **Do not move** CI/CD or tool-linked files without confirmation.
 
-# End of Rule – Project_File_Structure_Standards_v1.1
+---
+
+## Related Files
+
+- **Standards:**
+  - [documentation-management.md](./documentation-management.md) - Documentation organization and management
+  - [documentation-standards.md](./documentation-standards.md) - What documentation files should exist
+  - [module-structure.md](../module-structure.md) - Module organization standards
+- **Rules:**
+  - [file-naming.mdc](../../.cursor/rules/file-naming.mdc) - File and directory naming conventions
+
+---
+
+*This standard defines the foundational project structure that all projects should follow for consistency and maintainability.*

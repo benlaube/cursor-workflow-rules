@@ -121,7 +121,7 @@ grep -r "current-file-name.md" standards/ docs/ .cursor/
 1. **`CHANGELOG.md`** (ALWAYS)
    - Add entry with timestamp
    - Describe what changed and why
-   - Format: See `standards/documentation.md` Section 7
+   - Format: See `standards/project-planning/documentation-management.md` Section 7
 
 2. **`AGENTS.md`** (If architectural or workflow changes)
    - Section 3: Active Context
@@ -360,7 +360,7 @@ This rule works in conjunction with:
 - Periodic command to verify all dependencies are correct
 - Complements this rule by catching missed updates
 
-### `standards/documentation.md`
+### `standards/project-planning/documentation-management.md`
 - Defines documentation standards and format
 - This rule ensures cross-references are maintained
 
@@ -450,4 +450,4 @@ All dependencies verified and updated.
 - **Rule:** `.cursor/rules/workflow-standards-documentation-maintenance.mdc` - Documentation maintenance requirements
 - **Rule:** `.cursor/rules/task-workflow.mdc` - Development lifecycle integration
 - **Rule:** `.cursor/rules/environment.mdc` - Version numbering rules
-- **Standard:** `standards/documentation.md` - Documentation management standards
+- **Standard:** `standards/project-planning/documentation-management.md` - Documentation management standards

@@ -218,7 +218,7 @@ This checklist combines actionable validation items with detailed execution guid
 ### 4.3 Changelog
 
 **Checklist Items:**
-- [ ] **Changelog:** Did I update `CHANGELOG.md` for user-facing changes? (See `standards/project-planning/documentation.md` Section 7 for guidelines)
+- [ ] **Changelog:** Did I update `CHANGELOG.md` for user-facing changes? (See `standards/project-planning/documentation-management.md` Section 7 for guidelines)
 - [ ] **User-Facing Changes:** Identify user-facing changes from git diff
 - [ ] **Update Changelog:** Update CHANGELOG.md with timestamp and description
 
@@ -228,7 +228,7 @@ This checklist combines actionable validation items with detailed execution guid
      - Detect user-facing changes from git diff
      - If changes detected but CHANGELOG not updated:
        - Prompt: "User-facing changes detected. Update CHANGELOG.md?"
-       - Reference: `standards/project-planning/documentation.md` Section 7 for format
+       - Reference: `standards/project-planning/documentation-management.md` Section 7 for format
    - If updated: ✅ "CHANGELOG.md is up to date"
 
 ### 4.4 TODO Cleanup

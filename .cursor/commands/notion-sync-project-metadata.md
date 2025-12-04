@@ -1,14 +1,25 @@
----
-description: Sync project metadata (status, last updated, repository info, etc.) to the bound Notion Dev Project.
-version: 1.0.0
-lastUpdated: 2025-12-02
----
-
 # notion-sync-project-metadata
 
-# Command: notion-sync-project-metadata
-# Version: 1.0.0
-# Purpose: Sync project metadata (status, last updated, repository info, etc.) to the bound Notion Dev Project.
+## Metadata
+- **Status:** Active
+- **Created:** 12-02-2025 00:00:00 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 1.0.0
+- **Description:** Sync project metadata (status, last updated, repository info, etc.) to the bound Notion Dev Project. Collects repository info, git status, commit history, and updates the Notion project page with current metadata.
+- **Type:** Executable Command
+- **Audience:** AI agents syncing project status to Notion
+- **Applicability:** After significant changes, periodically as part of regular maintenance, before releases, after project binding, or on-demand when user requests project status update
+- **How to Use:** Run this command to sync project metadata to the bound Notion Dev Project. Requires a Notion Project Binding rule to exist first (see notion-create-project-binding-rule)
+- **Dependencies:** [notion-create-project-binding-rule.md](./notion-create-project-binding-rule.md)
+- **Related Cursor Commands:** [notion-create-project-binding-rule.md](./notion-create-project-binding-rule.md), [notion-task-creation.md](./notion-task-creation.md)
+- **Related Cursor Rules:** None
+- **Related Standards:** None
+
+---
+
+## Purpose
+
+Sync project metadata (status, last updated, repository info, etc.) to the bound Notion Dev Project.
 
 You are working in the ROOT of a single project (e.g., /benlaube/apps/<project>).
 

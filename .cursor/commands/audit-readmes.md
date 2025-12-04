@@ -1,15 +1,19 @@
-# Command: Audit README Files v1.0.0
+# audit-readmes
 
 ## Metadata
-- **Created:** 04-12-2025
-- **Last Updated:** 04-12-2025 12:03:35 EST
+- **Status:** Active
+- **Created:** 12-04-2025 12:03:35 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
 - **Version:** 1.0.0
-- **Description:** Validates all README.md files against readme-standards.mdc requirements
-- **Type:** Executable Command - Used by AI agents to audit README completeness
-- **Applicability:** Run periodically or before major releases to ensure README quality
-- **Related Cursor Rules:** readme-standards.mdc, documentation-metadata.mdc
-- **Related Standards:** documentation.md, module-structure.md
+- **Description:** Validates all README.md files against readme-standards.mdc requirements. Identifies missing sections, broken links, placeholder text, and structural issues.
+- **Type:** Executable Command
+- **Audience:** AI agents performing documentation audits
+- **Applicability:** Run periodically or before major releases to ensure README quality, after module addition, during documentation cleanup, or before onboarding new developers
 - **How to Use:** Run this command to audit all README files and generate a report of issues
+- **Dependencies:** None
+- **Related Cursor Commands:** [audit-docs.md](./audit-docs.md), [audit-documentation-rules-metadata.md](./audit-documentation-rules-metadata.md)
+- **Related Cursor Rules:** [readme-standards.mdc](../rules/readme-standards.mdc), [documentation-metadata.mdc](../rules/documentation-metadata.mdc)
+- **Related Standards:** [project-planning/documentation.md](../../standards/project-planning/documentation.md), [module-structure.md](../../standards/module-structure.md)
 
 ---
 

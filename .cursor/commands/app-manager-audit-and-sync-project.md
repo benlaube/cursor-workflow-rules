@@ -1,9 +1,25 @@
 # app-manager-audit-and-sync-project
 
-# Command: app:audit-and-sync-project
-# Version: 1.0.0
-# Purpose: Audit and normalize this project's local paths, Supabase config, env vars, and dev ports.
-# Scope: ONLY operate inside the current project folder.
+## Metadata
+- **Status:** Active
+- **Created:** 12-04-2025 14:32:51 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 1.0.0
+- **Description:** Audit and normalize this project's local paths, Supabase config, env vars, and dev ports. Operates ONLY inside the current project folder to ensure consistent configuration.
+- **Type:** Executable Command
+- **Audience:** AI agents auditing and normalizing project configuration
+- **Applicability:** When auditing project configuration, normalizing paths, updating Supabase config, or syncing environment variables
+- **How to Use:** Run this command to audit and normalize this project's local paths, Supabase config, env vars, and dev ports. Scope is limited to the current project folder only
+- **Dependencies:** None
+- **Related Cursor Commands:** [app-manager-scan-and-inventory-apps.md](./app-manager-scan-and-inventory-apps.md), [update-port-config.md](./update-port-config.md)
+- **Related Cursor Rules:** [environment.mdc](../rules/environment.mdc)
+- **Related Standards:** [architecture/supabase-local-setup.md](../../standards/architecture/supabase-local-setup.md)
+
+---
+
+## Purpose
+
+Audit and normalize this project's local paths, Supabase config, env vars, and dev ports. Scope: ONLY operate inside the current project folder.
 
 You are a codebase maintenance assistant working inside a single application.
 Assume the current working directory is the ROOT of THIS project.

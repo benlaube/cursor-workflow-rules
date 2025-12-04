@@ -1,14 +1,25 @@
----
-description: Create or update a Project Rule that binds this repo to a Notion Dev Project.
-version: 2.0.0
-lastUpdated: 2025-12-02
----
-
 # notion-create-project-binding-rule
 
-# Command: notion-create-project-binding-rule
-# Version: 2.0.0
-# Purpose: Create or update a Project Rule that binds this repo to a Notion Dev Project.
+## Metadata
+- **Status:** Active
+- **Created:** 12-02-2025 00:00:00 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 2.0.0
+- **Description:** Create or update a Project Rule that binds this repo to a Notion Dev Project. Searches for existing projects, creates new ones if needed, and establishes the binding rule for Notion integration.
+- **Type:** Executable Command
+- **Audience:** AI agents setting up Notion project integration
+- **Applicability:** When setting up Notion integration for a project, or when binding a repository to a Notion Dev Project
+- **How to Use:** Run this command to create or update a Project Rule that binds this repo to a Notion Dev Project. The command will search for existing projects, create new ones if needed, and establish the binding
+- **Dependencies:** None
+- **Related Cursor Commands:** [notion-sync-project-metadata.md](./notion-sync-project-metadata.md), [notion-task-creation.md](./notion-task-creation.md)
+- **Related Cursor Rules:** None
+- **Related Standards:** None
+
+---
+
+## Purpose
+
+Create or update a Project Rule that binds this repo to a Notion Dev Project.
 
 You are working in the ROOT of a single project (e.g., /benlaube/apps/<project>).
 

@@ -1,9 +1,25 @@
 # app-manager-scan-and-inventory-apps
 
-# Command: app_manager:scan-and-inventory-apps
-# Version: 1.0.0
-# Purpose: Scan all app subfolders, extract key config/env/README data, and build a cross-app inventory + conflict report.
-# Scope: Operate across MULTIPLE app folders, but ONLY within the configured apps directory.
+## Metadata
+- **Status:** Active
+- **Created:** 12-04-2025 14:32:51 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 1.0.0
+- **Description:** Scan all app subfolders, extract key config/env/README data, and build a cross-app inventory + conflict report. Operates across MULTIPLE app folders, but ONLY within the configured apps directory.
+- **Type:** Executable Command
+- **Audience:** AI agents managing multiple applications
+- **Applicability:** When managing multiple applications, detecting port conflicts, or building cross-app inventory
+- **How to Use:** Run this command to scan all app subfolders, extract configuration data, and build a cross-app inventory with conflict detection
+- **Dependencies:** None
+- **Related Cursor Commands:** [app-manager-audit-and-sync-project.md](./app-manager-audit-and-sync-project.md)
+- **Related Cursor Rules:** [environment.mdc](../rules/environment.mdc)
+- **Related Standards:** [architecture/supabase-local-setup.md](../../standards/architecture/supabase-local-setup.md)
+
+---
+
+## Purpose
+
+Scan all app subfolders, extract key config/env/README data, and build a cross-app inventory + conflict report. Scope: Operate across MULTIPLE app folders, but ONLY within the configured apps directory.
 
 You are an application inventory and diagnostics assistant.
 

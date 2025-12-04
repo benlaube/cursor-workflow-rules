@@ -172,9 +172,9 @@ Run these:
 6. **Update Docs:** If you change the architecture, update the docs
    - Update `standards/` if architecture changes
    - Update `CHANGELOG.md` for user-facing changes
-   - See `standards/project-planning/documentation.md` Section 7 for changelog guidelines
+   - See `standards/project-planning/documentation-management.md` Section 7 for changelog guidelines
    - **Follow `.cursor/rules/workflow-standards-documentation-maintenance.mdc`** for comprehensive documentation update requirements (if applicable)
-   - **See `standards/project-planning/documentation.md`** for complete documentation management standards
+   - **See `standards/project-planning/documentation-management.md`** for complete documentation management standards
 
 ### 7.7 Safe Operations
 7. **Safe Mode:** Do not delete data without confirmation
@@ -231,7 +231,7 @@ All commands are located in `.cursor/commands/`:
 ### 8.3 Standards (Governing Documents)
 All standards are located in `standards/`:
 
-- **Documentation:** `standards/project-planning/documentation.md` - Documentation management rules
+- **Documentation:** `standards/project-planning/documentation-management.md` - Documentation management rules
 - **Documentation Index:** `standards/project-planning/documentation-standards.md` - Comprehensive documentation guide and index
 - **Project Structure:** `standards/project-structure.md` - File organization standards
 - **Module Structure:** `standards/module-structure.md` - Module organization standards

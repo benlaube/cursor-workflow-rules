@@ -1,10 +1,18 @@
-# Standard_Documentation_Requirements_v1.0
+# Standard: Documentation_Standards_v1.3
 
 ## Metadata
-- **Created:** 2025-12-02
-- **Last Updated:** 2025-12-04
-- **Version:** 1.2
-- **Description:** Comprehensive guide to standard documentation files every application should have, including detailed subfolder structure within `/docs`.
+- **Status:** Active
+- **Created:** 02-12-2025
+- **Last Updated:** 04-12-2025 15:37:07 EST
+- **Version:** 1.3
+- **Description:** Comprehensive reference guide defining what documentation files should exist in every application, organized by priority and use case with detailed subfolder structure.
+- **Type:** Reference Guide - Used by developers and AI agents for documentation planning
+- **Applicability:** When starting new projects, auditing documentation, planning improvements, or running project-audit
+- **Related Standards:**
+  - [documentation-management.md](./documentation-management.md) - How to manage and organize documentation (governing rules)
+  - [project-structure.md](../project-structure.md) - Overall project file structure
+  - [tech-stack-documentation-standard.md](./tech-stack-documentation-standard.md) - TECH_STACK.md format requirements
+- **How to Use:** Use as a checklist when starting projects or auditing existing documentation to ensure all required files exist
 
 > **NOTE:** This is the authoritative source for documentation standards. Previously a copy existed at `docs/DOCUMENTATION_STANDARDS.md` but that has been removed to maintain a single source of truth in the `standards/` directory.
 
@@ -23,10 +31,10 @@ Apply this standard when:
 
 This document provides a comprehensive list of standard documentation files that should exist in every application, organized by priority and use case. It also defines the recommended subfolder structure within the `/docs` directory.
 
-**Role:** This is a comprehensive reference guide. For governing rules, see `standards/documentation.md`.
+**Role:** This is a comprehensive reference guide (WHAT docs should exist). For governing rules on HOW to manage documentation, see `standards/project-planning/documentation-management.md`.
 
 **Related Standards:**
-- `standards/project-planning/documentation.md` - How to manage and organize documentation (governing rules)
+- `standards/project-planning/documentation-management.md` - How to manage and organize documentation (governing rules)
 - `standards/project-planning/project-structure.md` - Overall project file structure
 
 ---
@@ -132,7 +140,7 @@ The following structure should be used within the `/docs` directory. Not all fol
 │
 ├── /process                          # Process documentation (REQUIRED STRUCTURE)
 │   ├── development_workflow_v1_0.md # Development workflow (if exists)
-│   └── (Note: Checklists located in `standards/process/checklists/` - see `standards/project-planning/documentation.md` Section 4.4)
+│   └── (Note: Checklists located in `standards/process/checklists/` - see `standards/project-planning/documentation-management.md` Section 4.4)
 │   └── (Note: Security audit standards moved to `standards/security/security-audit.md`)
 │   └── (other process standards)
 │
@@ -222,7 +230,7 @@ The following structure should be used within the `/docs` directory. Not all fol
 | Compliance | `docs/security/COMPLIANCE.md` | When subject to regulations |
 | Threat Model | `docs/security/THREAT_MODEL.md` | For complex/security-critical apps |
 
-**Note:** `SECURITY_CHECKLIST.md` can remain at root level for quick reference.
+**Note:** Root-level `SECURITY_CHECKLIST.md` is optional for quick reference, but authoritative checklist is `standards/security/security-audit-checklist.md`.
 
 ### 4.4 Deployment & Operations
 
@@ -286,7 +294,7 @@ The following structure should be used within the `/docs` directory. Not all fol
 
 **Purpose:** Define development processes and validation.
 
-**Location:** `docs/process/` (this structure is required per `standards/project-planning/documentation.md`)
+**Location:** `docs/process/` (this structure is required per `standards/project-planning/documentation-management.md`)
 
 | Document | Location | When to Create |
 |----------|----------|----------------|
@@ -423,7 +431,7 @@ Before production deployment, ensure:
 ### 7.1 Documentation Files
 
 - **Format:** `snake_case.md` (preferred) or `UPPER_SNAKE_CASE.md` (acceptable for docs/ files)
-- **Note:** See `standards/project-planning/documentation.md` Section 5 for authoritative naming rules
+- **Note:** See `standards/project-planning/documentation-management.md` Section 5 for authoritative naming rules
 - **Examples:**
   - `DEVELOPER_SETUP.md` (UPPER_SNAKE_CASE - acceptable in docs/)
   - `API_REFERENCE.md` (UPPER_SNAKE_CASE - acceptable in docs/)
@@ -456,7 +464,7 @@ Before production deployment, ensure:
 
 ## 8. Documentation Metadata
 
-Every documentation file must include metadata at the top. See `standards/project-planning/documentation.md` Section 4 for complete format requirements.
+Every documentation file must include metadata at the top. See `standards/project-planning/documentation-management.md` Section 4 for complete format requirements, or `.cursor/rules/documentation-metadata.mdc` for auto-applied validation.
 
 ### 8.1 Standard Format
 
@@ -533,6 +541,7 @@ docs/archive/old_deployment_guide_archived_2025-12-01.md
 - **Architecture:** `standards/architecture/`
 - **Database:** `standards/database/`
 - **Security:** `standards/security/`
+- **Documentation:** `standards/project-planning/documentation-management.md`
 - **Module Structure:** `standards/module-structure.md`
 - **Project Structure:** `standards/project-structure.md`
 
@@ -560,7 +569,7 @@ For API documentation, see `docs/api/API_REFERENCE.md`.
 ### 11.2 Master References
 
 - **`AGENTS.md`** - Master reference for AI agents (Section 8)
-- **`standards/project-planning/documentation.md`** - Documentation management rules (governing standards)
+- **`standards/project-planning/documentation-management.md`** - Documentation management rules (governing standards)
 - **`standards/project-planning/documentation-standards.md`** - Comprehensive reference and checklist (this file)
 
 ### 11.3 Module Documentation
@@ -619,7 +628,7 @@ Use this checklist when starting a new project or auditing documentation:
 
 ## 13. Related Documentation
 
-- **`standards/project-planning/documentation.md`** - Documentation management rules and metadata format (includes three-layer system explanation)
+- **`standards/project-planning/documentation-management.md`** - Documentation management rules and metadata format (includes three-layer system explanation)
 - **`standards/project-structure.md`** - Overall project file structure
 - **`standards/tech-stack-document.md`** - TECH_STACK.md format requirements
 - **`AGENTS.md`** - AI agent context and lifecycle (Section 8 for documentation references)
@@ -703,7 +712,7 @@ Use this checklist when starting a new project or auditing documentation:
 │   └── COMPLIANCE.md
 ├── /process
 │   ├── development_workflow_v1_0.md (if exists)
-│   └── (Note: Checklists located in `standards/process/checklists/` - see `standards/project-planning/documentation.md` Section 4.4)
+│   └── (Note: Checklists located in `standards/process/checklists/` - see `standards/project-planning/documentation-management.md` Section 4.4)
 │   └── (Note: Security audit standards moved to `standards/security/security-audit.md`)
 │   └── (Note: RLS policy review is now a rule at `.cursor/rules/supabase-rls-policy-review.mdc`)
 └── /archive

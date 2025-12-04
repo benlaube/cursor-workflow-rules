@@ -1,13 +1,16 @@
 ---
 description: Guides AI agent behavior around linting to maintain code quality without being noisy
-version: 1.2.0
-lastUpdated: 04-12-2025 13:08:13 EST
-globs: **/*
+version: 1.2.4
+created: 12-04-2025
+lastUpdated: 12-04-2025 16:13:13 EST
 alwaysApply: true
+globs: **/*
 type: Auto-Applied Behavioral Rule - Linting expectations for AI agents
-relatedCommands: [pre-flight-check.md, pr-review-check.md, validate-code-quality.md]
-relatedRules: [task-workflow.mdc]
-relatedStandards: [process/code-quality-linting-standards.md, process/checklists/linting_checklist_v1_0.md]
+applicability: When files matching globs are edited.
+dependencies: []
+relatedCommands: [[pre-flight-check.md](../commands/pre-flight-check.md), [pr-review-check.md](../commands/pr-review-check.md), [validate-code-quality.md](../commands/validate-code-quality.md)]
+relatedRules: [[task-workflow.mdc](./task-workflow.mdc)]
+relatedStandards: [[process/code-quality-linting-standards.md](../standards/process/code-quality-linting-standards.md), [process/checklists/linting_checklist_v1_0.md](../standards/process/checklists/linting_checklist_v1_0.md)]
 ---
 
 # Linting Rule

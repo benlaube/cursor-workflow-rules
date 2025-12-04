@@ -1,8 +1,20 @@
----
-description: Launch the application (Dev or Prod) using start_app.sh script. Generates launch scripts if missing.
-version: 2.0.0
-lastUpdated: 2025-12-02
-globs: 
+# launch
+
+## Metadata
+- **Status:** Active
+- **Created:** 12-02-2025 00:00:00 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 2.0.0
+- **Description:** Launch the application (Dev or Prod) using start_app.sh script. Generates launch scripts if missing. Handles stack detection, dependency installation, environment validation, and port management automatically.
+- **Type:** Executable Command
+- **Audience:** AI agents launching applications
+- **Applicability:** When starting the app, running the server, or launching development/production environments
+- **How to Use:** Run this command to reliably start the application. Use `env=dev` or `env=prod`, `service` for monorepo services, `skip-tests` or `skip-install` to skip steps
+- **Dependencies:** None
+- **Related Cursor Commands:** [create-start-scripts.md](./create-start-scripts.md), [launch-debug-fix.md](./launch-debug-fix.md)
+- **Related Cursor Rules:** [environment.mdc](../rules/environment.mdc), [auto-heal.mdc](../rules/auto-heal.mdc)
+- **Related Standards:** [deployment/application-launch.md](../../standards/deployment/application-launch.md), [architecture/supabase-local-setup.md](../../standards/architecture/supabase-local-setup.md)
+
 ---
 
 # Launch Application Command

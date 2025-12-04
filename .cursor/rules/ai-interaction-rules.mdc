@@ -1,12 +1,16 @@
 ---
 description: Defines behavior and standards for AI agents interacting with this repository
-version: 1.1.0
-lastUpdated: 2025-12-04
+version: 1.2.0
+created: 12-04-2025
+lastUpdated: 04-12-2025 16:20:33 EST
 alwaysApply: true
+globs: ""
 type: Auto-Applied Behavioral Rule - Guides AI agent behavior and coding standards
-relatedCommands: []
-relatedRules: [environment.mdc, task-workflow.mdc]
-relatedStandards: [project-planning/documentation.md, database/schema.md]
+applicability: When files matching globs are edited.
+dependencies: []
+relatedCommands: [launch.md, create-start-scripts.md]
+relatedRules: [[environment.mdc](./environment.mdc), [task-workflow.mdc](./task-workflow.mdc)]
+relatedStandards: [[project-planning/documentation-management.md](../standards/project-planning/documentation-management.md), [database/schema.md](../standards/database/schema.md)]
 ---
 
 # AI Interaction Rules & Persona
@@ -56,6 +60,26 @@ This document defines the behavior and standards for AI agents (Cursor, Windsurf
 **Rule:** Every database migration must include `COMMENT ON` statements for every table and column created.
 **Why:** To ensure the database is self-documenting for future AI agents and developers.
 
+### Application Launching (CRITICAL)
+**Rule:** Always use the standardized launch process. Never launch applications via ad-hoc commands.
+**Actions:**
+- **Check for Launch Scripts:** First check if `start_app.sh` exists in project root
+  - If missing: Run `create-start-scripts` command (`.cursor/commands/create-start-scripts.md`) to generate launch scripts
+  - If exists: Use `start_app.sh` directly
+- **Launch Process:**
+  - Use `launch` command (`.cursor/commands/launch.md`) which uses `start_app.sh`
+  - For dev: `./start_app.sh dev` or use `launch` command with `env=dev`
+  - For prod: `./start_app.sh prod` or use `launch` command with `env=prod`
+  - The launch process handles: stack detection, dependency installation, environment validation, port management, Supabase startup (if applicable)
+- **Error Recovery:**
+  - If launch fails, use `launch-debug-fix` command (`.cursor/commands/launch-debug-fix.md`) for iterative debugging
+  - Launch errors auto-heal via `auto-heal.mdc` rule (port conflicts, missing dependencies, etc.)
+- **When to Launch:**
+  - After completing a task (see `task-workflow.mdc` Section 3.5)
+  - When user requests to "start the app", "run the server", or "launch"
+  - Before testing changes to ensure they work
+**Why:** Ensures consistent, reliable application launches across all projects. Prevents port conflicts, missing dependencies, and configuration errors.
+
 ### Notion Integration (When Project is Bound)
 **Rule:** If a Notion Project Binding rule exists (see `.cursor/commands/notion-create-project-binding-rule`), integrate with Notion for task and project management.
 **Actions:**
@@ -76,8 +100,12 @@ This document defines the behavior and standards for AI agents (Cursor, Windsurf
 - **Rules:**
   - [environment.mdc](./environment.mdc) - Environment expectations and runtime standards
   - [task-workflow.mdc](./task-workflow.mdc) - Development workflow integration
+  - [auto-heal.mdc](./auto-heal.mdc) - Error recovery and auto-healing strategies
+- **Commands:**
+  - [launch.md](../commands/launch.md) - Standardized application launch command
+  - [create-start-scripts.md](../commands/create-start-scripts.md) - Generate launch scripts
 - **Standards:**
-  - [documentation.md](../../standards/project-planning/documentation.md) - Documentation management standards
+  - [documentation-management.md](../../standards/project-planning/documentation-management.md) - Documentation management standards
   - [schema.md](../../standards/database/schema.md) - Database schema conventions
 
 ---
@@ -91,5 +119,8 @@ This document defines the behavior and standards for AI agents (Cursor, Windsurf
 - Use existing modules from `modules/` directory instead of reinventing the wheel
 - Never commit secrets - always use environment variables
 - Update `CHANGELOG.md` when changing architectural patterns
+- Review & Update `README.md` when changes made outdate information within the README file.
 - Include `COMMENT ON` statements for all database migrations
 - Analyze errors and clarify ambiguities instead of blindly retrying commands
+- Always use `launch` command (`.cursor/commands/launch.md`) or `start_app.sh` to launch applications (never use ad-hoc commands)
+- Commit uncommitted changes before completing tasks (see `task-workflow.mdc` Section 3.3)

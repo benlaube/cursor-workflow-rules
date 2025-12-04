@@ -1,8 +1,20 @@
----
-description: Perform a comprehensive security audit on the project.
-version: 1.1.0
-lastUpdated: 2025-12-02
-globs: 
+# audit-security
+
+## Metadata
+- **Status:** Active
+- **Created:** 12-02-2025 00:00:00 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 1.1.0
+- **Description:** Perform a comprehensive security audit on the project, scanning for vulnerabilities, secrets, misconfigurations, and security best practices. Includes secrets scanning, dependency audits, RLS validation, API security checks, and configuration validation.
+- **Type:** Executable Command
+- **Audience:** AI agents performing security audits
+- **Applicability:** When auditing security, checking for secrets, scanning for vulnerabilities, or before security-sensitive changes
+- **How to Use:** Run this command to perform comprehensive security audit. Use `fix=true` to attempt automatic fixes for minor issues (gitignore entries, .env.example creation)
+- **Dependencies:** None
+- **Related Cursor Commands:** [audit-project.md](./audit-project.md), [audit-access-control.md](./audit-access-control.md), [full-project-health-check.md](./full-project-health-check.md)
+- **Related Cursor Rules:** [supabase-rls-policy-review.mdc](../rules/supabase-rls-policy-review.mdc)
+- **Related Standards:** [security/security-audit-checklist.md](../../standards/security/security-audit-checklist.md), [security/access-control.md](../../standards/security/access-control.md)
+
 ---
 
 # Security Audit Command

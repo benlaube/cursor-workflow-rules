@@ -1,5 +1,24 @@
 # update-port-config
 
+## Metadata
+- **Status:** Active
+- **Created:** 12-04-2025 14:32:51 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 1.0.0
+- **Description:** Configure a local development project that uses a Supabase local stack. Updates Supabase config, environment variables, and port configuration to ensure consistent local development setup.
+- **Type:** Executable Command
+- **Audience:** AI agents configuring local development environments
+- **Applicability:** When setting up Supabase local development, when port conflicts occur, or when updating local Supabase configuration
+- **How to Use:** Run this command to configure Supabase ports, update config.toml, and sync environment variables for local development
+- **Dependencies:** None
+- **Related Cursor Commands:** [create-start-scripts.md](./create-start-scripts.md), [app-manager-audit-and-sync-project.md](./app-manager-audit-and-sync-project.md)
+- **Related Cursor Rules:** [environment.mdc](../rules/environment.mdc)
+- **Related Standards:** [architecture/supabase-local-setup.md](../../standards/architecture/supabase-local-setup.md)
+
+---
+
+## Purpose
+
 You are an network /backend developer configuring a local development project that uses a Supabase local stack.
 
 Follow these steps VERY carefully inside THIS project only:

@@ -1,8 +1,25 @@
 # update-launch-docs
 
-# Command: app:update-launch-docs
-# Version: 1.0.0
-# Purpose: Synchronize documentation (README, changelog, audit) with the current launch scripts and environment expectations.
+## Metadata
+- **Status:** Active
+- **Created:** 12-04-2025 14:32:51 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 1.0.0
+- **Description:** Synchronize documentation (README, changelog, audit) with the current launch scripts and environment expectations. Updates README.md, CHANGELOG.md, and PROJECT_AUDIT.md to reflect current launch script usage and environment configuration.
+- **Type:** Executable Command
+- **Audience:** AI agents maintaining documentation
+- **Applicability:** After launch logic or configuration has changed (start_app.sh, scripts/start_dev.sh, scripts/start_prod.sh, Supabase mode/ports)
+- **How to Use:** Run this command after launch scripts or environment configuration changes to synchronize documentation with current launch scripts and environment expectations
+- **Dependencies:** [create-start-scripts.md](./create-start-scripts.md)
+- **Related Cursor Commands:** [create-start-scripts.md](./create-start-scripts.md), [launch.md](./launch.md)
+- **Related Cursor Rules:** [workflow-standards-documentation-maintenance.mdc](../rules/workflow-standards-documentation-maintenance.mdc)
+- **Related Standards:** [deployment/application-launch.md](../../standards/deployment/application-launch.md), [project-planning/documentation.md](../../standards/project-planning/documentation.md)
+
+---
+
+## Purpose
+
+Synchronize documentation (README, changelog, audit) with the current launch scripts and environment expectations.
 
 You are a documentation-focused assistant working INSIDE a single project.
 

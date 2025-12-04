@@ -1,13 +1,16 @@
 ---
-description: Standards for creating and structuring README.md files. Applies when creating or modifying README.md files throughout the repository.
-version: 1.0.0
-lastUpdated: 04-12-2025 11:30:00 EST
-globs: **/README.md
+description: Standards for creating, structuring and maintaining README.md files. Applies when creating or modifying README.md files throughout the repository.
+version: 1.0.4
+created: 12-04-2025
+lastUpdated: 12-04-2025 16:13:13 EST
 alwaysApply: false
+globs: **/**/README.md
 type: Documentation Maintenance Rule - Ensures README files follow standard structure
+applicability: When files matching globs are edited.
+dependencies: []
 relatedCommands: []
-relatedRules: [documentation-metadata.mdc]
-relatedStandards: [documentation.md, module-structure.md]
+relatedRules: [[documentation-metadata.mdc](./documentation-metadata.mdc)]
+relatedStandards: [[project-planning/documentation-management.md](../standards/project-planning/documentation-management.md), [module-structure.md](../commands/module-structure.md)]
 ---
 
 # README Standards Rule
@@ -575,7 +578,7 @@ This rule works with:
 - That standard defines required files in modules (including README.md)
 - This rule defines what the README.md should contain
 
-### `documentation.md`
+### `documentation-management.md`
 - That standard defines overall documentation management
 - This rule is specific to README files
 
@@ -586,7 +589,7 @@ This rule works with:
 - **Rules:**
   - [documentation-metadata.mdc](./documentation-metadata.mdc) - Ensures metadata completeness
 - **Standards:**
-  - [documentation.md](../../standards/project-planning/documentation.md) - Documentation management
+  - [documentation-management.md](../../standards/project-planning/documentation-management.md) - Documentation management
   - [module-structure.md](../../standards/module-structure.md) - Module organization
 
 ---

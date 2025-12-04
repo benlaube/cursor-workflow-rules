@@ -24,7 +24,7 @@ This directory contains standards specifically for **project planning and setup*
 
 ### Core Planning Standards
 
-#### `documentation.md`
+#### `documentation-management.md`
 **The "HOW" - Governing Rules**
 - Defines **how** to manage, organize, and format all documentation
 - Metadata requirements for all documentation files
@@ -70,7 +70,7 @@ This directory contains standards specifically for **project planning and setup*
 
 ## Relationship Between Files
 
-### documentation.md (GOVERNING RULES)
+### documentation-management.md (GOVERNING RULES)
 - Defines **metadata format**
 - Defines **naming conventions**
 - Defines **organization rules**
@@ -86,7 +86,7 @@ This directory contains standards specifically for **project planning and setup*
 - Defines **where code goes**
 - Defines **where tests go**
 - Defines **where config goes**
-- Works with `documentation.md` for doc placement
+- Works with `documentation-management.md` for doc placement
 
 ### tech-stack-document.md (TECH DECISIONS)
 - Template for **documenting choices**
@@ -113,7 +113,7 @@ This directory contains standards specifically for **project planning and setup*
 3. Create documentation structure
 
 ### Step 4: Follow Documentation Rules
-1. Read `documentation.md`
+1. Read `documentation-management.md`
 2. Follow metadata requirements for all files
 3. Follow naming conventions
 4. Follow three-layer system (Standards → Checklists → Commands)
@@ -139,7 +139,7 @@ This directory contains standards specifically for **project planning and setup*
 
 When an AI agent needs to:
 - **Plan a new project** → Read all files in this directory
-- **Document something** → Check `documentation.md` first
+- **Document something** → Check `documentation-management.md` first
 - **Organize files** → Check `project-structure.md`
 - **Document tech stack** → Use template from `tech-stack-document.md`
 - **Plan docs** → Use checklist from `documentation-standards.md`
@@ -149,7 +149,7 @@ When an AI agent needs to:
 ## Contributing
 
 When updating these standards:
-1. Follow metadata requirements from `documentation.md`
+1. Follow metadata requirements from `documentation-management.md`
 2. Use semantic versioning (X.Y format)
 3. Update "Last Updated" date
 4. Update `CHANGELOG.md` for significant changes

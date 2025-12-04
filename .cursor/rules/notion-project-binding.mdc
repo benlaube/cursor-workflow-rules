@@ -1,12 +1,15 @@
 ---
 description: Notion project binding for Cursor Workflow Rules repository
-version: 2.1.0
-lastUpdated: 2025-12-04
-globs: **/*
+version: 2.1.4
+created: 12-04-2025
+lastUpdated: 12-04-2025 16:13:13 EST
 alwaysApply: true
+globs: **/*
 type: Project-Specific Rule - Notion integration for this repository
-relatedCommands: [notion-sync-project-metadata.md, notion-task-creation.md]
-relatedRules: [task-workflow.mdc, ai-interaction-rules.mdc]
+applicability: When files matching globs are edited.
+dependencies: []
+relatedCommands: [[notion-sync-project-metadata.md](../commands/notion-sync-project-metadata.md), [notion-task-creation.md](../commands/notion-task-creation.md)]
+relatedRules: [[task-workflow.mdc](./task-workflow.mdc), [ai-interaction-rules.mdc](./ai-interaction-rules.mdc)]
 relatedStandards: []
 ---
 

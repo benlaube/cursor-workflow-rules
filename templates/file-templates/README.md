@@ -45,7 +45,7 @@ This directory contains **template files** that can be copied directly into new 
 4. Keep Sections 6-9 as-is (lifecycle and references)
 
 **Related Standards:**
-- `standards/project-planning/documentation.md` - Documentation management rules
+- `standards/project-planning/documentation-management.md` - Documentation management rules
 
 ---
 

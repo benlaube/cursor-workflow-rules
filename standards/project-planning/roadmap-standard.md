@@ -382,7 +382,7 @@ Every roadmap must begin with:
 ### 8.1 CHANGELOG.md
 - Update CHANGELOG when roadmap changes significantly
 - Reference roadmap version in CHANGELOG entries
-- See `standards/project-planning/documentation.md` Section 7 for changelog format
+- See `standards/project-planning/documentation-management.md` Section 7 for changelog format
 
 ### 8.2 AGENTS.md
 - Reference active roadmap in AGENTS.md if using AI agents
@@ -420,7 +420,7 @@ Every roadmap must begin with:
 
 ## 10. Related Documentation
 
-- **Documentation Management:** `standards/project-planning/documentation.md`
+- **Documentation Management:** `standards/project-planning/documentation-management.md`
 - **Documentation Standards:** `standards/project-planning/documentation-standards.md`
 - **Project Structure:** `standards/project-planning/project-structure.md`
 - **Tech Stack Document:** `standards/project-planning/tech-stack-document.md`

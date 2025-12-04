@@ -1,13 +1,16 @@
 ---
 description: Documentation maintenance requirements for Workflow Rules repository
-version: 1.1.0
-lastUpdated: 2025-12-04
-globs: **/*
+version: 1.1.4
+created: 12-04-2025
+lastUpdated: 12-04-2025 16:13:13 EST
 alwaysApply: true
+globs: **/*
 type: Project-Specific Rule - Applies to Workflow Rules repository only
+applicability: When files matching globs are edited.
+dependencies: []
 relatedCommands: []
-relatedRules: [documentation-dependency-tracking.mdc, task-workflow.mdc]
-relatedStandards: [project-planning/documentation.md]
+relatedRules: [[documentation-dependency-tracking.mdc](./documentation-dependency-tracking.mdc), [task-workflow.mdc](./task-workflow.mdc)]
+relatedStandards: [[project-planning/documentation-management.md](../standards/project-planning/documentation-management.md)]
 ---
 
 # Workflow Standards Documentation Maintenance Rule
@@ -56,7 +59,7 @@ When making any documentation or feature change, review and update these files a
      - Categorize as: Added, Changed, Deprecated, Removed, Fixed, Security
      - Provide clear description of what changed and why
      - Reference related files, modules, or standards
-   - **Format:** See `standards/documentation.md` Section 7 for changelog guidelines
+   - **Format:** See `standards/project-planning/documentation-management.md` Section 7 for changelog guidelines
 
 3. **`README.md`** - Project overview and quick start
    - **When:** Project structure, modules, or quick start instructions change
@@ -145,7 +148,7 @@ When making a change, use this checklist:
 
 Follow these standards when updating documentation:
 
-- **Format:** Follow `standards/documentation.md` for format requirements
+- **Format:** Follow `standards/project-planning/documentation-management.md` for format requirements
 - **Metadata:** Include Created, Last Updated, Version, Description in frontmatter
 - **Versioning:** Use semantic versioning (X.Y format) for standards
 - **Timestamps:** Use format `YYYY-MM-DD HH:MM:SS` in CHANGELOG.md
@@ -260,7 +263,7 @@ When integrating this repository into other projects:
   - [documentation-dependency-tracking.mdc](./documentation-dependency-tracking.mdc) - Tracks documentation dependencies automatically
   - [task-workflow.mdc](./task-workflow.mdc) - Development workflow that includes documentation updates
 - **Standards:**
-  - [documentation.md](../../standards/project-planning/documentation.md) - Documentation management standards
+  - [documentation-management.md](../../standards/project-planning/documentation-management.md) - Documentation management standards
 
 ---
 

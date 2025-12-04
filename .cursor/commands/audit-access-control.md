@@ -1,8 +1,20 @@
----
-description: Verify RLS and Endpoint Security (Deep Dive)
-version: 1.0.0
-lastUpdated: 2025-12-02
-globs: "**/*.sql", "**/*.ts"
+# audit-access-control
+
+## Metadata
+- **Status:** Active
+- **Created:** 12-02-2025 00:00:00 EST
+- **Last Updated:** 12-04-2025 14:32:51 EST
+- **Version:** 1.0.0
+- **Description:** Verify RLS and Endpoint Security (Deep Dive). Performs comprehensive access control audit of API endpoints and database RLS policies.
+- **Type:** Executable Command
+- **Audience:** AI agents performing security audits
+- **Applicability:** When auditing access control, checking RLS policies, or verifying endpoint security
+- **How to Use:** Run this command to perform deep dive into application's access control layers: API Endpoints and Database RLS
+- **Dependencies:** None
+- **Related Cursor Commands:** [audit-security.md](./audit-security.md), [audit-project.md](./audit-project.md)
+- **Related Cursor Rules:** [supabase-rls-policy-review.mdc](../rules/supabase-rls-policy-review.mdc)
+- **Related Standards:** [security/access-control.md](../../standards/security/access-control.md), [database/schema.md](../../standards/database/schema.md)
+
 ---
 
 # Verify Access Control Command
