@@ -1,6 +1,7 @@
 # Code Quality Linting Standards v1.1
 
 ## Metadata
+
 - **Created:** 2025-12-02
 - **Last Updated:** 04-12-2025 13:08:13 EST
 - **Version:** 1.1
@@ -9,6 +10,7 @@
 ## When to Apply This Standard
 
 Apply this standard when:
+
 - Setting up linting for a new project
 - Configuring linting tools (ESLint, TypeScript, Python linters, etc.)
 - Reviewing code quality and linting policies
@@ -205,5 +207,4 @@ Before opening/updating a PR:
 
 ---
 
-*This standard defines the linting requirements and policies. For AI agent behavior, see `.cursor/rules/linting-behavior.mdc`. For validation checklists, see `standards/process/checklists/linting_checklist_v1_0.md`.*
-
+_This standard defines the linting requirements and policies. For AI agent behavior, see `.cursor/rules/linting-behavior.mdc`. For validation checklists, see `standards/process/checklists/linting_checklist_v1_0.md`._

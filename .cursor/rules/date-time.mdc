@@ -1,8 +1,8 @@
 ---
 description: Ensures AI agents are aware of current date and time for time-sensitive operations. Applies automatically to all interactions.
-version: 1.0.4
+version: 1.1.0
 created: 12-04-2025
-lastUpdated: 12-04-2025 16:13:13 EST
+lastUpdated: 12-04-2025 16:50:59 EST
 alwaysApply: true
 globs: **/*
 type: Auto-Applied Behavioral Rule - Temporal awareness for AI agents
@@ -42,7 +42,7 @@ The agent MUST check the current date when:
 ### 2. How to Get Current Date
 
 **Terminal Commands:**
-- **Unix/Mac:** `date` (basic format) or `TZ=America/New_York date "+%d-%m-%Y %H:%M:%S EST"` (EST format)
+- **Unix/Mac:** `date` (basic format) or `TZ=America/New_York date "+%m-%d-%Y %H:%M:%S EST"` (EST format)
 - **Windows:** `date /t` (basic format)
 - **ISO Format (Unix/Mac):** `date -u +"%Y-%m-%dT%H:%M:%SZ"`
 
@@ -54,12 +54,12 @@ The agent MUST check the current date when:
 ### 3. Date Format Standards
 
 **For Documentation Metadata:**
-- **Format:** `DD-MM-YYYY HH:MM:SS EST` (e.g., `04-12-2025 13:10:00 EST`)
-- **Command:** `TZ=America/New_York date "+%d-%m-%Y %H:%M:%S EST"`
+- **Format:** `MM-DD-YYYY HH:MM:SS EST` (e.g., `12-04-2025 13:10:00 EST`)
+- **Command:** `TZ=America/New_York date "+%m-%d-%Y %H:%M:%S EST"`
 - **Use for:** "Last Updated" fields in metadata sections
 
 **For CHANGELOG.md:**
-- **Format:** `DD-MM-YYYY HH:MM:SS EST` (e.g., `04-12-2025 13:10:00 EST`)
+- **Format:** `MM-DD-YYYY HH:MM:SS EST` (e.g., `12-04-2025 13:10:00 EST`)
 - **Use for:** Timestamping changelog entries
 
 **For Code:**
@@ -86,12 +86,12 @@ The agent MUST check the current date when:
 
 **After (with date check):**
 ```bash
-# Agent runs: TZ=America/New_York date "+%d-%m-%Y %H:%M:%S EST"
-# Result: 04-12-2025 13:10:00 EST
+# Agent runs: TZ=America/New_York date "+%m-%d-%Y %H:%M:%S EST"
+# Result: 12-04-2025 13:10:00 EST
 ```
 
 ```markdown
-- **Feature Added** (04-12-2025 13:10:00 EST)
+- **Feature Added** (12-04-2025 13:10:00 EST)
 ```
 
 ### Example 2: Calculating Relative Dates
@@ -112,12 +112,12 @@ The agent MUST check the current date when:
 
 **After (with date check):**
 ```bash
-# Agent runs: TZ=America/New_York date "+%d-%m-%Y %H:%M:%S EST"
-# Result: 04-12-2025 13:10:00 EST
+# Agent runs: TZ=America/New_York date "+%m-%d-%Y %H:%M:%S EST"
+# Result: 12-04-2025 13:10:00 EST
 ```
 
 ```markdown
-- **Last Updated:** 04-12-2025 13:10:00 EST
+- **Last Updated:** 12-04-2025 13:10:00 EST
 ```
 
 ---
@@ -151,7 +151,7 @@ This rule works with:
 **This rule applies automatically to all AI agent interactions.**
 
 **Agents should:**
-1. Check current date using `date` command (or `TZ=America/New_York date "+%d-%m-%Y %H:%M:%S EST"` for EST format) when:
+1. Check current date using `date` command (or `TZ=America/New_York date "+%m-%d-%Y %H:%M:%S EST"` for EST format) when:
    - Updating documentation with timestamps
    - Responding to time-sensitive queries
    - Calculating relative dates
@@ -162,7 +162,7 @@ This rule works with:
 
 **Date checking checklist:**
 - [ ] Current date verified using `date` command
-- [ ] EST format used for documentation metadata: `DD-MM-YYYY HH:MM:SS EST`
+- [ ] EST format used for documentation metadata: `MM-DD-YYYY HH:MM:SS EST`
 - [ ] No placeholders or assumed dates used
 - [ ] Timezone explicitly specified when using EST
 

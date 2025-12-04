@@ -9,6 +9,7 @@ Last_Updated: 2025-01-27
 ## 1. Overview
 
 This guide explains how to set up a default development user with admin permissions for local development. This is useful for:
+
 - Quick testing without creating accounts manually
 - Consistent development environment setup
 - Testing admin-only features
@@ -95,8 +96,8 @@ node modules/auth-profile-sync/dev-user-setup.js
 
 ```sql
 -- Check user was created
-SELECT id, email, full_name, role 
-FROM public.profiles 
+SELECT id, email, full_name, role
+FROM public.profiles
 WHERE email = 'dev@localhost';
 ```
 
@@ -117,6 +118,7 @@ The system supports role-based access control:
 **Primary Storage (Source of Truth):** Roles are stored in JWT claims via `app_metadata.role`. This is the secure, authoritative source.
 
 **Secondary Storage (Convenience):** Roles are also stored in `profiles.role` column for:
+
 - Easy queries (e.g., "get all admins")
 - UI display
 - Analytics
@@ -129,7 +131,7 @@ await supabase.auth.admin.updateUserById(userId, {
   app_metadata: {
     role: 'admin', // This becomes available in auth.jwt()
   },
-})
+});
 ```
 
 ### 4.3 Checking Roles
@@ -154,6 +156,7 @@ CREATE POLICY "Admins can see all"
 ```
 
 **Note:** The `is_admin()` function uses `auth.jwt() -> 'app_metadata' ->> 'role'` which reads from the JWT token. This is secure because:
+
 - JWT is signed by Supabase
 - Cannot be modified by the user
 - Always reflects the authoritative role from `app_metadata`
@@ -162,18 +165,14 @@ CREATE POLICY "Admins can see all"
 
 ```typescript
 // Get role from profile
-const { data: profile } = await supabase
-  .from('profiles')
-  .select('role')
-  .eq('id', user.id)
-  .single()
+const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
 
 if (profile?.role === 'admin') {
   // Admin access
 }
 
 // Or check JWT claims (more secure)
-const role = user.app_metadata?.role
+const role = user.app_metadata?.role;
 if (role === 'admin') {
   // Admin access
 }
@@ -182,20 +181,20 @@ if (role === 'admin') {
 **In API Routes (Backend API Module):**
 
 ```typescript
-import { createApiHandler } from '@/lib/backend-api'
+import { createApiHandler } from '@/lib/backend-api';
 
 export const GET = createApiHandler({
   requireAuth: true,
   handler: async ({ ctx }) => {
-    const role = ctx.auth!.user.app_metadata?.role
-    
+    const role = ctx.auth!.user.app_metadata?.role;
+
     if (role !== 'admin') {
-      return forbidden('Admin access required')
+      return forbidden('Admin access required');
     }
-    
+
     // Admin-only logic
   },
-})
+});
 ```
 
 ---
@@ -205,6 +204,7 @@ export const GET = createApiHandler({
 ### 5.1 Admin Access Policies
 
 The `dev-user-setup.sql` script includes policies that allow admins to:
+
 - See all profiles (not just their own)
 - Update any profile
 - Access admin-only resources
@@ -289,11 +289,11 @@ Add environment checks to prevent accidental production use:
 
 ```typescript
 if (process.env.NODE_ENV === 'production') {
-  throw new Error('Dev user setup cannot run in production')
+  throw new Error('Dev user setup cannot run in production');
 }
 
 if (!SUPABASE_URL.includes('localhost') && !SUPABASE_URL.includes('127.0.0.1')) {
-  console.warn('⚠️  WARNING: Not a local Supabase instance!')
+  console.warn('⚠️  WARNING: Not a local Supabase instance!');
   // Add confirmation prompt
 }
 ```
@@ -304,10 +304,10 @@ Always verify roles from JWT claims, not just database:
 
 ```typescript
 // ✅ Good: Check JWT claim
-const role = user.app_metadata?.role
+const role = user.app_metadata?.role;
 
 // ❌ Bad: Only check database (user could modify profile)
-const { data: profile } = await supabase.from('profiles').select('role')
+const { data: profile } = await supabase.from('profiles').select('role');
 ```
 
 ---
@@ -319,6 +319,7 @@ const { data: profile } = await supabase.from('profiles').select('role')
 **Issue:** Script fails because user already exists.
 
 **Solution:** The script is idempotent - it will update existing users. If you get an error, check:
+
 - User exists in `auth.users`
 - Profile exists in `public.profiles`
 - Service role key has correct permissions
@@ -328,6 +329,7 @@ const { data: profile } = await supabase.from('profiles').select('role')
 **Issue:** Cannot create user or update profile.
 
 **Solution:**
+
 - Verify `SUPABASE_SERVICE_ROLE_KEY` is correct
 - Check service role key has admin permissions
 - Ensure RLS policies allow service role operations
@@ -337,6 +339,7 @@ const { data: profile } = await supabase.from('profiles').select('role')
 **Issue:** Admin role doesn't grant expected access.
 
 **Solution:**
+
 - Verify role is set in both `profiles.role` and `app_metadata.role`
 - Check RLS policies use `public.is_admin()` function
 - Verify JWT includes role in claims
@@ -370,5 +373,4 @@ For automated testing, you can create test users in CI:
 
 ---
 
-*Last Updated: 2025-01-27*
-
+_Last Updated: 2025-01-27_

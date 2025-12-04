@@ -1,6 +1,7 @@
 # Standard: Project_File_Structure_v1.2
 
 ## Metadata
+
 - **Status:** Active
 - **Created:** 17-11-2025
 - **Last Updated:** 04-12-2025 15:43:15 EST
@@ -16,37 +17,42 @@
 - **How to Use:** Reference this standard when creating project structure, organizing files, or validating project layout during audits
 
 ## When to Apply This Standard
+
 Apply this standard whenever creating new projects, reorganizing files, or auditing the codebase structure. It ensures every file has a predictable home.
 
 ## 1. High-Level Goals
+
 - **Predictability:** An agent or human should know exactly where to look for a file.
 - **Separation of Concerns:** Code, tests, docs, and config should not mix.
 - **Scalability:** The structure should work for small scripts and large monorepos.
 
 ## 2. Root Directory Standards
+
 The root contains only essential project-level configuration and entry points.
 
-| File / Folder | Description |
-| :--- | :--- |
-| `README.md` | The project landing page. Must contain "What is this?" and "How to run it?". |
-| `package.json` / `requirements.txt` | Dependency definitions. |
-| `.gitignore` | Files to exclude from git. |
-| `.env.example` | Template for environment variables. **Never commit .env**. |
-| `.cursor/` | AI Agent rules and commands. |
-| `src/` | The actual application source code. |
-| `tests/` | Test suites (unit, integration, e2e). |
-| `docs/` | Documentation (specs, roadmap, standards). |
-| `commands/` | Scripts or markdown files for AI automation tasks. |
-| `config/` | Static configuration files (non-secret). |
-| `scripts/` | Maintenance or build scripts (e.g., database seeders). |
-| `logs/` | **Git-ignored** folder for debug outputs, migration logs, and agent scratchpads. |
+| File / Folder                       | Description                                                                      |
+| :---------------------------------- | :------------------------------------------------------------------------------- |
+| `README.md`                         | The project landing page. Must contain "What is this?" and "How to run it?".     |
+| `package.json` / `requirements.txt` | Dependency definitions.                                                          |
+| `.gitignore`                        | Files to exclude from git.                                                       |
+| `.env.example`                      | Template for environment variables. **Never commit .env**.                       |
+| `.cursor/`                          | AI Agent rules and commands.                                                     |
+| `src/`                              | The actual application source code.                                              |
+| `tests/`                            | Test suites (unit, integration, e2e).                                            |
+| `docs/`                             | Documentation (specs, roadmap, standards).                                       |
+| `commands/`                         | Scripts or markdown files for AI automation tasks.                               |
+| `config/`                           | Static configuration files (non-secret).                                         |
+| `scripts/`                          | Maintenance or build scripts (e.g., database seeders).                           |
+| `logs/`                             | **Git-ignored** folder for debug outputs, migration logs, and agent scratchpads. |
 
 ## 3. Core Directories & Usage
 
 ### 3.1 /src – Application Code
+
 This is where the logic lives.
 
 **Standard Monolith Structure:**
+
 - `/app`: (Next.js/Remix) Application routes and pages.
 - `/api`: Backend API handlers or server entry points.
 - `/components`: Reusable UI components (React, Vue, etc.).
@@ -59,13 +65,17 @@ This is where the logic lives.
 - `/agents` or `/ai`: AI-specific logic (prompts, tools).
 
 ### 3.2 /tests
+
 Mirror the `src` structure where possible.
+
 - `/unit`: Tests for individual functions/classes.
 - `/integration`: Tests for module interactions (e.g., API + DB).
 - `/e2e`: Full browser-based tests (Playwright/Cypress).
 
 ### 3.3 /docs
+
 Central knowledge base.
+
 - `Roadmap_vX.X.md`: High-level goals.
 - `TECH_STACK.md`: **(Required)** The single source of truth for the project's technology stack.
 - `/specs`: Technical design documents for features.
@@ -73,15 +83,19 @@ Central knowledge base.
 - `/archive`: Old docs that are no longer active but kept for history.
 
 ### 3.4 /commands
+
 AI automation interface.
+
 - Stores `.mdc` or script files that agents use to run complex tasks (e.g., `launch.mdc`, `refactor_module.mdc`).
 
 ## 4. Alternative Structures
 
 ### 4.1 Monorepo / Full Stack Split
+
 If the application has a distinct Frontend (Marketing Site) and Backend (User Dashboard/API) that are deployed separately or are complex enough to warrant separation:
 
 **Recommended Structure:**
+
 ```
 /apps
   /marketing    # Public facing marketing website (e.g., Next.js, Astro)
@@ -98,15 +112,17 @@ For code that is reused across multiple projects (or is a candidate for extracti
 
 **Recommended Structure:**
 ```
-/packages       # (Monorepo) Workspace packages
-  /logger       # e.g., @my-org/logger
-  /ui-kit       # e.g., @my-org/ui-kit
+
+/packages # (Monorepo) Workspace packages
+/logger # e.g., @my-org/logger
+/ui-kit # e.g., @my-org/ui-kit
 
 -- OR --
 
-/src/modules    # (Monolith) Internal modules
-  /blog-engine  # Self-contained blog feature
-  /payment      # Payment processing logic
+/src/modules # (Monolith) Internal modules
+/blog-engine # Self-contained blog feature
+/payment # Payment processing logic
+
 ```
 
 **Rule:** Any folder in `modules/` or `packages/` MUST follow `standards/module-structure.md`.
@@ -115,17 +131,20 @@ For code that is reused across multiple projects (or is a candidate for extracti
 In this case, `src` is replaced by `apps/` and `packages/`.
 
 ## 5. Naming Conventions
+
 - **Directories:** `kebab-case` (e.g., `user-auth`, `data-processing`).
 - **Files:** `kebab-case` (TS/JS), `snake_case` (Python).
 - **React Components:** `PascalCase` (e.g., `SubmitButton.tsx`).
 
 ## 6. AI Agent Behavior
+
 - **Place new code** into proper `src` folders. Do not dump files in root.
 - **Create tests** immediately in `/tests` when creating new modules.
 - **File new docs** under `/docs`.
 - **Refactor** large files (>200 lines) by extracting logic into `utils` or `components`.
 
 ## 7. Safety Rules
+
 - **Do not delete** items without explicit instruction.
 - **Do not alter** framework-required layouts (e.g., Next.js `app` router).
 - **Do not move** CI/CD or tool-linked files without confirmation.
@@ -143,4 +162,4 @@ In this case, `src` is replaced by `apps/` and `packages/`.
 
 ---
 
-*This standard defines the foundational project structure that all projects should follow for consistency and maintainability.*
+_This standard defines the foundational project structure that all projects should follow for consistency and maintainability._

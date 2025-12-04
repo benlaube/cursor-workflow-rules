@@ -1,18 +1,21 @@
 # Standards_Integration_Guide_v1.2
 
 ## Metadata
+
 - **Created:** 2025-11-25
 - **Last Updated:** 04-12-2025 11:47:37 EST
 - **Version:** 1.2
 - **Description:** Guide explaining how to integrate the Cursor rules, commands, and standards from this repository into a new project, with step-by-step instructions for both developers and AI agents.
 
 **Major Changes in v1.2:**
+
 - Added Project Template with nested Cursor rules for role-based agent behavior
 - Updated rule length guidelines (optimal: 100-300 lines, nested: 50-150 lines)
 - Added 5 domain-specific nested rules (frontend, backend, database, testing, docs)
 - Comprehensive template README with customization guide
 
 **Major Changes in v1.1:**
+
 - Added auto-applied RLS policy review rule (replaces checklist)
 - Added full-project-health-check meta-command
 - Updated AGENTS.md lifecycle structure documentation
@@ -24,6 +27,7 @@
 ## Overview
 
 This repository contains:
+
 - **`.cursor/rules/`** - AI agent behavior rules (always applied)
 - **`.cursor/commands/`** - Reusable commands for common tasks
 - **`standards/`** - Coding standards and architectural patterns
@@ -40,6 +44,7 @@ This repository contains:
 ### What You Get
 
 The template (`templates/project-template/`) includes:
+
 - **Pre-configured directory structure** with best practices
 - **Root-level rules** for general behavior (ai-interaction, environment, workflow)
 - **Nested rules** that create domain-specific "roles" for your AI agent:
@@ -71,7 +76,7 @@ cd /path/to/your/new-project/
 ✅ **Focused guidance** - Agent sees only relevant rules for current work  
 ✅ **Reduced setup time** - Start with proven structure  
 ✅ **Consistent patterns** - Pre-configured best practices  
-✅ **Scalable** - Easy to add new domains  
+✅ **Scalable** - Easy to add new domains
 
 ---
 
@@ -131,6 +136,7 @@ ls -la standards/security/  # Should show: security-audit-checklist.md, access-c
 ### Step 4: Test Rules Are Active
 
 Ask the AI agent:
+
 > "What rules are currently active? Show me the environment rules."
 
 The agent should reference `.cursor/rules/runtime-configuration.mdc` and other rules.
@@ -144,6 +150,7 @@ The agent should reference `.cursor/rules/runtime-configuration.mdc` and other r
 **Location:** `.cursor/rules/`
 
 **Files to Copy:**
+
 - `ai-interaction-rules.mdc` - Core AI behavior directives
 - `runtime-configuration.mdc` - Runtime expectations and environment setup
 - `auto-heal.mdc` - Automatic error recovery
@@ -158,6 +165,7 @@ The agent should reference `.cursor/rules/runtime-configuration.mdc` and other r
 - `cursor-command-creation.mdc` - Ensures commands follow proper structure and metadata
 
 **What These Do:**
+
 - **Always Applied:** Rules with `alwaysApply: true` in frontmatter are automatically loaded by Cursor
 - **Workflow Integration:** `pre-flight-check.mdc` and `pr-review-check.mdc` auto-trigger at workflow phases
 - **Conditionally Applied:** Rules with `alwaysApply: false` apply only to matching file patterns
@@ -166,6 +174,7 @@ The agent should reference `.cursor/rules/runtime-configuration.mdc` and other r
 - **Quality Gates:** Prevent starting work in broken environment or submitting broken code
 
 **Adaptation Needed:**
+
 - Review `runtime-configuration.mdc` - Adapt Docker/Supabase sections if not using, verify package manager
 - Review `task-workflow.mdc` - Verify checklist paths match your project structure
 - Review `pre-flight-check.mdc` - Adapt validation steps for your tech stack
@@ -177,6 +186,7 @@ The agent should reference `.cursor/rules/runtime-configuration.mdc` and other r
 **Location:** `.cursor/commands/`
 
 **Files to Copy:**
+
 - `launch.md` - Standardized application launch procedure
 - `project-audit.md` - Project structure and standards validation
 - `security-audit.mdc` - Security audit checklist (if applicable)
@@ -185,6 +195,7 @@ The agent should reference `.cursor/rules/runtime-configuration.mdc` and other r
 - `rls_policy_review.md` - RLS policy review command (references the rule)
 
 **What These Do:**
+
 - **Reusable Procedures:** Commands provide step-by-step instructions for complex tasks
 - **Meta-Commands:** Commands like `full-project-health-check` orchestrate multiple other commands
 - **Consistency:** Ensures the same process is followed every time
@@ -192,6 +203,7 @@ The agent should reference `.cursor/rules/runtime-configuration.mdc` and other r
 - **Rule Integration:** Commands can trigger auto-applied rules (e.g., RLS policy review)
 
 **Adaptation Needed:**
+
 - `launch.mdc`: Update stack detection, ports, and startup commands
 - Remove Supabase-specific commands if not using Supabase
 - Add project-specific commands as needed
@@ -203,20 +215,24 @@ The agent should reference `.cursor/rules/runtime-configuration.mdc` and other r
 **Options:**
 
 **Option A: Reference (Recommended for Multiple Projects)**
+
 - Keep this repository as a submodule or reference
 - Point AI agent to this repository when needed
 - Use for consistency across multiple projects
 
 **Option B: Copy Relevant Standards**
+
 - Copy only standards relevant to your project
 - Adapt project-specific details
 - Maintain local copy for offline access
 
 **Option C: Hybrid**
+
 - Copy critical standards (e.g., `project-structure.md`, `database/schema.md`)
 - Reference others from this repository
 
 **Recommended Standards to Copy:**
+
 - `project-structure.md` - File organization rules
 - `database/schema.md` - Database conventions (if using databases)
 - `process/git-repository-standards.md` - Branch naming and commit conventions
@@ -225,6 +241,7 @@ The agent should reference `.cursor/rules/runtime-configuration.mdc` and other r
 - `security/access-control.md` - Access control and RLS standards (if using Supabase)
 
 **New Documentation Standards:**
+
 - `standards/project-planning/documentation-standards.md` - Comprehensive guide to standard documentation files
 
 ### 4. Checklists Integration
@@ -232,6 +249,7 @@ The agent should reference `.cursor/rules/runtime-configuration.mdc` and other r
 **Location:** `standards/process/checklists/`
 
 **Files to Copy:**
+
 - `pre_flight_checklist_v1_0.md` - Pre-development checklist
 - `pr_review_checklist_v1_0.md` - Pre-merge checklist
 - `security_audit_checklist_v1_0.md` - Security review checklist (if applicable)
@@ -240,12 +258,14 @@ The agent should reference `.cursor/rules/runtime-configuration.mdc` and other r
 **Note:** RLS policy review is now handled by `.cursor/rules/supabase-rls-policy-review.mdc` (auto-applied rule when Supabase detected), not a checklist.
 
 **What These Do:**
+
 - **Quality Assurance:** Ensure code quality before committing
 - **Consistency:** Same checks for every task
 - **Automation:** Can be referenced by AI agents automatically
 - **Rule Integration:** Some validations are now handled by auto-applied rules
 
 **Adaptation Needed:**
+
 - Update paths in checklists to match your project structure
 - Remove Supabase-specific checks if not applicable
 - Add project-specific checks as needed
@@ -255,6 +275,7 @@ The agent should reference `.cursor/rules/runtime-configuration.mdc` and other r
 **Location:** Root directory
 
 **What It Does:**
+
 - Provides project context and memory for AI agents
 - Records architectural decisions and learnings
 - Guides AI agent behavior for project-specific patterns
@@ -263,12 +284,14 @@ The agent should reference `.cursor/rules/runtime-configuration.mdc` and other r
 - Provides quick reference table for common tasks
 
 **New Structure (v1.1):**
+
 - Section 6: Standard Developer Lifecycle (maps commands to checklists)
 - Section 7: Agent Rules of Engagement
 - Section 8: Related Checklists & Commands (organized reference)
 - Section 9: Quick Reference Table (when to use what)
 
 **Setup Steps:**
+
 1. Copy `templates/file-templates/AGENTS-TEMPLATE.md` and rename to `AGENTS.md`
 2. Fill in Section 1: Project Mission
 3. Update Section 2: Current Phase
@@ -283,24 +306,28 @@ The agent should reference `.cursor/rules/runtime-configuration.mdc` and other r
 ## 6. Understanding Rules, Checklists, and Commands
 
 ### Rules (`.cursor/rules/`)
+
 - **Always Applied:** Rules with `alwaysApply: true` are loaded for every prompt
 - **Conditionally Applied:** Rules like `supabase-rls-policy-review.mdc` apply when conditions are met
 - **Purpose:** Guide AI agent behavior and decision-making
 - **Location:** `.cursor/rules/`
 
 ### Checklists (`standards/process/checklists/`)
+
 - **Purpose:** Human-readable validation checklists
 - **Used By:** Commands and human developers
 - **Format:** Validation items with checkboxes
 - **Location:** `standards/process/checklists/`
 
 ### Commands (`.cursor/commands/`)
+
 - **Purpose:** Executable workflows for complex tasks
 - **Can Trigger:** Other commands, checklists, and rules
 - **Meta-Commands:** Some commands orchestrate multiple other commands
 - **Location:** `.cursor/commands/`
 
 ### Relationship
+
 - Commands reference checklists for validation steps
 - Commands can trigger auto-applied rules
 - Rules guide AI agent behavior when executing commands
@@ -357,6 +384,7 @@ Test that the rules are working:
 Use this checklist to ensure complete integration:
 
 ### Phase 1: File Copy
+
 - [ ] Copied `.cursor/rules/` directory (all 5 files, including supabase-rls-policy-review.mdc)
 - [ ] Copied `.cursor/commands/` directory (all files, including full-project-health-check.md)
 - [ ] Copied `standards/process/checklists/` directory (all files, note: RLS review is now a rule)
@@ -364,6 +392,7 @@ Use this checklist to ensure complete integration:
 - [ ] Copied `CHANGELOG.md` template (optional)
 
 ### Phase 2: Adaptation
+
 - [ ] Updated `AGENTS.md` with project mission and context
 - [ ] Reviewed `.cursor/rules/runtime-configuration.mdc` for project-specific settings
 - [ ] Reviewed `.cursor/commands/launch.mdc` for project-specific startup
@@ -371,6 +400,7 @@ Use this checklist to ensure complete integration:
 - [ ] Updated port numbers and stack detection if needed
 
 ### Phase 3: Standards Integration
+
 - [ ] Decided on standards integration approach (Reference/Copy/Hybrid)
 - [ ] Copied or referenced `standards/project-planning/project-structure.md`
 - [ ] Copied or referenced `standards/database/schema.md` (if using databases)
@@ -378,6 +408,7 @@ Use this checklist to ensure complete integration:
 - [ ] Copied or referenced other relevant standards
 
 ### Phase 4: Verification
+
 - [ ] Verified rules are active (AI agent can reference them)
 - [ ] Verified auto-applied rules work (e.g., RLS policy review when Supabase detected)
 - [ ] Tested launch command works correctly
@@ -387,6 +418,7 @@ Use this checklist to ensure complete integration:
 - [ ] Confirmed AI agent references standards when making decisions
 
 ### Phase 5: Documentation
+
 - [ ] Updated project README.md to reference this integration guide
 - [ ] Documented any project-specific adaptations
 - [ ] Added notes about which standards are referenced vs copied
@@ -400,6 +432,7 @@ Use this checklist to ensure complete integration:
 **Symptom:** AI agent doesn't reference rules or follow them.
 
 **Solution:**
+
 1. Verify files are in `.cursor/rules/` (not `.cursorrules/` or other location)
 2. Check frontmatter includes `alwaysApply: true` for rules that should always apply
 3. Restart Cursor to reload rules
@@ -410,6 +443,7 @@ Use this checklist to ensure complete integration:
 **Symptom:** Launch command or other commands fail.
 
 **Solution:**
+
 1. Verify command files are in `.cursor/commands/`
 2. Review command file for project-specific adaptations needed
 3. Check that paths in commands match your project structure
@@ -420,6 +454,7 @@ Use this checklist to ensure complete integration:
 **Symptom:** AI agent doesn't check standards before making decisions.
 
 **Solution:**
+
 1. Verify `standards/` directory exists and is accessible
 2. Check `AGENTS.md` includes reference to standards
 3. Explicitly instruct: "Before creating [component], check `standards/` first"
@@ -430,6 +465,7 @@ Use this checklist to ensure complete integration:
 **Symptom:** RLS policy review rule doesn't apply when Supabase is detected.
 
 **Solution:**
+
 1. Verify `supabase-rls-policy-review.mdc` is in `.cursor/rules/`
 2. Check if `supabase/` directory exists or `SUPABASE_URL` env var is set
 3. Restart Cursor to reload rules
@@ -440,6 +476,7 @@ Use this checklist to ensure complete integration:
 **Symptom:** `full-project-health-check` fails or doesn't run all audits.
 
 **Solution:**
+
 1. Verify all referenced commands exist (project_audit, security_audit)
 2. Check that referenced checklists exist
 3. Verify rules are accessible (for auto-applied rules)
@@ -464,6 +501,7 @@ git submodule update --remote
 ### 2. Project-Specific Adaptations
 
 Document any project-specific adaptations in:
+
 - `AGENTS.md` Section 5 (Persistent Memory)
 - Project README.md
 - Or create a `PROJECT_ADAPTATIONS.md` file
@@ -471,6 +509,7 @@ Document any project-specific adaptations in:
 ### 3. Regular Review
 
 Periodically review:
+
 - Are rules still relevant for your project?
 - Are commands working correctly?
 - Are standards being followed?
@@ -479,6 +518,7 @@ Periodically review:
 ### 4. Team Alignment
 
 If working with a team:
+
 - Ensure all team members have the same rules and commands
 - Document any team-specific adaptations
 - Keep rules in version control (they're already tracked in git)
@@ -518,5 +558,4 @@ The AI agent will automatically use these rules for every prompt, with condition
 
 ---
 
-*For questions or issues, refer to the main README.md or open an issue in this repository.*
-
+_For questions or issues, refer to the main README.md or open an issue in this repository._

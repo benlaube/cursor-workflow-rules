@@ -1,13 +1,16 @@
 # Rule: Testing_Standards_v1.0
 
 ## Metadata
+
 - **Created:** 2025-01-27
 - **Last Updated:** 2025-01-27
 - **Version:** 1.0
 - **Description:** Comprehensive testing standards covering TypeScript (Vitest), Python (pytest), E2E testing, and CI/CD integration with specific coverage requirements and best practices.
 
 ## When to Apply This Rule
+
 Apply this rule when:
+
 - Writing new tests for any module or application
 - Setting up test infrastructure for a new project
 - Reviewing test coverage and quality
@@ -15,6 +18,7 @@ Apply this rule when:
 - Creating test utilities or mocks
 
 ## 1. High-Level Goals
+
 - **Reliability:** Tests must be deterministic and provide confidence in code quality
 - **Speed:** Unit tests should run fast (< 1 second per test file)
 - **Coverage:** Achieve 80%+ code coverage for unit tests, 100% for critical paths
@@ -26,22 +30,26 @@ Apply this rule when:
 ### 2.1 TypeScript/JavaScript Testing
 
 #### Framework: Vitest
+
 - **Primary Framework:** Vitest (already in use across the codebase)
 - **Configuration:** Use `vitest.config.ts` at project root
 - **Test Runner:** Vitest (Jest-compatible API)
 
 #### Test File Naming
+
 - **Unit Tests:** `*.test.ts` or `*.spec.ts`
 - **Integration Tests:** `*.integration.test.ts` or place in `tests/integration/`
 - **E2E Tests:** `*.e2e.test.ts` or place in `tests/e2e/`
 
 #### Test Structure
+
 - Mirror `src/` structure in `tests/` directory
 - Example: `src/services/user-service.ts` → `tests/services/user-service.test.ts`
 - Use `describe` blocks to group related tests
 - Use `it` or `test` for individual test cases
 
 #### Example Test Structure
+
 ```typescript
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createMockSupabase, createMockLogger } from '@/modules/testing-module';
@@ -77,17 +85,21 @@ describe('UserService', () => {
 ### 2.2 Python Testing
 
 #### Framework: pytest
+
 - **Primary Framework:** pytest (used in `supabase-core-python` module)
 - **Configuration:** Use `pytest.ini` or `pyproject.toml` for configuration
 - **Test Discovery:** Automatically discovers `test_*.py` files
 
 #### Test File Naming
+
 - **Unit Tests:** `test_*.py`
 - **Integration Tests:** `test_*_integration.py` or use markers
 - **Fixtures:** `conftest.py` for shared fixtures
 
 #### Test Markers
+
 Use pytest markers to categorize tests:
+
 ```python
 import pytest
 
@@ -108,19 +120,20 @@ def test_fastapi_integration():
 ```
 
 #### Example Test Structure
+
 ```python
 import pytest
 from supabase_core_python import create_client
 
 class TestUserService:
     """Tests for user service functionality."""
-    
+
     @pytest.mark.unit
     def test_normalize_email(self):
         """Test email normalization logic."""
         from supabase_core_python.utils import normalize_email
         assert normalize_email('Test@Example.COM') == 'test@example.com'
-    
+
     @pytest.mark.integration
     def test_create_user(self, supabase_client):
         """Test user creation with real database."""
@@ -166,6 +179,7 @@ modules/my-module/
 ```
 
 **Requirements:**
+
 - Tests must mirror the module's source structure
 - Each module must include unit tests for its core functionality
 - Integration tests should be in a separate directory or clearly marked
@@ -173,18 +187,21 @@ modules/my-module/
 ### 3.3 Test Categories
 
 #### Unit Tests
+
 - **Location:** `tests/unit/` or `tests/*.test.ts` in modules
 - **Speed:** Must run in < 1 second per test file
 - **Dependencies:** No external services (use mocks)
 - **Purpose:** Test individual functions, classes, and utilities
 
 #### Integration Tests
+
 - **Location:** `tests/integration/`
 - **Speed:** May take longer (seconds to minutes)
 - **Dependencies:** Require real services (Supabase, APIs)
 - **Purpose:** Test module interactions, database operations, API calls
 
 #### E2E Tests
+
 - **Location:** `tests/e2e/`
 - **Speed:** Slowest (minutes)
 - **Dependencies:** Full application stack, browser
@@ -197,12 +214,14 @@ modules/my-module/
 **Target:** 80%+ code coverage for all unit tests
 
 **Focus Areas:**
+
 - Business logic functions
 - Utility functions
 - Service classes
 - Data transformation functions
 
 **Exclusions (acceptable < 80%):**
+
 - Simple getters/setters
 - Type definitions
 - Configuration files
@@ -213,6 +232,7 @@ modules/my-module/
 **Target:** All critical paths covered
 
 **Required Coverage:**
+
 - All API endpoints
 - Database operations (CRUD)
 - Authentication flows
@@ -224,6 +244,7 @@ modules/my-module/
 **Target:** All user-facing workflows
 
 **Required Coverage:**
+
 - User authentication (login, signup, logout)
 - Primary user journeys
 - Critical business workflows
@@ -232,12 +253,14 @@ modules/my-module/
 ### 4.4 Coverage Reporting
 
 **Generate Coverage Reports:**
+
 - **TypeScript:** Use `vitest --coverage` with `@vitest/coverage-v8`
 - **Python:** Use `pytest --cov` with `pytest-cov`
 - **Format:** Generate HTML reports for detailed analysis
 - **CI Integration:** Report coverage metrics in CI/CD pipeline
 
 **Example Vitest Configuration:**
+
 ```typescript
 // vitest.config.ts
 import { defineConfig } from 'vitest/config';
@@ -264,9 +287,11 @@ export default defineConfig({
 ### 5.1 Test Writing Guidelines
 
 #### Test Naming
+
 Use descriptive test names following the pattern: `should [expected behavior] when [condition]`
 
 **Good Examples:**
+
 ```typescript
 it('should return user data when valid ID is provided', () => {});
 it('should throw error when email is invalid', () => {});
@@ -274,6 +299,7 @@ it('should filter results when search query is provided', () => {});
 ```
 
 **Bad Examples:**
+
 ```typescript
 it('test user', () => {});
 it('works', () => {});
@@ -281,6 +307,7 @@ it('test1', () => {});
 ```
 
 #### AAA Pattern (Arrange, Act, Assert)
+
 Structure tests using the AAA pattern:
 
 ```typescript
@@ -300,6 +327,7 @@ it('should create a user when valid data is provided', async () => {
 ```
 
 #### One Assertion Per Test
+
 Prefer one assertion per test for clarity. When multiple assertions are needed, group related checks:
 
 ```typescript
@@ -320,7 +348,9 @@ it('should do everything', () => {
 ```
 
 #### Test Edge Cases and Errors
+
 Always test:
+
 - **Happy path:** Normal operation with valid inputs
 - **Error cases:** Invalid inputs, missing data, network failures
 - **Edge cases:** Empty arrays, null values, boundary conditions
@@ -329,6 +359,7 @@ Always test:
 ### 5.2 Mocking Standards
 
 #### Use Testing Module Utilities
+
 Always use `modules/testing-module` utilities for common mocks:
 
 ```typescript
@@ -344,11 +375,13 @@ expect(mockLogger.info).toHaveBeenCalledWith('User created');
 ```
 
 #### Mock External Dependencies
+
 - **Always mock:** External APIs, databases, file systems, network requests
 - **Never mock:** The code under test
 - **Verify interactions:** Check that mocks were called with correct parameters
 
 #### Mock Verification
+
 Verify mock interactions when behavior matters:
 
 ```typescript
@@ -359,16 +392,14 @@ it('should log error when database query fails', async () => {
 
   await userService.getUser('123');
 
-  expect(mockLogger.error).toHaveBeenCalledWith(
-    'Failed to fetch user',
-    expect.any(Error)
-  );
+  expect(mockLogger.error).toHaveBeenCalledWith('Failed to fetch user', expect.any(Error));
 });
 ```
 
 ### 5.3 Test Data Management
 
 #### Use Factories or Builders
+
 Create test data using factories or builders:
 
 ```typescript
@@ -388,6 +419,7 @@ const user = createTestUser({ email: 'custom@example.com' });
 ```
 
 #### Clean Up Test Data
+
 Always clean up test data after tests:
 
 ```typescript
@@ -410,6 +442,7 @@ describe('UserService', () => {
 ```
 
 #### Isolated Test Databases
+
 - Use separate test databases for integration tests
 - Never use production data in tests
 - Reset database state between test runs
@@ -417,11 +450,13 @@ describe('UserService', () => {
 ### 5.4 Test Performance
 
 #### Fast Unit Tests
+
 - Unit tests must complete in < 1 second per test file
 - Use mocks instead of real services
 - Avoid file I/O, network calls, or database operations
 
 #### Efficient Integration Tests
+
 - Use test databases, not production
 - Clean up data efficiently (bulk operations)
 - Use transactions where possible for rollback
@@ -431,11 +466,13 @@ describe('UserService', () => {
 ### 6.1 Pre-commit Checks
 
 **Required Checks:**
+
 - Run unit tests (fast feedback)
 - Lint test files
 - Type-check test files
 
 **Example Husky Pre-commit Hook:**
+
 ```bash
 #!/bin/sh
 # Run unit tests
@@ -451,12 +488,14 @@ npm run type-check
 ### 6.2 PR Requirements
 
 **All PRs Must:**
+
 - ✅ All tests pass (unit, integration, E2E)
 - ✅ Coverage thresholds met (80%+ for unit tests)
 - ✅ No new linting errors
 - ✅ Type checking passes
 
 **Test Execution:**
+
 - **Unit tests:** Run on every commit
 - **Integration tests:** Run on PR creation/update
 - **E2E tests:** Run on PR merge to main (or staging)
@@ -464,6 +503,7 @@ npm run type-check
 ### 6.3 CI Pipeline Standards
 
 #### GitHub Actions Example
+
 ```yaml
 name: Tests
 
@@ -526,6 +566,7 @@ jobs:
 ### 6.4 Coverage Reporting
 
 **Requirements:**
+
 - Generate coverage reports in CI
 - Track coverage trends over time
 - Fail builds if coverage drops below threshold
@@ -538,6 +579,7 @@ jobs:
 The `modules/testing-module` provides standardized testing utilities:
 
 #### createMockSupabase()
+
 Mocks Supabase client for unit tests:
 
 ```typescript
@@ -557,6 +599,7 @@ expect(errorResult.error).toBeDefined();
 ```
 
 #### createMockLogger()
+
 Mocks logger for testing logging behavior:
 
 ```typescript
@@ -577,6 +620,7 @@ expect(mockLogger.info).toHaveBeenCalledWith('User created', {
 ### 7.2 Supabase Testing
 
 #### Local Supabase for Integration Tests
+
 Use local Supabase instance for integration tests:
 
 ```typescript
@@ -595,7 +639,7 @@ describe('UserService Integration', () => {
     // Get local credentials
     const { data } = await exec('supabase status --output json');
     const config = JSON.parse(data);
-    
+
     supabase = createClient(config.API_URL, config.anon_key);
   });
 
@@ -613,6 +657,7 @@ describe('UserService Integration', () => {
 ```
 
 #### Testing RLS Policies
+
 RLS policies must be tested with integration tests:
 
 ```typescript
@@ -648,6 +693,7 @@ describe('RLS Policies', () => {
 **Reference:** See `standards/security/access-control.md` Section 4 for RLS testing strategies.
 
 #### Mock Supabase in Unit Tests
+
 Always mock Supabase client in unit tests:
 
 ```typescript
@@ -673,12 +719,14 @@ describe('UserService Unit Tests', () => {
 **Recommended:** Playwright or Cypress
 
 **Playwright Advantages:**
+
 - Multi-browser support (Chromium, Firefox, WebKit)
 - Fast execution
 - Built-in waiting and auto-retry
 - Good TypeScript support
 
 **Cypress Advantages:**
+
 - Excellent developer experience
 - Time-travel debugging
 - Great documentation
@@ -734,6 +782,7 @@ test.describe('User Authentication', () => {
 ### 8.4 E2E Test Data
 
 **Requirements:**
+
 - Use dedicated test user accounts
 - Document test credentials in `tests/e2e/fixtures/`
 - Never use production data
@@ -744,6 +793,7 @@ test.describe('User Authentication', () => {
 ### 9.1 Test Documentation
 
 #### Complex Test Logic
+
 Add comments for complex test scenarios:
 
 ```typescript
@@ -752,30 +802,31 @@ it('should handle concurrent user updates', async () => {
   // prevents lost updates when two users edit the same record
   // simultaneously. We simulate this by creating two parallel
   // update operations and verifying only one succeeds.
-  
+
   const user = await createTestUser();
   const update1 = updateUser(user.id, { name: 'User 1' });
   const update2 = updateUser(user.id, { name: 'User 2' });
-  
+
   const [result1, result2] = await Promise.all([update1, update2]);
-  
+
   // One should succeed, one should fail with version conflict
   expect([result1.success, result2.success].filter(Boolean).length).toBe(1);
 });
 ```
 
 #### Integration Test Environment Setup
+
 Document required environment setup:
 
 ```typescript
 /**
  * Integration tests for UserService.
- * 
+ *
  * Requirements:
  * - Supabase local instance running (run: supabase start)
  * - Test database seeded (run: npm run db:seed:test)
  * - Environment variables set in .env.test
- * 
+ *
  * @see standards/architecture/supabase-local-setup.md
  */
 describe('UserService Integration', () => {
@@ -784,16 +835,17 @@ describe('UserService Integration', () => {
 ```
 
 #### E2E Test Credentials
+
 Document test user setup:
 
 ```typescript
 /**
  * E2E tests for user authentication flows.
- * 
+ *
  * Test Users (created in test database):
  * - test-user@example.com / password123 (standard user)
  * - admin@example.com / admin123 (admin user)
- * 
+ *
  * To create test users, run: npm run e2e:setup
  */
 describe('Authentication E2E', () => {
@@ -804,11 +856,13 @@ describe('Authentication E2E', () => {
 ### 9.2 Coverage Reports
 
 **Generate Reports:**
+
 - HTML coverage reports for detailed analysis
 - JSON reports for CI/CD integration
 - Text reports for quick terminal feedback
 
 **Track Coverage:**
+
 - Monitor coverage trends over time
 - Set minimum thresholds per module
 - Alert when coverage drops below threshold
@@ -816,16 +870,19 @@ describe('Authentication E2E', () => {
 ## 10. Related Standards and References
 
 ### 10.1 Standards References
+
 - **Project Structure:** `standards/project-planning/project-structure.md` (Section 3.2 - Test organization)
 - **Module Structure:** `standards/module-structure.md` (Section 2 - Module testing requirements)
 - **Security Testing:** `standards/security/access-control.md` (Section 4 - RLS testing)
 - **Tech Stack:** `standards/tech-stack-document.md` (Testing tools section)
 
 ### 10.2 Module References
+
 - **Testing Utilities:** `modules/testing-module/README.md`
 - **Python Testing:** `modules/supabase-core-typescript-python/README_TESTING.md`
 
 ### 10.3 Workflow Integration
+
 - **Pre-PR Validation:** `.cursor/commands/pr-review-check.md` (requires tests to pass)
 - **Pre-Flight Check:** `.cursor/commands/pre-flight-check.md` (validates test setup)
 - **Agent Workflow:** `AGENTS.md` (Section 6.4 - Pre-PR validation)
@@ -865,7 +922,7 @@ import { UserProfile } from './UserProfile';
 
 it('should display user name', () => {
   render(<UserProfile user={{ id: '1', name: 'Test User' }} />);
-  
+
   expect(screen.getByText('Test User')).toBeInTheDocument();
 });
 ```
@@ -891,4 +948,3 @@ it('should return user data', async () => {
 ```
 
 # End of Rule – Testing_Standards_v1.0
-

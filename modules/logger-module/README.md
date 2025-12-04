@@ -30,17 +30,20 @@ If you need a standalone log viewer/analyzer, consider creating a separate servi
 The logger module now includes enhanced tracking capabilities for better observability and debugging:
 
 ### User & Tenant Tracking
+
 - **User ID**: Explicit `user_id` field (indexed in database)
 - **Tenant ID**: Multi-tenant support with `tenant_id` field (indexed in database)
 - Automatically captured from request context when using middleware
 
 ### Request/Response Metrics
+
 - **Request Size**: Tracks request body size in bytes
 - **Response Size**: Tracks response payload size in bytes
 - **IP Address**: Client IP address (with proxy header support)
 - Automatically captured by Express, Next.js, and Fastify middleware
 
 ### Error Categorization
+
 - **Error Categories**: Automatically categorizes errors as:
   - `validation` - Input validation errors (400, 422)
   - `network` - Network/connection errors (503, 504)
@@ -55,6 +58,7 @@ The logger module now includes enhanced tracking capabilities for better observa
 - Automatically applied when using `logger.error()`, `logger.fatal()`, or `logger.failure()`
 
 ### Performance Metrics
+
 - **Duration**: Request/response duration in milliseconds
 - **Memory Usage**: Heap usage, RSS, external memory (Node.js only)
 - **Event Loop Lag**: Event loop delay tracking (Node.js only)
@@ -64,11 +68,13 @@ The logger module now includes enhanced tracking capabilities for better observa
 - Automatically captured by middleware and available via `createPerformanceMetrics()` helper
 
 ### Business Entity Tracking
+
 - **Business Entity ID**: Track order IDs, customer IDs, transaction IDs, etc.
 - **Business Entity Type**: Type of entity (order, customer, transaction, etc.)
 - Set via context: `setLogContext({ businessEntity: { id: 'order-123', type: 'order' } })`
 
 ### Feature Flags
+
 - **Feature Flags**: Track active feature flags for requests/operations
 - Set via context: `setLogContext({ featureFlags: { newCheckout: true, darkMode: false } })`
 
@@ -119,7 +125,7 @@ The enhanced fields are stored in the database with proper indexing:
 
 ```sql
 -- Run the migration: migrations/logs-schema-v2.sql
-ALTER TABLE logs 
+ALTER TABLE logs
   ADD COLUMN user_id UUID,
   ADD COLUMN tenant_id VARCHAR(255),
   ADD COLUMN ip_address INET,
@@ -141,6 +147,7 @@ ALTER TABLE logs
 Phase 2 adds advanced request/response tracking and context management:
 
 ### Enhanced Request/Response Context
+
 - **Request Headers**: Automatically extracts and tracks relevant request headers (content-type, accept, user-agent, referer, origin)
 - **Response Headers**: Tracks response headers (content-type, cache-control, etag, last-modified, expires, content-encoding)
 - **Request Fingerprinting**: Generates hash-based fingerprints for duplicate request detection
@@ -148,10 +155,12 @@ Phase 2 adds advanced request/response tracking and context management:
 - **Cache Status**: Detects cache hit/miss from CDN/proxy headers (cf-cache-status, x-cache-status)
 
 ### CPU Tracking
+
 - **CPU Usage**: Tracks CPU time for operations (Node.js only)
 - **CPU Metrics**: Integrated into performance metrics alongside memory and event loop lag
 
 ### Context Tags System
+
 - **Flexible Tags**: Key-value tags for flexible categorization (already in Phase 1, enhanced usage)
 - **Tag Merging**: Tags are automatically merged into log metadata with `tag_` prefix
 
@@ -159,12 +168,12 @@ Phase 2 adds advanced request/response tracking and context management:
 
 ```typescript
 import { setupLogger, setLogContext } from './modules/logger-module';
-import { 
-  fingerprintRequest, 
-  getCacheStatus, 
+import {
+  fingerprintRequest,
+  getCacheStatus,
   getRateLimitInfo,
   createPerformanceMetrics,
-  trackCpuUsage 
+  trackCpuUsage,
 } from './modules/logger-module/helpers';
 
 const logger = setupLogger('my-app', {
@@ -215,8 +224,9 @@ const fingerprint = fingerprintRequest(
 ### Database Storage
 
 Phase 2 fields are stored in the `meta` JSONB column:
+
 - `request_headers` - Relevant request headers
-- `response_headers` - Relevant response headers  
+- `response_headers` - Relevant response headers
 - `request_fingerprint` - Request fingerprint hash
 - `rate_limit_info` - Rate limiting information
 - `cache_status` - Cache hit/miss status
@@ -228,30 +238,35 @@ These fields are automatically captured by middleware and don't require addition
 Phase 3 adds advanced features for cross-service tracing, compliance, and specialized integrations:
 
 ### Cross-Service Context Propagation
+
 - **HTTP Header Propagation**: Automatically propagate context via HTTP headers (x-request-id, x-trace-id, x-correlation-id, etc.)
 - **Message Queue Propagation**: Propagate context through message queue metadata (RabbitMQ, Kafka, etc.)
 - **Context Extraction**: Extract context from incoming HTTP requests or messages
 - **Context Injection**: Inject context into outgoing HTTP requests or messages
 
 ### Audit Logging
+
 - **Separate Audit Stream**: Dedicated audit log handler for compliance requirements
 - **Compliance Markers**: Mark logs with compliance standards (GDPR, HIPAA, PCI-DSS, etc.)
 - **Data Retention**: Configurable retention periods (default: 7 years for compliance)
 - **Audit Method**: `logger.audit()` method for explicit audit logging
 
 ### Performance Baselines
+
 - **Baseline Tracking**: Track performance baselines for operations
 - **Performance Comparison**: Compare current metrics against historical baselines
 - **Degradation Detection**: Automatically detect performance degradation
 - **Alert Thresholds**: Configure alerts based on P50, P95, P99 thresholds
 
 ### GraphQL Integration
+
 - **Operation Logging**: Log GraphQL queries, mutations, and subscriptions
 - **Resolver Logging**: Track individual resolver execution times
 - **Apollo Server Plugin**: Ready-to-use plugin for Apollo Server
 - **Error Tracking**: Track GraphQL errors with full context
 
 ### gRPC Integration
+
 - **Call Logging**: Log gRPC service calls with metadata
 - **Interceptor**: gRPC interceptor for automatic logging
 - **Status Tracking**: Track gRPC status codes and messages
@@ -260,9 +275,9 @@ Phase 3 adds advanced features for cross-service tracing, compliance, and specia
 ### Usage Examples
 
 ```typescript
-import { 
-  setupLogger, 
-  extractContextFromHeaders, 
+import {
+  setupLogger,
+  extractContextFromHeaders,
   injectContextToHeaders,
   createAuditHandler,
   logGraphQLOperation,
@@ -286,10 +301,14 @@ const headers = injectContextToHeaders(getLogContext());
 fetch(url, { headers });
 
 // Audit logging
-logger.audit('User accessed sensitive data', {
-  userId: 'user-123',
-  dataType: 'pii',
-}, ['GDPR', 'HIPAA']);
+logger.audit(
+  'User accessed sensitive data',
+  {
+    userId: 'user-123',
+    dataType: 'pii',
+  },
+  ['GDPR', 'HIPAA']
+);
 
 // Performance baselines
 updateBaseline('api_query', { duration: 150 });
@@ -314,30 +333,35 @@ const interceptor = createGRPCInterceptor(logger);
 Phase 4 adds specialized integrations for common infrastructure components:
 
 ### Message Queue Logging
+
 - **Operation Tracking**: Log publish, consume, ack, nack, reject operations
 - **Context Propagation**: Automatically propagate context through message metadata
 - **Performance Metrics**: Track message processing duration and retry counts
 - **Queue System Support**: RabbitMQ, Kafka, and other message queue systems
 
 ### Database Query Logging
+
 - **Automatic SQL Logging**: Track all database queries with parameters
 - **Query Sanitization**: Automatically redact sensitive data from query parameters
 - **Performance Tracking**: Query duration, row count, query type
 - **Database System Support**: PostgreSQL, MySQL, MongoDB, etc.
 
 ### Cache Logging
+
 - **Operation Tracking**: Log cache get, set, delete, invalidate, clear operations
 - **Hit/Miss Detection**: Track cache hit rates and performance
 - **Cache System Support**: Redis, Memcached, and other cache systems
 - **TTL Tracking**: Monitor cache expiration and TTL values
 
 ### WebSocket Logging
+
 - **Connection Tracking**: Log WebSocket connect, disconnect, message, error events
 - **Message Tracking**: Track message sizes and counts
 - **Connection Lifetime**: Monitor connection duration and health
 - **Close Code Tracking**: Track WebSocket close codes and reasons
 
 ### Data Retention Policies
+
 - **Automatic Retention**: Configurable retention periods by log level
 - **Archive Before Delete**: Optional archival before deletion
 - **Default Policies**: Sensible defaults (7 years for audit/fatal, 3 months for info, etc.)
@@ -356,13 +380,17 @@ import {
 } from './modules/logger-module';
 
 // Message Queue logging
-await logMessageQueueOperation(logger, {
-  queueName: 'orders',
-  routingKey: 'order.created',
-  operation: 'publish',
-  messageSize: 1024,
-  queueSystem: 'rabbitmq',
-}, 50);
+await logMessageQueueOperation(
+  logger,
+  {
+    queueName: 'orders',
+    routingKey: 'order.created',
+    operation: 'publish',
+    messageSize: 1024,
+    queueSystem: 'rabbitmq',
+  },
+  50
+);
 
 // Database query logging
 await logDatabaseQuery(logger, {
@@ -406,24 +434,28 @@ if (shouldArchive(logEntry.timestamp, 'error')) {
 Phase 5 adds advanced user context, geolocation, error correlation, and nested context support:
 
 ### Enhanced User/Session Context
+
 - **User Agent Parsing**: Parse user agent into browser, OS, device type
 - **Session Events**: Track login, logout, timeout, refresh, expired events
 - **Session Duration**: Calculate and track session lifetime
 - **Device Information**: Extract device type, model, screen size (browser)
 
 ### Geolocation (Privacy-Aware)
+
 - **IP-Based Geolocation**: Get country, region, city from IP address
 - **Privacy Modes**: Full, country-only, or none (respects user privacy)
 - **IP Anonymization**: Automatically anonymize IP addresses based on privacy mode
 - **Timezone Detection**: Extract timezone information
 
 ### Advanced Error Context
+
 - **Error Correlation**: Link related errors across services using correlation IDs
 - **Error Impact Scoring**: Calculate impact scores (0-100) based on frequency, user impact, service impact
 - **Affected User Tracking**: Track how many users are affected by errors
 - **Service Impact Analysis**: Identify which services are affected by errors
 
 ### Nested Context Support
+
 - **Context Scopes**: Support for nested context scopes with automatic merging
 - **Context Inheritance**: Better context merging strategies
 - **Context Breadcrumbs**: Track context changes over time
@@ -446,14 +478,7 @@ const uaInfo = parseUserAgent(req.headers['user-agent']);
 // Returns: { browser: 'Chrome', os: 'macOS', deviceType: 'desktop', ... }
 
 // Session tracking
-const sessionInfo = createSessionInfo(
-  sessionId,
-  userId,
-  startTime,
-  'login',
-  userAgent,
-  ipAddress
-);
+const sessionInfo = createSessionInfo(sessionId, userId, startTime, 'login', userAgent, ipAddress);
 
 // Geolocation (privacy-aware)
 const geo = await getGeolocation(ipAddress, 'country-only');
@@ -480,6 +505,7 @@ npm install logger-module pino zod uuid
 ```
 
 Optional dependencies:
+
 ```bash
 npm install pino-pretty pino-roll @supabase/supabase-js
 ```
@@ -497,6 +523,7 @@ npm install logger-module pino zod uuid
 The logger integrates directly into your application code. Choose the integration method that matches your framework:
 
 **For Express.js:**
+
 ```typescript
 // app.ts or server.ts
 import express from 'express';
@@ -527,6 +554,7 @@ app.listen(3000, () => {
 ```
 
 **For Next.js:**
+
 ```typescript
 // middleware.ts (root of project)
 import { setupLogger } from './modules/logger-module';
@@ -542,6 +570,7 @@ export default createNextJsMiddleware(logger);
 ```
 
 **For Standalone Node.js Script:**
+
 ```typescript
 // script.ts
 import { setupLogger } from './modules/logger-module';
@@ -583,6 +612,7 @@ Logs are written to multiple destinations:
 3. **Database:** Query Supabase `logs` table (if enabled)
 
 **View file logs:**
+
 ```bash
 # View latest log file
 tail -f logs/session_*.log
@@ -804,10 +834,7 @@ export const GET = NextJsLogViewerGET_FILES;
 import { NextJsLogViewerGET_FILE } from './modules/logger-module';
 import { NextRequest } from 'next/server';
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { filename: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { filename: string } }) {
   return NextJsLogViewerGET_FILE(request, { params });
 }
 ```
@@ -937,21 +964,21 @@ interface LoggerOptions {
   env: 'development' | 'production' | 'test';
   serviceName: string;
   runtime?: 'auto' | 'node' | 'browser' | 'edge';
-  
+
   // Log Levels (per destination)
   level?: LogLevel;
   consoleLevel?: LogLevel;
   fileLevel?: LogLevel;
   databaseLevel?: LogLevel;
-  
+
   // Handler Configuration
   enableConsole?: boolean;
   enableFile?: boolean;
   enableDatabase?: boolean;
-  
+
   // Console Handler
   consoleFormat?: 'pretty' | 'json' | 'compact';
-  
+
   // File Handler (Node.js only)
   logDir?: string;
   fileRotation?: {
@@ -960,7 +987,7 @@ interface LoggerOptions {
     compress?: boolean;
     retention?: string;
   };
-  
+
   // Database Handler
   supabaseClient?: SupabaseClient;
   persistLog?: (logEntry: LogEntry) => Promise<void>;
@@ -972,23 +999,23 @@ interface LoggerOptions {
     initialDelay?: number;
     maxDelay?: number;
   };
-  
+
   // Security
   piiPatterns?: RegExp[];
   scrubFields?: string[];
   sanitizeErrors?: boolean;
-  
+
   // Performance
   samplingRate?: number;
   samplingLevels?: LogLevel[];
-  
+
   // Tracing
   enableTracing?: boolean;
   opentelemetryEnabled?: boolean;
-  
+
   // Browser-specific
   browserStorage?: 'localStorage' | 'sessionStorage' | 'memory';
-  
+
   // Edge-specific
   edgeOptimized?: boolean;
 }
@@ -1013,14 +1040,7 @@ logWithContext(
 );
 
 // API call logging with auto-action mapping
-logApiCall(
-  logger,
-  'debug',
-  'API Request: GET /api/orders',
-  'bot',
-  '/api/orders',
-  'GET'
-);
+logApiCall(logger, 'debug', 'API Request: GET /api/orders', 'bot', '/api/orders', 'GET');
 ```
 
 ### Child Loggers
@@ -1059,6 +1079,7 @@ The logger module includes a Supabase migration for the `logs` table. Run the mi
 ```
 
 The schema includes:
+
 - Multi-dimensional categorization columns (source, action, component)
 - Distributed tracing support (request_id, trace_id)
 - Runtime identification (runtime: node/browser/edge)
@@ -1073,9 +1094,9 @@ import { createMockLogger } from './modules/logger-module/testing';
 test('should log user login', () => {
   const mockLogger = createMockLogger();
   const service = new UserService(mockLogger);
-  
+
   service.login('user-1');
-  
+
   expect(mockLogger.info).toHaveBeenCalledWith('User logged in');
 });
 ```
@@ -1094,6 +1115,7 @@ test('should log user login', () => {
 ### Logs Not Appearing
 
 1. **Check log directory exists:**
+
    ```bash
    ls -la ./logs
    # If missing, create it: mkdir -p ./logs
@@ -1136,18 +1158,21 @@ For port conflict resolution, see `.cursor/rules/auto-heal.mdc` Section 1.
 ## Runtime-Specific Considerations
 
 ### Node.js
+
 - Full feature set available
 - File handler enabled by default
 - Pretty console output
 - CLI tools available
 
 ### Browser
+
 - File handler automatically disabled
 - JSON console output (pretty not available)
 - Session ID stored in localStorage
 - Database handler works via HTTP
 
 ### Edge Runtimes
+
 - File handler automatically disabled
 - JSON console output
 - Smaller batch sizes (25 vs 50)
@@ -1163,7 +1188,9 @@ The logger module maintains backward compatibility with the existing `LoggerOpti
 const logger = setupLogger('my-service', {
   env: 'development',
   serviceName: 'my-app',
-  persistLog: async (entry) => { /* ... */ },
+  persistLog: async (entry) => {
+    /* ... */
+  },
 });
 
 // New features are optional
@@ -1285,7 +1312,12 @@ const fileData = await downloadLogFile('./logs/session_20250127.log', './logs');
 Enhanced database query capabilities:
 
 ```typescript
-import { queryDatabaseLogs, getLogStats, getErrorTrends, getTopErrors } from './modules/logger-module/viewer';
+import {
+  queryDatabaseLogs,
+  getLogStats,
+  getErrorTrends,
+  getTopErrors,
+} from './modules/logger-module/viewer';
 
 // Multi-level filtering
 const logs = await queryDatabaseLogs(supabaseClient, {
@@ -1325,7 +1357,7 @@ const topErrors = await getTopErrors(supabaseClient, {
   component: 'backend',
 });
 
-topErrors.forEach(error => {
+topErrors.forEach((error) => {
   console.log(`${error.message}: ${error.count} occurrences`);
 });
 ```
@@ -1338,9 +1370,9 @@ If database logging is enabled, you can query the Supabase `logs` table directly
 
 ```sql
 -- Recent errors
-SELECT * FROM logs 
+SELECT * FROM logs
 WHERE level IN ('error', 'fatal')
-ORDER BY timestamp DESC 
+ORDER BY timestamp DESC
 LIMIT 100;
 
 -- Errors by component
@@ -1363,6 +1395,7 @@ See the "Advanced Database Queries" section above for examples using `queryDatab
 ### Log Viewer Service (Built-in)
 
 The logger-module includes a built-in log viewer with enhanced features:
+
 - **HTML UI**: Interactive web-based log viewer with filters and search
 - **Export Support**: Export logs to CSV or JSON format
 - **Pagination**: Handle large log sets efficiently
@@ -1428,6 +1461,7 @@ app.listen(3000, () => {
 ```
 
 **Available endpoints:**
+
 - `GET /logs` - Get analyzed logs with summary
 - `GET /logs/files` - List available log files
 - `GET /logs/files/:filename` - Get specific log file content
@@ -1467,14 +1501,14 @@ import { analyzeLogs, categorizeError } from '../../../../modules/error-handler'
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  
+
   const result = await getAnalyzedLogs({
     logDir: './logs',
     maxEntries: parseInt(searchParams.get('limit') || '100'),
     analyzeLogsFn: analyzeLogs,
     categorizeErrorFn: categorizeError,
   });
-  
+
   return NextResponse.json(result);
 }
 ```

@@ -9,6 +9,7 @@
 ## 1. Overview
 
 The testing module provides standardized mock utilities for testing applications in this ecosystem:
+
 - **Supabase Client Mock** - Chainable mock for Supabase queries
 - **Logger Mock** - Mock logger for testing logging behavior
 
@@ -244,10 +245,7 @@ describe('PaymentService', () => {
     await expect(paymentService.processPayment(invalidPayment)).rejects.toThrow();
 
     // Assert
-    expect(mockLogger.error).toHaveBeenCalledWith(
-      'Payment processing failed',
-      expect.any(Error)
-    );
+    expect(mockLogger.error).toHaveBeenCalledWith('Payment processing failed', expect.any(Error));
   });
 });
 ```
@@ -342,7 +340,7 @@ import { createMockSupabase } from '@/lib/testing-module';
 describe('CustomService', () => {
   it('should handle custom query chains', () => {
     const mockSupabase = createMockSupabase();
-    
+
     // Customize mock behavior
     mockSupabase.select.mockReturnValueOnce({
       eq: mockSupabase.eq,
@@ -420,19 +418,21 @@ it('should verify all mock interactions', async () => {
 If you're migrating from Jest to Vitest:
 
 1. **Update imports:**
+
    ```typescript
    // Before (Jest)
    import { describe, it, expect } from '@jest/globals';
-   
+
    // After (Vitest)
    import { describe, it, expect } from 'vitest';
    ```
 
 2. **Update mock functions:**
+
    ```typescript
    // Before (Jest)
    const mockFn = jest.fn();
-   
+
    // After (Vitest)
    import { vi } from 'vitest';
    const mockFn = vi.fn();
@@ -452,7 +452,7 @@ describe('Service', () => {
   it('should work with both mocks', () => {
     const mockSupabase = createMockSupabase();
     const customMock = createCustomMock();
-    
+
     // Use both as needed
   });
 });
@@ -522,6 +522,7 @@ it('should handle database errors gracefully', async () => {
 **Issue:** Import path not resolved.
 
 **Solutions:**
+
 1. Check `vitest.config.ts` has correct alias configuration
 2. Verify the module files are in the expected location
 3. Update import path to match your project structure
@@ -541,6 +542,7 @@ resolve: {
 **Issue:** Mocks not being called or returning unexpected values.
 
 **Solutions:**
+
 1. Ensure you're calling `mockSuccess()` or `mockError()` before using the mock
 2. Reset mocks between tests using `beforeEach`
 3. Verify you're using the mock instance, not creating new ones
@@ -557,12 +559,15 @@ beforeEach(() => {
 **Issue:** TypeScript complaining about mock types.
 
 **Solutions:**
+
 1. Use type assertions if needed:
+
    ```typescript
-   const result = await mockSupabase.from('users').select('*') as { data: User[]; error: null };
+   const result = (await mockSupabase.from('users').select('*')) as { data: User[]; error: null };
    ```
 
 2. Create typed helper functions:
+
    ```typescript
    function createTypedMock<T>() {
      const mock = createMockSupabase();
@@ -575,6 +580,7 @@ beforeEach(() => {
 **Issue:** Mock doesn't match real Supabase API.
 
 **Solutions:**
+
 1. Verify mock behavior matches real Supabase client
 2. Add integration tests to catch API mismatches
 3. Update mock implementation if Supabase API changes
@@ -658,6 +664,7 @@ mockSupabase.mockSuccess([{ id: '123' }]);
 ```
 
 **Benefits:**
+
 - ✅ Consistent mock API across projects
 - ✅ Less boilerplate code
 - ✅ Built-in helper methods (`mockSuccess`, `mockError`)
@@ -682,11 +689,10 @@ The testing module provides:
 ✅ **Easy integration** - Copy files and update imports  
 ✅ **TypeScript support** - Full type safety  
 ✅ **Vitest compatibility** - Works seamlessly with Vitest  
-✅ **Helper methods** - `mockSuccess()` and `mockError()` for common scenarios  
+✅ **Helper methods** - `mockSuccess()` and `mockError()` for common scenarios
 
 Follow the integration steps above to add standardized testing utilities to your project!
 
 ---
 
-*Last Updated: 2025-01-27*
-
+_Last Updated: 2025-01-27_

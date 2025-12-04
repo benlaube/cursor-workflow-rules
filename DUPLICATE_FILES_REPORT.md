@@ -20,6 +20,7 @@
 **Status:** ✅ Keep - This is the correct, complete version
 
 **Metadata:**
+
 - ✅ Complete metadata section (lines 3-16)
 - ✅ Status: Active
 - ✅ Created: 02-12-2025 00:00:00 EST (corrected from 12-02-2025)
@@ -28,12 +29,14 @@
 - ✅ All required metadata fields present
 
 **Content:**
+
 - ✅ Complete command structure
 - ✅ All sections present (Purpose, Steps A-J)
 - ✅ Proper formatting
 - ✅ 200 lines total
 
 **Structure:**
+
 - ✅ Follows `cursor-command-creation.mdc` standards
 - ✅ Proper markdown formatting
 - ✅ Complete command instructions
@@ -45,6 +48,7 @@
 **Status:** ❌ Delete - This is an older, incomplete version
 
 **Issues:**
+
 1. **Missing Metadata Section:**
    - ❌ No metadata section (required per `cursor-command-creation.mdc`)
    - ❌ Only has comment header (lines 3-5): `# Command: app:create-start-scripts`
@@ -70,14 +74,14 @@
 
 ## Comparison Details
 
-| Aspect | `create-start-scripts.md` | `create-start-scripts 2.md` |
-|--------|---------------------------|----------------------------|
-| **Metadata Section** | ✅ Complete | ❌ Missing |
-| **File Naming** | ✅ kebab-case | ❌ Contains space and "2" |
-| **Version** | 2.0.0 | 2.0.0 (in comment only) |
-| **Lines** | 200 | 186 |
-| **Standards Compliant** | ✅ Yes | ❌ No |
-| **Status** | ✅ Keep | ❌ Delete |
+| Aspect                  | `create-start-scripts.md` | `create-start-scripts 2.md` |
+| ----------------------- | ------------------------- | --------------------------- |
+| **Metadata Section**    | ✅ Complete               | ❌ Missing                  |
+| **File Naming**         | ✅ kebab-case             | ❌ Contains space and "2"   |
+| **Version**             | 2.0.0                     | 2.0.0 (in comment only)     |
+| **Lines**               | 200                       | 186                         |
+| **Standards Compliant** | ✅ Yes                    | ❌ No                       |
+| **Status**              | ✅ Keep                   | ❌ Delete                   |
 
 ---
 
@@ -104,6 +108,7 @@
 **Action:** Delete `create-start-scripts 2.md`
 
 **Reasoning:**
+
 1. The main file (`create-start-scripts.md`) is complete and standards-compliant
 2. The duplicate file lacks required metadata
 3. The duplicate file violates file naming standards (contains space)
@@ -111,6 +116,7 @@
 5. Keeping both files causes confusion and maintenance burden
 
 **Command to Delete:**
+
 ```bash
 rm ".cursor/commands/create-start-scripts 2.md"
 ```
@@ -122,16 +128,17 @@ rm ".cursor/commands/create-start-scripts 2.md"
 **Risk Level:** Low
 
 **Impact:**
+
 - No functional impact (duplicate file not referenced anywhere)
 - No breaking changes (file is not used)
 - Cleanup improves repository hygiene
 
 **Verification:**
+
 - ✅ No references to `create-start-scripts 2.md` found in codebase
 - ✅ Main file (`create-start-scripts.md`) is complete and functional
 - ✅ Safe to delete duplicate
 
 ---
 
-*This report was generated as part of the command files audit.*
-
+_This report was generated as part of the command files audit._

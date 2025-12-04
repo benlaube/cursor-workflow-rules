@@ -19,17 +19,17 @@ import { SitemapGenerator } from './modules/sitemap-module';
 
 const generator = new SitemapGenerator({
   siteUrl: 'https://example.com',
-  bucketName: 'public-assets' // default
+  bucketName: 'public-assets', // default
 });
 
 // 1. Fetch your data (from DB, CMS, etc)
 const pages = await db.query('SELECT slug, updated_at FROM pages');
 
 // 2. Map to routes
-const routes = pages.map(p => ({
+const routes = pages.map((p) => ({
   loc: `https://example.com/${p.slug}`,
   lastmod: p.updated_at,
-  priority: 0.8
+  priority: 0.8,
 }));
 
 // 3. Generate and Upload
@@ -41,11 +41,13 @@ await generator.generateAndUpload(routes);
 For automatic sitemap regeneration when content changes:
 
 1. **Apply Database Migration:**
+
    ```sql
    -- Run migrations/sitemap-schema.sql in Supabase SQL Editor
    ```
 
 2. **Create Database Triggers:**
+
    ```sql
    CREATE TRIGGER pages_sitemap_trigger
    AFTER INSERT OR UPDATE OR DELETE ON public.pages
@@ -54,6 +56,7 @@ For automatic sitemap regeneration when content changes:
    ```
 
 3. **Deploy Edge Function:**
+
    ```bash
    supabase functions deploy generate-sitemap
    ```
@@ -119,4 +122,3 @@ Content Change → Database Trigger → Job Queue → Edge Function → Storage 
 - **Sitemap Analytics Dashboard** - Web interface for sitemap management
 - **Automatic SEO Optimization** - Automatic SEO suggestions based on sitemap
 - **Multi-site Management** - Manage sitemaps for multiple sites
-

@@ -1,6 +1,7 @@
 # Error Handler & Auto-Healing Module
 
 ## Metadata
+
 - **Module:** error-handler
 - **Version:** 1.0.0
 - **Created:** 2025-01-27
@@ -80,14 +81,11 @@ console.log(result.value);
 ```typescript
 import { withRetry } from '@/lib/error-handler/retry';
 
-const result = await withRetry(
-  () => fetch('https://api.example.com/data'),
-  { 
-    retries: 3, 
-    delay: 1000,
-    shouldRetry: (e) => e.status === 503 // Only retry on 503 errors
-  }
-);
+const result = await withRetry(() => fetch('https://api.example.com/data'), {
+  retries: 3,
+  delay: 1000,
+  shouldRetry: (e) => e.status === 503, // Only retry on 503 errors
+});
 ```
 
 ## Usage
@@ -140,24 +138,21 @@ Automatically recover from transient failures (e.g., network blips, temporary se
 import { withRetry } from '@/lib/error-handler/retry';
 
 // Basic retry (3 attempts, 1s delay, exponential backoff)
-const result = await withRetry(
-  () => fetch('https://api.example.com/data'),
-  { retries: 3, delay: 1000 }
-);
+const result = await withRetry(() => fetch('https://api.example.com/data'), {
+  retries: 3,
+  delay: 1000,
+});
 
 // Custom retry configuration
-const result = await withRetry(
-  () => apiCall(),
-  {
-    retries: 5,
-    delay: 500,
-    backoffFactor: 2, // 500ms -> 1000ms -> 2000ms -> 4000ms
-    shouldRetry: (error) => {
-      // Only retry on network errors or 503
-      return error.code === 'ECONNREFUSED' || error.status === 503;
-    }
-  }
-);
+const result = await withRetry(() => apiCall(), {
+  retries: 5,
+  delay: 500,
+  backoffFactor: 2, // 500ms -> 1000ms -> 2000ms -> 4000ms
+  shouldRetry: (error) => {
+    // Only retry on network errors or 503
+    return error.code === 'ECONNREFUSED' || error.status === 503;
+  },
+});
 
 if (!result.ok) {
   console.error('Failed after retries:', result.error.message);
@@ -172,8 +167,8 @@ Prevents cascading failures by stopping calls to failing services.
 import { CircuitBreaker } from '@/lib/error-handler/circuit-breaker';
 
 const breaker = new CircuitBreaker(
-  5,      // failureThreshold: Open after 5 failures
-  10000   // resetTimeout: Try again after 10 seconds
+  5, // failureThreshold: Open after 5 failures
+  10000 // resetTimeout: Try again after 10 seconds
 );
 
 try {
@@ -193,22 +188,22 @@ Analyze log files to extract errors and identify issues.
 import { analyzeLogs, categorizeError } from '@/lib/error-handler';
 
 // Analyze logs in ./logs directory
-const result = await analyzeLogs({ 
-  logDir: './logs', 
+const result = await analyzeLogs({
+  logDir: './logs',
   maxEntries: 100,
   timeRange: 3600000, // Last hour
-  minLevel: 'error'
+  minLevel: 'error',
 });
 
 if (result.ok) {
   for (const error of result.value) {
     const category = categorizeError(error);
     console.log(`${category}: ${error.message}`);
-    
+
     if (error.filePath && error.lineNumber) {
       console.log(`  at ${error.filePath}:${error.lineNumber}`);
     }
-    
+
     if (error.count && error.count > 1) {
       console.log(`  (occurred ${error.count} times)`);
     }
@@ -226,7 +221,7 @@ import { categorizeError, LogError } from '@/lib/error-handler';
 const error: LogError = {
   message: 'Module not found: ./utils',
   filePath: '/path/to/file.ts',
-  lineNumber: 42
+  lineNumber: 42,
 };
 
 const category = categorizeError(error);
@@ -260,7 +255,7 @@ import { safe, AppError } from '@/lib/error-handler';
 
 const logger = setupLogger('my-service', {
   env: 'production',
-  serviceName: 'api'
+  serviceName: 'api',
 });
 
 const result = await safe(apiCall());
@@ -280,17 +275,13 @@ import { safe, AppError } from '@/lib/error-handler';
 export const GET = createApiHandler({
   handler: async ({ ctx }) => {
     const result = await safe(databaseQuery());
-    
+
     if (!result.ok) {
-      throw new AppError(
-        result.error.message,
-        result.error.code,
-        result.error.statusCode
-      );
+      throw new AppError(result.error.message, result.error.code, result.error.statusCode);
     }
-    
+
     return result.value;
-  }
+  },
 });
 ```
 

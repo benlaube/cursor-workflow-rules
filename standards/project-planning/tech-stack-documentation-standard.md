@@ -1,6 +1,7 @@
 # Tech_Stack_Documentation_Standard_v1.1
 
 ## Metadata
+
 - **Status:** Active
 - **Created:** 19-11-2025
 - **Last Updated:** 04-12-2025 16:00:00 EST
@@ -18,6 +19,7 @@
 ## When to Apply This Standard
 
 Apply this standard to:
+
 - Every new project (create TECH_STACK.md during initial setup)
 - When adding major dependencies or frameworks
 - When changing core technology decisions
@@ -48,11 +50,13 @@ The `TECH_STACK.md` file serves as the single source of truth for all technology
 ## 2. File Location and Naming
 
 ### 2.1 Location
+
 - **Required Location:** `docs/TECH_STACK.md`
 - **Never:** Root level or other directories
 - **Reason:** Consistent location makes it easy to find across all projects
 
 ### 2.2 Naming Convention
+
 - **Format:** `TECH_STACK.md` (all caps)
 - **No versioning:** This is a living document that's updated in place
 - **No suffix:** Not `TECH_STACK_v1.md` or similar
@@ -65,33 +69,39 @@ The `TECH_STACK.md` file serves as the single source of truth for all technology
 # Technology Stack
 
 ## 1. Core Frameworks
+
 - **Frontend:** [e.g., Next.js 14 (App Router)]
 - **Backend:** [e.g., Supabase Edge Functions]
 - **Language:** [e.g., TypeScript 5.x]
 
 ## 2. Infrastructure & Database
+
 - **Database:** [e.g., Postgres 15 (Supabase)]
 - **Auth:** [e.g., Supabase Auth]
 - **Hosting:** [e.g., Vercel]
 - **File Storage:** [e.g., Supabase Storage]
 
 ## 3. UI & Styling
+
 - **Styling Engine:** [e.g., Tailwind CSS]
 - **Component Library:** [e.g., shadcn/ui, Radix UI]
 - **Icons:** [e.g., Lucide React]
 - **Animations:** [e.g., Framer Motion]
 
 ## 4. Key Libraries (The "Standard Kit")
+
 - **State Management:** [e.g., Zustand, React Context]
 - **Data Fetching:** [e.g., TanStack Query, SWR]
 - **Forms:** [e.g., React Hook Form + Zod]
 - **Dates:** [e.g., date-fns]
 
 ## 5. AI & LLM Integration
+
 - **Model Provider:** [e.g., OpenAI, Anthropic]
 - **Orchestration:** [e.g., LangChain, Vercel AI SDK]
 
 ## 6. Development Tools
+
 - **Linting:** [e.g., ESLint, Prettier]
 - **Testing:** [e.g., Vitest, Playwright]
 - **Package Manager:** [e.g., pnpm]
@@ -100,13 +110,17 @@ The `TECH_STACK.md` file serves as the single source of truth for all technology
 ### 3.1 Section Guidelines
 
 #### Section 1: Core Frameworks
+
 **Purpose:** Document the foundational technologies
+
 - Include version numbers for major frameworks
 - Specify architectural patterns (e.g., "App Router" for Next.js)
 - List primary programming language and version
 
 #### Section 2: Infrastructure & Database
+
 **Purpose:** Document backend services and infrastructure
+
 - Database type and version
 - Authentication provider
 - Hosting platform
@@ -114,14 +128,18 @@ The `TECH_STACK.md` file serves as the single source of truth for all technology
 - Any other infrastructure services
 
 #### Section 3: UI & Styling
+
 **Purpose:** Document frontend styling and UI libraries
+
 - CSS framework or methodology
 - Component library (if using one)
 - Icon library
 - Animation library (if applicable)
 
 #### Section 4: Key Libraries (The "Standard Kit")
+
 **Purpose:** Document standard libraries for common tasks
+
 - State management approach
 - Data fetching strategy
 - Form handling
@@ -129,13 +147,17 @@ The `TECH_STACK.md` file serves as the single source of truth for all technology
 - Any other commonly-used utilities
 
 #### Section 5: AI & LLM Integration (Optional)
+
 **Purpose:** Document AI/ML services if used
+
 - Model provider (OpenAI, Anthropic, etc.)
 - Orchestration framework (LangChain, Vercel AI SDK, etc.)
 - Include only if project uses AI features
 
 #### Section 6: Development Tools
+
 **Purpose:** Document development tooling
+
 - Linting and formatting tools
 - Testing frameworks
 - Package manager
@@ -146,28 +168,34 @@ The `TECH_STACK.md` file serves as the single source of truth for all technology
 ## 4. Best Practices
 
 ### 4.1 Keep It Current
+
 - ✅ Update immediately when adding major dependencies
 - ✅ Include version numbers for critical packages
 - ✅ Remove entries when deprecating technologies
 - ❌ Don't list every single npm package (only major/architectural ones)
 
 ### 4.2 Be Specific
+
 - ✅ Good: "Next.js 14 (App Router)"
 - ❌ Bad: "Next.js"
 - ✅ Good: "TanStack Query (React Query v5)"
 - ❌ Bad: "Data fetching library"
 
 ### 4.3 Explain Choices (When Needed)
+
 For non-obvious choices, add brief rationale:
 
 ```markdown
 ## 4. Key Libraries
+
 - **Date Handling:** date-fns (chosen over moment.js for smaller bundle size and tree-shaking)
 - **State Management:** Zustand (chosen for simplicity over Redux)
 ```
 
 ### 4.4 Check Before Installing
+
 **Before adding a new dependency:**
+
 1. Check TECH_STACK.md for existing solutions
 2. Verify you're not installing a duplicate (e.g., `moment` when `date-fns` is listed)
 3. Update TECH_STACK.md after installing major dependencies
@@ -179,6 +207,7 @@ For non-obvious choices, add brief rationale:
 ### 5.1 When to Update
 
 Update `TECH_STACK.md` when:
+
 - Adding a new major framework or library
 - Changing core technology decisions
 - Upgrading major versions (e.g., Next.js 13 → 14)
@@ -207,6 +236,7 @@ Update `TECH_STACK.md` when:
 # Technology Stack
 
 ## Metadata
+
 - **Last Updated:** 2025-12-04
 - **Project:** My Awesome App
 - **Stack Type:** Full-stack web application
@@ -214,12 +244,14 @@ Update `TECH_STACK.md` when:
 ---
 
 ## 1. Core Frameworks
+
 - **Frontend:** Next.js 14 (App Router)
 - **Backend:** Next.js API Routes + Supabase Edge Functions
 - **Language:** TypeScript 5.3
 - **Runtime:** Node.js 20 LTS
 
 ## 2. Infrastructure & Database
+
 - **Database:** PostgreSQL 15 (Supabase)
 - **Auth:** Supabase Auth (built-in JWT, OAuth, MFA)
 - **Hosting:** Vercel (Edge Network)
@@ -228,6 +260,7 @@ Update `TECH_STACK.md` when:
 - **Monitoring:** Vercel Analytics + Sentry
 
 ## 3. UI & Styling
+
 - **Styling Engine:** Tailwind CSS 3.4
 - **Component Library:** shadcn/ui (built on Radix UI)
 - **Icons:** Lucide React
@@ -235,6 +268,7 @@ Update `TECH_STACK.md` when:
 - **Typography:** Inter (Google Fonts)
 
 ## 4. Key Libraries (The "Standard Kit")
+
 - **State Management:** Zustand (client state) + React Context (auth/theme)
 - **Data Fetching:** TanStack Query v5 (React Query)
 - **Forms:** React Hook Form + Zod validation
@@ -243,12 +277,14 @@ Update `TECH_STACK.md` when:
 - **Routing:** Next.js App Router (file-based)
 
 ## 5. AI & LLM Integration
+
 - **Model Provider:** OpenAI GPT-4 Turbo
 - **Orchestration:** Vercel AI SDK
 - **Embeddings:** OpenAI text-embedding-3-small
 - **Vector Store:** Supabase pgvector
 
 ## 6. Development Tools
+
 - **Linting:** ESLint 8 (Next.js config)
 - **Formatting:** Prettier 3
 - **Testing:** Vitest (unit) + Playwright (e2e)
@@ -259,16 +295,19 @@ Update `TECH_STACK.md` when:
 ## 7. Architecture Decisions
 
 ### Why Next.js App Router?
+
 - Server components reduce client bundle size
 - Built-in streaming and suspense
 - Improved data fetching patterns
 
 ### Why Supabase?
+
 - PostgreSQL with built-in auth and storage
 - Real-time subscriptions out of the box
 - Edge Functions for serverless backend
 
 ### Why TanStack Query?
+
 - Automatic caching and refetching
 - Optimistic updates
 - Better developer experience than native fetch
@@ -291,6 +330,7 @@ Update `TECH_STACK.md` when:
 ### 7.2 AI Agent Instructions
 
 When AI agents need to:
+
 - **Install a package** → Check TECH_STACK.md first for existing solutions
 - **Choose a library** → Follow technology choices listed in TECH_STACK.md
 - **Document architecture** → Reference TECH_STACK.md for technology details
@@ -301,18 +341,22 @@ When AI agents need to:
 ## 8. Common Pitfalls to Avoid
 
 ### 8.1 Too Granular
+
 ❌ **Bad:** Listing every npm package  
 ✅ **Good:** Only major frameworks and architectural libraries
 
 ### 8.2 Outdated Information
+
 ❌ **Bad:** "Next.js 13" when actually using 14  
 ✅ **Good:** Keep versions current during upgrades
 
 ### 8.3 No Rationale
+
 ❌ **Bad:** Just listing technologies without context  
 ✅ **Good:** Brief explanation for non-obvious choices
 
 ### 8.4 Missing Version Numbers
+
 ❌ **Bad:** "React Query"  
 ✅ **Good:** "TanStack Query v5 (React Query)"
 
@@ -341,4 +385,4 @@ When creating or updating TECH_STACK.md:
 
 ---
 
-*This standard defines how to create and maintain TECH_STACK.md documentation. For complete documentation requirements, see `standards/project-planning/documentation-standards.md`.*
+_This standard defines how to create and maintain TECH_STACK.md documentation. For complete documentation requirements, see `standards/project-planning/documentation-standards.md`._

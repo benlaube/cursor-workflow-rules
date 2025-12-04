@@ -11,6 +11,7 @@ The following implementations are based on assumptions about the supabase-py lib
 ### Issue: JWT Token Setting Method
 
 **Current Implementation:**
+
 ```python
 if hasattr(client, "postgrest") and hasattr(client.postgrest, "auth"):
     client.postgrest.auth(jwt_token)
@@ -19,6 +20,7 @@ elif hasattr(client, "table"):
 ```
 
 **Problem:**
+
 - `client.postgrest.auth()` may not exist in supabase-py
 - `client.auth.set_session()` may not work for setting JWT from external source
 - May need to set Authorization header directly
@@ -26,6 +28,7 @@ elif hasattr(client, "table"):
 **Potential Solutions:**
 
 **Option A: Set Header Directly**
+
 ```python
 # If supabase-py uses httpx or requests internally
 if hasattr(client, "postgrest") and hasattr(client.postgrest, "session"):
@@ -33,6 +36,7 @@ if hasattr(client, "postgrest") and hasattr(client.postgrest, "session"):
 ```
 
 **Option B: Use Supabase Auth Session**
+
 ```python
 # If supabase-py supports setting session from token
 try:
@@ -49,6 +53,7 @@ except Exception:
 ```
 
 **Option C: Create Custom Client**
+
 ```python
 # May need to create client with custom headers
 from supabase import create_client
@@ -62,7 +67,8 @@ postgrest = SyncPostgrestClient(
 ```
 
 **Action Required:**
-- [ ] Check supabase-py source code: https://github.com/supabase/supabase-py
+
+- [ ] Check supabase-py source code: <https://github.com/supabase/supabase-py>
 - [ ] Test with actual JWT token
 - [ ] Verify RLS policies apply after setting token
 - [ ] Update implementation based on findings
@@ -74,17 +80,20 @@ postgrest = SyncPostgrestClient(
 ### Issue: Method Chaining and API
 
 **Current Implementation:**
+
 ```python
 self._query = client.table(table).select(self._select)
 self._query = self._query.eq(column, value)
 ```
 
 **Potential Issues:**
+
 - supabase-py may use different method names
 - Method chaining may not work as expected
 - Response structure may differ
 
 **Verification Needed:**
+
 ```python
 # Test actual supabase-py API
 from supabase import create_client
@@ -96,6 +105,7 @@ response = query.execute()  # What does response look like?
 ```
 
 **Action Required:**
+
 - [ ] Test all query builder methods
 - [ ] Verify response structure (`.data`, `.error`, `.count`)
 - [ ] Check if methods return new query builder or modify in place
@@ -107,6 +117,7 @@ response = query.execute()  # What does response look like?
 ### Issue: Upload API Parameters
 
 **Current Implementation:**
+
 ```python
 response = (
     client.storage.from_(config.bucket)
@@ -124,11 +135,13 @@ response = (
 ```
 
 **Potential Issues:**
+
 - `file_options` parameter may not exist
 - Parameters may need to be passed differently
 - `upsert` may be a separate parameter
 
 **Verification Needed:**
+
 ```python
 # Test actual supabase-py storage API
 from supabase import create_client
@@ -142,6 +155,7 @@ response = client.storage.from_("bucket").upload(
 ```
 
 **Action Required:**
+
 - [ ] Check supabase-py storage documentation
 - [ ] Test upload with different file types
 - [ ] Verify response structure
@@ -153,17 +167,20 @@ response = client.storage.from_("bucket").upload(
 ### Issue: Download Response Structure
 
 **Current Implementation:**
+
 ```python
 response = client.storage.from_(config.bucket).download(config.path).execute()
 data = response if isinstance(response, bytes) else getattr(response, "data", b"")
 ```
 
 **Potential Issues:**
+
 - Response may be bytes directly
 - Response may be a custom object
 - Content type may be in headers
 
 **Action Required:**
+
 - [ ] Test download with actual files
 - [ ] Verify response structure
 - [ ] Check how to get content type
@@ -175,6 +192,7 @@ data = response if isinstance(response, bytes) else getattr(response, "data", b"
 ### Issue: Async vs Sync
 
 **Current Implementation:**
+
 ```python
 channel = self.client.channel(config.channel)
 channel = channel.on("postgres_changes", {...}, callback)
@@ -182,11 +200,13 @@ channel.subscribe()
 ```
 
 **Potential Issues:**
+
 - Real-time may require async/await
 - Channel API may differ
 - Subscription cleanup may need different approach
 
 **Verification Needed:**
+
 ```python
 # Test if sync version works
 channel = client.channel("test")
@@ -204,6 +224,7 @@ async def main():
 ```
 
 **Action Required:**
+
 - [ ] Check if sync real-time works
 - [ ] If async required, create async version
 - [ ] Test subscription and cleanup
@@ -215,17 +236,20 @@ async def main():
 ### Issue: Count Parameter
 
 **Current Implementation:**
+
 ```python
 response = query.select("*", count="exact").limit(0).execute()
 total = response.count if hasattr(response, "count") else 0
 ```
 
 **Potential Issues:**
+
 - `count="exact"` parameter may not work
 - Count may be in different location (headers, metadata)
 - May need to use `Prefer: count=exact` header
 
 **Verification Needed:**
+
 ```python
 # Test count parameter
 query = client.table("posts").select("*", count="exact")
@@ -234,6 +258,7 @@ response = query.execute()
 ```
 
 **Action Required:**
+
 - [ ] Test count parameter
 - [ ] Verify where count is located in response
 - [ ] Fix pagination if needed
@@ -245,16 +270,19 @@ response = query.execute()
 ### Issue: RLS Check Function
 
 **Current Implementation:**
+
 ```python
 response = client.rpc("check_rls_enabled", {"table_name": tableName}).execute()
 ```
 
 **Potential Issues:**
+
 - Database function `check_rls_enabled` may not exist
 - May need to query `pg_policies` directly
 - May need service role client
 
 **Action Required:**
+
 - [ ] Create database function or use direct query
 - [ ] Test with actual Supabase instance
 - [ ] Verify RLS checking works
@@ -266,6 +294,7 @@ response = client.rpc("check_rls_enabled", {"table_name": tableName}).execute()
 ### FastAPI: Missing Request Import
 
 **Current Implementation:**
+
 ```python
 from fastapi import Header, HTTPException, Depends, Request
 ```
@@ -273,12 +302,14 @@ from fastapi import Header, HTTPException, Depends, Request
 **Issue:** `Request` is imported but not used. May need it for cookie extraction.
 
 **Action Required:**
+
 - [ ] Add cookie-based JWT extraction if needed
 - [ ] Test with actual FastAPI app
 
 ### Django: Session JWT Storage
 
 **Current Implementation:**
+
 ```python
 jwt_token = request.session.get("supabase_jwt")
 ```
@@ -286,6 +317,7 @@ jwt_token = request.session.get("supabase_jwt")
 **Issue:** Django session may not have JWT by default. May need middleware to set it.
 
 **Action Required:**
+
 - [ ] Document how to store JWT in Django session
 - [ ] Or remove session check if not standard
 
@@ -300,6 +332,7 @@ jwt_token = request.session.get("supabase_jwt")
 ### Phase 1: API Verification (Critical)
 
 1. **Test Basic Client Creation**
+
    ```python
    from supabase_core_python import create_client
    client = create_client()
@@ -307,6 +340,7 @@ jwt_token = request.session.get("supabase_jwt")
    ```
 
 2. **Test Authentication**
+
    ```python
    from supabase_core_python import create_authenticated_client
    # Get real JWT from Supabase Auth
@@ -316,6 +350,7 @@ jwt_token = request.session.get("supabase_jwt")
    ```
 
 3. **Test Query Builder**
+
    ```python
    from supabase_core_python import query_builder
    response = query_builder(client, "posts").where("id", 1).execute()
@@ -381,8 +416,8 @@ jwt_token = request.session.get("supabase_jwt")
 ## Resources for Verification
 
 1. **Supabase-py Documentation:**
-   - https://github.com/supabase/supabase-py
-   - https://supabase.com/docs/reference/python
+   - <https://github.com/supabase/supabase-py>
+   - <https://supabase.com/docs/reference/python>
 
 2. **Supabase-py Source Code:**
    - Check actual API methods
@@ -396,5 +431,4 @@ jwt_token = request.session.get("supabase_jwt")
 
 ---
 
-*Last Updated: 2025-01-27*
-
+_Last Updated: 2025-01-27_

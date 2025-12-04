@@ -1,6 +1,7 @@
 # Sitemap Auto-Generation Standard v1.0
 
 ## Metadata
+
 - **Created:** 2025-11-18
 - **Last Updated:** 2025-12-04
 - **Version:** 1.0
@@ -8,7 +9,7 @@
 
 ## 1. Purpose of This Document
 
-This guide teaches an AI Agent *exactly* how to:
+This guide teaches an AI Agent _exactly_ how to:
 
 1. Detect page structure changes in Supabase database tables.
 2. Trigger a Supabase Edge Function automatically.
@@ -50,6 +51,7 @@ The goal: **Every time public-facing content changes, the XML file updates insta
 ```
 
 This pattern guarantees:
+
 - Zero waiting time for crawlers.
 - A single source of truth.
 - Fine-grained control triggered from the database.
@@ -95,13 +97,14 @@ CREATE TABLE IF NOT EXISTS site_settings (
 );
 ```
 
-If unknown, use a placeholder `"https://example.com"` *with a comment warning*.
+If unknown, use a placeholder `"https://example.com"` _with a comment warning_.
 
 ---
 
 ## 4. Designing the Sitemap Regeneration System
 
 Two main components:
+
 1. **Database triggers** → enqueue sitemap regeneration jobs.
 2. **Edge Function** → reads DB → generates XML → writes static file.
 
@@ -194,15 +197,15 @@ supabase/
 // v1.0 – Fully Commented Sitemap Generator Edge Function
 // File: supabase/functions/generate_sitemap/index.ts
 
-import { serve } from "https://deno.land/std/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { serve } from 'https://deno.land/std/http/server.ts';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 // Pull required environment variables
 // The AI Agent should ensure these exist.
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const SITE_URL = Deno.env.get("SITE_URL") ?? "https://example.com"; // fallback warning
-const BUCKET = Deno.env.get("SITEMAP_BUCKET") ?? "public-assets";
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const SITE_URL = Deno.env.get('SITE_URL') ?? 'https://example.com'; // fallback warning
+const BUCKET = Deno.env.get('SITEMAP_BUCKET') ?? 'public-assets';
 
 const supabase = createClient(SUPABASE_URL, SERVICE_KEY);
 
@@ -211,15 +214,15 @@ async function fetchRoutes() {
   // This is where the AI Agent customizes queries.
   // Example: Using a `pages` table.
   const { data: pages, error } = await supabase
-    .from("pages")
-    .select("slug, updated_at, is_public")
-    .eq("is_public", true);
+    .from('pages')
+    .select('slug, updated_at, is_public')
+    .eq('is_public', true);
 
   if (error) throw error;
 
   return (pages ?? []).map((p: any) => ({
     loc: `${SITE_URL}/${p.slug}`,
-    lastmod: p.updated_at
+    lastmod: p.updated_at,
   }));
 }
 
@@ -227,27 +230,27 @@ async function fetchRoutes() {
 function buildXml(routes: { loc: string; lastmod?: string }[]) {
   const urlset = routes
     .map((r) => {
-      const lastmod = r.lastmod
-        ? `<lastmod>${new Date(r.lastmod).toISOString()}</lastmod>`
-        : "";
+      const lastmod = r.lastmod ? `<lastmod>${new Date(r.lastmod).toISOString()}</lastmod>` : '';
 
-      return `  <url>\n    <loc>${r.loc}</loc>\n${lastmod ? `    ${lastmod}\n` : ""}  </url>`;
+      return `  <url>\n    <loc>${r.loc}</loc>\n${lastmod ? `    ${lastmod}\n` : ''}  </url>`;
     })
-    .join("\n");
+    .join('\n');
 
-  return `<?xml version="1.0" encoding="UTF-8"?>\n` +
+  return (
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     `${urlset}\n` +
-    `</urlset>`;
+    `</urlset>`
+  );
 }
 
 // STEP 3: Save to storage
 async function writeXml(xml: string) {
   const { error } = await supabase.storage
     .from(BUCKET)
-    .upload("sitemap.xml", new TextEncoder().encode(xml), {
+    .upload('sitemap.xml', new TextEncoder().encode(xml), {
       upsert: true,
-      contentType: "application/xml"
+      contentType: 'application/xml',
     });
 
   if (error) throw error;
@@ -255,10 +258,7 @@ async function writeXml(xml: string) {
 
 // STEP 4: Optional – mark jobs processed
 async function clearJobs() {
-  await supabase
-    .from("sitemap_jobs")
-    .update({ status: "processed" })
-    .neq("status", "processed");
+  await supabase.from('sitemap_jobs').update({ status: 'processed' }).neq('status', 'processed');
 }
 
 // SERVER ENTRYPOINT
@@ -269,13 +269,10 @@ serve(async () => {
     await writeXml(xml);
     await clearJobs();
 
-    return new Response(
-      JSON.stringify({ success: true, count: routes.length }),
-      { status: 200 }
-    );
+    return new Response(JSON.stringify({ success: true, count: routes.length }), { status: 200 });
   } catch (err) {
     return new Response(JSON.stringify({ error: String(err) }), {
-      status: 500
+      status: 500,
     });
   }
 });
@@ -288,22 +285,27 @@ serve(async () => {
 Before finalizing the setup, the AI Agent must:
 
 ### 6.1 Validate Trigger Behavior
+
 - Insert a public page → sitemap_jobs should get a job.
 - Update slug → trigger fires.
 - Delete → trigger fires.
 
 ### 6.2 Validate Edge Function Behavior
+
 - Run the function manually from dashboard.
 - Confirm sitemap.xml appears in the chosen bucket.
 - Confirm the XML is valid and loads in the browser.
 - Confirm jobs are marked processed.
 
 ### 6.3 Ensure Hosting Layer Serves sitemap.xml
+
 The website should either:
+
 - Proxy `/sitemap.xml` to the Supabase Storage URL, **or**
 - Pull sitemap.xml during its build pipeline into `/public/sitemap.xml`.
 
 ### 6.4 Ensure No Endpoint Is Exposed
+
 No slow dynamic routes like `/api/sitemap` should exist.
 Only the **static XML file** should be accessible.
 
@@ -312,20 +314,26 @@ Only the **static XML file** should be accessible.
 ## 7. Optional Enhancements
 
 ### 7.1 Multi-Sitemap Support
+
 For >50k pages, generate:
+
 - `sitemap.xml` linking to…
 - `sitemap-pages.xml`
 - `sitemap-posts.xml`
 - `sitemap-categories.xml`.
 
 ### 7.2 Priority Tagging
+
 Use AI classification to set `<priority>` based on:
+
 - Content type
 - Update frequency
 - Traffic rankings
 
 ### 7.3 Ping Search Engines (Optional)
+
 AI Agent may add calls to:
+
 - Google Search Console API
 - Bing Webmaster Tools API
 
@@ -336,6 +344,7 @@ Only if credentials are provided.
 ## 8. Summary
 
 This system:
+
 - Auto-detects content changes.
 - Uses SQL triggers to enqueue sitemap jobs.
 - Uses a Supabase Edge Function to rebuild a **real static** sitemap.xml.

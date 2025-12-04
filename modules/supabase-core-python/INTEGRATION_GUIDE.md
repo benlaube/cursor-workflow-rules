@@ -75,7 +75,7 @@ async def get_posts(supabase: Client = Depends(get_authenticated_supabase)):
     user = get_current_user(supabase)
     if not user:
         return {"error": "Unauthorized"}, 401
-    
+
     response = supabase.table("posts").select("*").execute()
     return {"data": response.data}
 ```
@@ -97,7 +97,7 @@ from supabase_core_python.framework.django import get_supabase_client
 def my_view(request):
     # Authenticated client
     supabase = get_supabase_client(request, require_auth=True)
-    
+
     response = supabase.table("posts").select("*").execute()
     return JsonResponse({"data": response.data})
 ```
@@ -122,7 +122,7 @@ app = Flask(__name__)
 def get_posts():
     # Authenticated client
     supabase = get_supabase_client(require_auth=True)
-    
+
     response = supabase.table("posts").select("*").execute()
     return jsonify({"data": response.data})
 ```
@@ -205,4 +205,3 @@ supabase gen types python --local > types/database_types.py
 - See `README.md` for complete API documentation
 - Check framework-specific examples in `src/framework/`
 - Review error handling patterns in `src/utils/error_handler.py`
-

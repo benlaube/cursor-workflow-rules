@@ -1,6 +1,7 @@
 # Full_SEO_Automation_System_v1.0
 
 ## Metadata
+
 - **Created:** 2025-11-18
 - **Last Updated:** 2025-11-18
 - **Version:** 1.0
@@ -184,7 +185,7 @@ FOR EACH ROW EXECUTE FUNCTION pages_seo_trigger();
 
 1. B. Outputs
    1. B.1. `schema_json` (JSON-LD) with appropriate `@type`, such as:
-       - `Article`, `BlogPosting`, `WebPage`, `Product`, `RealEstateListing`, etc.
+      - `Article`, `BlogPosting`, `WebPage`, `Product`, `RealEstateListing`, etc.
 
 1. C. Behavior
    1. C.1. Ensure JSON is valid and minimal.
@@ -220,9 +221,9 @@ FOR EACH ROW EXECUTE FUNCTION pages_seo_trigger();
 
 1. A. **Edge Functions**
    1. A.1. Ideal for small, one-shot tasks:
-       - Generating meta for a single page.
-       - Writing alt text for one media object.
-       - Updating schema.org JSON for a record.
+      - Generating meta for a single page.
+      - Writing alt text for one media object.
+      - Updating schema.org JSON for a record.
    1. A.2. Triggered via Supabase webhooks, or on-demand by the backend.
 
 1. B. **Main Backend / Content Engine Orchestrator**
@@ -248,9 +249,9 @@ FOR EACH ROW EXECUTE FUNCTION pages_seo_trigger();
 
 1. A. In the CMS or admin UI, provide controls per content item:
    1. A.1. `SEO Mode`:
-       - `auto` – AI controls metadata entirely.
-       - `manual_override` – human edits freeze AI changes.
-       - `needs_review` – AI suggestions exist, human must approve.
+      - `auto` – AI controls metadata entirely.
+      - `manual_override` – human edits freeze AI changes.
+      - `needs_review` – AI suggestions exist, human must approve.
 
 1. B. Provide change history:
    1. B.1. Show previous meta vs newly generated meta.
@@ -262,18 +263,18 @@ FOR EACH ROW EXECUTE FUNCTION pages_seo_trigger();
 
 1. A. KPIs
    1. A.1. Percentage of public pages with:
-       - Non-empty titles
-       - Non-empty descriptions
-       - Valid canonical URLs
-       - Generated schema
+      - Non-empty titles
+      - Non-empty descriptions
+      - Valid canonical URLs
+      - Generated schema
    1. A.2. Percentage of images with alt text.
 
 1. B. Periodic AI Quality Audits
    1. B.1. Randomly sample pages.
    1. B.2. Have AI self-check for:
-       - Overly generic descriptions
-       - Keyword stuffing
-       - Mismatched canonical URLs.
+      - Overly generic descriptions
+      - Keyword stuffing
+      - Mismatched canonical URLs.
 
 ---
 
@@ -287,4 +288,3 @@ This section is reserved for future improvements such as:
 1. D. Topic clustering and content gap analysis.
 
 Last_Updated will be bumped when v1.1 is formally defined.
-

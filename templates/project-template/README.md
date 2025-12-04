@@ -81,6 +81,7 @@ Each rule file has a **"Customization Notes"** section. Adapt them for your proj
 ### 3. Add Your Standards
 
 Create `standards/` directory with comprehensive documentation:
+
 - `standards/frontend/` - Complete frontend patterns
 - `standards/backend/` - Complete backend patterns
 - `standards/database/` - Complete database patterns
@@ -91,6 +92,7 @@ Nested rules **reference** these standards, keeping rules concise.
 ### 4. Create AGENTS.md
 
 Create an `AGENTS.md` file at the root with:
+
 - Project mission and goals
 - Current phase and active tasks
 - Architecture highlights
@@ -107,13 +109,13 @@ See the main repository's `AGENTS.md` for a template.
 
 When you're working in different directories, the AI agent automatically adopts different behaviors:
 
-| Working In | Active Rules | Agent Behavior |
-|------------|-------------|----------------|
-| `src/frontend/` | Root + Frontend | Acts as **Frontend Specialist** - knows React patterns, component structure, styling |
-| `src/backend/` | Root + Backend | Acts as **Backend Specialist** - knows API patterns, error handling, services |
-| `database/` | Root + Database | Acts as **Database Manager** - knows schema design, migrations, RLS |
-| `tests/` | Root + Testing | Acts as **QA Engineer** - knows test patterns, coverage, mocking |
-| `docs/` | Root + Documentation | Acts as **Technical Writer** - knows docs structure, style, formatting |
+| Working In      | Active Rules         | Agent Behavior                                                                       |
+| --------------- | -------------------- | ------------------------------------------------------------------------------------ |
+| `src/frontend/` | Root + Frontend      | Acts as **Frontend Specialist** - knows React patterns, component structure, styling |
+| `src/backend/`  | Root + Backend       | Acts as **Backend Specialist** - knows API patterns, error handling, services        |
+| `database/`     | Root + Database      | Acts as **Database Manager** - knows schema design, migrations, RLS                  |
+| `tests/`        | Root + Testing       | Acts as **QA Engineer** - knows test patterns, coverage, mocking                     |
+| `docs/`         | Root + Documentation | Acts as **Technical Writer** - knows docs structure, style, formatting               |
 
 ### Benefits
 
@@ -121,7 +123,7 @@ When you're working in different directories, the AI agent automatically adopts 
 ✅ **Focused Guidance** - Agent sees only relevant rules for current work  
 ✅ **Reduced Cognitive Load** - Rules stay concise and actionable  
 ✅ **Consistent Patterns** - Same agent enforces different patterns per domain  
-✅ **Scalable** - Add new domains by creating new nested rules  
+✅ **Scalable** - Add new domains by creating new nested rules
 
 ---
 
@@ -134,6 +136,7 @@ When you're working in different directories, the AI agent automatically adopts 
 ### Keep Nested Rules Concise
 
 Nested rules should contain:
+
 1. **Core requirements** - What to do
 2. **Common patterns** - How to do it
 3. **Examples** - Good vs bad
@@ -148,12 +151,14 @@ Don't duplicate everything from standards - just provide actionable directives.
 When working in `src/frontend/components/UserCard.tsx`:
 
 **Active Rules:**
+
 - `.cursor/rules/ai-interaction-rules.mdc` (root)
 - `.cursor/rules/runtime-configuration.mdc` (root)
 - `.cursor/rules/task-workflow.mdc` (root)
 - `src/frontend/.cursor/rules/frontend-standards.mdc` ✨ (nested)
 
 **Agent Behavior:**
+
 - Knows to use TypeScript
 - Knows to create props interface
 - Knows to use named exports
@@ -167,11 +172,13 @@ When working in `src/frontend/components/UserCard.tsx`:
 When adapting this template:
 
 ### Root Rules
+
 - [ ] Update `ai-interaction-rules.mdc` with project conventions
 - [ ] Update `runtime-configuration.mdc` with tech stack versions
 - [ ] Update `task-workflow.mdc` with git/PR workflow
 
 ### Nested Rules
+
 - [ ] Adapt `frontend-standards.mdc` for your frontend stack
 - [ ] Adapt `backend-standards.mdc` for your backend patterns
 - [ ] Adapt `database-standards.mdc` for your database (if applicable)
@@ -179,6 +186,7 @@ When adapting this template:
 - [ ] Adapt `documentation-standards.mdc` for your docs format
 
 ### Project Setup
+
 - [ ] Create `AGENTS.md` with project context
 - [ ] Create `standards/` with comprehensive documentation
 - [ ] Update `.env.example` with required environment variables
@@ -198,6 +206,7 @@ When adapting this template:
 ## 🤝 Contributing
 
 When you discover useful patterns or improvements:
+
 1. Update the relevant nested rule
 2. Document in your project's `standards/`
 3. Consider contributing back to the main standards library
@@ -213,4 +222,3 @@ When you discover useful patterns or improvements:
 ---
 
 **Happy coding with your AI agent team! 🚀**
-

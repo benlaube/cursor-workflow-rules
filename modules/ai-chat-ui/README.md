@@ -1,6 +1,7 @@
 # AI Chat UI Module
 
 ## Metadata
+
 - **Module:** ai-chat-ui
 - **Version:** 1.0.0
 - **Created:** 2025-01-27
@@ -65,34 +66,23 @@ npm install ai
 import { useChatWithAttachments, MessageBubble, AttachmentPicker } from '@/components/ai-chat-ui';
 
 export default function Chat() {
-  const { 
-    messages, 
-    input, 
-    handleInputChange, 
-    handleSubmit, 
-    addFiles, 
-    attachments 
-  } = useChatWithAttachments({
-    api: '/api/chat'
-  });
+  const { messages, input, handleInputChange, handleSubmit, addFiles, attachments } =
+    useChatWithAttachments({
+      api: '/api/chat',
+    });
 
   return (
     <div className="flex flex-col h-screen">
       <div className="flex-1 overflow-y-auto p-4">
-        {messages.map(m => (
-          <MessageBubble 
-            key={m.id} 
-            role={m.role} 
-            content={m.content}
-            attachments={m.attachments}
-          />
+        {messages.map((m) => (
+          <MessageBubble key={m.id} role={m.role} content={m.content} attachments={m.attachments} />
         ))}
       </div>
-      
+
       <form onSubmit={handleSubmit} className="p-4 border-t">
         <AttachmentPicker onFilesSelected={addFiles} />
-        <input 
-          value={input} 
+        <input
+          value={input}
           onChange={handleInputChange}
           placeholder="Type a message..."
           className="w-full p-2 border rounded"
@@ -112,14 +102,12 @@ export default function ChatWithMemory() {
   const memory = {
     userName: 'Alice',
     preferences: ['dark mode', 'notifications'],
-    recentTopics: ['orders', 'shipping']
+    recentTopics: ['orders', 'shipping'],
   };
 
   return (
     <div className="flex">
-      <div className="flex-1">
-        {/* Chat interface */}
-      </div>
+      <div className="flex-1">{/* Chat interface */}</div>
       <MemoryWidget memory={memory} />
     </div>
   );
@@ -135,19 +123,20 @@ Display individual chat messages with proper styling:
 ```tsx
 import { MessageBubble } from '@/components/ai-chat-ui';
 
-<MessageBubble 
-  role="user"           // 'user' | 'assistant' | 'system'
-  content="Hello!"      // Message text
-  attachments={[        // Optional attachments
+<MessageBubble
+  role="user" // 'user' | 'assistant' | 'system'
+  content="Hello!" // Message text
+  attachments={[
+    // Optional attachments
     {
       id: '1',
       url: '/image.jpg',
       type: 'image',
-      name: 'image.jpg'
-    }
+      name: 'image.jpg',
+    },
   ]}
-  isThinking={false}    // Show thinking indicator
-/>
+  isThinking={false} // Show thinking indicator
+/>;
 ```
 
 ### AttachmentPicker Component
@@ -157,15 +146,15 @@ File selection with drag-and-drop:
 ```tsx
 import { AttachmentPicker } from '@/components/ai-chat-ui';
 
-<AttachmentPicker 
+<AttachmentPicker
   onFilesSelected={(files) => {
     // Handle selected files
     console.log(files);
   }}
-  accept="image/*,application/pdf"  // Optional: file types
-  maxFiles={5}                       // Optional: max files
-  maxSize={5 * 1024 * 1024}          // Optional: max size (5MB)
-/>
+  accept="image/*,application/pdf" // Optional: file types
+  maxFiles={5} // Optional: max files
+  maxSize={5 * 1024 * 1024} // Optional: max size (5MB)
+/>;
 ```
 
 ### MemoryWidget Component
@@ -181,16 +170,16 @@ const memory = {
   recentTopics: ['orders', 'shipping', 'returns'],
   context: {
     lastOrder: '2025-01-15',
-    favoriteCategory: 'Electronics'
-  }
+    favoriteCategory: 'Electronics',
+  },
 };
 
-<MemoryWidget 
+<MemoryWidget
   memory={memory}
   onUpdate={(updated) => {
     // Handle memory updates
   }}
-/>
+/>;
 ```
 
 ### useChatWithAttachments Hook
@@ -201,21 +190,22 @@ Enhanced chat hook with attachment support:
 import { useChatWithAttachments } from '@/components/ai-chat-ui';
 
 const {
-  messages,              // Chat messages
-  input,                 // Current input value
-  handleInputChange,     // Input change handler
-  handleSubmit,          // Form submit handler
-  isLoading,            // Loading state
-  error,                // Error state
-  attachments,          // Current attachments
-  addFiles,             // Add files function
-  removeAttachment      // Remove attachment function
+  messages, // Chat messages
+  input, // Current input value
+  handleInputChange, // Input change handler
+  handleSubmit, // Form submit handler
+  isLoading, // Loading state
+  error, // Error state
+  attachments, // Current attachments
+  addFiles, // Add files function
+  removeAttachment, // Remove attachment function
 } = useChatWithAttachments({
-  api: '/api/chat',      // API endpoint
-  initialMessages: [],  // Optional: initial messages
-  onError: (error) => { // Optional: error handler
+  api: '/api/chat', // API endpoint
+  initialMessages: [], // Optional: initial messages
+  onError: (error) => {
+    // Optional: error handler
     console.error(error);
-  }
+  },
 });
 ```
 
@@ -252,10 +242,10 @@ interface Attachment {
 ```typescript
 interface AttachmentPickerProps {
   onFilesSelected: (files: File[]) => void;
-  accept?: string;           // File type filter (e.g., "image/*")
-  maxFiles?: number;        // Maximum number of files
-  maxSize?: number;         // Maximum file size in bytes
-  disabled?: boolean;       // Disable file selection
+  accept?: string; // File type filter (e.g., "image/*")
+  maxFiles?: number; // Maximum number of files
+  maxSize?: number; // Maximum file size in bytes
+  disabled?: boolean; // Disable file selection
 }
 ```
 
@@ -272,7 +262,7 @@ interface MemoryWidgetProps {
     context?: Record<string, any>;
   };
   onUpdate?: (memory: Memory) => void;
-  editable?: boolean;       // Allow editing memory
+  editable?: boolean; // Allow editing memory
 }
 ```
 
@@ -284,8 +274,8 @@ interface MemoryWidgetProps {
 
 ```typescript
 interface UseChatWithAttachmentsOptions {
-  api: string;                    // API endpoint for chat
-  initialMessages?: Message[];     // Initial conversation
+  api: string; // API endpoint for chat
+  initialMessages?: Message[]; // Initial conversation
   onError?: (error: Error) => void; // Error handler
   // ... other useChat options from Vercel AI SDK
 }
@@ -336,7 +326,7 @@ Use with `ai-agent-kit` for backend AI interactions:
 import { useChatWithAttachments } from '@/components/ai-chat-ui';
 
 const { messages, input, handleSubmit } = useChatWithAttachments({
-  api: '/api/chat'
+  api: '/api/chat',
 });
 
 // Backend API route (app/api/chat/route.ts)
@@ -348,9 +338,9 @@ export const POST = createApiHandler({
     const agent = new AgentClient({ provider: 'openai' });
     return await agent.chat({
       messages: input.messages,
-      system: SUPPORT_AGENT_PROMPT(input.userName)
+      system: SUPPORT_AGENT_PROMPT(input.userName),
     });
-  }
+  },
 });
 ```
 
@@ -370,11 +360,11 @@ const { addFiles, attachments } = useChatWithAttachments({
       const result = await uploadFile(supabase, {
         bucket: 'chat-attachments',
         path: `user-${userId}/${file.name}`,
-        file: file
+        file: file,
       });
       // Add uploaded URL to attachments
     }
-  }
+  },
 });
 ```
 
@@ -392,7 +382,7 @@ const { messages, handleSubmit } = useChatWithAttachments({
   api: '/api/chat',
   onResponse: (response) => {
     logger.info('Chat response received', { messageCount: messages.length });
-  }
+  },
 });
 ```
 

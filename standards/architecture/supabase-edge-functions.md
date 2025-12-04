@@ -1,6 +1,7 @@
 # When_to_use_Supabase_Edge_Functions_v1.0
 
 ## Metadata
+
 - **Created:** 2025-11-18
 - **Last Updated:** 2025-11-18
 - **Version:** 1.0
@@ -83,7 +84,6 @@ A4. **Lightweight AI Tasks (No Fancy UX)**
 
 Example: Label all new blog posts with 2–3 SEO categories or content types.
 
-
 ### 3.2 When Not to Use Edge Functions
 
 B1. **Interactive AI Chat with Streaming UX**
@@ -154,7 +154,6 @@ This is a great fit for **Content Engine** flows and CRM enrichment.
   - A Supabase Edge Function that creates the `sitemap.xml` content.
   - Supabase triggers or webhook logic that call this function when necessary.
 
-
 ### 5.2 AI Agent – Discovery & Design Checklist
 
 When the AI Agent sets this up, it should follow this logical sequence:
@@ -172,7 +171,6 @@ D1. **Identify the Core Page Tables**
 
 > **Comment:** The AI Agent should **not hardcode table names if avoidable**. It can infer from naming conventions and, if available, project docs or a `public_pages`/`routes` meta table.
 
-
 D2. **Determine the Public Base URL**
 
 - The sitemap must use **absolute URLs**.
@@ -184,7 +182,6 @@ D2. **Determine the Public Base URL**
 
 > **Comment:** Never ship a sitemap with `localhost` or blank base URLs in production. If uncertain, the AI Agent should default to a safe placeholder and mark clearly in comments.
 
-
 D3. **Choose the Storage Location for `sitemap.xml`**
 
 - Preferred pattern: Store `sitemap.xml` in **Supabase Storage** in a bucket dedicated to public assets, e.g. `public-assets`.
@@ -193,7 +190,6 @@ D3. **Choose the Storage Location for `sitemap.xml`**
   - Pull the file during build/deploy and place it in the actual public folder.
 
 > **Comment:** Direct filesystem writes from an Edge Function will usually **not** end up in your app’s public folder. Storage bucket or a deploy hook pattern is more reliable.
-
 
 D4. **Define the Regeneration Trigger Conditions**
 
@@ -227,7 +223,6 @@ CREATE TABLE IF NOT EXISTS sitemap_jobs (
 
 > **Comment:** The job-table pattern prevents over-triggering and makes it easy to batch changes when many pages are updated at once.
 
-
 ### 5.3 Edge Function – Sitemap Generation Logic (Heavily Commented)
 
 Below is **pseudocode-style TypeScript** for the AI Agent to follow. It should adapt names to the actual project schema.
@@ -236,15 +231,15 @@ Below is **pseudocode-style TypeScript** for the AI Agent to follow. It should a
 // File: supabase/functions/generate_sitemap/index.ts
 // v1.0 – Example Edge Function to generate sitemap.xml
 
-import { serve } from "https://deno.land/std/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { serve } from 'https://deno.land/std/http/server.ts';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 // NOTE: The AI Agent should ensure these environment variables
 // are set in the Supabase project configuration.
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const SITE_BASE_URL = Deno.env.get("SITE_URL") ?? "https://example.com"; // <-- AI should try to discover or document this
-const SITEMAP_BUCKET = Deno.env.get("SITEMAP_BUCKET") ?? "public-assets";  // bucket where sitemap.xml will be stored
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+const SITE_BASE_URL = Deno.env.get('SITE_URL') ?? 'https://example.com'; // <-- AI should try to discover or document this
+const SITEMAP_BUCKET = Deno.env.get('SITEMAP_BUCKET') ?? 'public-assets'; // bucket where sitemap.xml will be stored
 
 // Create a service-role client so we can read everything needed
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
@@ -259,12 +254,12 @@ async function fetchPublicRoutes() {
 
   // Example for a single `pages` table:
   const { data, error } = await supabase
-    .from("pages")
-    .select("slug, updated_at, is_public")
-    .eq("is_public", true);
+    .from('pages')
+    .select('slug, updated_at, is_public')
+    .eq('is_public', true);
 
   if (error) {
-    console.error("Error fetching pages for sitemap", error);
+    console.error('Error fetching pages for sitemap', error);
     throw error;
   }
 
@@ -282,16 +277,18 @@ function buildSitemapXml(routes: { loc: string; lastmod?: string }[]): string {
     .map((route) => {
       const lastmodTag = route.lastmod
         ? `<lastmod>${new Date(route.lastmod).toISOString()}</lastmod>`
-        : "";
+        : '';
 
-      return `  <url>\n    <loc>${route.loc}</loc>\n${lastmodTag ? `    ${lastmodTag}\n` : ""}  </url>`;
+      return `  <url>\n    <loc>${route.loc}</loc>\n${lastmodTag ? `    ${lastmodTag}\n` : ''}  </url>`;
     })
-    .join("\n");
+    .join('\n');
 
-  return `<?xml version="1.0" encoding="UTF-8"?>\n` +
+  return (
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     `${urlset}\n` +
-    `</urlset>`;
+    `</urlset>`
+  );
 }
 
 async function writeSitemapToStorage(xml: string) {
@@ -301,13 +298,13 @@ async function writeSitemapToStorage(xml: string) {
 
   const { data, error } = await supabase.storage
     .from(SITEMAP_BUCKET)
-    .upload("sitemap.xml", new TextEncoder().encode(xml), {
+    .upload('sitemap.xml', new TextEncoder().encode(xml), {
       upsert: true, // overwrite existing sitemap.xml
-      contentType: "application/xml",
+      contentType: 'application/xml',
     });
 
   if (error) {
-    console.error("Error writing sitemap.xml to storage", error);
+    console.error('Error writing sitemap.xml to storage', error);
     throw error;
   }
 
@@ -326,18 +323,15 @@ serve(async (req) => {
     // Optionally, update sitemap_jobs table to mark jobs as completed
     // if you are using the job-queue pattern.
 
-    return new Response(
-      JSON.stringify({ success: true, routesCount: routes.length }),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      },
-    );
+    return new Response(JSON.stringify({ success: true, routesCount: routes.length }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (err) {
-    console.error("Failed to generate sitemap.xml", err);
+    console.error('Failed to generate sitemap.xml', err);
     return new Response(JSON.stringify({ success: false, error: String(err) }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 });
@@ -348,7 +342,6 @@ serve(async (req) => {
 > - Inspect the database schema (via Supabase tools/MCP).
 > - Identify the correct "public page" tables and columns.
 > - Update the `fetchPublicRoutes` logic accordingly.
-
 
 ### 5.4 Example Trigger Logic (SQL, Heavily Commented)
 
@@ -420,7 +413,6 @@ EXECUTE FUNCTION pages_sitemap_trigger();
 > - For other tables that contribute to public URLs (e.g., `posts`, `categories` that are part of the path), the AI Agent should create similar triggers.
 > - If the site uses a more complex route system, consider a central `routes` or `public_routes` table and attach triggers there instead.
 
-
 ### 5.5 Invoking the Edge Function from Jobs
 
 The AI Agent can choose one of these patterns:
@@ -436,7 +428,6 @@ E2. **Immediate Invocation on Each Job**
 - Suitable for low to moderate traffic when you want fast sitemap updates.
 
 > **Comment:** The AI Agent should consider **rate-limiting** sitemap regenerations if the content management UI can cause many changes in a short time.
-
 
 ## 6. Summary for the AI Agent
 
@@ -464,4 +455,3 @@ F4. Comment the generated code heavily so future developers (and future AI Agent
 - How the sitemap is built.
 - How triggers decide when to regenerate.
 - How the hosting layer serves the final `sitemap.xml` file to crawlers.
-

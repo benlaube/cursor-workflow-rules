@@ -1,6 +1,7 @@
 # Git_Repository_Standards_v1.1
 
 ## Metadata
+
 - **Created:** 2025-11-17
 - **Last Updated:** 04-12-2025 12:42:51 EST
 - **Version:** 1.2
@@ -18,7 +19,9 @@
 ---
 
 ## A. When to Apply This Rule
+
 Apply this rule whenever:
+
 - Initializing a new repository.
 - Creating a new branch.
 - Committing code.
@@ -31,11 +34,14 @@ Apply this rule whenever:
 We use a simplified **Feature Branch Workflow**.
 
 ### B.1 Main Branches
+
 - **`main`**: The production-ready state. Protected. No direct commits allowed.
 - **`develop`** (Optional): For larger teams, acts as a staging ground.
 
 ### B.2 Feature Branches
+
 All work happens on short-lived feature branches.
+
 - **Format:** `{type}/{context}-{short-desc}`
 - **Examples:**
   - `feat/user-auth-login`
@@ -44,12 +50,13 @@ All work happens on short-lived feature branches.
   - `chore/bump-dependencies`
 
 ### B.3 Branch Lifecycle
-1.  Sync `main`: `git checkout main && git pull`
-2.  Create branch: `git checkout -b feat/my-feature`
-3.  Work & Commit.
-4.  Push: `git push -u origin feat/my-feature`
-5.  Open PR.
-6.  Merge (Squash & Merge recommended) & Delete branch.
+
+1. Sync `main`: `git checkout main && git pull`
+2. Create branch: `git checkout -b feat/my-feature`
+3. Work & Commit.
+4. Push: `git push -u origin feat/my-feature`
+5. Open PR.
+6. Merge (Squash & Merge recommended) & Delete branch.
 
 ---
 
@@ -58,6 +65,7 @@ All work happens on short-lived feature branches.
 We follow **Conventional Commits** to make history semantic and machine-readable.
 
 ### C.1 Format
+
 ```
 <type>(<scope>): <subject>
 
@@ -67,6 +75,7 @@ We follow **Conventional Commits** to make history semantic and machine-readable
 ```
 
 ### C.2 Types
+
 - **`feat`**: A new feature (correlates with MINOR in SemVer).
 - **`fix`**: A bug fix (correlates with PATCH in SemVer).
 - **`docs`**: Documentation only changes.
@@ -77,6 +86,7 @@ We follow **Conventional Commits** to make history semantic and machine-readable
 - **`chore`**: Build process or auxiliary tool changes.
 
 ### C.3 Examples
+
 - `feat(auth): add google oauth login support`
 - `fix(api): handle null response in user profile`
 - `docs(readme): update installation instructions`
@@ -86,19 +96,25 @@ We follow **Conventional Commits** to make history semantic and machine-readable
 ## D. Pull Request (PR) Process
 
 ### D.1 PR Title
+
 Use the Conventional Commit format for the PR title.
+
 - Bad: "Fixed the bug"
 - Good: "fix(payment): resolve double-charge issue on retry"
 
 ### D.2 PR Description
+
 Every PR must include:
+
 - **Summary:** What changed?
 - **Type of Change:** (Feature, Fix, Refactor)
 - **Test Plan:** How was this tested? (Unit tests, Manual verification)
 - **Screenshots/Logs:** (If UI or Logic change)
 
 ### D.3 Review Checklist
+
 Before merging, the Reviewer (AI or Human) must verify:
+
 - [ ] CI/CD checks pass.
 - [ ] No secrets are exposed.
 - [ ] Code follows style guide.
@@ -109,19 +125,23 @@ Before merging, the Reviewer (AI or Human) must verify:
 ## E. .gitignore Standards
 
 ### E.1 Universal Excludes
+
 Every repo must exclude:
+
 - `node_modules/`, `venv/`, `.env` (and all variants).
 - OS files: `.DS_Store`, `Thumbs.db`.
 - Editor files: `.vscode/`, `.idea/` (unless shared settings).
 - Logs: `*.log`, `npm-debug.log`.
 
 ### E.2 Security
+
 - Explicitly ignore `*.pem`, `*.key`, `credentials.json`.
 - Ensure `.env` is in `.gitignore` before the first commit.
 
 ---
 
 ## F. AI Agent Behavior
+
 - **Branch Creation:** Always ask for the task context to name the branch correctly.
 - **Commit Messages:** Always write semantic commit messages. Never use "update code" or "misc changes".
 - **PR Description:** Auto-generate a detailed PR description based on the diff.

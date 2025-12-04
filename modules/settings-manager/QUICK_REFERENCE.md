@@ -42,8 +42,8 @@ In `settings-manager.ts`, update imports to match your project:
 
 ```typescript
 // Change these lines:
-import { db } from '../db/client'           // Your DB client path
-import { settings, environmentVariables } from '../db/schema'  // Your schema path
+import { db } from '../db/client'; // Your DB client path
+import { settings, environmentVariables } from '../db/schema'; // Your schema path
 ```
 
 ### 3. Add Schema Tables
@@ -51,8 +51,12 @@ import { settings, environmentVariables } from '../db/schema'  // Your schema pa
 Add to your `schema.ts`:
 
 ```typescript
-export const settings = sqliteTable('settings', { /* ... */ })
-export const environmentVariables = sqliteTable('environment_variables', { /* ... */ })
+export const settings = sqliteTable('settings', {
+  /* ... */
+});
+export const environmentVariables = sqliteTable('environment_variables', {
+  /* ... */
+});
 ```
 
 ### 4. Set Encryption Key
@@ -66,18 +70,18 @@ ENCRYPTION_KEY=$(node -e "console.log(require('crypto').randomBytes(32).toString
 ### 5. Use in Code
 
 ```typescript
-import { SettingsManager } from '@/lib/settings/settings-manager'
+import { SettingsManager } from '@/lib/settings/settings-manager';
 
 // Get setting
-const apiKey = await SettingsManager.getSettingValue('openai_api_key', 'production')
+const apiKey = await SettingsManager.getSettingValue('openai_api_key', 'production');
 
 // Save setting
 await SettingsManager.saveSetting({
   key: 'openai_api_key',
   value: 'sk-...',
   environment: 'production',
-  isSecret: true
-})
+  isSecret: true,
+});
 ```
 
 ---
@@ -86,23 +90,23 @@ await SettingsManager.saveSetting({
 
 ```typescript
 // app/api/settings/route.ts
-import { SettingsManager } from '@/lib/settings/settings-manager'
+import { SettingsManager } from '@/lib/settings/settings-manager';
 
 export async function GET(request: NextRequest) {
-  const env = request.nextUrl.searchParams.get('environment') || 'default'
-  const settings = await SettingsManager.getSettings(env)
-  return NextResponse.json({ 
-    settings: settings.map(s => ({
+  const env = request.nextUrl.searchParams.get('environment') || 'default';
+  const settings = await SettingsManager.getSettings(env);
+  return NextResponse.json({
+    settings: settings.map((s) => ({
       ...s,
-      value: SettingsManager.maskSettingValue(s)
-    }))
-  })
+      value: SettingsManager.maskSettingValue(s),
+    })),
+  });
 }
 
 export async function POST(request: NextRequest) {
-  const { key, value, environment, isSecret } = await request.json()
-  await SettingsManager.saveSetting({ key, value, environment, isSecret })
-  return NextResponse.json({ success: true })
+  const { key, value, environment, isSecret } = await request.json();
+  await SettingsManager.saveSetting({ key, value, environment, isSecret });
+  return NextResponse.json({ success: true });
 }
 ```
 
@@ -114,9 +118,8 @@ export async function POST(request: NextRequest) {
 ✅ Encryption for secrets  
 ✅ MCP server association  
 ✅ Automatic masking in UI  
-✅ Fallback to process.env  
+✅ Fallback to process.env
 
 ---
 
 **Full Documentation**: See `settings_module_integration_guide.md`
-

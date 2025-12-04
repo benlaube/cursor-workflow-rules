@@ -12,7 +12,7 @@
 **Commands with Complete Metadata:** 18 (64%)  
 **Commands Needing Updates:** 10 (36%)  
 **Missing Commands (Referenced in AGENTS.md):** 4  
-**Duplicate Files:** 1  
+**Duplicate Files:** 1
 
 **Overall Status:** ⚠️ Needs Attention
 
@@ -56,6 +56,7 @@ These commands are referenced in `AGENTS.md` but the files don't exist:
 ### ⚠️ Missing Required Fields
 
 #### 2.1 `update-changelog.md`
+
 - **Status:** ⚠️ Incomplete
 - **Issues:**
   - ❌ Missing "Purpose" section (only has heading)
@@ -69,6 +70,7 @@ These commands are referenced in `AGENTS.md` but the files don't exist:
 - **Recommendation:** Add all required sections per `cursor-command-creation.mdc` Section 2
 
 #### 2.2 `review-codebase.md`
+
 - **Status:** ⚠️ Incomplete
 - **Issues:**
   - ❌ Missing "Purpose" section content (only has heading)
@@ -82,6 +84,7 @@ These commands are referenced in `AGENTS.md` but the files don't exist:
 - **Recommendation:** Add all required sections per `cursor-command-creation.mdc` Section 2
 
 #### 2.3 `review-all-docs.md`
+
 - **Status:** ⚠️ Incomplete
 - **Issues:**
   - ❌ Missing "Purpose" section content (only has heading)
@@ -95,6 +98,7 @@ These commands are referenced in `AGENTS.md` but the files don't exist:
 - **Recommendation:** Add all required sections per `cursor-command-creation.mdc` Section 2
 
 #### 2.4 `audit-database.md`
+
 - **Status:** ⚠️ Incomplete
 - **Issues:**
   - ❌ Missing "Purpose" section content (only has heading)
@@ -108,6 +112,7 @@ These commands are referenced in `AGENTS.md` but the files don't exist:
 - **Recommendation:** Add all required sections per `cursor-command-creation.mdc` Section 2
 
 #### 2.5 `mcp.md`
+
 - **Status:** ⚠️ Incomplete
 - **Issues:**
   - ❌ Missing "Purpose" section content (only has heading)
@@ -121,6 +126,7 @@ These commands are referenced in `AGENTS.md` but the files don't exist:
 - **Recommendation:** Add all required sections per `cursor-command-creation.mdc` Section 2
 
 #### 2.6 `integrate-cursor-workflow-standards.md`
+
 - **Status:** ⚠️ Incomplete
 - **Issues:**
   - ❌ Missing "Purpose" section content (only has heading)
@@ -142,6 +148,7 @@ These commands are referenced in `AGENTS.md` but the files don't exist:
 Several commands use inconsistent date formats in metadata:
 
 #### 3.1 Wrong Date Format
+
 - **`audit-docs.md`**: Uses `12-01-2025` (should be `DD-MM-YYYY` format)
 - **`audit-access-control.md`**: Uses `12-02-2025` (should be `DD-MM-YYYY` format)
 - **`notion-sync-project-metadata.md`**: Uses `12-02-2025` (should be `DD-MM-YYYY` format)
@@ -182,6 +189,7 @@ All commands reviewed have "How to Use" in metadata ✅
 ## 6. Duplicate Files
 
 ### 6.1 `create-start-scripts 2.md`
+
 - **Status:** ❌ Duplicate file
 - **Issue:** Duplicate of `create-start-scripts.md` with space and "2" in filename
 - **Recommendation:** Delete `create-start-scripts 2.md` (violates file naming standards - should be kebab-case, no spaces)
@@ -191,6 +199,7 @@ All commands reviewed have "How to Use" in metadata ✅
 ## 7. Commands with Naming Issues
 
 ### 7.1 `create-start-scripts 2.md`
+
 - **Issue:** Contains space and "2" in filename
 - **Standard:** Commands should use `kebab-case.md` format
 - **Recommendation:** Delete this file (duplicate)
@@ -220,32 +229,32 @@ These commands serve as good examples of complete structure:
 
 ### 9.1 Commands Needing Immediate Attention
 
-| Command | Issues | Priority |
-|---------|--------|----------|
-| `update-changelog.md` | Missing all content sections | High |
-| `review-codebase.md` | Missing all content sections | High |
-| `review-all-docs.md` | Missing all content sections | High |
-| `audit-database.md` | Missing all content sections | High |
-| `mcp.md` | Missing all content sections | High |
-| `integrate-cursor-workflow-standards.md` | Missing all content sections | High |
-| `create-start-scripts 2.md` | Duplicate file, naming violation | Medium |
-| `audit-docs.md` | Wrong date format | Low |
-| `audit-access-control.md` | Wrong date format | Low |
-| `notion-sync-project-metadata.md` | Wrong date format | Low |
-| `notion-create-project-binding-rule.md` | Wrong date format | Low |
-| `notion-task-creation.md` | Wrong date format | Low |
-| `full-project-health-check.md` | Wrong date format | Low |
-| `audit-project.md` | Wrong date format | Low |
-| `audit-security.md` | Wrong date format | Low |
+| Command                                  | Issues                           | Priority |
+| ---------------------------------------- | -------------------------------- | -------- |
+| `update-changelog.md`                    | Missing all content sections     | High     |
+| `review-codebase.md`                     | Missing all content sections     | High     |
+| `review-all-docs.md`                     | Missing all content sections     | High     |
+| `audit-database.md`                      | Missing all content sections     | High     |
+| `mcp.md`                                 | Missing all content sections     | High     |
+| `integrate-cursor-workflow-standards.md` | Missing all content sections     | High     |
+| `create-start-scripts 2.md`              | Duplicate file, naming violation | Medium   |
+| `audit-docs.md`                          | Wrong date format                | Low      |
+| `audit-access-control.md`                | Wrong date format                | Low      |
+| `notion-sync-project-metadata.md`        | Wrong date format                | Low      |
+| `notion-create-project-binding-rule.md`  | Wrong date format                | Low      |
+| `notion-task-creation.md`                | Wrong date format                | Low      |
+| `full-project-health-check.md`           | Wrong date format                | Low      |
+| `audit-project.md`                       | Wrong date format                | Low      |
+| `audit-security.md`                      | Wrong date format                | Low      |
 
 ### 9.2 Missing Commands (Referenced in AGENTS.md)
 
-| Command | Status | Impact |
-|---------|--------|--------|
-| `pre-flight-check.md` | Missing | High - Core workflow |
-| `pr-review-check.md` | Missing | High - Core workflow |
-| `project-audit.md` | Missing (but `audit-project.md` exists) | Medium - Naming confusion |
-| `validate-code-quality.md` | Missing | Medium - Linting command |
+| Command                    | Status                                  | Impact                    |
+| -------------------------- | --------------------------------------- | ------------------------- |
+| `pre-flight-check.md`      | Missing                                 | High - Core workflow      |
+| `pr-review-check.md`       | Missing                                 | High - Core workflow      |
+| `project-audit.md`         | Missing (but `audit-project.md` exists) | Medium - Naming confusion |
+| `validate-code-quality.md` | Missing                                 | Medium - Linting command  |
 
 ---
 
@@ -301,6 +310,7 @@ These commands serve as good examples of complete structure:
 ### 11.1 Metadata Compliance
 
 **Required Fields (per `cursor-command-creation.mdc` Section 2):**
+
 - ✅ **Status:** All commands have this
 - ⚠️ **Created:** 8 commands have wrong date format
 - ✅ **Last Updated:** All commands have this (some may need format fix)
@@ -318,6 +328,7 @@ These commands serve as good examples of complete structure:
 ### 11.2 Content Structure Compliance
 
 **Required Sections (per `cursor-command-creation.mdc` Section 2):**
+
 - ✅ **Purpose:** All commands have this (6 have empty content)
 - ❌ **When to Use:** Missing in 6 commands
 - ❌ **Prerequisites:** Missing in 6 commands
@@ -331,6 +342,7 @@ These commands serve as good examples of complete structure:
 ## 12. Action Items Checklist
 
 ### High Priority
+
 - [ ] Create `pre-flight-check.md` command OR update AGENTS.md to reference rule only
 - [ ] Create `pr-review-check.md` command OR update AGENTS.md to reference rule only
 - [ ] Create `validate-code-quality.md` command
@@ -344,6 +356,7 @@ These commands serve as good examples of complete structure:
 - [ ] Delete `create-start-scripts 2.md` (duplicate)
 
 ### Medium Priority
+
 - [ ] Fix date format in `audit-docs.md` (`12-01-2025` → `01-12-2025`)
 - [ ] Fix date format in `audit-access-control.md` (`12-02-2025` → `02-12-2025`)
 - [ ] Fix date format in `notion-sync-project-metadata.md` (`12-02-2025` → `02-12-2025`)
@@ -354,6 +367,7 @@ These commands serve as good examples of complete structure:
 - [ ] Fix date format in `audit-security.md` (`12-02-2025` → `02-12-2025`)
 
 ### Low Priority
+
 - [ ] Update AGENTS.md to resolve missing command references
 - [ ] Consider standardizing command naming conventions
 
@@ -366,11 +380,10 @@ These commands serve as good examples of complete structure:
 **Incomplete Commands:** 10 (36%)  
 **Missing Commands (Referenced):** 4  
 **Duplicate Files:** 1  
-**Date Format Issues:** 8 commands  
+**Date Format Issues:** 8 commands
 
 **Overall Health:** ⚠️ Needs Attention
 
 ---
 
-*This audit was generated by analyzing all command files against the standards defined in `.cursor/rules/cursor-command-creation.mdc`.*
-
+_This audit was generated by analyzing all command files against the standards defined in `.cursor/rules/cursor-command-creation.mdc`._

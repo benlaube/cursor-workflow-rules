@@ -7,11 +7,13 @@ The documentation interface includes a comprehensive full-text search system tha
 ### Search Architecture
 
 **Frontend:**
+
 - `DocSearch` component - Search UI with input and results list
 - `useDocSearch` hook - React hook with debounced search (300ms delay)
 - Calls `/api/docs?search=query` API endpoint
 
 **Backend:**
+
 - `SearchService` - Full-text search service using Fuse.js
 - `FileService` - File reading and metadata access
 - API route: `app/api/docs/route.ts` handles search requests
@@ -31,7 +33,7 @@ The documentation interface includes a comprehensive full-text search system tha
      - Uses Fuse.js to search file names and paths
      - Weighted search (filename: 30%, path: 20%)
      - Returns results with match scores
-   
+
    - **Content Search** (Slower):
      - Reads file content for each markdown file
      - Performs case-insensitive text search
@@ -54,12 +56,14 @@ The documentation interface includes a comprehensive full-text search system tha
 ### Search Features
 
 **What Gets Searched:**
+
 - ✅ File names (e.g., `README.md`)
 - ✅ File paths (e.g., `docs/process/checklist.md`)
 - ✅ File content (markdown text)
 - ✅ Metadata (title, description from frontmatter)
 
 **Search Characteristics:**
+
 - **Fuzzy Matching:** Finds partial matches (e.g., "check" matches "checklist")
 - **Case Insensitive:** "README" matches "readme"
 - **Context Snippets:** Shows text around matches
@@ -69,6 +73,7 @@ The documentation interface includes a comprehensive full-text search system tha
 ### Performance
 
 **Optimizations:**
+
 - Filename search is fast (uses index)
 - Content search is slower (reads files)
 - Limited to 100 files for content search
@@ -76,6 +81,7 @@ The documentation interface includes a comprehensive full-text search system tha
 - Debouncing prevents excessive searches
 
 **Typical Performance:**
+
 - Filename search: < 10ms
 - Content search: 100-500ms (depends on file count)
 - Combined search: 100-600ms
@@ -83,6 +89,7 @@ The documentation interface includes a comprehensive full-text search system tha
 ### Usage
 
 **In the Interface:**
+
 1. Click "Search" button in toolbar
 2. Type your query in the search box
 3. Results appear as you type (after 300ms delay)
@@ -90,6 +97,7 @@ The documentation interface includes a comprehensive full-text search system tha
 5. Click "×" to clear search
 
 **Search Tips:**
+
 - Use specific terms for better results
 - Search for file names to find files quickly
 - Search for content to find specific information
@@ -98,11 +106,13 @@ The documentation interface includes a comprehensive full-text search system tha
 ### API Endpoint
 
 **Search Request:**
+
 ```http
 GET /api/docs?search=query
 ```
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -134,19 +144,21 @@ GET /api/docs?search=query
 ### Configuration
 
 **Search Service Options:**
+
 - `minScore`: Minimum relevance score (default: 0.6)
 - `limit`: Maximum results (default: 50)
 - `debounceMs`: Debounce delay (default: 300ms)
 
 **Customization:**
+
 ```typescript
-import { createSearchService } from '@/lib/docs-interface'
+import { createSearchService } from '@/lib/docs-interface';
 
 const searchService = createSearchService({
   fileService: myFileService,
-  minScore: 0.5,  // More lenient matching
-  limit: 100      // More results
-})
+  minScore: 0.5, // More lenient matching
+  limit: 100, // More results
+});
 ```
 
 ### Limitations
@@ -159,9 +171,9 @@ const searchService = createSearchService({
 ### Future Enhancements
 
 Potential improvements:
+
 - Persistent search index cache
 - Search history
 - Advanced filters (by folder, date, etc.)
 - Regex search support
 - Search result highlighting in file viewer
-

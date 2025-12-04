@@ -9,6 +9,7 @@ Last_Updated: 2025-01-27
 ## 1. Overview
 
 This guide walks you through setting up automatic sitemap generation that:
+
 - Detects content changes in your database
 - Triggers sitemap regeneration automatically
 - Stores sitemap.xml in Supabase Storage
@@ -46,10 +47,11 @@ This guide walks you through setting up automatic sitemap generation that:
 ### Step 3: Configure Edge Function
 
 1. **Deploy Edge Function:**
+
    ```bash
    # Copy Edge Function to your Supabase project
    cp -r modules/sitemap-module/supabase/functions/generate-sitemap supabase/functions/generate-sitemap
-   
+
    # Deploy
    supabase functions deploy generate-sitemap
    ```
@@ -73,13 +75,14 @@ This guide walks you through setting up automatic sitemap generation that:
    - Examples: `pages`, `posts`, `articles`, `docs`
 
 2. **Create Triggers:**
+
    ```sql
    -- Example for 'pages' table
    CREATE TRIGGER pages_sitemap_trigger
    AFTER INSERT OR UPDATE OR DELETE ON public.pages
    FOR EACH ROW
    EXECUTE FUNCTION public.content_sitemap_trigger();
-   
+
    -- Example for 'posts' table
    CREATE TRIGGER posts_sitemap_trigger
    AFTER INSERT OR UPDATE OR DELETE ON public.posts
@@ -94,14 +97,17 @@ This guide walks you through setting up automatic sitemap generation that:
 ### Step 5: Set Up Edge Function Webhook (Optional)
 
 **Option A: Manual Trigger**
+
 - Call Edge Function manually when needed
 - Use Supabase Dashboard > Edge Functions > Invoke
 
 **Option B: Cron Job (Recommended)**
+
 - Set up a cron job to call the Edge Function periodically
 - Use Supabase Cron or external service (e.g., Vercel Cron)
 
 **Option C: Database Webhook (Advanced)**
+
 - Use Supabase Database Webhooks to call Edge Function on `sitemap_jobs` insert
 - Configure webhook in Supabase Dashboard > Database > Webhooks
 
@@ -110,10 +116,12 @@ This guide walks you through setting up automatic sitemap generation that:
 Choose one approach:
 
 **Option A: Proxy to Storage (Recommended)**
+
 - See `modules/sitemap-module/nextjs-route-example.ts`
 - Proxies `/sitemap.xml` to Supabase Storage URL
 
 **Option B: Build-Time Fetch**
+
 - Fetch sitemap during build
 - Save to `public/sitemap.xml`
 - Served as static file
@@ -131,31 +139,31 @@ Edit `fetchRoutes()` in Edge Function:
 routes.push({
   loc: `${SITE_URL}/custom/${page.custom_path}`,
   lastmod: page.updated_at,
-  changefreq: "weekly",
+  changefreq: 'weekly',
   priority: 0.9,
-})
+});
 ```
 
 ### 4.2 Add Multiple Content Types
 
 ```typescript
 // Fetch from multiple tables
-const pages = await fetchPages()
-const posts = await fetchPosts()
-const products = await fetchProducts()
+const pages = await fetchPages();
+const posts = await fetchPosts();
+const products = await fetchProducts();
 
-const routes = [...pages, ...posts, ...products]
+const routes = [...pages, ...posts, ...products];
 ```
 
 ### 4.3 Custom Priority Logic
 
 ```typescript
 // Set priority based on content type or metadata
-const priority = page.is_featured ? 1.0 : 0.8
+const priority = page.is_featured ? 1.0 : 0.8;
 routes.push({
   loc: `${SITE_URL}/${page.slug}`,
   priority,
-})
+});
 ```
 
 ---
@@ -166,7 +174,7 @@ routes.push({
 
 ```sql
 -- Insert test content
-INSERT INTO pages (slug, is_public, title) 
+INSERT INTO pages (slug, is_public, title)
 VALUES ('test-page', true, 'Test Page');
 
 -- Check job was created
@@ -195,6 +203,7 @@ SELECT * FROM sitemap_jobs WHERE status = 'pending';
 **Issue:** `fetchRoutes()` returns empty array.
 
 **Solution:**
+
 - Check table names match your schema
 - Verify column names (slug, is_public, etc.)
 - Check RLS policies allow service role to read
@@ -204,6 +213,7 @@ SELECT * FROM sitemap_jobs WHERE status = 'pending';
 **Issue:** Edge Function can't upload to Storage.
 
 **Solution:**
+
 - Verify bucket exists and is public
 - Check service role key has Storage permissions
 - Verify bucket name in environment variables
@@ -213,6 +223,7 @@ SELECT * FROM sitemap_jobs WHERE status = 'pending';
 **Issue:** Content changes don't create jobs.
 
 **Solution:**
+
 - Verify triggers are attached to correct tables
 - Check trigger function `content_sitemap_trigger()` exists
 - Test trigger manually: `SELECT enqueue_sitemap_job('test')`
@@ -222,6 +233,7 @@ SELECT * FROM sitemap_jobs WHERE status = 'pending';
 **Issue:** Jobs stay in 'pending' status.
 
 **Solution:**
+
 - Verify Edge Function is being called (check logs)
 - Check Edge Function environment variables
 - Verify function has database access
@@ -234,12 +246,12 @@ SELECT * FROM sitemap_jobs WHERE status = 'pending';
 
 ```sql
 -- View recent jobs
-SELECT * FROM sitemap_jobs 
-ORDER BY triggered_at DESC 
+SELECT * FROM sitemap_jobs
+ORDER BY triggered_at DESC
 LIMIT 10;
 
 -- Check for failed jobs
-SELECT * FROM sitemap_jobs 
+SELECT * FROM sitemap_jobs
 WHERE status = 'failed';
 ```
 
@@ -275,5 +287,4 @@ WHERE status = 'failed';
 
 ---
 
-*Last Updated: 2025-01-27*
-
+_Last Updated: 2025-01-27_

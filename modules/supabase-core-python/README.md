@@ -1,6 +1,7 @@
 # Supabase Core Module (Python)
 
 ## Metadata
+
 - **Module:** supabase-core-python
 - **Version:** 1.0.0
 - **Created:** 2025-01-27
@@ -26,6 +27,7 @@ This module provides a comprehensive set of utilities for working with Supabase 
 - `httpx>=0.24.0` - HTTP client
 
 **Optional Framework Dependencies:**
+
 - `django>=4.0.0` (for Django integration)
 - `fastapi>=0.100.0` (for FastAPI integration)
 - `flask>=2.0.0` (for Flask integration)
@@ -119,7 +121,7 @@ async def get_posts(supabase: Client = Depends(get_authenticated_supabase)):
     user = get_current_user(supabase)
     if not user:
         return {"error": "Unauthorized"}, 401
-    
+
     response = supabase.table("posts").select("*").execute()
     return {"data": response.data}
 ```
@@ -133,7 +135,7 @@ from supabase_core_python.framework.django import get_supabase_client
 def my_view(request):
     # Authenticated client
     supabase = get_supabase_client(request, require_auth=True)
-    
+
     response = supabase.table("posts").select("*").execute()
     return JsonResponse({"data": response.data})
 ```
@@ -150,7 +152,7 @@ app = Flask(__name__)
 def get_posts():
     # Authenticated client
     supabase = get_supabase_client(require_auth=True)
-    
+
     response = supabase.table("posts").select("*").execute()
     return jsonify({"data": response.data})
 ```
@@ -298,32 +300,35 @@ SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
 
 ## Comparison with TypeScript Version
 
-| Feature | TypeScript | Python |
-|---------|-----------|--------|
-| Client Factories | ✅ | ✅ |
-| Query Builder | ✅ | ✅ |
-| Pagination | ✅ | ✅ |
-| Storage Helpers | ✅ | ✅ |
-| Real-time | ✅ | ✅ |
-| Error Handling | ✅ | ✅ |
-| Retry Logic | ✅ | ✅ |
-| Caching | ✅ | ✅ |
-| Framework Integration | Next.js | Django/FastAPI/Flask |
-| SSR Support | ✅ (`@supabase/ssr`) | N/A (server-side only) |
+| Feature               | TypeScript           | Python                 |
+| --------------------- | -------------------- | ---------------------- |
+| Client Factories      | ✅                   | ✅                     |
+| Query Builder         | ✅                   | ✅                     |
+| Pagination            | ✅                   | ✅                     |
+| Storage Helpers       | ✅                   | ✅                     |
+| Real-time             | ✅                   | ✅                     |
+| Error Handling        | ✅                   | ✅                     |
+| Retry Logic           | ✅                   | ✅                     |
+| Caching               | ✅                   | ✅                     |
+| Framework Integration | Next.js              | Django/FastAPI/Flask   |
+| SSR Support           | ✅ (`@supabase/ssr`) | N/A (server-side only) |
 
 ## Framework-Specific Features
 
 ### FastAPI
+
 - Dependency injection for Supabase clients
 - Automatic JWT extraction from Authorization header
 - Type-safe route handlers
 
 ### Django
+
 - Middleware helpers for request-based client creation
 - Session-based JWT storage support
 - Cookie-based authentication
 
 ### Flask
+
 - Request context caching (Flask's `g` object)
 - Header and cookie-based JWT extraction
 - Simple integration pattern
@@ -415,4 +420,3 @@ supabase gen types python --local > types/database_types.py
 ## License
 
 ISC
-

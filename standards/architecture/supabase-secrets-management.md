@@ -1,6 +1,7 @@
 # Supabase_Secrets_Management_Guide_v1.0
 
 ## Metadata
+
 - **Created:** 2025-01-27
 - **Last Updated:** 2025-01-27
 - **Version:** 1.0
@@ -33,6 +34,7 @@ Each has specific use cases and security considerations.
 ### 3.1 What Goes Here
 
 **Best For:**
+
 - Supabase connection credentials (URL, keys)
 - Build-time configuration
 - Local development secrets
@@ -40,6 +42,7 @@ Each has specific use cases and security considerations.
 - Secrets needed before the database is available
 
 **Examples:**
+
 ```bash
 # Supabase Connection (always in .env)
 SUPABASE_URL=https://your-project.supabase.co
@@ -77,12 +80,14 @@ ENCRYPTION_KEY=your_64_character_hex_key
 ### 4.1 What Goes Here
 
 **Best For:**
+
 - Edge Function environment variables
 - Project-level configuration
 - Secrets used only in Edge Functions
 - Secrets that need to be managed via Supabase Dashboard
 
 **Examples:**
+
 - `OPENAI_API_KEY` - Used in Edge Functions for AI operations
 - `STRIPE_SECRET_KEY` - Used in webhook Edge Functions
 - `SENDGRID_API_KEY` - Used for email in Edge Functions
@@ -91,11 +96,13 @@ ENCRYPTION_KEY=your_64_character_hex_key
 ### 4.2 How to Set Supabase Secrets
 
 **Via Supabase Dashboard:**
+
 1. Go to **Project Settings** > **Edge Functions** > **Secrets**
 2. Add secret key-value pairs
 3. Secrets are automatically available in Edge Functions via `Deno.env.get()`
 
 **Via Supabase CLI:**
+
 ```bash
 # Set a secret for local development
 supabase secrets set OPENAI_API_KEY=sk-...
@@ -105,29 +112,30 @@ supabase secrets set OPENAI_API_KEY=sk-... --project-ref your-project-ref
 ```
 
 **Via Supabase Management API:**
+
 ```typescript
 // Using Supabase Management API
 await supabaseAdmin.projects.updateSecrets(projectId, {
   secrets: {
     OPENAI_API_KEY: 'sk-...',
-    STRIPE_SECRET_KEY: 'sk_live_...'
-  }
-})
+    STRIPE_SECRET_KEY: 'sk_live_...',
+  },
+});
 ```
 
 ### 4.3 Accessing Secrets in Edge Functions
 
 ```typescript
 // supabase/functions/my-function/index.ts
-import { serve } from "https://deno.land/std/http/server.ts"
+import { serve } from 'https://deno.land/std/http/server.ts';
 
 serve(async (req) => {
   // Secrets are automatically available via Deno.env
-  const openaiKey = Deno.env.get("OPENAI_API_KEY")
-  const stripeKey = Deno.env.get("STRIPE_SECRET_KEY")
-  
+  const openaiKey = Deno.env.get('OPENAI_API_KEY');
+  const stripeKey = Deno.env.get('STRIPE_SECRET_KEY');
+
   // Use secrets...
-})
+});
 ```
 
 ### 4.4 Characteristics
@@ -153,6 +161,7 @@ serve(async (req) => {
 ### 5.1 What Goes Here
 
 **Best For:**
+
 - Application settings that change at runtime
 - User-configurable secrets (via admin UI)
 - Multi-tenant secrets (different per tenant)
@@ -161,6 +170,7 @@ serve(async (req) => {
 - Environment-specific values (dev/prod)
 
 **Examples:**
+
 - `openai_api_key` - User-configurable API key
 - `stripe_webhook_secret` - Per-environment webhook secrets
 - `email_smtp_password` - SMTP credentials
@@ -172,10 +182,12 @@ serve(async (req) => {
 The `modules/settings-manager` provides a database-backed secrets system. **This module is the recommended solution for all database-backed secrets.**
 
 **Schema:**
+
 - `settings` table - Application settings with encryption
 - `environment_variables` table - Environment variables with encryption
 
 **Features:**
+
 - ✅ AES-256-GCM encryption at rest
 - ✅ Environment support (default/dev/prod)
 - ✅ Audit trail (created_by, updated_by, timestamps)
@@ -192,6 +204,7 @@ The `modules/settings-manager` provides a database-backed secrets system. **This
 ### 5.3 Setting Up Database Secrets
 
 **Quick Start:**
+
 1. **Copy the module** from `modules/settings-manager/` to your project
 2. **Add schema tables** (see `modules/settings-manager/schema-example.ts`)
 3. **Set encryption key** in `.env`: `ENCRYPTION_KEY=your_64_character_hex_key`
@@ -200,8 +213,9 @@ The `modules/settings-manager` provides a database-backed secrets system. **This
 **Full Integration Guide:** See `modules/settings-manager/INTEGRATION_GUIDE.md`
 
 **Basic Usage:**
+
 ```typescript
-import { SettingsManager } from '@/lib/settings/settings-manager'
+import { SettingsManager } from '@/lib/settings/settings-manager';
 
 // Save a secret (automatically encrypted)
 await SettingsManager.saveSetting({
@@ -211,20 +225,17 @@ await SettingsManager.saveSetting({
   category: 'api_keys',
   isSecret: true,
   description: 'OpenAI API key for production',
-  updatedBy: 'user@example.com'
-})
+  updatedBy: 'user@example.com',
+});
 
 // Retrieve a secret (automatically decrypted)
-const apiKey = await SettingsManager.getSettingValue(
-  'openai_api_key',
-  'production'
-)
+const apiKey = await SettingsManager.getSettingValue('openai_api_key', 'production');
 
 // Get all settings for an environment
-const allSettings = await SettingsManager.getSettings('production', 'api_keys')
+const allSettings = await SettingsManager.getSettings('production', 'api_keys');
 
 // Mask for UI display
-const masked = SettingsManager.maskSettingValue(setting) // Returns "••••••••1234"
+const masked = SettingsManager.maskSettingValue(setting); // Returns "••••••••1234"
 ```
 
 ### 5.4 Characteristics
@@ -275,6 +286,7 @@ const masked = SettingsManager.maskSettingValue(setting) // Returns "•••�
 
 **⚠️ Multi-Tenant Note:**
 The settings-manager doesn't have explicit `tenant_id` support, but you can:
+
 - Use the `environment` field for tenant-specific values
 - Extend the schema to add `tenant_id` column
 - Use separate databases per tenant (SaaS pattern)
@@ -283,18 +295,18 @@ The settings-manager doesn't have explicit `tenant_id` support, but you can:
 
 ## 6. Decision Matrix: Where Should My Secret Go?
 
-| Secret Type | Storage Location | Module/Reference | Reason |
-|------------|-----------------|------------------|--------|
-| **Supabase URL/Keys** | `.env` file | N/A | Required for Supabase connection, never changes |
-| **Encryption Key** | `.env` file | N/A | Needed before database is available |
-| **Build-time Config** | `.env` file | N/A | Used during build process |
-| **Edge Function API Keys** | Supabase Secrets | Supabase Dashboard/CLI | Native Edge Function support |
-| **Edge Function Config** | Supabase Secrets | Supabase Dashboard/CLI | Used only in Edge Functions |
-| **User-Configurable Secrets** | Database (Settings) | `modules/settings-manager/` | Need UI management, runtime updates |
-| **Multi-Environment Secrets** | Database (Settings) | `SettingsManager` with `environment` param | Different values per environment |
-| **Application Settings** | Database (Settings) | `SettingsManager` with `category` | Need categories, validation, audit |
-| **MCP Server Secrets** | Database (Settings) | `EnvironmentVariablesManager` with `mcpServerId` | MCP server-specific configuration |
-| **External Service Keys** | Database (Settings) or Supabase Secrets | `SettingsManager` if user-configurable | User-configurable → Database, Static → Supabase Secrets |
+| Secret Type                   | Storage Location                        | Module/Reference                                 | Reason                                                  |
+| ----------------------------- | --------------------------------------- | ------------------------------------------------ | ------------------------------------------------------- |
+| **Supabase URL/Keys**         | `.env` file                             | N/A                                              | Required for Supabase connection, never changes         |
+| **Encryption Key**            | `.env` file                             | N/A                                              | Needed before database is available                     |
+| **Build-time Config**         | `.env` file                             | N/A                                              | Used during build process                               |
+| **Edge Function API Keys**    | Supabase Secrets                        | Supabase Dashboard/CLI                           | Native Edge Function support                            |
+| **Edge Function Config**      | Supabase Secrets                        | Supabase Dashboard/CLI                           | Used only in Edge Functions                             |
+| **User-Configurable Secrets** | Database (Settings)                     | `modules/settings-manager/`                      | Need UI management, runtime updates                     |
+| **Multi-Environment Secrets** | Database (Settings)                     | `SettingsManager` with `environment` param       | Different values per environment                        |
+| **Application Settings**      | Database (Settings)                     | `SettingsManager` with `category`                | Need categories, validation, audit                      |
+| **MCP Server Secrets**        | Database (Settings)                     | `EnvironmentVariablesManager` with `mcpServerId` | MCP server-specific configuration                       |
+| **External Service Keys**     | Database (Settings) or Supabase Secrets | `SettingsManager` if user-configurable           | User-configurable → Database, Static → Supabase Secrets |
 
 ---
 
@@ -364,14 +376,11 @@ await SettingsManager.saveSetting({
   environment: 'production',
   category: 'api_keys',
   isSecret: true,
-  description: 'SendGrid API key for email sending'
-})
+  description: 'SendGrid API key for email sending',
+});
 
 // Retrieve (decrypted automatically)
-const sendgridKey = await SettingsManager.getSettingValue(
-  'sendgrid_api_key',
-  'production'
-)
+const sendgridKey = await SettingsManager.getSettingValue('sendgrid_api_key', 'production');
 ```
 
 ---
@@ -391,11 +400,11 @@ If you want to make a secret user-configurable:
 // Migration pattern
 async function getApiKey() {
   // Try database first
-  const dbKey = await SettingsManager.getSettingValue('api_key', 'production')
-  if (dbKey) return dbKey
-  
+  const dbKey = await SettingsManager.getSettingValue('api_key', 'production');
+  if (dbKey) return dbKey;
+
   // Fallback to .env
-  return process.env.API_KEY
+  return process.env.API_KEY;
 }
 ```
 
@@ -413,17 +422,20 @@ If a secret is only used in Edge Functions:
 ## 10. Summary
 
 **Use `.env` files for:**
+
 - Supabase connection credentials
 - Build-time configuration
 - Encryption keys
 - Platform-specific secrets
 
 **Use Supabase Secrets for:**
+
 - Edge Function environment variables
 - Project-level Edge Function configuration
 - Secrets used only in serverless functions
 
 **Use Database (Settings Manager) for:**
+
 - User-configurable secrets
 - Runtime configuration
 - Multi-tenant secrets
@@ -431,6 +443,7 @@ If a secret is only used in Edge Functions:
 - Application settings with categories/validation
 
 **Key Principle:** Choose the storage method that matches your use case:
+
 - **Static, build-time** → `.env`
 - **Edge Function only** → Supabase Secrets
 - **Runtime, user-configurable** → Database
@@ -450,11 +463,13 @@ If a secret is only used in Edge Functions:
 7. ✅ **Configuring MCP servers** - Use `EnvironmentVariablesManager` with `mcpServerId`
 
 **Don't use Settings Manager for:**
+
 - ❌ Supabase connection credentials (use `.env`)
 - ❌ Edge Function-only secrets (use Supabase Secrets)
 - ❌ Build-time configuration (use `.env`)
 
 **Quick Reference:**
+
 - **Setup:** `modules/settings-manager/INTEGRATION_GUIDE.md`
 - **API Reference:** `modules/settings-manager/QUICK_REFERENCE.md`
 - **Schema:** `modules/settings-manager/schema-example.ts`
@@ -472,5 +487,4 @@ If a secret is only used in Edge Functions:
 
 ---
 
-*Last Updated: 2025-01-27*
-
+_Last Updated: 2025-01-27_

@@ -1,6 +1,7 @@
 # Standards Directory
 
 ## Metadata
+
 - **Created:** 2025-12-04
 - **Last Updated:** 2025-12-04
 - **Version:** 1.0
@@ -15,6 +16,7 @@ This directory contains **governing standards** that define how to build, struct
 ## What's a Standard?
 
 A standard is an authoritative document that defines:
+
 - **Requirements** - What must be done
 - **Patterns** - How to do it correctly
 - **Examples** - Reference implementations
@@ -25,6 +27,7 @@ A standard is an authoritative document that defines:
 ## How Standards Are Organized
 
 ### Root Level Standards (Project-Wide)
+
 - `module-structure.md` - How to structure reusable modules
 - `configuration.md` - Configuration management patterns
 - `process/git-repository-standards.md` - Git branching and commit conventions
@@ -33,56 +36,76 @@ A standard is an authoritative document that defines:
 - `seo-automation.md` - SEO automation patterns
 
 ### `/project-planning`
+
 Project planning and setup standards
+
 - `documentation-management.md` - How to write and organize all documentation
 - `documentation-standards.md` - Comprehensive guide to standard documentation files
 - `project-structure.md` - Where files should live
 - `tech-stack-document.md` - Tech stack documentation template
 
 ### `/templates`
+
 Template files for common project artifacts
+
 - `AGENTS-TEMPLATE.md` - AI agent context template
 - `env.example` - Environment variables template
 
 ### Domain-Specific Standards (By Subfolder)
 
 #### `/architecture`
+
 Architecture patterns and technical design standards
+
 - Supabase setup, edge functions, multi-tenancy, etc.
 - Backend module planning
 - Runtime AI agent patterns
 
 #### `/database`
+
 Database design and schema standards
+
 - Schema conventions
 - Settings management
 
 #### `/security`
+
 Security requirements and patterns
+
 - Access control and RLS policies
 - Security audit checklists
 
 #### `/deployment`
+
 Deployment and application launch standards
+
 - Launch procedures
 - Environment setup
 
 #### `/process/checklists`
+
 Validation checklists used by commands
+
 - Pre-flight checklist
 - PR review checklist
 - Project audit checklist
 
 #### `/process`
+
 Development process standards
+
 - Linting requirements and checklists
 
 #### `/ui`
+
 UI/UX standards and patterns
+
 - Chat interface patterns
 
 #### `/cms`
+
 Content management standards
+
 - Blog architecture
 
 ---
@@ -90,11 +113,13 @@ Content management standards
 ## Using Standards
 
 ### For Developers
+
 1. **Before starting work:** Check relevant standards in this directory
 2. **During development:** Follow the patterns and requirements
 3. **Before PR:** Validate against checklists in `/process/checklists`
 
 ### For AI Agents
+
 1. **Always check standards first** - Don't guess conventions
 2. **Reference standards** when making architectural decisions
 3. **Follow the three-layer system:**
@@ -112,6 +137,7 @@ Every standard file must include metadata (per `documentation-management.md` Sec
 # Standard_Name_vX.X
 
 ## Metadata
+
 - **Created:** YYYY-MM-DD
 - **Last Updated:** YYYY-MM-DD
 - **Version:** X.X
@@ -130,19 +156,20 @@ Every standard file must include metadata (per `documentation-management.md` Sec
 
 ## Standards vs Other Documentation Types
 
-| Type | Location | Purpose | Example |
-|------|----------|---------|---------|
-| **Standard** | `standards/*.md` | Authoritative rules | `documentation-management.md` |
-| **Checklist** | `standards/process/checklists/*.md` | Validation items | `pr_review_checklist_v1_0.md` |
-| **Command** | `.cursor/commands/*.md` | Executable workflow | `pre-flight-check.md` |
-| **Reference Guide** | `standards/project-planning/*.md` | Comprehensive reference | `documentation-standards.md` |
-| **Module Docs** | `modules/*/README.md` | Usage guide | `logger-module/README.md` |
+| Type                | Location                            | Purpose                 | Example                       |
+| ------------------- | ----------------------------------- | ----------------------- | ----------------------------- |
+| **Standard**        | `standards/*.md`                    | Authoritative rules     | `documentation-management.md` |
+| **Checklist**       | `standards/process/checklists/*.md` | Validation items        | `pr_review_checklist_v1_0.md` |
+| **Command**         | `.cursor/commands/*.md`             | Executable workflow     | `pre-flight-check.md`         |
+| **Reference Guide** | `standards/project-planning/*.md`   | Comprehensive reference | `documentation-standards.md`  |
+| **Module Docs**     | `modules/*/README.md`               | Usage guide             | `logger-module/README.md`     |
 
 ---
 
 ## Quick Navigation by Task
 
 ### Project Setup
+
 - `project-planning/project-structure.md` - File organization
 - `project-planning/documentation-management.md` - Documentation management rules
 - `project-planning/documentation-standards.md` - Documentation reference guide
@@ -151,22 +178,27 @@ Every standard file must include metadata (per `documentation-management.md` Sec
 - `templates/` - Template files for new projects
 
 ### Development
+
 - `process/git-repository-standards.md` - Git conventions
 - `testing.md` - Testing requirements
 - `process/code-quality-linting-standards.md` - Code quality linting standards
 - `process/checklists/` - Validation checklists
 
 ### Architecture
+
 - `architecture/` - Technical design patterns
 - `module-structure.md` - Module organization
 
 ### Security
+
 - `security/` - Security requirements and patterns
 
 ### Database
+
 - `database/` - Schema and data standards
 
 ### Deployment
+
 - `deployment/` - Launch and environment standards
 
 ---
@@ -189,14 +221,16 @@ When updating or creating standards:
 The following files have been audited for proper metadata compliance:
 
 ✅ **Compliant Files:**
+
 - `documentation-management.md` - Has metadata
 - `tech-stack-document.md` - Has metadata
 - `project-structure.md` - Has metadata
 
 ⚠️ **Needs Review:**
+
 - Review other files to ensure metadata compliance
 
-*Last audit: 2025-12-04*
+_Last audit: 2025-12-04_
 
 ---
 
@@ -208,5 +242,4 @@ The following files have been audited for proper metadata compliance:
 
 ---
 
-*For questions about standards, refer to `AGENTS.md` Section 7 (Agent Rules of Engagement) or the comprehensive guide in `standards/project-planning/documentation-standards.md`.*
-
+_For questions about standards, refer to `AGENTS.md` Section 7 (Agent Rules of Engagement) or the comprehensive guide in `standards/project-planning/documentation-standards.md`._

@@ -11,11 +11,13 @@
 ### 1. Authentication Client (`src/client/auth_client.py`)
 
 **Potential Issues:**
+
 - ❓ **JWT Token Setting:** The `client.postgrest.auth(jwt_token)` method may not exist in supabase-py
 - ❓ **Alternative Method:** `client.auth.set_session()` may not work as expected
 - ❓ **Header Setting:** May need to set Authorization header directly on HTTP client
 
 **What to Test:**
+
 ```python
 # Test 1: Verify JWT authentication works
 from supabase_core_python import create_authenticated_client
@@ -29,6 +31,7 @@ response = supabase.table("posts").select("*").execute()
 ```
 
 **Action Needed:**
+
 - [ ] Verify supabase-py API for setting JWT tokens
 - [ ] Test with actual Supabase instance
 - [ ] Fix authentication method if incorrect
@@ -40,11 +43,13 @@ response = supabase.table("posts").select("*").execute()
 ### 2. Query Builder (`src/database/query_builder.py`)
 
 **Potential Issues:**
+
 - ❓ **API Mismatch:** supabase-py uses `.table()` not `.from()`
 - ❓ **Method Chaining:** May not support fluent chaining as implemented
 - ❓ **Return Types:** Response structure may differ from TypeScript version
 
 **What to Test:**
+
 ```python
 # Test 2: Verify query builder works
 from supabase_core_python import query_builder
@@ -61,6 +66,7 @@ response = (
 ```
 
 **Action Needed:**
+
 - [ ] Test all query builder methods
 - [ ] Verify response structure matches expectations
 - [ ] Check if supabase-py supports method chaining
@@ -70,11 +76,13 @@ response = (
 ### 3. Storage Upload (`src/storage/upload.py`)
 
 **Potential Issues:**
+
 - ❓ **Upload API:** `client.storage.from_(bucket).upload()` may have different signature
 - ❓ **File Options:** `file_options` parameter may not exist or be named differently
 - ❓ **Response Structure:** Upload response may differ from expected
 
 **What to Test:**
+
 ```python
 # Test 3: Verify file upload works
 from supabase_core_python import upload_file, UploadConfig
@@ -91,6 +99,7 @@ result = upload_file(supabase, config)
 ```
 
 **Action Needed:**
+
 - [ ] Test upload with actual Supabase Storage
 - [ ] Verify file_options parameter name and structure
 - [ ] Test with different file types (bytes, file path, BinaryIO)
@@ -100,10 +109,12 @@ result = upload_file(supabase, config)
 ### 4. Storage Download (`src/storage/download.py`)
 
 **Potential Issues:**
+
 - ❓ **Download API:** `client.storage.from_(bucket).download()` may return different structure
 - ❓ **Response Handling:** May need to handle response differently
 
 **What to Test:**
+
 ```python
 # Test 4: Verify file download works
 from supabase_core_python import download_file, DownloadConfig
@@ -115,6 +126,7 @@ result = download_file(supabase, config)
 ```
 
 **Action Needed:**
+
 - [ ] Test download with actual files
 - [ ] Verify response structure
 
@@ -123,11 +135,13 @@ result = download_file(supabase, config)
 ### 5. Real-time Subscriptions (`src/realtime/subscription.py`)
 
 **Potential Issues:**
+
 - ❓ **Async Required:** supabase-py real-time may require async/await
 - ❓ **Channel API:** `client.channel()` and `.on()` methods may differ
 - ❓ **Subscription Management:** May need different cleanup approach
 
 **What to Test:**
+
 ```python
 # Test 5: Verify real-time subscriptions work
 from supabase_core_python import SubscriptionManager, SubscriptionConfig
@@ -144,6 +158,7 @@ manager.subscribe(SubscriptionConfig(
 ```
 
 **Action Needed:**
+
 - [ ] Test with actual Supabase real-time
 - [ ] Verify if async is required
 - [ ] Test subscription cleanup
@@ -153,11 +168,13 @@ manager.subscribe(SubscriptionConfig(
 ### 6. Pagination (`src/database/pagination.py`)
 
 **Potential Issues:**
+
 - ❓ **Count Parameter:** `select("*", count="exact")` may not work in supabase-py
 - ❓ **Response Structure:** Count may be in different location
 - ❓ **Range Method:** `.range()` may have different signature
 
 **What to Test:**
+
 ```python
 # Test 6: Verify pagination works
 from supabase_core_python import paginate, PaginationParams
@@ -169,6 +186,7 @@ response = paginate(query, PaginationParams(page=1, limit=10))
 ```
 
 **Action Needed:**
+
 - [ ] Test pagination with actual queries
 - [ ] Verify count parameter works
 - [ ] Test edge cases (empty results, last page, etc.)
@@ -180,6 +198,7 @@ response = paginate(query, PaginationParams(page=1, limit=10))
 #### FastAPI (`src/framework/fastapi/dependencies.py`)
 
 **What to Test:**
+
 ```python
 # Test 7a: FastAPI dependency injection
 from fastapi import FastAPI, Depends
@@ -195,6 +214,7 @@ async def test(supabase = Depends(get_authenticated_supabase)):
 ```
 
 **Action Needed:**
+
 - [ ] Test FastAPI dependency injection
 - [ ] Verify JWT extraction from headers
 - [ ] Test error handling (missing token, invalid token)
@@ -202,6 +222,7 @@ async def test(supabase = Depends(get_authenticated_supabase)):
 #### Django (`src/framework/django/middleware.py`)
 
 **What to Test:**
+
 ```python
 # Test 7b: Django helper
 from supabase_core_python.framework.django import get_supabase_client
@@ -214,6 +235,7 @@ def test_view(request):
 ```
 
 **Action Needed:**
+
 - [ ] Test Django helper with actual request
 - [ ] Verify JWT extraction from headers/session/cookies
 - [ ] Test error handling
@@ -221,6 +243,7 @@ def test_view(request):
 #### Flask (`src/framework/flask/helpers.py`)
 
 **What to Test:**
+
 ```python
 # Test 7c: Flask helper
 from supabase_core_python.framework.flask import get_supabase_client
@@ -234,6 +257,7 @@ def test():
 ```
 
 **Action Needed:**
+
 - [ ] Test Flask helper
 - [ ] Verify JWT extraction
 - [ ] Test Flask's `g` object caching
@@ -245,17 +269,20 @@ def test():
 ### 1. Unit Tests
 
 **Missing:**
+
 - ❌ No test files created
 - ❌ No test framework setup (pytest, unittest)
 - ❌ No mock Supabase client for testing
 
 **Action Needed:**
+
 - [ ] Create `tests/` directory
 - [ ] Set up pytest or unittest
 - [ ] Create mock Supabase client
 - [ ] Write unit tests for all utilities
 
 **Example Structure:**
+
 ```
 tests/
 ├── test_client.py
@@ -272,11 +299,13 @@ tests/
 ### 2. Integration Tests
 
 **Missing:**
+
 - ❌ No integration tests with actual Supabase
 - ❌ No framework-specific integration tests
 - ❌ No end-to-end tests
 
 **Action Needed:**
+
 - [ ] Create integration test suite
 - [ ] Test with local Supabase instance
 - [ ] Test FastAPI integration
@@ -288,12 +317,14 @@ tests/
 ### 3. Example Usage Files
 
 **Missing:**
+
 - ❌ No example FastAPI app
 - ❌ No example Django views
 - ❌ No example Flask routes
 - ❌ No example scripts
 
 **Action Needed:**
+
 - [ ] Create `examples/fastapi_app.py`
 - [ ] Create `examples/django_views.py`
 - [ ] Create `examples/flask_routes.py`
@@ -304,10 +335,12 @@ tests/
 ### 4. Type Generation Helper
 
 **Missing:**
+
 - ❌ No script to automate type generation
 - ❌ No instructions for CI/CD integration
 
 **Action Needed:**
+
 - [ ] Create `scripts/generate-types.sh`
 - [ ] Create `scripts/generate-types.py`
 - [ ] Document CI/CD integration
@@ -317,6 +350,7 @@ tests/
 ### 5. Error Handling Edge Cases
 
 **Potential Issues:**
+
 - ❓ Network errors
 - ❓ Timeout handling
 - ❓ Invalid JWT tokens
@@ -324,6 +358,7 @@ tests/
 - ❓ Supabase service unavailable
 
 **Action Needed:**
+
 - [ ] Test all error scenarios
 - [ ] Add proper error messages
 - [ ] Add retry logic where appropriate
@@ -333,16 +368,19 @@ tests/
 ## 🟢 What's Complete (But Needs Verification)
 
 ### ✅ Code Structure
+
 - All files created
 - Proper imports and exports
 - Documentation in place
 
 ### ✅ Documentation
+
 - README.md complete
 - INTEGRATION_GUIDE.md complete
 - COMPLETENESS_CHECK.md complete
 
 ### ✅ Configuration
+
 - pyproject.toml configured
 - requirements.txt complete
 - Module structure follows Python best practices
@@ -419,6 +457,7 @@ pip install fastapi uvicorn
 **Problem:** `client.postgrest.auth()` may not exist in supabase-py
 
 **Potential Fix:**
+
 ```python
 # Option 1: Set header directly
 client.postgrest.session.headers["Authorization"] = f"Bearer {jwt_token}"
@@ -439,6 +478,7 @@ client.auth.set_session(access_token=jwt_token, refresh_token="")
 **Problem:** `file_options` parameter may not exist
 
 **Potential Fix:**
+
 ```python
 # May need to use different parameter structure
 response = client.storage.from_(bucket).upload(
@@ -457,6 +497,7 @@ response = client.storage.from_(bucket).upload(
 **Problem:** Real-time may require async/await
 
 **Potential Fix:**
+
 ```python
 # May need async version
 import asyncio
@@ -506,5 +547,4 @@ Before considering this module production-ready:
 
 ---
 
-*Last Updated: 2025-01-27*
-
+_Last Updated: 2025-01-27_

@@ -17,6 +17,7 @@
 ## How to Use This Checklist
 
 This checklist combines actionable validation items with detailed execution guidance. Use it to:
+
 - Validate environment before starting coding tasks
 - Ensure clean git state and synced branches
 - Verify dependencies and configuration
@@ -34,11 +35,13 @@ This checklist combines actionable validation items with detailed execution guid
 ### 1.1 Branch Check
 
 **Checklist Items:**
+
 - [ ] **Branch:** Am I on the correct feature branch? (Format: `project-taskId-short-title`)
 - [ ] **Main Branch:** Verify not on `main` or `master` branch
 - [ ] **Branch Format:** Ensure branch name follows naming convention
 
 **Execution Steps:**
+
 1. **Check Current Branch:**
    - Get current branch: `git branch --show-current`
    - Verify branch name follows format: `project-taskId-short-title`
@@ -48,11 +51,13 @@ This checklist combines actionable validation items with detailed execution guid
 ### 1.2 Working Tree Check
 
 **Checklist Items:**
+
 - [ ] **Clean Tree:** Is the working tree clean? (`git status`)
 - [ ] **Uncommitted Changes:** Review and commit or stash uncommitted changes
 - [ ] **Clean State:** Ensure working tree is clean before proceeding
 
 **Execution Steps:**
+
 1. **Check Working Tree:**
    - Run: `git status --porcelain`
    - If there are uncommitted changes:
@@ -63,11 +68,13 @@ This checklist combines actionable validation items with detailed execution guid
 ### 1.3 Sync with Remote
 
 **Checklist Items:**
+
 - [ ] **Sync:** Have I pulled the latest changes from `main`? (`git pull origin main`)
 - [ ] **Behind Remote:** Check if local branch is behind origin/main
 - [ ] **Up to Date:** Ensure local branch is synced with remote
 
 **Execution Steps:**
+
 1. **Sync with Remote:**
    - Check if behind: `git fetch origin && git rev-list HEAD..origin/main --count`
    - If behind, warn: "⚠️ Local branch is behind origin/main. Run `git pull origin main` to sync."
@@ -80,12 +87,14 @@ This checklist combines actionable validation items with detailed execution guid
 ### 2.1 Dependencies Check
 
 **Checklist Items:**
+
 - [ ] **Dependencies:** Are dependencies up to date? (`npm install`, `pip install`, etc.)
 - [ ] **Node Modules:** Verify `node_modules` exists and is recent
 - [ ] **Python Venv:** Verify `.venv` exists (for Python projects)
 - [ ] **Install Dependencies:** Install missing or stale dependencies
 
 **Execution Steps:**
+
 1. **Dependencies Check:**
    - **Node.js:** Check if `node_modules` exists and is recent
      - If missing or stale: Run `npm install` (or `yarn install` / `pnpm install` based on lockfile)
@@ -96,12 +105,14 @@ This checklist combines actionable validation items with detailed execution guid
 ### 2.2 Configuration Check
 
 **Checklist Items:**
+
 - [ ] **Configuration:** Does `.env` exist and have the necessary keys? (Compare with `.env.example`)
 - [ ] **Environment File:** Verify `.env` exists (or `.env.local` for Next.js)
 - [ ] **Required Keys:** Compare `.env` with `.env.example` for missing keys
 - [ ] **Create from Example:** Create `.env` from `.env.example` if missing
 
 **Execution Steps:**
+
 1. **Configuration Check:**
    - Verify `.env` exists (or `.env.local` for Next.js)
    - If missing:
@@ -116,11 +127,13 @@ This checklist combines actionable validation items with detailed execution guid
 ### 2.3 Secrets Validation
 
 **Checklist Items:**
+
 - [ ] **Secrets:** Are secrets properly loaded via `settings-manager` or environment variables?
 - [ ] **Secrets Accessible:** Verify secrets are accessible
 - [ ] **Supabase Keys:** For Supabase projects, verify `SUPABASE_URL` and `SUPABASE_ANON_KEY` are set
 
 **Execution Steps:**
+
 1. **Secrets Validation:**
    - Check if secrets are loaded (verify `settings-manager` or env vars are accessible)
    - For Supabase projects: Verify `SUPABASE_URL` and `SUPABASE_ANON_KEY` are set
@@ -133,12 +146,13 @@ This checklist combines actionable validation items with detailed execution guid
 ### 3.1 Tests
 
 **Checklist Items:**
+
 - [ ] **Tests:** Do the current tests pass? (Run the standard test command)
 - [ ] **Test Failures:** Fix any failing tests before proceeding
 - [ ] **Skip Tests:** Only skip if `skip-tests=true` parameter is set
 
 **Execution Steps:**
-*Unless `skip-tests=true`*
+_Unless `skip-tests=true`_
 
 1. **Tests:**
    - Run: `npm test` (or equivalent test command)
@@ -150,11 +164,13 @@ This checklist combines actionable validation items with detailed execution guid
 ### 3.2 Build
 
 **Checklist Items:**
+
 - [ ] **Build:** Does the project build/start without errors?
 - [ ] **Build Errors:** Fix any build errors before proceeding
 - [ ] **Build Success:** Verify project builds successfully
 
 **Execution Steps:**
+
 1. **Build:**
    - Run: `npm run build` (or equivalent build command)
    - If build fails:
@@ -165,11 +181,13 @@ This checklist combines actionable validation items with detailed execution guid
 ### 3.3 Linter
 
 **Checklist Items:**
+
 - [ ] **Linter:** Are there existing linter errors? (Ideally, fix or note them before adding code)
 - [ ] **Linter Errors:** Review and fix existing linter errors
 - [ ] **Auto-Fix:** Attempt to auto-fix linter errors if possible
 
 **Execution Steps:**
+
 1. **Linter:**
    - Run: `npm run lint` (or equivalent lint command)
    - If linter errors exist:
@@ -187,11 +205,13 @@ This checklist combines actionable validation items with detailed execution guid
 ### 4.1 Requirements Check
 
 **Checklist Items:**
+
 - [ ] **Requirements:** Do I understand the goal of this task?
 - [ ] **Task Description:** Review task description or requirements
 - [ ] **Clarify:** Ask for clarification if task is unclear
 
 **Execution Steps:**
+
 1. **Requirements Check:**
    - Prompt: "Do you understand the goal of this task?"
    - If unclear, suggest reviewing task description or requirements
@@ -199,11 +219,13 @@ This checklist combines actionable validation items with detailed execution guid
 ### 4.2 Documentation Review
 
 **Checklist Items:**
+
 - [ ] **Docs:** Have I reviewed the relevant standards in `standards/`?
 - [ ] **Relevant Standards:** Identify and review relevant standards
 - [ ] **Standards Location:** Check `standards/` for relevant documentation
 
 **Execution Steps:**
+
 1. **Documentation Review:**
    - Check if relevant standards exist in `standards/`
    - List relevant standards for the task
@@ -212,11 +234,13 @@ This checklist combines actionable validation items with detailed execution guid
 ### 4.3 Planning
 
 **Checklist Items:**
+
 - [ ] **Plan:** Do I have a clear plan or todo list?
 - [ ] **Create Plan:** Create a todo list if one doesn't exist
 - [ ] **Task Breakdown:** Break down task into manageable steps
 
 **Execution Steps:**
+
 1. **Planning:**
    - Prompt: "Do you have a clear plan or todo list?"
    - If not, suggest creating a todo list
@@ -226,6 +250,7 @@ This checklist combines actionable validation items with detailed execution guid
 ## Output Format
 
 ### Success Case
+
 ```
 ✅ Pre-flight check complete – safe to start coding.
 
@@ -237,6 +262,7 @@ Summary:
 ```
 
 ### Failure Case
+
 ```
 ❌ Pre-flight check failed. Please address the following:
 
@@ -253,6 +279,7 @@ Action required: Fix issues above before proceeding.
 ## Self-Healing Actions
 
 This command will automatically:
+
 - Install missing dependencies
 - Create `.env` from `.env.example` if missing
 - Attempt to auto-fix linter errors (if `--fix` flag available)
@@ -273,5 +300,4 @@ This checklist is referenced in `AGENTS.md` as the **first step** in the standar
 
 ---
 
-*This is the comprehensive checklist for pre-flight validation. The `pre-flight-check.mdc` rule runs these checks automatically when starting tasks. Use this checklist for manual verification.*
-
+_This is the comprehensive checklist for pre-flight validation. The `pre-flight-check.mdc` rule runs these checks automatically when starting tasks. Use this checklist for manual verification._

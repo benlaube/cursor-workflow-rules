@@ -1,6 +1,7 @@
 # AI Agent Kit Module
 
 ## Metadata
+
 - **Module:** ai-agent-kit
 - **Version:** 1.0.0
 - **Created:** 2025-11-18
@@ -14,6 +15,7 @@ This module provides a standardized structure and foundation for building **Runt
 **Current Status:** This module is a **skeleton/template** that provides the structure and patterns. The implementation directories (`prompts/`, `tools/`, `providers/`) are currently empty and need to be populated based on your specific use case.
 
 The module is designed to:
+
 - **Abstract AI Providers** - Switch between OpenAI, Anthropic, or other providers easily
 - **Standardize Prompts** - Centralized prompt templates and management
 - **Tool System** - Define and execute tools (functions) that AI can call
@@ -31,6 +33,7 @@ The module is designed to:
 ## Current Status
 
 ⚠️ **This module is a template/skeleton.** The following directories exist but are currently empty:
+
 - `prompts/` - System prompts and templates (empty)
 - `tools/` - Tool definitions with Zod schemas (empty)
 - `providers/` - API adapters for different AI providers (empty)
@@ -70,11 +73,11 @@ import OpenAI from 'openai';
 
 export class OpenAIProvider {
   private client: OpenAI;
-  
+
   constructor(apiKey: string) {
     this.client = new OpenAI({ apiKey });
   }
-  
+
   async chat(messages: any[], options: any) {
     // Implementation
   }
@@ -106,13 +109,13 @@ export const lookupOrderTool = {
   name: 'lookup_order',
   description: 'Find order details by ID',
   parameters: z.object({
-    orderId: z.string().uuid()
+    orderId: z.string().uuid(),
   }),
   execute: async ({ orderId }: { orderId: string }) => {
     // Call your database/API
     const order = await db.orders.findUnique({ where: { id: orderId } });
     return { status: order?.status || 'not_found' };
-  }
+  },
 };
 ```
 
@@ -130,7 +133,7 @@ const response = await AgentClient.chat({
   messages: conversationHistory,
   system: SUPPORT_AGENT_PROMPT('Alice'),
   tools: [lookupOrderTool],
-  model: 'gpt-4-turbo'
+  model: 'gpt-4-turbo',
 });
 ```
 
@@ -144,14 +147,12 @@ import { SUPPORT_AGENT_PROMPT } from '@/lib/ai/prompts/support';
 
 const agent = new AgentClient({
   provider: 'openai',
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 const response = await agent.chat({
-  messages: [
-    { role: 'user', content: 'What is my order status?' }
-  ],
-  system: SUPPORT_AGENT_PROMPT('Alice')
+  messages: [{ role: 'user', content: 'What is my order status?' }],
+  system: SUPPORT_AGENT_PROMPT('Alice'),
 });
 ```
 
@@ -164,7 +165,7 @@ const response = await agent.chat({
   messages: conversationHistory,
   system: SUPPORT_AGENT_PROMPT('Alice'),
   tools: [lookupOrderTool, getUserInfoTool],
-  model: 'gpt-4-turbo'
+  model: 'gpt-4-turbo',
 });
 
 // Agent can now call tools automatically
@@ -178,7 +179,7 @@ if (response.toolCalls) {
 ```typescript
 const stream = await agent.stream({
   messages: conversationHistory,
-  system: SUPPORT_AGENT_PROMPT('Alice')
+  system: SUPPORT_AGENT_PROMPT('Alice'),
 });
 
 for await (const chunk of stream) {
@@ -219,6 +220,7 @@ interface AIProvider {
 ### Tool System
 
 Tools are defined with:
+
 - **Name** - Unique identifier
 - **Description** - What the tool does (used by AI)
 - **Parameters** - Zod schema for validation
@@ -248,9 +250,9 @@ export const POST = createApiHandler({
     const agent = new AgentClient({ provider: 'openai' });
     return await agent.chat({
       messages: input.messages,
-      system: SUPPORT_AGENT_PROMPT(input.userName)
+      system: SUPPORT_AGENT_PROMPT(input.userName),
     });
-  }
+  },
 });
 ```
 
@@ -266,7 +268,7 @@ const logger = setupLogger('ai-agent', { env: 'production' });
 
 const agent = new AgentClient({
   provider: 'openai',
-  logger // Agent logs all interactions
+  logger, // Agent logs all interactions
 });
 ```
 
@@ -281,10 +283,7 @@ import { AgentClient } from '@/lib/ai/client';
 const agent = new AgentClient({ provider: 'openai' });
 
 // Retry on transient failures
-const result = await withRetry(
-  () => agent.chat({ messages, system }),
-  { retries: 3, delay: 1000 }
-);
+const result = await withRetry(() => agent.chat({ messages, system }), { retries: 3, delay: 1000 });
 ```
 
 ## Related Documentation

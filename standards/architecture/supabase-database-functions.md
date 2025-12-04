@@ -1,6 +1,7 @@
 # Supabase_Database_Functions_Guide_v1.0
 
 ## Metadata
+
 - **Created:** 2025-01-27
 - **Last Updated:** 2025-01-27
 - **Version:** 1.0
@@ -11,6 +12,7 @@
 ## 1. Overview
 
 Supabase provides two ways to execute server-side logic:
+
 1. **PostgreSQL Database Functions** - SQL/PL/pgSQL functions that run in the database
 2. **Supabase Edge Functions** - Deno-based serverless functions
 
@@ -45,18 +47,18 @@ Need server-side logic?
 
 ### 2.1 Quick Reference
 
-| Use Case | Solution | Why |
-|----------|----------|-----|
-| Data validation on insert | Database Function | Runs automatically via trigger |
-| Calculate derived values | Database Function | Fast, runs in database |
-| Send email notification | Edge Function | Needs external API |
-| Transform data format | Database Function | Simple, efficient |
-| Call OpenAI API | Edge Function | External API, needs HTTP |
-| Audit logging | Database Function | Trigger-based, automatic |
-| Complex multi-step workflow | Edge Function | Better error handling, logging |
-| Full-text search | Database Function | PostgreSQL built-in |
-| Image processing | Edge Function | Needs external libraries |
-| RLS helper functions | Database Function | Used in policies, must be SQL |
+| Use Case                    | Solution          | Why                            |
+| --------------------------- | ----------------- | ------------------------------ |
+| Data validation on insert   | Database Function | Runs automatically via trigger |
+| Calculate derived values    | Database Function | Fast, runs in database         |
+| Send email notification     | Edge Function     | Needs external API             |
+| Transform data format       | Database Function | Simple, efficient              |
+| Call OpenAI API             | Edge Function     | External API, needs HTTP       |
+| Audit logging               | Database Function | Trigger-based, automatic       |
+| Complex multi-step workflow | Edge Function     | Better error handling, logging |
+| Full-text search            | Database Function | PostgreSQL built-in            |
+| Image processing            | Edge Function     | Needs external libraries       |
+| RLS helper functions        | Database Function | Used in policies, must be SQL  |
 
 ---
 
@@ -149,31 +151,31 @@ CREATE TRIGGER on_auth_user_created
 
 ```typescript
 // supabase/functions/enrich-contact/index.ts
-import { serve } from "https://deno.land/std/http/server.ts"
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+import { serve } from 'https://deno.land/std/http/server.ts';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 serve(async (req) => {
-  const { contact_id } = await req.json()
-  
+  const { contact_id } = await req.json();
+
   // Call external API
   const enrichment = await fetch('https://api.enrichment-service.com', {
     method: 'POST',
     body: JSON.stringify({ contact_id }),
-  })
-  
+  });
+
   // Update database
   const supabase = createClient(
     Deno.env.get('SUPABASE_URL')!,
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-  )
-  
+  );
+
   await supabase
     .from('contacts')
     .update({ enriched_data: await enrichment.json() })
-    .eq('id', contact_id)
-  
-  return new Response(JSON.stringify({ success: true }))
-})
+    .eq('id', contact_id);
+
+  return new Response(JSON.stringify({ success: true }));
+});
 ```
 
 ---
@@ -316,20 +318,20 @@ GENERATED ALWAYS AS (public.calculate_reading_time(content)) STORED;
 ### 6.1 From JavaScript Client
 
 ```typescript
-import { createClient } from '@/modules/supabase-core-typescript'
+import { createClient } from '@/modules/supabase-core-typescript';
 
-const supabase = createClient()
+const supabase = createClient();
 
 // Call function that returns data
 const { data, error } = await supabase.rpc('get_user_stats', {
   user_id: userId,
-})
+});
 
 // Call function that performs action
 const { error } = await supabase.rpc('set_user_role', {
   user_id: userId,
   new_role: 'admin',
-})
+});
 ```
 
 ### 6.2 From SQL/Triggers
@@ -359,7 +361,7 @@ $$ LANGUAGE plpgsql;
 // supabase/functions/process-order/index.ts
 const { data, error } = await supabase.rpc('process_order', {
   order_id: orderId,
-})
+});
 ```
 
 ---
@@ -378,11 +380,11 @@ BEGIN
   IF user_id IS NULL THEN
     RAISE EXCEPTION 'user_id cannot be null';
   END IF;
-  
+
   IF new_role NOT IN ('admin', 'member', 'viewer') THEN
     RAISE EXCEPTION 'Invalid role: %', new_role;
   END IF;
-  
+
   -- Perform operation
   UPDATE public.profiles
   SET role = new_role
@@ -403,12 +405,12 @@ DECLARE
 BEGIN
   -- Get current user's role
   current_user_role := auth.jwt() -> 'app_metadata' ->> 'role';
-  
+
   -- Check permission
   IF current_user_role != 'super_admin' THEN
     RAISE EXCEPTION 'Only super admins can delete tenants';
   END IF;
-  
+
   -- Perform deletion
   DELETE FROM public.tenants WHERE id = delete_tenant.tenant_id;
 END;
@@ -452,13 +454,13 @@ BEGIN
   IF result != true THEN
     RAISE EXCEPTION 'Test failed: valid email should return true';
   END IF;
-  
+
   -- Test case 2: Invalid email
   result := public.validate_email('invalid-email');
   IF result != false THEN
     RAISE EXCEPTION 'Test failed: invalid email should return false';
   END IF;
-  
+
   RAISE NOTICE 'All tests passed!';
 END;
 $$;
@@ -468,20 +470,20 @@ $$;
 
 ```typescript
 // tests/database-functions.test.ts
-import { createServiceRoleClient } from '@/modules/supabase-core-typescript'
+import { createServiceRoleClient } from '@/modules/supabase-core-typescript';
 
 describe('Database Functions', () => {
   it('should validate email correctly', async () => {
-    const supabase = createServiceRoleClient()
-    
+    const supabase = createServiceRoleClient();
+
     const { data, error } = await supabase.rpc('validate_email', {
       email: 'test@example.com',
-    })
-    
-    expect(error).toBeNull()
-    expect(data).toBe(true)
-  })
-})
+    });
+
+    expect(error).toBeNull();
+    expect(data).toBe(true);
+  });
+});
 ```
 
 ---
@@ -515,7 +517,7 @@ BEGIN
   UPDATE public.posts
   SET deleted_at = now()
   WHERE id = OLD.id;
-  
+
   RETURN NULL; -- Prevent actual deletion
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -537,7 +539,7 @@ BEGIN
   INSERT INTO public.jobs (type, payload, status)
   VALUES (job_type, payload, 'pending')
   RETURNING id INTO job_id;
-  
+
   RETURN job_id;
 END;
 $$ LANGUAGE plpgsql;
@@ -556,6 +558,7 @@ CREATE TRIGGER enqueue_sitemap_job
 ### 10.1 When to Create Database Functions
 
 Create a database function when:
+
 - ✅ Logic needs to run automatically (triggers)
 - ✅ Logic is used in RLS policies
 - ✅ Simple data transformation/validation
@@ -565,6 +568,7 @@ Create a database function when:
 ### 10.2 When to Create Edge Functions
 
 Create an Edge Function when:
+
 - ✅ Needs external API calls
 - ✅ Needs TypeScript/JavaScript libraries
 - ✅ Complex multi-step workflows
@@ -574,6 +578,7 @@ Create an Edge Function when:
 ### 10.3 Function Creation Checklist
 
 When creating a database function:
+
 - [ ] Determine if it should be `SECURITY DEFINER` or `SECURITY INVOKER`
 - [ ] Add input validation
 - [ ] Add permission checks (if `SECURITY DEFINER`)
@@ -601,10 +606,10 @@ BEGIN
   IF <condition> THEN
     RAISE EXCEPTION '<error message>';
   END IF;
-  
+
   -- Function logic
   <logic>
-  
+
   -- Return result
   RETURN <result>;
 END;
@@ -624,5 +629,4 @@ COMMENT ON FUNCTION public.<function_name> IS '<description>';
 
 ---
 
-*Last Updated: 2025-01-27*
-
+_Last Updated: 2025-01-27_

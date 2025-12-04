@@ -7,6 +7,7 @@ Standardized utilities for testing applications in this ecosystem.
 ## Overview
 
 This module provides reusable mock utilities for common dependencies used across the codebase:
+
 - **Supabase Client Mock** - Chainable mock for Supabase queries
 - **Logger Mock** - Mock logger for testing logging behavior
 
@@ -133,10 +134,10 @@ describe('UserService', () => {
     // Arrange
     const mockLogger = createMockLogger();
     const service = new UserService(mockLogger);
-    
+
     // Act
     service.login('user-1');
-    
+
     // Assert
     expect(mockLogger.info).toHaveBeenCalledWith('User logged in', {
       userId: 'user-1',
@@ -157,10 +158,7 @@ expect(mockLogger.info).toHaveBeenCalled();
 
 // Test error logging
 await service.deleteUser('invalid-id');
-expect(mockLogger.error).toHaveBeenCalledWith(
-  'Failed to delete user',
-  expect.any(Error)
-);
+expect(mockLogger.error).toHaveBeenCalledWith('Failed to delete user', expect.any(Error));
 
 // Test success logging
 await service.updateUser('123', { name: 'Updated' });
@@ -238,10 +236,7 @@ describe('UserService', () => {
 
     // Act & Assert
     await expect(userService.getUser('123')).rejects.toThrow('Failed to fetch user');
-    expect(mockLogger.error).toHaveBeenCalledWith(
-      'Failed to fetch user',
-      expect.any(Error)
-    );
+    expect(mockLogger.error).toHaveBeenCalledWith('Failed to fetch user', expect.any(Error));
   });
 });
 ```
@@ -292,4 +287,3 @@ For more testing best practices and standards, see [`standards/testing.md`](../.
 - **Mutation Testing** - Mutation testing support
 - **Property-based Testing** - Property-based testing with fast-check
 - **Test AI** - AI-powered test generation and optimization
-

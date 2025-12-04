@@ -1,6 +1,7 @@
 # Multi_Tenancy_Auth_API_Guide_v1.0
 
 ## Metadata
+
 - **Created:** 2025-01-27
 - **Last Updated:** 2025-01-27
 - **Version:** 1.0
@@ -29,6 +30,7 @@ This guide explains how to implement multi-tenant authentication using Supabase,
 Store `tenant_id` in `app_metadata` so it's available in every JWT token.
 
 **Benefits:**
+
 - ✅ Tenant context available in every request
 - ✅ RLS policies can use JWT claims directly
 - ✅ No additional database queries needed
@@ -38,20 +40,21 @@ Store `tenant_id` in `app_metadata` so it's available in every JWT token.
 
 ```typescript
 // When user joins/creates tenant
-import { createServiceRoleClient } from '@/modules/supabase-core-typescript'
+import { createServiceRoleClient } from '@/modules/supabase-core-typescript';
 
-const adminSupabase = createServiceRoleClient()
+const adminSupabase = createServiceRoleClient();
 
 await adminSupabase.auth.admin.updateUserById(userId, {
   app_metadata: {
-    tenant_id: tenantId,        // Current active tenant
-    role: 'member',             // Tenant-specific role
-    available_tenants: [        // All tenants user belongs to
+    tenant_id: tenantId, // Current active tenant
+    role: 'member', // Tenant-specific role
+    available_tenants: [
+      // All tenants user belongs to
       { id: tenantId, role: 'member' },
       { id: otherTenantId, role: 'admin' },
     ],
   },
-})
+});
 ```
 
 **Accessing in Code:**
@@ -59,13 +62,13 @@ await adminSupabase.auth.admin.updateUserById(userId, {
 ```typescript
 // Get tenant from JWT
 const getCurrentTenant = (user: User) => {
-  return user.app_metadata?.tenant_id as string | undefined
-}
+  return user.app_metadata?.tenant_id as string | undefined;
+};
 
 // Get tenant role
 const getTenantRole = (user: User) => {
-  return user.app_metadata?.role as string | undefined
-}
+  return user.app_metadata?.role as string | undefined;
+};
 ```
 
 ### 2.2 Pattern 2: Tenant Membership Table
@@ -73,6 +76,7 @@ const getTenantRole = (user: User) => {
 Store tenant memberships in a separate table for more complex scenarios.
 
 **When to Use:**
+
 - Users belong to many tenants
 - Need tenant-specific roles/permissions
 - Need to track tenant membership history
@@ -111,6 +115,7 @@ USING (user_id = auth.uid());
 Combine JWT claims (for active tenant) with membership table (for all tenants).
 
 **Benefits:**
+
 - JWT provides fast access to current tenant
 - Membership table provides full tenant list and history
 - Best of both worlds
@@ -122,21 +127,21 @@ Combine JWT claims (for active tenant) with membership table (for all tenants).
 ### 3.1 Getting Current Tenant
 
 ```typescript
-import { createServerClient, getServerUser } from '@/modules/supabase-core-typescript'
+import { createServerClient, getServerUser } from '@/modules/supabase-core-typescript';
 
 // In API route or Server Component
-const supabase = await createServerClient()
-const user = await getServerUser(supabase)
+const supabase = await createServerClient();
+const user = await getServerUser(supabase);
 
 if (!user) {
-  throw new Error('Unauthorized')
+  throw new Error('Unauthorized');
 }
 
 // Get tenant from JWT claims
-const tenantId = user.app_metadata?.tenant_id as string | undefined
+const tenantId = user.app_metadata?.tenant_id as string | undefined;
 
 if (!tenantId) {
-  throw new Error('No tenant context')
+  throw new Error('No tenant context');
 }
 ```
 
@@ -144,9 +149,9 @@ if (!tenantId) {
 
 ```typescript
 // When user switches tenants
-import { createServiceRoleClient } from '@/modules/supabase-core-typescript'
+import { createServiceRoleClient } from '@/modules/supabase-core-typescript';
 
-const adminSupabase = createServiceRoleClient()
+const adminSupabase = createServiceRoleClient();
 
 async function switchTenant(userId: string, newTenantId: string) {
   // Verify user has access to this tenant
@@ -155,10 +160,10 @@ async function switchTenant(userId: string, newTenantId: string) {
     .select('role')
     .eq('user_id', userId)
     .eq('tenant_id', newTenantId)
-    .single()
+    .single();
 
   if (!membership) {
-    throw new Error('User does not have access to this tenant')
+    throw new Error('User does not have access to this tenant');
   }
 
   // Update JWT claims with new tenant
@@ -167,7 +172,7 @@ async function switchTenant(userId: string, newTenantId: string) {
       tenant_id: newTenantId,
       role: membership.role,
     },
-  })
+  });
 
   // User must refresh their session to get new JWT
   // Frontend should call: await supabase.auth.refreshSession()
@@ -183,21 +188,21 @@ async function queryWithTenant<T>(
   table: string,
   query: (query: any) => any
 ) {
-  const user = await getServerUser(supabase)
-  const tenantId = user?.app_metadata?.tenant_id
+  const user = await getServerUser(supabase);
+  const tenantId = user?.app_metadata?.tenant_id;
 
   if (!tenantId) {
-    throw new Error('No tenant context')
+    throw new Error('No tenant context');
   }
 
   // Explicit tenant filter (RLS also enforces this)
-  return query(supabase.from(table).eq('tenant_id', tenantId))
+  return query(supabase.from(table).eq('tenant_id', tenantId));
 }
 
 // Usage
 const { data: posts } = await queryWithTenant(supabase, 'posts', (q) =>
   q.select('*').eq('status', 'published')
-)
+);
 ```
 
 ---
@@ -296,10 +301,10 @@ USING (
 
 ```typescript
 // User signs up and creates a new tenant
-import { createClient } from '@/modules/supabase-core-typescript'
-import { createServiceRoleClient } from '@/modules/supabase-core-typescript'
+import { createClient } from '@/modules/supabase-core-typescript';
+import { createServiceRoleClient } from '@/modules/supabase-core-typescript';
 
-const supabase = createClient()
+const supabase = createClient();
 
 // Step 1: User signs up
 const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -311,12 +316,12 @@ const { data: authData, error: authError } = await supabase.auth.signUp({
       tenant_name: 'My Company', // For tenant creation
     },
   },
-})
+});
 
-if (authError) throw authError
+if (authError) throw authError;
 
 // Step 2: Create tenant (using service role)
-const adminSupabase = createServiceRoleClient()
+const adminSupabase = createServiceRoleClient();
 const { data: tenant, error: tenantError } = await adminSupabase
   .from('tenants')
   .insert({
@@ -324,9 +329,9 @@ const { data: tenant, error: tenantError } = await adminSupabase
     owner_id: authData.user.id,
   })
   .select()
-  .single()
+  .single();
 
-if (tenantError) throw tenantError
+if (tenantError) throw tenantError;
 
 // Step 3: Update user with tenant context
 await adminSupabase.auth.admin.updateUserById(authData.user.id, {
@@ -334,7 +339,7 @@ await adminSupabase.auth.admin.updateUserById(authData.user.id, {
     tenant_id: tenant.id,
     role: 'owner', // Tenant owner
   },
-})
+});
 
 // Step 4: Create tenant membership record
 await adminSupabase.from('tenant_memberships').insert({
@@ -342,16 +347,16 @@ await adminSupabase.from('tenant_memberships').insert({
   tenant_id: tenant.id,
   role: 'owner',
   status: 'active',
-})
+});
 ```
 
 ### 5.2 Invite User to Tenant
 
 ```typescript
 // Admin invites user to tenant
-import { createServiceRoleClient } from '@/modules/supabase-core-typescript'
+import { createServiceRoleClient } from '@/modules/supabase-core-typescript';
 
-const adminSupabase = createServiceRoleClient()
+const adminSupabase = createServiceRoleClient();
 
 async function inviteUserToTenant(
   inviterUserId: string,
@@ -365,15 +370,15 @@ async function inviteUserToTenant(
     .select('role')
     .eq('user_id', inviterUserId)
     .eq('tenant_id', tenantId)
-    .single()
+    .single();
 
   if (!inviterMembership || !['owner', 'admin'].includes(inviterMembership.role)) {
-    throw new Error('Insufficient permissions to invite users')
+    throw new Error('Insufficient permissions to invite users');
   }
 
   // Check if user already exists
-  const { data: existingUsers } = await adminSupabase.auth.admin.listUsers()
-  const existingUser = existingUsers.users.find((u) => u.email === email)
+  const { data: existingUsers } = await adminSupabase.auth.admin.listUsers();
+  const existingUser = existingUsers.users.find((u) => u.email === email);
 
   if (existingUser) {
     // User exists, add to tenant
@@ -382,27 +387,24 @@ async function inviteUserToTenant(
       tenant_id: tenantId,
       role,
       status: 'active',
-    })
+    });
 
     // Send invitation email (custom implementation)
-    await sendTenantInvitationEmail(email, tenantId)
+    await sendTenantInvitationEmail(email, tenantId);
   } else {
     // User doesn't exist, invite via Supabase Auth
-    const { data: invitedUser, error } = await adminSupabase.auth.admin.inviteUserByEmail(
-      email,
-      {
-        data: {
-          tenant_id: tenantId,
-          role,
-        },
-        app_metadata: {
-          tenant_id: tenantId,
-          role,
-        },
-      }
-    )
+    const { data: invitedUser, error } = await adminSupabase.auth.admin.inviteUserByEmail(email, {
+      data: {
+        tenant_id: tenantId,
+        role,
+      },
+      app_metadata: {
+        tenant_id: tenantId,
+        role,
+      },
+    });
 
-    if (error) throw error
+    if (error) throw error;
 
     // Create membership record
     await adminSupabase.from('tenant_memberships').insert({
@@ -410,7 +412,7 @@ async function inviteUserToTenant(
       tenant_id: tenantId,
       role,
       status: 'invited', // Will change to 'active' when user accepts
-    })
+    });
   }
 }
 ```
@@ -419,11 +421,11 @@ async function inviteUserToTenant(
 
 ```typescript
 // User accepts invitation and sets tenant as active
-import { createClient } from '@/modules/supabase-core-typescript'
-import { createServiceRoleClient } from '@/modules/supabase-core-typescript'
+import { createClient } from '@/modules/supabase-core-typescript';
+import { createServiceRoleClient } from '@/modules/supabase-core-typescript';
 
-const supabase = createClient()
-const adminSupabase = createServiceRoleClient()
+const supabase = createClient();
+const adminSupabase = createServiceRoleClient();
 
 async function acceptTenantInvitation(userId: string, tenantId: string) {
   // Verify invitation exists
@@ -432,21 +434,21 @@ async function acceptTenantInvitation(userId: string, tenantId: string) {
     .select('*')
     .eq('user_id', userId)
     .eq('tenant_id', tenantId)
-    .single()
+    .single();
 
   if (membershipError || !membership) {
-    throw new Error('Invitation not found')
+    throw new Error('Invitation not found');
   }
 
   if (membership.status !== 'invited') {
-    throw new Error('Invitation already accepted or invalid')
+    throw new Error('Invitation already accepted or invalid');
   }
 
   // Update membership status
   await adminSupabase
     .from('tenant_memberships')
     .update({ status: 'active' })
-    .eq('id', membership.id)
+    .eq('id', membership.id);
 
   // Set as active tenant in JWT
   await adminSupabase.auth.admin.updateUserById(userId, {
@@ -454,10 +456,10 @@ async function acceptTenantInvitation(userId: string, tenantId: string) {
       tenant_id: tenantId,
       role: membership.role,
     },
-  })
+  });
 
   // User must refresh session to get new JWT
-  await supabase.auth.refreshSession()
+  await supabase.auth.refreshSession();
 }
 ```
 
@@ -465,33 +467,33 @@ async function acceptTenantInvitation(userId: string, tenantId: string) {
 
 ```typescript
 // Get all tenants a user belongs to
-import { createServerClient, getServerUser } from '@/modules/supabase-core-typescript'
+import { createServerClient, getServerUser } from '@/modules/supabase-core-typescript';
 
-const supabase = await createServerClient()
-const user = await getServerUser(supabase)
+const supabase = await createServerClient();
+const user = await getServerUser(supabase);
 
-if (!user) throw new Error('Unauthorized')
+if (!user) throw new Error('Unauthorized');
 
 // Query tenant memberships
 const { data: memberships } = await supabase
   .from('tenant_memberships')
   .select('*,tenant:tenants(*)')
   .eq('user_id', user.id)
-  .eq('status', 'active')
+  .eq('status', 'active');
 
 // Or get from JWT (if stored)
-const availableTenants = user.app_metadata?.available_tenants || []
+const availableTenants = user.app_metadata?.available_tenants || [];
 ```
 
 ### 5.5 Switch Active Tenant
 
 ```typescript
 // User switches to a different tenant
-import { createClient } from '@/modules/supabase-core-typescript'
-import { createServiceRoleClient } from '@/modules/supabase-core-typescript'
+import { createClient } from '@/modules/supabase-core-typescript';
+import { createServiceRoleClient } from '@/modules/supabase-core-typescript';
 
-const supabase = createClient()
-const adminSupabase = createServiceRoleClient()
+const supabase = createClient();
+const adminSupabase = createServiceRoleClient();
 
 async function switchTenant(userId: string, newTenantId: string) {
   // Verify user has access
@@ -501,10 +503,10 @@ async function switchTenant(userId: string, newTenantId: string) {
     .eq('user_id', userId)
     .eq('tenant_id', newTenantId)
     .eq('status', 'active')
-    .single()
+    .single();
 
   if (!membership) {
-    throw new Error('User does not have access to this tenant')
+    throw new Error('User does not have access to this tenant');
   }
 
   // Update JWT claims
@@ -513,7 +515,7 @@ async function switchTenant(userId: string, newTenantId: string) {
       tenant_id: newTenantId,
       role: membership.role,
     },
-  })
+  });
 
   // Frontend must refresh session
   // await supabase.auth.refreshSession()
@@ -613,8 +615,8 @@ WITH CHECK (tenant_id = current_tenant_id());
 
 ```typescript
 // app/api/posts/route.ts
-import { createApiHandler } from '@/modules/backend-api'
-import { z } from 'zod'
+import { createApiHandler } from '@/modules/backend-api';
+import { z } from 'zod';
 
 export const GET = createApiHandler({
   requireAuth: true,
@@ -625,18 +627,18 @@ export const GET = createApiHandler({
   handler: async ({ input, ctx }) => {
     // Tenant context is automatically available from JWT
     // RLS policies ensure only tenant's posts are returned
-    
-    const { data, error } = await ctx.auth!.supabase
-      .from('posts')
+
+    const { data, error } = await ctx
+      .auth!.supabase.from('posts')
       .select('*')
       .order('created_at', { ascending: false })
       .limit(input.limit)
-      .offset((input.page - 1) * input.limit)
+      .offset((input.page - 1) * input.limit);
 
-    if (error) throw error
-    return data
+    if (error) throw error;
+    return data;
   },
-})
+});
 ```
 
 ### 7.2 Create Tenant-Scoped Resource
@@ -650,28 +652,28 @@ export const POST = createApiHandler({
     content: z.string(),
   }),
   handler: async ({ input, ctx }) => {
-    const user = ctx.auth!.user
-    const tenantId = user.app_metadata?.tenant_id
+    const user = ctx.auth!.user;
+    const tenantId = user.app_metadata?.tenant_id;
 
     if (!tenantId) {
-      throw new Error('No tenant context')
+      throw new Error('No tenant context');
     }
 
     // Tenant ID is automatically set (RLS enforces it)
-    const { data, error } = await ctx.auth!.supabase
-      .from('posts')
+    const { data, error } = await ctx
+      .auth!.supabase.from('posts')
       .insert({
         ...input,
         tenant_id: tenantId, // Explicit (RLS also validates)
         user_id: user.id,
       })
       .select()
-      .single()
+      .single();
 
-    if (error) throw error
-    return data
+    if (error) throw error;
+    return data;
   },
-})
+});
 ```
 
 ---
@@ -802,5 +804,4 @@ WITH CHECK (tenant_id = current_tenant_id());
 
 ---
 
-*Last Updated: 2025-01-27*
-
+_Last Updated: 2025-01-27_

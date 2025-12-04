@@ -76,6 +76,7 @@ pytest -m unit
 ```
 
 **Files:**
+
 - `test_client.py` (with mocks)
 - `test_query_builder.py`
 - `test_pagination.py`
@@ -97,6 +98,7 @@ pytest -m integration
 ```
 
 **Note:** Integration tests are not yet implemented. They should:
+
 - Test with real Supabase instance
 - Verify RLS policies work correctly
 - Test actual storage operations
@@ -140,6 +142,7 @@ def mock_supabase_client():
 **Issue:** The authentication client tests use mocks and may not reflect actual supabase-py behavior.
 
 **Action:** These tests should be verified with:
+
 - Real JWT tokens from Supabase Auth
 - Actual RLS policy enforcement
 - Real Supabase instance
@@ -149,6 +152,7 @@ def mock_supabase_client():
 **Issue:** Storage tests use mocks and don't verify actual API compatibility.
 
 **Action:** Integration tests should:
+
 - Upload real files to Supabase Storage
 - Verify file_options parameter works
 - Test signed URL generation
@@ -158,6 +162,7 @@ def mock_supabase_client():
 **Issue:** Real-time tests are not yet implemented.
 
 **Action:** Add integration tests that:
+
 - Create real subscriptions
 - Verify event callbacks work
 - Test subscription cleanup
@@ -167,6 +172,7 @@ def mock_supabase_client():
 **Issue:** Count parameter may not work as expected in supabase-py.
 
 **Action:** Verify with real queries:
+
 - Test `count="exact"` parameter
 - Verify where count is located in response
 - Test with empty results
@@ -182,7 +188,7 @@ from supabase_core_python import new_feature
 
 class TestNewFeature:
     """Tests for new feature."""
-    
+
     def test_new_feature_basic(self, mock_supabase_client):
         """Test basic functionality."""
         result = new_feature(mock_supabase_client)
@@ -242,6 +248,7 @@ jobs:
 **Problem:** Module not found errors.
 
 **Solution:**
+
 ```bash
 # Install in development mode
 pip install -e .
@@ -252,6 +259,7 @@ pip install -e .
 **Problem:** Framework tests are skipped.
 
 **Solution:**
+
 ```bash
 # Install the framework
 pip install fastapi  # or django, flask
@@ -262,11 +270,11 @@ pip install fastapi  # or django, flask
 **Problem:** Tests pass but real code fails.
 
 **Solution:**
+
 - Update mock client in `conftest.py`
 - Add integration tests to verify
 - Check supabase-py documentation for API changes
 
 ---
 
-*Last Updated: 2025-01-27*
-
+_Last Updated: 2025-01-27_

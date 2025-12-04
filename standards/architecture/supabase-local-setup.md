@@ -1,6 +1,7 @@
 # Supabase_Local_Installation_Setup_Guide_v1.0
 
 ## Metadata
+
 - **Created:** 2025-01-27
 - **Last Updated:** 2025-01-27
 - **Version:** 1.0
@@ -11,6 +12,7 @@
 ## 1. Purpose of This Document
 
 This document provides step-by-step instructions for:
+
 1. Installing and configuring Supabase CLI for local development
 2. Initializing a Supabase project locally
 3. Managing project-specific containers in multi-project environments
@@ -80,6 +82,7 @@ supabase init
 ```
 
 This command creates:
+
 - `supabase/` directory with project configuration
 - `supabase/config.toml` - Main configuration file
 - `supabase/migrations/` - Directory for database migrations
@@ -102,6 +105,7 @@ supabase start
 ```
 
 This command starts the following services:
+
 - **API Gateway:** `http://localhost:54321`
 - **Postgres Database:** `localhost:54322`
 - **Auth Service:** Integrated in API Gateway
@@ -116,6 +120,7 @@ supabase status
 ```
 
 This displays:
+
 - Service URLs and ports
 - API keys (anon and service_role)
 - Database connection string
@@ -126,11 +131,13 @@ This displays:
 **CRITICAL RULE:** Supabase CLI automatically manages project-specific containers. When you run `supabase start` in a project directory, it only affects containers for that specific project.
 
 **Container Identification:**
+
 - Containers are named with the project reference: `supabase_<project-ref>_<service>`
 - Use `supabase status` to see your project's specific container names
 - Never use broad Docker commands like `docker stop $(docker ps -q)` which would affect all containers
 
 **Safe Container Management:**
+
 ```bash
 # ✅ CORRECT: Stop only current project's containers
 supabase stop
@@ -161,6 +168,7 @@ supabase status
 ```
 
 This outputs something like:
+
 ```
          API URL: http://localhost:54321
      GraphQL URL: http://localhost:54321/graphql/v1
@@ -202,16 +210,19 @@ To switch between local and production Supabase:
 ### 7.1 Running Migrations
 
 **Apply all pending migrations:**
+
 ```bash
 supabase migration up
 ```
 
 **Reset database and apply all migrations (destructive):**
+
 ```bash
 supabase db reset
 ```
 
 **Create a new migration:**
+
 ```bash
 supabase migration new <migration-name>
 ```
@@ -227,6 +238,7 @@ supabase db reset  # This also runs seed.sql
 ```
 
 Or manually:
+
 ```bash
 psql postgresql://postgres:postgres@localhost:54322/postgres -f supabase/seed.sql
 ```
@@ -234,11 +246,13 @@ psql postgresql://postgres:postgres@localhost:54322/postgres -f supabase/seed.sq
 ### 7.3 Accessing Local Postgres Directly
 
 **Using psql:**
+
 ```bash
 psql postgresql://postgres:postgres@localhost:54322/postgres
 ```
 
 **Using Database GUI:**
+
 - Connect to: `localhost:54322`
 - Database: `postgres`
 - Username: `postgres`
@@ -254,6 +268,7 @@ Navigate to `http://localhost:54323` and use the SQL Editor.
 ### 8.1 Local Function Development
 
 **Create a new Edge Function:**
+
 ```bash
 supabase functions new <function-name>
 ```
@@ -261,6 +276,7 @@ supabase functions new <function-name>
 This creates `supabase/functions/<function-name>/index.ts`.
 
 **Serve functions locally:**
+
 ```bash
 supabase functions serve
 ```
@@ -268,6 +284,7 @@ supabase functions serve
 Functions will be available at `http://localhost:54321/functions/v1/<function-name>`
 
 **Invoke a function:**
+
 ```bash
 curl -i --location --request POST 'http://localhost:54321/functions/v1/<function-name>' \
   --header 'Authorization: Bearer <anon-key>' \
@@ -292,11 +309,13 @@ Functions are automatically available when you run `supabase start`. No separate
 ### 9.1 Creating Buckets Locally
 
 **Using Supabase Studio:**
+
 1. Navigate to `http://localhost:54323`
 2. Go to Storage section
 3. Create a new bucket
 
 **Using SQL (in migrations):**
+
 ```sql
 -- Create a public bucket
 INSERT INTO storage.buckets (id, name, public)
@@ -327,17 +346,12 @@ WITH CHECK (bucket_id = 'private-uploads');
 ### 9.3 Testing File Uploads
 
 ```typescript
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!
-)
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
 
 // Upload a file
-const { data, error } = await supabase.storage
-  .from('public-assets')
-  .upload('test-file.jpg', file)
+const { data, error } = await supabase.storage.from('public-assets').upload('test-file.jpg', file);
 ```
 
 ---
@@ -351,6 +365,7 @@ const { data, error } = await supabase.storage
 **✅ CORRECT Practices:**
 
 1. **Always use Supabase CLI commands:**
+
    ```bash
    supabase start   # Starts only current project's containers
    supabase stop    # Stops only current project's containers
@@ -358,18 +373,20 @@ const { data, error } = await supabase.storage
    ```
 
 2. **If you must use Docker directly, filter by project:**
+
    ```bash
    # Get project reference first
    PROJECT_REF=$(cat supabase/.temp/project-ref 2>/dev/null || supabase status | grep "Project ID" | awk '{print $3}')
-   
+
    # Filter containers by project
    docker ps --filter "name=supabase_${PROJECT_REF}"
-   
+
    # Stop only project-specific containers
    docker stop $(docker ps --filter "name=supabase_${PROJECT_REF}" -q)
    ```
 
 3. **Verify container ownership:**
+
    ```bash
    # Check which containers belong to your project
    supabase status
@@ -380,6 +397,7 @@ const { data, error } = await supabase.storage
 **❌ NEVER Do These:**
 
 1. **Never stop all Docker containers:**
+
    ```bash
    # ❌ WRONG - This affects ALL projects
    docker stop $(docker ps -q)
@@ -387,12 +405,14 @@ const { data, error } = await supabase.storage
    ```
 
 2. **Never kill processes by port without checking ownership:**
+
    ```bash
    # ❌ WRONG - Might kill another project's Supabase
    lsof -ti:54321 | xargs kill -9
    ```
 
 3. **Never remove all Supabase-related containers:**
+
    ```bash
    # ❌ WRONG - Affects all projects
    docker rm $(docker ps -a --filter "name=supabase" -q)
@@ -403,16 +423,18 @@ const { data, error } = await supabase.storage
 **How to identify your project's containers:**
 
 1. **From Supabase CLI:**
+
    ```bash
    supabase status
    # Look for "Project ID" or container names in output
    ```
 
 2. **From Docker:**
+
    ```bash
    # List all Supabase containers
    docker ps --filter "name=supabase" --format "table {{.Names}}\t{{.Status}}"
-   
+
    # Your project's containers will have names like:
    # supabase_<project-ref>_db
    # supabase_<project-ref>_api
@@ -420,6 +442,7 @@ const { data, error } = await supabase.storage
    ```
 
 3. **From project directory:**
+
    ```bash
    # Project reference is stored here
    cat supabase/.temp/project-ref
@@ -430,6 +453,7 @@ const { data, error } = await supabase.storage
 **If port conflicts occur:**
 
 1. **Identify the conflicting container:**
+
    ```bash
    # Check what's using the port
    lsof -i :54321
@@ -438,6 +462,7 @@ const { data, error } = await supabase.storage
    ```
 
 2. **Verify it's your project's container:**
+
    ```bash
    # Compare with your project reference
    supabase status
@@ -446,10 +471,11 @@ const { data, error } = await supabase.storage
    ```
 
 3. **Stop only if it's your project's container:**
+
    ```bash
    # If it's your project, use Supabase CLI
    supabase stop
-   
+
    # If it's another project, change your port in config.toml
    # Or ask the user which project should use the port
    ```
@@ -457,17 +483,20 @@ const { data, error } = await supabase.storage
 **If containers are in a bad state:**
 
 1. **Stop your project's containers:**
+
    ```bash
    supabase stop
    ```
 
 2. **If needed, remove only your project's containers:**
+
    ```bash
    PROJECT_REF=$(cat supabase/.temp/project-ref)
    docker rm -f $(docker ps -a --filter "name=supabase_${PROJECT_REF}" -q)
    ```
 
 3. **Restart:**
+
    ```bash
    supabase start
    ```
@@ -504,6 +533,7 @@ const { data, error } = await supabase.storage
 **Symptom:** `Error: port 54321 is already in use`
 
 **Solution:**
+
 1. Check if another Supabase instance is running: `supabase status`
 2. If it's your project, stop it: `supabase stop`
 3. If it's another project, either:
@@ -515,6 +545,7 @@ const { data, error } = await supabase.storage
 **Symptom:** `Error: Cannot connect to the Docker daemon`
 
 **Solution:**
+
 1. Start Docker Desktop
 2. Verify Docker is running: `docker ps`
 3. Retry: `supabase start`
@@ -524,6 +555,7 @@ const { data, error } = await supabase.storage
 **Symptom:** Migration fails with syntax errors or constraint violations
 
 **Solution:**
+
 1. Check migration file syntax
 2. Review error message for specific issue
 3. Fix migration file
@@ -535,6 +567,7 @@ const { data, error } = await supabase.storage
 **Symptom:** `supabase start` hangs or fails
 
 **Solution:**
+
 1. Check Docker resources (memory, CPU)
 2. View Docker logs: `docker logs <container-name>`
 3. Stop and restart: `supabase stop && supabase start`
@@ -545,6 +578,7 @@ const { data, error } = await supabase.storage
 **Symptom:** Application can't connect to local Supabase
 
 **Solution:**
+
 1. Verify `.env.local` exists and has correct values
 2. Run `supabase status` to get current credentials
 3. Ensure environment file is loaded (Next.js uses `.env.local` automatically)
@@ -564,6 +598,7 @@ const { data, error } = await supabase.storage
 ### 12.2 Environment Variable Standards
 
 Follow the naming conventions in `standards/configuration.md`:
+
 - Use `SUPABASE_URL` (not `NEXT_PUBLIC_SUPABASE_URL` for server-side)
 - Use `SUPABASE_ANON_KEY` for client-side operations
 - Use `SUPABASE_SERVICE_ROLE_KEY` only in server-side/Edge Functions contexts
@@ -583,5 +618,4 @@ When setting up or managing Supabase locally:
 
 ---
 
-*Last Updated: 2025-01-27*
-
+_Last Updated: 2025-01-27_

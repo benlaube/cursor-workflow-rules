@@ -5,18 +5,21 @@ Complete setup guide for the documentation interface module with minimal depende
 ## Quick Start (Easiest Method)
 
 ### Unix/Mac/Linux:
+
 ```bash
 cd modules/docs-interface
 ./launch-docs.sh
 ```
 
 ### Windows:
+
 ```cmd
 cd modules\docs-interface
 launch-docs.bat
 ```
 
 The script will:
+
 1. Check Node.js and npm installation
 2. Check port availability (default: 3000)
 3. Install dependencies automatically
@@ -52,6 +55,7 @@ modules\docs-interface\launch-docs.bat
 ```
 
 **Launch script features:**
+
 - ✅ Automatic dependency installation
 - ✅ Port conflict detection and resolution
 - ✅ Sample documentation creation
@@ -84,10 +88,11 @@ Import the bundled CSS file that includes all styles and syntax highlighting:
 
 ```tsx
 // app/layout.tsx or app/docs/page.tsx
-import '@/lib/docs-interface/styles/docs-interface.css'
+import '@/lib/docs-interface/styles/docs-interface.css';
 ```
 
 **What's included:**
+
 - ✅ All component styles (Tailwind-compatible utilities)
 - ✅ Syntax highlighting (highlight.js GitHub theme)
 - ✅ Responsive design
@@ -102,17 +107,17 @@ If your project already uses Tailwind, configure it to scan the module:
 module.exports = {
   content: [
     './app/**/*.{js,ts,jsx,tsx}',
-    './lib/docs-interface/src/**/*.{js,ts,jsx,tsx}',  // Add this line
+    './lib/docs-interface/src/**/*.{js,ts,jsx,tsx}', // Add this line
   ],
   // ... rest of config
-}
+};
 ```
 
 Then import a highlight.js theme:
 
 ```tsx
 // app/layout.tsx or app/docs/page.tsx
-import 'highlight.js/styles/github.css'
+import 'highlight.js/styles/github.css';
 // or any other theme: atom-one-dark, monokai, etc.
 ```
 
@@ -127,12 +132,13 @@ mkdir docs
 Add some markdown files:
 
 ```markdown
-<!-- docs/README.md -->
----
+## <!-- docs/README.md -->
+
 title: Documentation Home
 description: Welcome to the documentation
 created: 2025-12-01
 version: 1.0
+
 ---
 
 # Documentation Home
@@ -147,15 +153,18 @@ Your documentation content here...
 ### Current Dependencies
 
 **Required (Core functionality):**
+
 - `react` / `react-dom` - React framework
 - `next` - Next.js framework (peer dependency)
 
 **Markdown Processing:**
+
 - `react-markdown` - Render markdown
 - `remark-gfm` - GitHub Flavored Markdown
 - `rehype-highlight` - Syntax highlighting
 
 **Utilities:**
+
 - `simple-git` - Git operations
 - `gray-matter` - Frontmatter parsing
 - `fuse.js` - Full-text search
@@ -167,6 +176,7 @@ Your documentation content here...
 To minimize external dependencies, we've bundled:
 
 ✅ **CSS Styles** - `styles/docs-interface.css` includes:
+
 - All Tailwind-compatible utility classes
 - Component-specific styles
 - Syntax highlighting theme (highlight.js GitHub)
@@ -198,11 +208,12 @@ This interface is **development-only** by design:
 
 ```tsx
 if (process.env.NODE_ENV !== 'development') {
-  return <div>Not available in production</div>
+  return <div>Not available in production</div>;
 }
 ```
 
 **Why?**
+
 - File system access (cannot run in browser)
 - Git operations (require shell access)
 - Security (shouldn't expose file editing in production)
@@ -210,6 +221,7 @@ if (process.env.NODE_ENV !== 'development') {
 ### Production Documentation
 
 For production documentation, use:
+
 - Static site generators (Docusaurus, VitePress, etc.)
 - Deploy generated HTML to CDN
 - This module is for **development/editing** only
@@ -223,6 +235,7 @@ For production documentation, use:
 **Error:** `Port 3000 is already in use`
 
 **Solution:**
+
 ```bash
 # Unix/Mac
 lsof -ti:3000 | xargs kill -9
@@ -241,6 +254,7 @@ launch-docs.bat   # Windows
 **Error:** `npm install` fails
 
 **Solution:**
+
 ```bash
 # Clear npm cache
 npm cache clean --force
@@ -261,15 +275,13 @@ Make sure you imported the CSS:
 
 ```tsx
 // app/layout.tsx or app/docs/page.tsx
-import '@/lib/docs-interface/styles/docs-interface.css'
+import '@/lib/docs-interface/styles/docs-interface.css';
 ```
 
 Or if using Tailwind, ensure module path is in `tailwind.config.js`:
 
 ```js
-content: [
-  './lib/docs-interface/src/**/*.{js,ts,jsx,tsx}',
-]
+content: ['./lib/docs-interface/src/**/*.{js,ts,jsx,tsx}'];
 ```
 
 ### Git History Not Working
@@ -277,6 +289,7 @@ content: [
 **Problem:** Version history shows "Not a git repository"
 
 **Solution:**
+
 ```bash
 # Initialize git in your project
 git init
@@ -295,10 +308,10 @@ Ensure the module path is correct:
 
 ```tsx
 // If module is in /lib/docs-interface
-import { DocsInterface } from '@/lib/docs-interface'
+import { DocsInterface } from '@/lib/docs-interface';
 
-// If module is in /modules/docs-interface  
-import { DocsInterface } from '@/modules/docs-interface'
+// If module is in /modules/docs-interface
+import { DocsInterface } from '@/modules/docs-interface';
 ```
 
 Update your `tsconfig.json` if needed:
@@ -321,12 +334,14 @@ Update your `tsconfig.json` if needed:
 ### Unix/Mac (`launch-docs.sh`)
 
 **Basic usage:**
+
 ```bash
 ./launch-docs.sh              # Launch in foreground
 ./launch-docs.sh --background # Launch in background
 ```
 
 **Background mode:**
+
 ```bash
 # Start in background
 ./launch-docs.sh --background
@@ -341,11 +356,13 @@ kill $(cat /tmp/docs-interface.pid)
 ### Windows (`launch-docs.bat`)
 
 **Usage:**
+
 ```cmd
 launch-docs.bat
 ```
 
 **Features:**
+
 - Automatic Node.js and npm detection
 - Port conflict resolution (prompts to kill process)
 - Dependency installation
@@ -374,11 +391,13 @@ Use this checklist when integrating the docs-interface module:
 ## Summary
 
 **Easiest setup:**
+
 ```bash
 ./launch-docs.sh
 ```
 
 **Manual setup:**
+
 1. Copy module to project
 2. Copy API routes
 3. Import `styles/docs-interface.css`
@@ -387,11 +406,13 @@ Use this checklist when integrating the docs-interface module:
 6. Navigate to `/docs`
 
 **Dependencies:**
+
 - 6 small npm packages
 - Bundled CSS (no Tailwind required)
 - Bundled syntax highlighting theme
 
 **Platform support:**
+
 - ✅ Unix/Mac/Linux (`.sh` script)
 - ✅ Windows (`.bat` script)
 - ✅ All browsers (Chrome, Firefox, Safari, Edge)
@@ -399,7 +420,7 @@ Use this checklist when integrating the docs-interface module:
 ---
 
 For more details, see:
+
 - `README.md` - Module documentation
 - `PORT_CONFIGURATION.md` - Port and URL configuration
 - `SEARCH_GUIDE.md` - Search functionality guide
-

@@ -1,6 +1,7 @@
 # Supabase_Modules_AI_Agent_Guide_v1.0
 
 ## Metadata
+
 - **Created:** 2025-01-27
 - **Last Updated:** 2025-01-27
 - **Version:** 1.1
@@ -11,6 +12,7 @@
 ## 1. Purpose
 
 This guide helps AI Agents understand:
+
 - **What Supabase modules exist** in this repository
 - **When to use each module** (decision tree)
 - **How to integrate modules together** (patterns)
@@ -25,26 +27,26 @@ This guide helps AI Agents understand:
 
 ### 2.1 Core Supabase Modules
 
-| Module | Purpose | When to Use |
-|--------|---------|-------------|
-| `modules/auth-profile-sync/` | Auth system with profile sync | User authentication, profile management, email verification, OAuth, MFA |
-| `modules/backend-api/` | Standardized API handlers | Next.js API routes requiring auth, validation, error handling |
-| `modules/sitemap-module/` | Sitemap automation | Auto-generating sitemap.xml from database content |
-| `modules/settings-manager/` | Encrypted settings storage | User-configurable secrets, runtime configuration, multi-tenant settings |
-| `modules/supabase-core-typescript/` | TypeScript/Next.js utilities | Next.js projects, TypeScript backends, client-side and server-side |
-| `modules/supabase-core-typescript-python/` | Python backend utilities | Django, FastAPI, Flask backends, Python server-side only |
+| Module                                     | Purpose                       | When to Use                                                             |
+| ------------------------------------------ | ----------------------------- | ----------------------------------------------------------------------- |
+| `modules/auth-profile-sync/`               | Auth system with profile sync | User authentication, profile management, email verification, OAuth, MFA |
+| `modules/backend-api/`                     | Standardized API handlers     | Next.js API routes requiring auth, validation, error handling           |
+| `modules/sitemap-module/`                  | Sitemap automation            | Auto-generating sitemap.xml from database content                       |
+| `modules/settings-manager/`                | Encrypted settings storage    | User-configurable secrets, runtime configuration, multi-tenant settings |
+| `modules/supabase-core-typescript/`        | TypeScript/Next.js utilities  | Next.js projects, TypeScript backends, client-side and server-side      |
+| `modules/supabase-core-typescript-python/` | Python backend utilities      | Django, FastAPI, Flask backends, Python server-side only                |
 
 ### 2.2 Supporting Standards
 
-| Standard | Purpose | When to Reference |
-|---------|---------|-------------------|
-| `standards/architecture/supabase-local-setup.md` | Local development setup | Setting up Supabase locally, container management |
-| `standards/architecture/supabase-secrets-management.md` | Secrets storage strategy | Deciding where to store secrets (`.env`, DB, Edge Functions) |
-| `standards/architecture/supabase-ssr-api-routes.md` | SSR integration guide | Using Supabase SSR in Next.js API routes |
-| `standards/architecture/supabase-edge-functions.md` | Edge Functions guide | When to use Edge Functions vs backend API |
-| `standards/architecture/supabase-data-api.md` | PostgREST Data API guide | Understanding auto-generated REST endpoints, direct REST usage |
-| `standards/architecture/supabase-multi-tenant-auth.md` | Multi-tenancy auth guide | Implementing multi-tenant authentication, tenant context management |
-| `standards/architecture/supabase-database-functions.md` | Database functions guide | When to use DB functions vs Edge Functions, function patterns |
+| Standard                                                | Purpose                  | When to Reference                                                   |
+| ------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------- |
+| `standards/architecture/supabase-local-setup.md`        | Local development setup  | Setting up Supabase locally, container management                   |
+| `standards/architecture/supabase-secrets-management.md` | Secrets storage strategy | Deciding where to store secrets (`.env`, DB, Edge Functions)        |
+| `standards/architecture/supabase-ssr-api-routes.md`     | SSR integration guide    | Using Supabase SSR in Next.js API routes                            |
+| `standards/architecture/supabase-edge-functions.md`     | Edge Functions guide     | When to use Edge Functions vs backend API                           |
+| `standards/architecture/supabase-data-api.md`           | PostgREST Data API guide | Understanding auto-generated REST endpoints, direct REST usage      |
+| `standards/architecture/supabase-multi-tenant-auth.md`  | Multi-tenancy auth guide | Implementing multi-tenant authentication, tenant context management |
+| `standards/architecture/supabase-database-functions.md` | Database functions guide | When to use DB functions vs Edge Functions, function patterns       |
 
 ---
 
@@ -171,6 +173,7 @@ Using Python backend?
 ```
 
 **Key Differences from TypeScript:**
+
 - No SSR support (Python backends are server-side only)
 - Framework-specific helpers for JWT extraction
 - Same core utilities (query builder, pagination, storage, etc.)
@@ -187,6 +190,7 @@ Using Python backend?
 **Key Insight:** When you create a table, REST endpoints are automatically available. No need to write custom API routes for basic operations.
 
 **Example:**
+
 ```typescript
 // Table: posts (created via migration)
 // Auto-generated endpoints:
@@ -196,27 +200,29 @@ Using Python backend?
 // - DELETE /rest/v1/posts?id=eq.1
 
 // Use via JavaScript client (recommended)
-import { createClient } from '@/modules/supabase-core-typescript'
+import { createClient } from '@/modules/supabase-core-typescript';
 
-const supabase = createClient()
+const supabase = createClient();
 
 // List posts (uses GET /rest/v1/posts)
-const { data: posts } = await supabase.from('posts').select('*')
+const { data: posts } = await supabase.from('posts').select('*');
 
 // Create post (uses POST /rest/v1/posts)
 const { data: newPost } = await supabase
   .from('posts')
   .insert({ title: 'New Post', content: '...' })
   .select()
-  .single()
+  .single();
 ```
 
 **When to Use:**
+
 - ✅ Simple CRUD operations
 - ✅ Standard filtering/sorting/pagination
 - ✅ Relationship queries
 
 **When NOT to Use:**
+
 - ❌ Complex business logic
 - ❌ Multi-step operations
 - ❌ External API calls
@@ -228,14 +234,16 @@ const { data: newPost } = await supabase
 **Use Case:** API route that requires authentication and queries user-specific data.
 
 **Modules Used:**
+
 - `modules/backend-api/` - Handler wrapper
 - `modules/auth-profile-sync/` - Auth system (via Supabase SSR)
 
 **Example:**
+
 ```typescript
 // app/api/posts/route.ts
-import { createApiHandler } from '@/modules/backend-api'
-import { z } from 'zod'
+import { createApiHandler } from '@/modules/backend-api';
+import { z } from 'zod';
 
 export const GET = createApiHandler({
   querySchema: z.object({
@@ -247,21 +255,22 @@ export const GET = createApiHandler({
     // ctx.auth is guaranteed to exist when requireAuth: true
     // ctx.auth.supabase is an authenticated Supabase client
     // RLS policies automatically apply based on auth.uid()
-    
-    const { data, error } = await ctx.auth!.supabase
-      .from('posts')
+
+    const { data, error } = await ctx
+      .auth!.supabase.from('posts')
       .select('*')
       .eq('user_id', ctx.auth!.user.id) // Explicit filter (RLS also applies)
       .limit(input.limit)
-      .offset((input.page - 1) * input.limit)
+      .offset((input.page - 1) * input.limit);
 
-    if (error) throw error
-    return data
+    if (error) throw error;
+    return data;
   },
-})
+});
 ```
 
 **Key Points:**
+
 - `requireAuth: true` automatically authenticates via Supabase SSR
 - `ctx.auth.supabase` is pre-authenticated, RLS policies apply
 - No manual JWT parsing or token refresh needed
@@ -271,20 +280,19 @@ export const GET = createApiHandler({
 **Use Case:** User signs up, profile is automatically created via database trigger.
 
 **Modules Used:**
+
 - `modules/auth-profile-sync/` - Profile sync trigger
 
 **Example:**
+
 ```typescript
 // app/api/auth/signup/route.ts
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
 export async function POST(request: Request) {
-  const { email, password, full_name } = await request.json()
-  
-  const supabase = createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!
-  )
+  const { email, password, full_name } = await request.json();
+
+  const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
 
   // Sign up user
   const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -295,18 +303,19 @@ export async function POST(request: Request) {
         full_name, // Stored in user_metadata
       },
     },
-  })
+  });
 
-  if (authError) throw authError
+  if (authError) throw authError;
 
   // Profile is automatically created by trigger in profile-sync.sql
   // No need to manually insert into profiles table
-  
-  return Response.json({ user: authData.user })
+
+  return Response.json({ user: authData.user });
 }
 ```
 
 **Key Points:**
+
 - Database trigger (`handle_new_user`) automatically creates profile
 - Profile sync happens server-side, no race conditions
 - RLS policies ensure users can only see their own profile
@@ -316,15 +325,18 @@ export async function POST(request: Request) {
 **Use Case:** Sitemap regenerates automatically when content changes.
 
 **Modules Used:**
+
 - `modules/sitemap-module/` - Sitemap automation
 
 **Setup Steps:**
+
 1. Apply `migrations/sitemap-schema.sql` to create job queue
 2. Create triggers on content tables (see integration guide)
 3. Deploy Edge Function `generate-sitemap`
 4. Configure Next.js route to serve sitemap (see `nextjs-route-example.ts`)
 
 **Example Trigger:**
+
 ```sql
 -- Trigger on pages table
 CREATE TRIGGER pages_sitemap_trigger
@@ -334,6 +346,7 @@ EXECUTE FUNCTION public.pages_sitemap_trigger();
 ```
 
 **Key Points:**
+
 - Triggers enqueue jobs, Edge Function processes them
 - Decoupled design prevents over-triggering
 - Sitemap stored in Supabase Storage, served via Next.js
@@ -343,40 +356,43 @@ EXECUTE FUNCTION public.pages_sitemap_trigger();
 **Use Case:** Querying data scoped to a specific tenant in a multi-tenant application.
 
 **Modules Used:**
+
 - `modules/supabase-core-typescript/` - Client creation
 - RLS policies for tenant isolation
 
 **Example:**
+
 ```typescript
 // app/api/posts/route.ts
-import { createApiHandler } from '@/modules/backend-api'
-import { getServerUser } from '@/modules/supabase-core-typescript'
+import { createApiHandler } from '@/modules/backend-api';
+import { getServerUser } from '@/modules/supabase-core-typescript';
 
 export const GET = createApiHandler({
   requireAuth: true,
   handler: async ({ ctx }) => {
-    const user = ctx.auth!.user
-    const tenantId = user.app_metadata?.tenant_id
+    const user = ctx.auth!.user;
+    const tenantId = user.app_metadata?.tenant_id;
 
     if (!tenantId) {
-      throw new Error('No tenant context')
+      throw new Error('No tenant context');
     }
 
     // RLS automatically filters by tenant_id from JWT
     // Explicit filter also added for clarity
-    const { data, error } = await ctx.auth!.supabase
-      .from('posts')
+    const { data, error } = await ctx
+      .auth!.supabase.from('posts')
       .select('*')
       .eq('tenant_id', tenantId) // Explicit (RLS also enforces)
-      .eq('status', 'published')
+      .eq('status', 'published');
 
-    if (error) throw error
-    return data
+    if (error) throw error;
+    return data;
   },
-})
+});
 ```
 
 **Key Points:**
+
 - Tenant ID comes from JWT `app_metadata.tenant_id`
 - RLS policies automatically enforce tenant isolation
 - Explicit `tenant_id` filter is good practice (even though RLS handles it)
@@ -388,14 +404,16 @@ export const GET = createApiHandler({
 **Use Case:** Admin UI for managing third-party API keys.
 
 **Modules Used:**
+
 - `modules/settings-manager/` - Encrypted settings storage
 
 **Example:**
+
 ```typescript
 // app/api/admin/settings/route.ts
-import { SettingsManager } from '@/modules/settings-manager/settings-manager'
-import { createApiHandler } from '@/modules/backend-api'
-import { z } from 'zod'
+import { SettingsManager } from '@/modules/settings-manager/settings-manager';
+import { createApiHandler } from '@/modules/backend-api';
+import { z } from 'zod';
 
 export const POST = createApiHandler({
   requireAuth: true,
@@ -406,9 +424,9 @@ export const POST = createApiHandler({
   }),
   handler: async ({ input, ctx }) => {
     // Verify user is admin (using JWT claims from auth-profile-sync)
-    const role = ctx.auth!.user.app_metadata?.role
+    const role = ctx.auth!.user.app_metadata?.role;
     if (role !== 'admin') {
-      throw new Error('Unauthorized')
+      throw new Error('Unauthorized');
     }
 
     // Save encrypted secret
@@ -419,14 +437,15 @@ export const POST = createApiHandler({
       category: 'api_keys',
       isSecret: input.isSecret,
       updatedBy: ctx.auth!.user.email!,
-    })
+    });
 
-    return { success: true }
+    return { success: true };
   },
-})
+});
 ```
 
 **Key Points:**
+
 - Secrets encrypted at rest (AES-256-GCM)
 - Audit trail tracks who changed what
 - UI can mask secrets for display
@@ -438,11 +457,13 @@ export const POST = createApiHandler({
 ### 5.1 Client Creation
 
 **✅ DO:**
+
 - Use `@supabase/ssr` `createServerClient()` in API routes
 - Use `createClient()` from `@supabase/supabase-js` on client-side
 - Read environment variables from `process.env.SUPABASE_URL` (not hardcoded)
 
 **❌ DON'T:**
+
 - Use client-side `createClient()` in API routes
 - Hardcode Supabase URLs or keys
 - Use `SUPABASE_SERVICE_ROLE_KEY` in client-side code
@@ -450,11 +471,13 @@ export const POST = createApiHandler({
 ### 5.2 Authentication
 
 **✅ DO:**
+
 - Use `modules/backend-api/` handler with `requireAuth: true`
 - Rely on RLS policies for data access control
 - Use JWT claims (`app_metadata.role`) for role-based access
 
 **❌ DON'T:**
+
 - Manually parse JWT tokens in API routes
 - Duplicate access checks in API layer (RLS handles it)
 - Store roles in `profiles` table without syncing to JWT claims
@@ -462,11 +485,13 @@ export const POST = createApiHandler({
 ### 5.3 Database Queries
 
 **✅ DO:**
+
 - Let RLS policies handle access control
 - Use authenticated Supabase client (RLS applies automatically)
 - Use transactions for multi-step operations
 
 **❌ DON'T:**
+
 - Use `SUPABASE_SERVICE_ROLE_KEY` to bypass RLS (unless necessary)
 - Query `auth.users` directly from frontend (use `profiles` table)
 - Ignore RLS policies (they're your security layer)
@@ -474,11 +499,13 @@ export const POST = createApiHandler({
 ### 5.4 Error Handling
 
 **✅ DO:**
+
 - Use `modules/backend-api/` for automatic error handling
 - Use `modules/error-handler/` for standardized errors
 - Log errors with context (user ID, request URL, etc.)
 
 **❌ DON'T:**
+
 - Expose sensitive error details to clients
 - Ignore Supabase errors (they contain useful information)
 - Return generic "Internal Server Error" without logging details
@@ -486,12 +513,14 @@ export const POST = createApiHandler({
 ### 5.5 Secrets Management
 
 **✅ DO:**
+
 - Use `.env` for static, build-time secrets
 - Use `modules/settings-manager/` for user-configurable secrets
 - Use Supabase Project Secrets for Edge Function-only secrets
 - Encrypt sensitive data at rest
 
 **❌ DON'T:**
+
 - Commit `.env` files to Git
 - Store secrets in code
 - Use `SUPABASE_SERVICE_ROLE_KEY` in client-side code
@@ -547,41 +576,41 @@ export default async function DashboardPage() {
 
 ```typescript
 // app/api/upload/route.ts
-import { createApiHandler } from '@/modules/backend-api'
-import { z } from 'zod'
+import { createApiHandler } from '@/modules/backend-api';
+import { z } from 'zod';
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 export const POST = createApiHandler({
   requireAuth: true,
   handler: async ({ ctx, input }) => {
-    const formData = await ctx.request.formData()
-    const file = formData.get('file') as File
+    const formData = await ctx.request.formData();
+    const file = formData.get('file') as File;
 
     // Validate file
     if (!file) {
-      throw new Error('File is required')
+      throw new Error('File is required');
     }
     if (file.size > MAX_FILE_SIZE) {
-      throw new Error('File too large')
+      throw new Error('File too large');
     }
     if (!ALLOWED_TYPES.includes(file.type)) {
-      throw new Error('Invalid file type')
+      throw new Error('Invalid file type');
     }
 
     // Upload to Supabase Storage
-    const { data, error } = await ctx.auth!.supabase.storage
-      .from('user-uploads')
+    const { data, error } = await ctx
+      .auth!.supabase.storage.from('user-uploads')
       .upload(`${ctx.auth!.user.id}/${file.name}`, file, {
         upsert: true,
-      })
+      });
 
-    if (error) throw error
+    if (error) throw error;
 
-    return { url: data.path }
+    return { url: data.path };
   },
-})
+});
 ```
 
 ### 6.3 Pattern: Real-time Subscription
@@ -649,6 +678,7 @@ export function RealtimePosts() {
 **Problem:** API route returns 401 even though user is authenticated.
 
 **Solutions:**
+
 1. Check that `requireAuth: true` is set in handler config
 2. Verify Supabase SSR is properly configured (see `supabase-ssr-api-routes.md`)
 3. Check that cookies are being sent (browser DevTools → Network)
@@ -659,6 +689,7 @@ export function RealtimePosts() {
 **Problem:** User can't access their own data despite RLS policy.
 
 **Solutions:**
+
 1. Verify RLS is enabled: `ALTER TABLE table_name ENABLE ROW LEVEL SECURITY;`
 2. Check policy uses `auth.uid()` correctly
 3. Ensure using authenticated Supabase client (not service role key)
@@ -669,6 +700,7 @@ export function RealtimePosts() {
 **Problem:** User signs up but `profiles` table has no row.
 
 **Solutions:**
+
 1. Verify `profile-sync.sql` migration was applied
 2. Check trigger exists: `SELECT * FROM pg_trigger WHERE tgname = 'on_auth_user_created';`
 3. Check trigger function: `SELECT * FROM pg_proc WHERE proname = 'handle_new_user';`
@@ -679,6 +711,7 @@ export function RealtimePosts() {
 **Problem:** Edge Function can't access environment variables.
 
 **Solutions:**
+
 1. Set secrets via Supabase CLI: `supabase secrets set KEY=value`
 2. Or via Dashboard: Project Settings → Edge Functions → Secrets
 3. Access in function: `Deno.env.get('KEY')`
@@ -689,6 +722,7 @@ export function RealtimePosts() {
 **Problem:** `supabase start` fails with "port already in use".
 
 **Solutions:**
+
 1. Check if another Supabase project is using the port: `supabase status` in other projects
 2. Use `supabase stop` in the conflicting project (NOT `docker stop $(docker ps -q)`)
 3. Or change port in `supabase/config.toml`
@@ -703,12 +737,14 @@ export function RealtimePosts() {
 **Key Concept:** Every table you create automatically gets REST API endpoints.
 
 **Workflow:**
+
 1. Create table via migration
 2. Supabase auto-generates REST endpoints at `/rest/v1/table_name`
 3. Use endpoints directly or via JavaScript client
 4. No need to write custom API routes for basic CRUD
 
 **Example:**
+
 ```typescript
 // After creating 'posts' table via migration:
 // These endpoints are automatically available:
@@ -719,19 +755,21 @@ export function RealtimePosts() {
 // DELETE /rest/v1/posts?id=eq.1  # Delete post
 
 // Use via JavaScript client:
-const { data } = await supabase.from('posts').select('*')
+const { data } = await supabase.from('posts').select('*');
 // This uses: GET /rest/v1/posts?select=*
 ```
 
 ### 8.2 When to Use Data API vs Custom Routes
 
 **Use Data API (PostgREST) for:**
+
 - ✅ Simple CRUD operations
 - ✅ Filtering, sorting, pagination
 - ✅ Relationship queries (joins)
 - ✅ Any operation that maps directly to database queries
 
 **Create Custom API Routes for:**
+
 - ❌ Complex business logic
 - ❌ Multi-step operations
 - ❌ External API integrations
@@ -751,6 +789,7 @@ const { data } = await supabase.from('posts').select('*')
 4. **Create `tenants` and `tenant_memberships` tables**
 
 **Example RLS Policy:**
+
 ```sql
 CREATE POLICY "Tenant isolation"
 ON posts FOR ALL
@@ -759,14 +798,16 @@ WITH CHECK (tenant_id = current_tenant_id());
 ```
 
 **Example: Getting Tenant Context:**
+
 ```typescript
-const user = await getServerUser(supabase)
-const tenantId = user?.app_metadata?.tenant_id
+const user = await getServerUser(supabase);
+const tenantId = user?.app_metadata?.tenant_id;
 ```
 
 ### 9.2 Complete Guide
 
 See `standards/architecture/supabase-multi-tenant-auth.md` for:
+
 - Tenant context management
 - Auth API patterns (sign up, invite, switch tenant)
 - RLS policy examples
@@ -778,6 +819,7 @@ See `standards/architecture/supabase-multi-tenant-auth.md` for:
 ### 8.1 Generate Types from Database Schema
 
 **Using Supabase CLI:**
+
 ```bash
 # Generate types from local Supabase
 supabase gen types typescript --local > types/database.types.ts
@@ -789,19 +831,14 @@ supabase gen types typescript --project-id <project-ref> > types/database.types.
 ### 8.2 Using Generated Types
 
 ```typescript
-import { Database } from '@/types/database.types'
-import { createClient } from '@supabase/supabase-js'
+import { Database } from '@/types/database.types';
+import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient<Database>(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!
-)
+const supabase = createClient<Database>(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
 
 // Now queries are type-safe
-const { data } = await supabase
-  .from('profiles')
-  .select('id, email, full_name')
-  // TypeScript knows available columns and types
+const { data } = await supabase.from('profiles').select('id, email, full_name');
+// TypeScript knows available columns and types
 ```
 
 ### 8.3 When to Regenerate Types
@@ -818,16 +855,21 @@ const { data } = await supabase
 ### 9.1 Unit Testing
 
 **Use `modules/testing-module/` for mocking:**
-```typescript
-import { SupabaseMock } from '@/modules/testing-module'
 
-const mockSupabase = new SupabaseMock()
-mockSupabase.from('posts').select('*').mockReturnValue([{ id: '1', title: 'Test' }])
+```typescript
+import { SupabaseMock } from '@/modules/testing-module';
+
+const mockSupabase = new SupabaseMock();
+mockSupabase
+  .from('posts')
+  .select('*')
+  .mockReturnValue([{ id: '1', title: 'Test' }]);
 ```
 
 ### 9.2 Integration Testing
 
 **Test with local Supabase:**
+
 1. Start local Supabase: `supabase start`
 2. Run migrations: `supabase migration up`
 3. Seed test data: `supabase db seed`
@@ -837,22 +879,25 @@ mockSupabase.from('posts').select('*').mockReturnValue([{ id: '1', title: 'Test'
 ### 9.3 RLS Testing
 
 **Test RLS policies:**
+
 ```typescript
 // Test as authenticated user
-const { data: { user } } = await supabase.auth.signInWithPassword({
+const {
+  data: { user },
+} = await supabase.auth.signInWithPassword({
   email: 'test@example.com',
   password: 'password',
-})
+});
 
 // RLS should allow access
-const { data } = await supabase.from('profiles').select('*').eq('id', user.id)
+const { data } = await supabase.from('profiles').select('*').eq('id', user.id);
 
 // RLS should deny access to other users' profiles
 const { data: otherProfile } = await supabase
   .from('profiles')
   .select('*')
   .eq('id', 'other-user-id')
-  .single()
+  .single();
 // Should return null or error
 ```
 
@@ -863,12 +908,14 @@ const { data: otherProfile } = await supabase
 ### 10.1 Query Optimization
 
 **✅ DO:**
+
 - Use `.select()` to limit columns returned
 - Use `.limit()` and `.range()` for pagination
 - Add indexes on frequently queried columns
 - Use `.single()` when expecting one row
 
 **❌ DON'T:**
+
 - Select all columns with `*` when you only need a few
 - Fetch all rows when you only need a page
 - Query without indexes on WHERE clauses
@@ -876,6 +923,7 @@ const { data: otherProfile } = await supabase
 ### 10.2 Caching Strategy
 
 **For frequently accessed, rarely changing data:**
+
 - Cache query results in Redis or in-memory cache
 - Invalidate cache on updates
 - Use Supabase real-time to invalidate cache on changes
@@ -883,6 +931,7 @@ const { data: otherProfile } = await supabase
 ### 10.3 Connection Pooling
 
 **For high-traffic applications:**
+
 - Use Supabase connection pooling (enabled by default)
 - Configure pool size based on traffic
 - Monitor connection usage in Supabase Dashboard
@@ -910,15 +959,16 @@ Before deploying, verify:
 
 ### 14.1 Framework Selection
 
-| Framework | Use Case | Integration |
-|-----------|----------|-------------|
-| **FastAPI** | Modern async API, type safety | `framework.fastapi.get_authenticated_supabase` |
-| **Django** | Full-stack framework, admin panel | `framework.django.get_supabase_client` |
-| **Flask** | Lightweight, flexible | `framework.flask.get_supabase_client` |
+| Framework   | Use Case                          | Integration                                    |
+| ----------- | --------------------------------- | ---------------------------------------------- |
+| **FastAPI** | Modern async API, type safety     | `framework.fastapi.get_authenticated_supabase` |
+| **Django**  | Full-stack framework, admin panel | `framework.django.get_supabase_client`         |
+| **Flask**   | Lightweight, flexible             | `framework.flask.get_supabase_client`          |
 
 ### 14.2 Common Patterns (Python)
 
 **FastAPI Authentication:**
+
 ```python
 from fastapi import Depends
 from supabase_core_python.framework.fastapi import get_authenticated_supabase
@@ -932,6 +982,7 @@ async def protected_route(supabase: Client = Depends(get_authenticated_supabase)
 ```
 
 **Django Authentication:**
+
 ```python
 from supabase_core_python.framework.django import get_supabase_client
 
@@ -942,6 +993,7 @@ def my_view(request):
 ```
 
 **Flask Authentication:**
+
 ```python
 from supabase_core_python.framework.flask import get_supabase_client
 
@@ -968,22 +1020,22 @@ from types.database_types import Database
 
 ### 12.1 Module Decision Matrix
 
-| Task | Module | Key File | Language |
-|------|--------|----------|----------|
-| User authentication | `auth-profile-sync` | `profile-sync.sql` | Both |
-| API route with auth (Next.js) | `backend-api` | `src/handler.ts` | TypeScript |
-| API route with auth (Python) | `supabase-core-python` | `framework/fastapi/dependencies.py` | Python |
-| Email verification | `auth-profile-sync` | `email-verification.md` | Both |
-| OAuth setup | `auth-profile-sync` | `oauth-setup.md` | Both |
-| MFA implementation | `auth-profile-sync` | `mfa-helpers.ts` | Both |
-| Sitemap generation | `sitemap-module` | `INTEGRATION_GUIDE.md` | TypeScript |
-| Secrets storage | `settings-manager` | `settings-manager.ts` | TypeScript |
-| Local Supabase setup | Standards | `supabase-local-setup.md` | Both |
-| Auto-generated REST API | Standards | `supabase-data-api.md` | Both |
-| Multi-tenant auth | Standards | `supabase-multi-tenant-auth.md` | Both |
-| Core utilities (TypeScript) | `supabase-core` | `README.md` | TypeScript |
-| Core utilities (Python) | `supabase-core-python` | `README.md` | Python |
-| Database functions | Standards | `supabase-database-functions.md` |
+| Task                          | Module                 | Key File                            | Language   |
+| ----------------------------- | ---------------------- | ----------------------------------- | ---------- |
+| User authentication           | `auth-profile-sync`    | `profile-sync.sql`                  | Both       |
+| API route with auth (Next.js) | `backend-api`          | `src/handler.ts`                    | TypeScript |
+| API route with auth (Python)  | `supabase-core-python` | `framework/fastapi/dependencies.py` | Python     |
+| Email verification            | `auth-profile-sync`    | `email-verification.md`             | Both       |
+| OAuth setup                   | `auth-profile-sync`    | `oauth-setup.md`                    | Both       |
+| MFA implementation            | `auth-profile-sync`    | `mfa-helpers.ts`                    | Both       |
+| Sitemap generation            | `sitemap-module`       | `INTEGRATION_GUIDE.md`              | TypeScript |
+| Secrets storage               | `settings-manager`     | `settings-manager.ts`               | TypeScript |
+| Local Supabase setup          | Standards              | `supabase-local-setup.md`           | Both       |
+| Auto-generated REST API       | Standards              | `supabase-data-api.md`              | Both       |
+| Multi-tenant auth             | Standards              | `supabase-multi-tenant-auth.md`     | Both       |
+| Core utilities (TypeScript)   | `supabase-core`        | `README.md`                         | TypeScript |
+| Core utilities (Python)       | `supabase-core-python` | `README.md`                         | Python     |
+| Database functions            | Standards              | `supabase-database-functions.md`    |
 
 ### 12.2 Common Commands
 
@@ -1010,28 +1062,33 @@ supabase functions deploy <name> # Deploy function
 ## 15. Additional Resources
 
 ### 13.1 Supabase Official Documentation
-- **Supabase Documentation:** https://supabase.com/docs
-- **PostgREST Documentation:** https://postgrest.org/
+
+- **Supabase Documentation:** <https://supabase.com/docs>
+- **PostgREST Documentation:** <https://postgrest.org/>
 
 ### 13.2 Repository Documentation
 
 **Setup & Configuration:**
+
 - **Local Setup:** `standards/architecture/supabase-local-setup.md`
 - **Secrets Management:** `standards/architecture/supabase-secrets-management.md`
 - **SSR Integration:** `standards/architecture/supabase-ssr-api-routes.md`
 
 **API & Features:**
+
 - **Data API (PostgREST):** `standards/architecture/supabase-data-api.md` - Auto-generated REST endpoints
 - **Edge Functions:** `standards/architecture/supabase-edge-functions.md` - When and how to use
 - **Database Functions:** `standards/architecture/supabase-database-functions.md` - PostgreSQL functions vs Edge Functions
 
 **Advanced Topics:**
+
 - **Multi-Tenancy Auth:** `standards/architecture/supabase-multi-tenant-auth.md` - Multi-tenant authentication patterns
 - **Auth Best Practices:** `modules/auth-profile-sync/supabase-auth-best-practices.md`
 
 ### 13.3 Key Workflows for AI Agents
 
 **Creating Database Schema:**
+
 1. Create table via migration
 2. **REST endpoints are automatically generated** (`/rest/v1/table_name`)
 3. Set up RLS policies
@@ -1039,6 +1096,7 @@ supabase functions deploy <name> # Deploy function
 5. See `supabase-data-api.md` for details
 
 **Implementing Multi-Tenancy:**
+
 1. Add `tenant_id` to all tenant-scoped tables
 2. Create `tenants` and `tenant_memberships` tables
 3. Store active `tenant_id` in JWT `app_metadata`
@@ -1046,12 +1104,11 @@ supabase functions deploy <name> # Deploy function
 5. See `supabase-multi-tenant-auth.md` for complete guide
 
 **Choosing Server-Side Logic:**
+
 1. Simple data transformation? → Database Function
 2. External API calls? → Edge Function
 3. See `supabase-database-functions.md` for decision tree
 
 ---
 
-*Last Updated: 2025-01-27*
-
-
+_Last Updated: 2025-01-27_

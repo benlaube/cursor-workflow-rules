@@ -1,6 +1,7 @@
 # Settings_Schema_Handling_Standard_v1.0
 
 ## Metadata
+
 - **Created:** 2025-11-18
 - **Last Updated:** 2025-11-18
 - **Version:** 1.0
@@ -68,7 +69,7 @@ CREATE TABLE settings (
   updated_at INTEGER NOT NULL,
   created_by TEXT,                       -- User/system that created
   updated_by TEXT,                        -- User/system that last updated
-  
+
   UNIQUE(key, environment)                -- One value per key per environment
 );
 
@@ -96,7 +97,7 @@ CREATE TABLE environment_variables (
   updated_at INTEGER NOT NULL,
   created_by TEXT,
   updated_by TEXT,
-  
+
   FOREIGN KEY (mcp_server_id) REFERENCES mcp_servers(id) ON DELETE SET NULL,
   UNIQUE(key, environment, mcp_server_id)  -- Allow same key for different servers
 );
@@ -109,14 +110,14 @@ CREATE INDEX idx_env_vars_key_env ON environment_variables(key, environment);
 
 ### Key Differences
 
-| Feature | Settings | Environment Variables |
-|---------|----------|----------------------|
-| **Purpose** | App configuration | External service config |
-| **Default Secret** | No | Yes |
-| **Server Association** | No | Yes (optional) |
-| **Categories** | Yes | No |
-| **Data Types** | Yes | No |
-| **Validation Rules** | Yes | No |
+| Feature                | Settings          | Environment Variables   |
+| ---------------------- | ----------------- | ----------------------- |
+| **Purpose**            | App configuration | External service config |
+| **Default Secret**     | No                | Yes                     |
+| **Server Association** | No                | Yes (optional)          |
+| **Categories**         | Yes               | No                      |
+| **Data Types**         | Yes               | No                      |
+| **Validation Rules**   | Yes               | No                      |
 
 ---
 
@@ -154,24 +155,14 @@ CREATE INDEX idx_env_vars_key_env ON environment_variables(key, environment);
 const setting = await db
   .select()
   .from(settings)
-  .where(
-    and(
-      eq(settings.key, 'openai_api_key'),
-      eq(settings.environment, 'production')
-    )
-  )
+  .where(and(eq(settings.key, 'openai_api_key'), eq(settings.environment, 'production')));
 
 // Fallback to default if not found
 if (!setting) {
   setting = await db
     .select()
     .from(settings)
-    .where(
-      and(
-        eq(settings.key, 'openai_api_key'),
-        eq(settings.environment, 'default')
-      )
-    )
+    .where(and(eq(settings.key, 'openai_api_key'), eq(settings.environment, 'default')));
 }
 ```
 
@@ -199,15 +190,15 @@ if (!setting) {
 ```typescript
 // Encrypt before storing
 if (isSecret) {
-  const encrypted = encrypt(plaintext)
-  value = serializeEncrypted(encrypted)
-  isEncrypted = true
+  const encrypted = encrypt(plaintext);
+  value = serializeEncrypted(encrypted);
+  isEncrypted = true;
 }
 
 // Decrypt when needed
 if (isEncrypted) {
-  const encryptedData = deserializeEncrypted(value)
-  const plaintext = decrypt(encryptedData)
+  const encryptedData = deserializeEncrypted(value);
+  const plaintext = decrypt(encryptedData);
 }
 ```
 
@@ -235,24 +226,23 @@ if (isEncrypted) {
 ```typescript
 // GET /api/settings?environment=production&category=api_keys
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url)
-  const environment = searchParams.get('environment') || 'default'
-  const category = searchParams.get('category')
-  
-  let query = db.select().from(settings)
-    .where(eq(settings.environment, environment))
-  
+  const { searchParams } = new URL(request.url);
+  const environment = searchParams.get('environment') || 'default';
+  const category = searchParams.get('category');
+
+  let query = db.select().from(settings).where(eq(settings.environment, environment));
+
   if (category) {
-    query = query.where(eq(settings.category, category))
+    query = query.where(eq(settings.category, category));
   }
-  
-  const results = await query
-  
+
+  const results = await query;
+
   // Mask secrets
-  return results.map(setting => ({
+  return results.map((setting) => ({
     ...setting,
-    value: setting.isSecret ? maskSecret(setting.value) : setting.value
-  }))
+    value: setting.isSecret ? maskSecret(setting.value) : setting.value,
+  }));
 }
 ```
 
@@ -261,22 +251,23 @@ export async function GET(request: NextRequest) {
 ```typescript
 // POST /api/settings
 export async function POST(request: NextRequest) {
-  const { key, value, environment, isSecret, category } = await request.json()
-  
+  const { key, value, environment, isSecret, category } = await request.json();
+
   // Validate
-  if (!key) throw new ValidationError('Key is required')
-  
+  if (!key) throw new ValidationError('Key is required');
+
   // Encrypt if secret
-  let encryptedValue = value
-  let isEncrypted = false
+  let encryptedValue = value;
+  let isEncrypted = false;
   if (isSecret && value) {
-    const encrypted = encrypt(value)
-    encryptedValue = serializeEncrypted(encrypted)
-    isEncrypted = true
+    const encrypted = encrypt(value);
+    encryptedValue = serializeEncrypted(encrypted);
+    isEncrypted = true;
   }
-  
+
   // Upsert
-  await db.insert(settings)
+  await db
+    .insert(settings)
     .values({
       id: uuidv4(),
       key,
@@ -286,7 +277,7 @@ export async function POST(request: NextRequest) {
       isSecret: Boolean(isSecret),
       isEncrypted,
       updatedAt: new Date(),
-      updatedBy: getCurrentUser()
+      updatedBy: getCurrentUser(),
     })
     .onConflictDoUpdate({
       target: [settings.key, settings.environment],
@@ -294,9 +285,9 @@ export async function POST(request: NextRequest) {
         value: encryptedValue,
         isEncrypted,
         updatedAt: new Date(),
-        updatedBy: getCurrentUser()
-      }
-    })
+        updatedBy: getCurrentUser(),
+      },
+    });
 }
 ```
 
@@ -305,24 +296,26 @@ export async function POST(request: NextRequest) {
 ```typescript
 // GET /api/env-vars?environment=production&mcpServerId=ghl
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url)
-  const environment = searchParams.get('environment') || 'default'
-  const mcpServerId = searchParams.get('mcpServerId')
-  
-  let query = db.select().from(environmentVariables)
-    .where(eq(environmentVariables.environment, environment))
-  
+  const { searchParams } = new URL(request.url);
+  const environment = searchParams.get('environment') || 'default';
+  const mcpServerId = searchParams.get('mcpServerId');
+
+  let query = db
+    .select()
+    .from(environmentVariables)
+    .where(eq(environmentVariables.environment, environment));
+
   if (mcpServerId) {
-    query = query.where(eq(environmentVariables.mcpServerId, mcpServerId))
+    query = query.where(eq(environmentVariables.mcpServerId, mcpServerId));
   }
-  
-  const results = await query
-  
+
+  const results = await query;
+
   // Mask secrets
-  return results.map(envVar => ({
+  return results.map((envVar) => ({
     ...envVar,
-    value: envVar.isSecret ? maskSecret(envVar.value) : envVar.value
-  }))
+    value: envVar.isSecret ? maskSecret(envVar.value) : envVar.value,
+  }));
 }
 ```
 
@@ -515,8 +508,8 @@ await db.insert(settings).values({
   isEncrypted: true,
   createdAt: new Date(),
   updatedAt: new Date(),
-  updatedBy: 'user@example.com'
-})
+  updatedBy: 'user@example.com',
+});
 ```
 
 ### Example 2: Storing Environment Variable for MCP Server
@@ -533,8 +526,8 @@ await db.insert(environmentVariables).values({
   isSecret: true,
   isEncrypted: true,
   createdAt: new Date(),
-  updatedAt: new Date()
-})
+  updatedAt: new Date(),
+});
 ```
 
 ### Example 3: Retrieving Setting with Fallback
@@ -545,39 +538,29 @@ async function getSetting(key: string, environment: string = 'default'): Promise
   let setting = await db
     .select()
     .from(settings)
-    .where(
-      and(
-        eq(settings.key, key),
-        eq(settings.environment, environment)
-      )
-    )
-    .limit(1)
-  
+    .where(and(eq(settings.key, key), eq(settings.environment, environment)))
+    .limit(1);
+
   // Fallback to default
   if (!setting[0] && environment !== 'default') {
     setting = await db
       .select()
       .from(settings)
-      .where(
-        and(
-          eq(settings.key, key),
-          eq(settings.environment, 'default')
-        )
-      )
-      .limit(1)
+      .where(and(eq(settings.key, key), eq(settings.environment, 'default')))
+      .limit(1);
   }
-  
+
   if (!setting[0]) {
-    return null
+    return null;
   }
-  
+
   // Decrypt if needed
   if (setting[0].isEncrypted) {
-    const encrypted = deserializeEncrypted(setting[0].value!)
-    return decrypt(encrypted)
+    const encrypted = deserializeEncrypted(setting[0].value!);
+    return decrypt(encrypted);
   }
-  
-  return setting[0].value
+
+  return setting[0].value;
 }
 ```
 
@@ -588,17 +571,17 @@ async function getSetting(key: string, environment: string = 'default'): Promise
 function SettingsForm() {
   const [environment, setEnvironment] = useState('default')
   const [settings, setSettings] = useState([])
-  
+
   useEffect(() => {
     loadSettings(environment)
   }, [environment])
-  
+
   const loadSettings = async (env: string) => {
     const res = await fetch(`/api/settings?environment=${env}`)
     const data = await res.json()
     setSettings(data.settings)
   }
-  
+
   return (
     <div>
       <EnvironmentSelector value={environment} onChange={setEnvironment} />
@@ -620,7 +603,7 @@ This standard provides a comprehensive approach to handling settings and configu
 ✅ **Flexible**: Multiple environments, categories, types  
 ✅ **Organized**: Clear structure, metadata, validation  
 ✅ **Auditable**: Track changes, who made them  
-✅ **Maintainable**: Easy to query, update, migrate  
+✅ **Maintainable**: Easy to query, update, migrate
 
 Follow these patterns to ensure consistent, secure, and maintainable settings management across any application.
 
@@ -637,4 +620,3 @@ Follow these patterns to ensure consistent, secure, and maintainable settings ma
 **Last Updated**: November 18, 2025  
 **Version**: 1.0  
 **Status**: Active Standard
-

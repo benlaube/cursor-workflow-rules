@@ -9,6 +9,7 @@ Last_Updated: 2025-01-27
 ## 1. Overview
 
 Supabase Auth supports OAuth providers out of the box. This guide covers:
+
 - Configuring providers in Supabase Dashboard
 - Frontend implementation
 - Storing provider information in profiles
@@ -21,6 +22,7 @@ Supabase Auth supports OAuth providers out of the box. This guide covers:
 ## 2. Supported Providers
 
 Supabase supports these OAuth providers:
+
 - Google
 - GitHub
 - GitLab
@@ -81,6 +83,7 @@ Supabase supports these OAuth providers:
 ### 3.3 Other Providers
 
 Follow similar pattern:
+
 1. Create OAuth app in provider's developer console
 2. Set callback URL to: `https://<your-project-ref>.supabase.co/auth/v1/callback`
 3. Copy credentials to Supabase Dashboard
@@ -100,7 +103,7 @@ ADD COLUMN IF NOT EXISTS auth_provider_id TEXT,
 ADD COLUMN IF NOT EXISTS providers TEXT[] DEFAULT '{}';
 
 -- Add index for provider lookups
-CREATE INDEX IF NOT EXISTS idx_profiles_auth_provider 
+CREATE INDEX IF NOT EXISTS idx_profiles_auth_provider
 ON public.profiles(auth_provider);
 
 COMMENT ON COLUMN public.profiles.auth_provider IS 'Primary OAuth provider (google, github, etc.) or email';
@@ -115,9 +118,9 @@ CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN
   INSERT INTO public.profiles (
-    id, 
-    email, 
-    full_name, 
+    id,
+    email,
+    full_name,
     avatar_url,
     email_verified,
     auth_provider,
@@ -152,9 +155,9 @@ $$ LANGUAGE plpgsql security definer;
 ### 5.1 Sign In with OAuth Provider
 
 ```typescript
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Sign in with Google
 const { data, error } = await supabase.auth.signInWithOAuth({
@@ -166,10 +169,10 @@ const { data, error } = await supabase.auth.signInWithOAuth({
       prompt: 'consent',
     },
   },
-})
+});
 
 if (error) {
-  console.error('OAuth error:', error)
+  console.error('OAuth error:', error);
 }
 // User will be redirected to provider, then back to callback URL
 ```
@@ -183,50 +186,44 @@ const { data, error } = await supabase.auth.signInWithOAuth({
     redirectTo: 'https://yourapp.com/auth/callback',
     scopes: 'read:user user:email', // Request additional scopes
   },
-})
+});
 ```
 
 ### 5.3 Handle OAuth Callback
 
 ```typescript
 // app/auth/callback/route.ts
-import { createClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
-import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
-  const requestUrl = new URL(request.url)
-  const code = requestUrl.searchParams.get('code')
-  const next = requestUrl.searchParams.get('next') || '/'
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get('code');
+  const next = requestUrl.searchParams.get('next') || '/';
 
   if (code) {
-    const cookieStore = await cookies()
-    const supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll()
-          },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
-          },
+    const cookieStore = await cookies();
+    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!, {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
         },
-      }
-    )
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
+        },
+      },
+    });
 
     // Exchange code for session
-    const { data, error } = await supabase.auth.exchangeCodeForSession(code)
-    
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+
     if (error) {
-      return NextResponse.redirect(new URL('/auth/error', requestUrl.origin))
+      return NextResponse.redirect(new URL('/auth/error', requestUrl.origin));
     }
   }
 
-  return NextResponse.redirect(new URL(next, requestUrl.origin))
+  return NextResponse.redirect(new URL(next, requestUrl.origin));
 }
 ```
 
@@ -239,7 +236,7 @@ const { data, error } = await supabase.auth.linkIdentity({
   options: {
     redirectTo: 'https://yourapp.com/auth/callback',
   },
-})
+});
 ```
 
 ### 5.5 Unlink Provider
@@ -249,7 +246,7 @@ const { data, error } = await supabase.auth.linkIdentity({
 const { data, error } = await supabase.auth.unlinkIdentity({
   provider: 'github',
   identityId: 'provider-user-id',
-})
+});
 ```
 
 ---
@@ -258,20 +255,22 @@ const { data, error } = await supabase.auth.unlinkIdentity({
 
 ```typescript
 // Get current user's identities (linked providers)
-const { data: { user } } = await supabase.auth.getUser()
+const {
+  data: { user },
+} = await supabase.auth.getUser();
 
 // Get identities from user object
-const identities = user?.identities || []
+const identities = user?.identities || [];
 
 // Or query from profiles table
 const { data: profile } = await supabase
   .from('profiles')
   .select('auth_provider, providers')
   .eq('id', user?.id)
-  .single()
+  .single();
 
-console.log('Primary provider:', profile?.auth_provider)
-console.log('All providers:', profile?.providers)
+console.log('Primary provider:', profile?.auth_provider);
+console.log('All providers:', profile?.providers);
 ```
 
 ---
@@ -398,5 +397,4 @@ export function ProviderManagement() {
 
 ---
 
-*Last Updated: 2025-01-27*
-
+_Last Updated: 2025-01-27_

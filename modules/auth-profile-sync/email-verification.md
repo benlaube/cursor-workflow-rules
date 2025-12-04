@@ -9,6 +9,7 @@ Last_Updated: 2025-01-27
 ## 1. Overview
 
 Supabase Auth has built-in email verification. This guide shows how to:
+
 - Configure email verification in Supabase
 - Track verification status in profiles table
 - Resend verification emails
@@ -23,6 +24,7 @@ Supabase Auth has built-in email verification. This guide shows how to:
 ### 2.1 Enable Email Verification
 
 In Supabase Dashboard:
+
 1. Go to **Authentication** > **Settings**
 2. Enable **"Enable email confirmations"**
 3. Configure email templates (optional)
@@ -30,6 +32,7 @@ In Supabase Dashboard:
 ### 2.2 Email Template Customization
 
 Supabase allows customizing email templates:
+
 - **Confirmation Email** - Sent when user signs up
 - **Magic Link Email** - For passwordless login
 - **Password Reset Email** - For password recovery
@@ -54,7 +57,7 @@ ALTER TABLE public.profiles
 ADD COLUMN IF NOT EXISTS email_verified_at TIMESTAMPTZ;
 
 -- Add index for queries
-CREATE INDEX IF NOT EXISTS idx_profiles_email_verified 
+CREATE INDEX IF NOT EXISTS idx_profiles_email_verified
 ON public.profiles(email_verified);
 
 COMMENT ON COLUMN public.profiles.email_verified IS 'Whether the user has verified their email address via Supabase Auth';
@@ -76,10 +79,10 @@ BEGIN
     new.raw_user_meta_data->>'full_name',
     new.raw_user_meta_data->>'avatar_url',
     COALESCE((new.raw_user_meta_data->>'email_verified')::boolean, false),
-    CASE 
-      WHEN (new.raw_user_meta_data->>'email_verified')::boolean = true 
-      THEN now() 
-      ELSE NULL 
+    CASE
+      WHEN (new.raw_user_meta_data->>'email_verified')::boolean = true
+      THEN now()
+      ELSE NULL
     END
   );
   return new;
@@ -99,12 +102,12 @@ BEGIN
   -- Update profile when email is verified
   IF NEW.email_confirmed_at IS NOT NULL AND OLD.email_confirmed_at IS NULL THEN
     UPDATE public.profiles
-    SET 
+    SET
       email_verified = true,
       email_verified_at = NEW.email_confirmed_at
     WHERE id = NEW.id;
   END IF;
-  
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql security definer;
@@ -124,9 +127,9 @@ EXECUTE FUNCTION public.handle_email_verification();
 ### 4.1 Sign Up with Email Verification
 
 ```typescript
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Sign up user (Supabase automatically sends verification email)
 const { data, error } = await supabase.auth.signUp({
@@ -135,10 +138,10 @@ const { data, error } = await supabase.auth.signUp({
   options: {
     emailRedirectTo: 'https://yourapp.com/auth/callback',
   },
-})
+});
 
 if (error) {
-  console.error('Sign up error:', error)
+  console.error('Sign up error:', error);
 } else {
   // User created, verification email sent
   // Show message: "Please check your email to verify your account"
@@ -149,17 +152,19 @@ if (error) {
 
 ```typescript
 // Get current user
-const { data: { user } } = await supabase.auth.getUser()
+const {
+  data: { user },
+} = await supabase.auth.getUser();
 
 // Check if email is verified
-const isVerified = user?.email_confirmed_at !== null
+const isVerified = user?.email_confirmed_at !== null;
 
 // Or check from profiles table
 const { data: profile } = await supabase
   .from('profiles')
   .select('email_verified, email_verified_at')
   .eq('id', user?.id)
-  .single()
+  .single();
 
 if (profile?.email_verified) {
   // Email is verified
@@ -176,10 +181,10 @@ const { error } = await supabase.auth.resend({
   options: {
     emailRedirectTo: 'https://yourapp.com/auth/callback',
   },
-})
+});
 
 if (error) {
-  console.error('Resend error:', error)
+  console.error('Resend error:', error);
 } else {
   // Verification email sent
 }
@@ -189,40 +194,34 @@ if (error) {
 
 ```typescript
 // In your auth callback route (e.g., app/auth/callback/route.ts)
-import { createClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
-import { NextResponse } from 'next/server'
+import { createClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
-  const requestUrl = new URL(request.url)
-  const code = requestUrl.searchParams.get('code')
-  const next = requestUrl.searchParams.get('next') || '/'
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get('code');
+  const next = requestUrl.searchParams.get('next') || '/';
 
   if (code) {
-    const cookieStore = await cookies()
-    const supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll()
-          },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
-          },
+    const cookieStore = await cookies();
+    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!, {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
         },
-      }
-    )
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
+        },
+      },
+    });
 
     // Exchange code for session (verifies email automatically)
-    await supabase.auth.exchangeCodeForSession(code)
+    await supabase.auth.exchangeCodeForSession(code);
   }
 
   // Redirect to app
-  return NextResponse.redirect(new URL(next, requestUrl.origin))
+  return NextResponse.redirect(new URL(next, requestUrl.origin));
 }
 ```
 
@@ -232,9 +231,9 @@ export async function GET(request: Request) {
 
 ```typescript
 // app/api/auth/resend-verification/route.ts
-import { createApiHandler } from '@/lib/backend-api'
-import { z } from 'zod'
-import { createClient } from '@supabase/supabase-js'
+import { createApiHandler } from '@/lib/backend-api';
+import { z } from 'zod';
+import { createClient } from '@supabase/supabase-js';
 
 export const POST = createApiHandler({
   bodySchema: z.object({
@@ -242,10 +241,7 @@ export const POST = createApiHandler({
   }),
   requireAuth: false, // Can be called by unauthenticated users
   handler: async ({ input }) => {
-    const supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_ANON_KEY!
-    )
+    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
 
     const { error } = await supabase.auth.resend({
       type: 'signup',
@@ -253,15 +249,15 @@ export const POST = createApiHandler({
       options: {
         emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
       },
-    })
+    });
 
     if (error) {
-      throw new Error(`Failed to resend verification: ${error.message}`)
+      throw new Error(`Failed to resend verification: ${error.message}`);
     }
 
-    return { message: 'Verification email sent' }
+    return { message: 'Verification email sent' };
   },
-})
+});
 ```
 
 ---
@@ -286,7 +282,7 @@ export function EmailVerificationBadge() {
   return (
     <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
       <p>
-        Please verify your email address. 
+        Please verify your email address.
         <button onClick={handleResend} className="underline ml-1">
           Resend verification email
         </button>
@@ -300,33 +296,29 @@ export function EmailVerificationBadge() {
 
 ```typescript
 // middleware.ts or in page component
-import { createClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
+import { createClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 export async function requireVerifiedEmail() {
-  const cookieStore = await cookies()
-  const supabase = createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
-          )
-        },
+  const cookieStore = await cookies();
+  const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
       },
-    }
-  )
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
+      },
+    },
+  });
 
-  const { data: { user } } = await supabase.auth.getUser()
-  
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   if (!user || !user.email_confirmed_at) {
-    redirect('/auth/verify-email')
+    redirect('/auth/verify-email');
   }
 }
 ```
@@ -351,5 +343,4 @@ export async function requireVerifiedEmail() {
 
 ---
 
-*Last Updated: 2025-01-27*
-
+_Last Updated: 2025-01-27_

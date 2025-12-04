@@ -1,6 +1,7 @@
 # Settings Management Module
 
 ## Metadata
+
 - **Module:** settings-manager
 - **Version:** 1.0.0
 - **Created:** 2025-01-27
@@ -47,6 +48,7 @@ cp modules/settings-manager/schema-example.ts /path/to/your/project/lib/db/
 Add the schema tables to your database. See `schema-example.ts` for the complete schema definition.
 
 **Required Tables:**
+
 - `settings` - Application settings with environment support
 - `environment_variables` - Environment variables with MCP association
 
@@ -59,6 +61,7 @@ ENCRYPTION_KEY=your-32-character-encryption-key-here
 ```
 
 **Important:** Generate a secure random key:
+
 ```bash
 # Generate a secure key
 openssl rand -hex 32
@@ -70,8 +73,8 @@ Update import paths in `settings-manager.ts` to match your project structure:
 
 ```typescript
 // Update these imports
-import { db } from '../db/client'  // Your database client
-import { settings, environmentVariables } from '../db/schema'  // Your schema
+import { db } from '../db/client'; // Your database client
+import { settings, environmentVariables } from '../db/schema'; // Your schema
 ```
 
 ## Quick Start
@@ -94,7 +97,7 @@ await SettingsManager.createSetting({
   category: 'api_keys',
   description: 'API request timeout in milliseconds',
   dataType: 'number',
-  isSecret: false
+  isSecret: false,
 });
 ```
 
@@ -124,7 +127,7 @@ await EnvironmentVariablesManager.createEnvVar({
   value: 'sk-...',
   environment: 'production',
   description: 'OpenAI API key for AI features',
-  mcpServerId: 'mcp-server-123'
+  mcpServerId: 'mcp-server-123',
 });
 ```
 
@@ -162,22 +165,18 @@ await SettingsManager.createSetting({
   isSecret: false,
   validationRules: {
     min: 0,
-    max: 100000000 // 100MB
-  }
+    max: 100000000, // 100MB
+  },
 });
 ```
 
 #### Update Setting
 
 ```typescript
-await SettingsManager.updateSetting(
-  'api_timeout',
-  'production',
-  {
-    value: '10000',
-    updatedBy: 'user-123'
-  }
-);
+await SettingsManager.updateSetting('api_timeout', 'production', {
+  value: '10000',
+  updatedBy: 'user-123',
+});
 ```
 
 #### Delete Setting
@@ -191,10 +190,7 @@ await SettingsManager.deleteSetting('api_timeout', 'production');
 #### Get Environment Variable
 
 ```typescript
-const envVar = await EnvironmentVariablesManager.getEnvVar(
-  'OPENAI_API_KEY',
-  'production'
-);
+const envVar = await EnvironmentVariablesManager.getEnvVar('OPENAI_API_KEY', 'production');
 ```
 
 #### Create Environment Variable
@@ -205,21 +201,17 @@ await EnvironmentVariablesManager.createEnvVar({
   value: 'postgresql://...',
   environment: 'production',
   description: 'Database connection string',
-  mcpServerId: null // Not associated with MCP server
+  mcpServerId: null, // Not associated with MCP server
 });
 ```
 
 #### Update Environment Variable
 
 ```typescript
-await EnvironmentVariablesManager.updateEnvVar(
-  'OPENAI_API_KEY',
-  'production',
-  {
-    value: 'sk-new-key',
-    updatedBy: 'user-123'
-  }
-);
+await EnvironmentVariablesManager.updateEnvVar('OPENAI_API_KEY', 'production', {
+  value: 'sk-new-key',
+  updatedBy: 'user-123',
+});
 ```
 
 ### Encryption
@@ -232,7 +224,7 @@ await SettingsManager.createSetting({
   key: 'secret_api_key',
   value: 'my-secret-key',
   isSecret: true, // Will be encrypted automatically
-  environment: 'production'
+  environment: 'production',
 });
 
 // Get and decrypt
@@ -256,11 +248,7 @@ const displayValue = SettingsManager.maskSecret(setting.value);
 console.log(displayValue); // 'sk-***...***xyz'
 
 // For actual use (decrypted)
-const actualValue = await SettingsManager.getSetting(
-  'api_key',
-  'production',
-  true
-);
+const actualValue = await SettingsManager.getSetting('api_key', 'production', true);
 ```
 
 ## Integration
@@ -281,9 +269,9 @@ export const GET = createApiHandler({
       'api_timeout',
       process.env.NODE_ENV === 'production' ? 'production' : 'development'
     );
-    
+
     return { timeout: timeout?.value || '5000' };
-  }
+  },
 });
 ```
 
@@ -299,13 +287,13 @@ const logger = setupLogger('settings', { env: 'production' });
 
 await SettingsManager.updateSetting('api_timeout', 'production', {
   value: '10000',
-  updatedBy: ctx.auth.user.id
+  updatedBy: ctx.auth.user.id,
 });
 
 logger.info('Setting updated', {
   key: 'api_timeout',
   environment: 'production',
-  updatedBy: ctx.auth.user.id
+  updatedBy: ctx.auth.user.id,
 });
 ```
 

@@ -27,6 +27,7 @@ cp -r templates/project-template/ /path/to/your/new-project/
 ### How Nested Rules Work
 
 The agent **automatically switches context** based on which directory you're working in:
+
 - Working in `src/frontend/`? Agent knows React patterns, component structure, Tailwind CSS
 - Working in `src/backend/`? Agent knows API routes, error handling, Result patterns
 - Working in `database/`? Agent knows schema design, migrations, RLS policies
@@ -101,34 +102,44 @@ The agent **automatically switches context** based on which directory you're wor
 **📖 See [`STANDARDS_INTEGRATION_GUIDE.md`](./STANDARDS_INTEGRATION_GUIDE.md) for complete instructions on applying these rules and commands to a new project.**
 
 Quick start for AI agents:
+
 > "Integrate the workflow rules from this repository. Copy `.cursor/rules/`, `.cursor/commands/`, `standards/process/checklists/`, and `templates/file-templates/AGENTS-TEMPLATE.md` (rename to `AGENTS.md`). Then adapt them for this project's stack and configuration."
 
 ### 1. Starting a New Project
+
 Tell your AI Agent:
+
 > "Initialize a new project following the structure in `standards/project-planning/project-structure.md`. Use `templates/file-templates/env.example` as the base configuration."
 
 ### 2. Building API Routes (Backend)
+
 Use the standardized handler that manages Auth, Validation, and Errors automatically:
+
 > "Create an API route for 'get-posts'. Use the `modules/backend-api` pattern with Zod validation and `requireAuth: true`. Ensure it uses Supabase SSR."
 
 ### 3. Adding AI Features
-*   **Chat UI:** "Build a Chat UI using `modules/ai-chat-ui` components and the `useChatWithAttachments` hook."
-*   **Agent Logic:** "Set up a new Runtime Agent using `modules/ai-agent-kit`. Create a 'Support Agent' with tools to look up user orders."
+
+- **Chat UI:** "Build a Chat UI using `modules/ai-chat-ui` components and the `useChatWithAttachments` hook."
+- **Agent Logic:** "Set up a new Runtime Agent using `modules/ai-agent-kit`. Create a 'Support Agent' with tools to look up user orders."
 
 ### 4. Designing the Database
+
 Ensure consistency by referencing the schema guide:
+
 > "Create a migration for a 'projects' table. Follow the conventions in `standards/database/schema.md`, specifically regarding the `tenant_id` column, RLS policies, and **mandatory SQL comments**."
 
 ### 5. Automating SEO & Sitemaps
+
 > "Set up sitemap auto-generation. Use the architecture defined in `standards/sitemap.md` and the code from `modules/sitemap-module`."
 
 ## 🤖 AI Agent Instructions (Meta-Rules)
 
 If you are an AI Agent reading this:
-1.  **Read `standards/` first.** Do not guess conventions.
-2.  **Check `modules/` second.** Do not reinvent the wheel. Use `backend-api` for routes.
-3.  **Enforce Hygiene.** Always add comments to DB tables. Always update `CHANGELOG.md`.
-4.  **Self-Correct.** If you see a file >200 lines, refactor it. If a port is busy, kill the process (after verifying ownership).
+
+1. **Read `standards/` first.** Do not guess conventions.
+2. **Check `modules/` second.** Do not reinvent the wheel. Use `backend-api` for routes.
+3. **Enforce Hygiene.** Always add comments to DB tables. Always update `CHANGELOG.md`.
+4. **Self-Correct.** If you see a file >200 lines, refactor it. If a port is busy, kill the process (after verifying ownership).
 
 ### For AI Agents Setting Up New Projects
 

@@ -1,6 +1,7 @@
 # Quick_Integration_Reference_v1.0
 
 ## Metadata
+
 - **Created:** 2025-11-25
 - **Last Updated:** 2025-11-25
 - **Version:** 1.0
@@ -40,6 +41,7 @@ ls standards/process/checklists/  # Should show: pre_flight_checklist_v1_0.md, p
 ## Test Integration
 
 Ask the AI agent:
+
 > "What rules are currently active? Show me the environment rules."
 
 The agent should reference `.cursor/rules/runtime-configuration.mdc`.
@@ -47,4 +49,3 @@ The agent should reference `.cursor/rules/runtime-configuration.mdc`.
 ---
 
 **Full instructions:** See [`STANDARDS_INTEGRATION_GUIDE.md`](./STANDARDS_INTEGRATION_GUIDE.md)
-

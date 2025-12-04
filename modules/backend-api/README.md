@@ -41,8 +41,8 @@ npm install @supabase/ssr @supabase/supabase-js zod
 
 ```typescript
 // app/api/posts/route.ts
-import { createApiHandler } from '@/lib/backend-api'
-import { z } from 'zod'
+import { createApiHandler } from '@/lib/backend-api';
+import { z } from 'zod';
 
 export const GET = createApiHandler({
   querySchema: z.object({
@@ -52,23 +52,23 @@ export const GET = createApiHandler({
   requireAuth: true,
   handler: async ({ input, ctx }) => {
     // ctx.auth is guaranteed to exist when requireAuth: true
-    const { data } = await ctx.auth!.supabase
-      .from('posts')
+    const { data } = await ctx
+      .auth!.supabase.from('posts')
       .select('*')
       .limit(input.limit)
-      .offset((input.page - 1) * input.limit)
+      .offset((input.page - 1) * input.limit);
 
-    return data
+    return data;
   },
-})
+});
 ```
 
 ### POST Handler with Body Validation
 
 ```typescript
 // app/api/posts/route.ts
-import { createApiHandler } from '@/lib/backend-api'
-import { z } from 'zod'
+import { createApiHandler } from '@/lib/backend-api';
+import { z } from 'zod';
 
 export const POST = createApiHandler({
   bodySchema: z.object({
@@ -77,21 +77,21 @@ export const POST = createApiHandler({
   }),
   requireAuth: true,
   handler: async ({ input, ctx }) => {
-    const { data, error } = await ctx.auth!.supabase
-      .from('posts')
+    const { data, error } = await ctx
+      .auth!.supabase.from('posts')
       .insert({
         title: input.title,
         content: input.content,
         user_id: ctx.auth!.user.id,
       })
       .select()
-      .single()
+      .single();
 
-    if (error) throw error
+    if (error) throw error;
 
-    return data
+    return data;
   },
-})
+});
 ```
 
 ### Optional Authentication
@@ -103,12 +103,12 @@ export const GET = createApiHandler({
     // ctx.auth may be null
     if (ctx.auth) {
       // User is authenticated
-      return { message: `Hello ${ctx.auth.user.email}` }
+      return { message: `Hello ${ctx.auth.user.email}` };
     }
     // Public endpoint
-    return { message: 'Hello guest' }
+    return { message: 'Hello guest' };
   },
-})
+});
 ```
 
 ## How Supabase SSR Simplifies This
@@ -130,6 +130,7 @@ See `standards/architecture/supabase-ssr-api-routes.md` for detailed explanation
 All responses follow a standard format:
 
 **Success:**
+
 ```json
 {
   "data": { ... },
@@ -141,6 +142,7 @@ All responses follow a standard format:
 ```
 
 **Error:**
+
 ```json
 {
   "error": {
@@ -160,14 +162,13 @@ Because Supabase SSR handles authentication, you can rely on Row Level Security 
 
 ```typescript
 // RLS policies automatically filter based on auth.uid()
-const { data } = await ctx.auth.supabase
-  .from('posts')
-  .select('*')
-  // No need for: .eq('user_id', ctx.auth.user.id)
-  // RLS handles this automatically
+const { data } = await ctx.auth.supabase.from('posts').select('*');
+// No need for: .eq('user_id', ctx.auth.user.id)
+// RLS handles this automatically
 ```
 
 This means:
+
 - Less code in API handlers
 - Security enforced at database level
 - Consistent access control
@@ -181,11 +182,11 @@ handler: async ({ input, ctx }) => {
   // Any thrown error is automatically caught
   // and converted to standardized error response
   if (!someCondition) {
-    throw new Error('Something went wrong')
+    throw new Error('Something went wrong');
   }
   // Or use AppError from error-handler module
-  throw new AppError('Not found', 'NOT_FOUND', 404)
-}
+  throw new AppError('Not found', 'NOT_FOUND', 404);
+};
 ```
 
 ## Related Documentation
@@ -225,4 +226,3 @@ handler: async ({ input, ctx }) => {
 - **API Monetization** - Built-in API key management and billing
 - **API Testing** - Built-in testing utilities for API routes
 - **API Monitoring** - Real-time API monitoring and alerting
-

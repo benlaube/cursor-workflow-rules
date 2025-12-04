@@ -1,6 +1,7 @@
 # Blog Engine Module
 
 ## Metadata
+
 - **Module:** blog-engine
 - **Version:** 1.0.0
 - **Created:** 2025-01-27
@@ -93,10 +94,10 @@ const blogService = new BlogService(supabase);
 const post = await blogService.getPostBySlug('my-first-post');
 
 // List posts with pagination
-const { data, meta } = await blogService.listPosts({ 
-  page: 1, 
+const { data, meta } = await blogService.listPosts({
+  page: 1,
   limit: 10,
-  status: 'published'
+  status: 'published',
 });
 ```
 
@@ -127,14 +128,14 @@ List posts with pagination and filtering:
 // Basic listing
 const { data, meta } = await blogService.listPosts({
   page: 1,
-  limit: 10
+  limit: 10,
 });
 
 // Filter by status
 const { data: drafts } = await blogService.listPosts({
   status: 'draft',
   page: 1,
-  limit: 20
+  limit: 20,
 });
 
 // Access pagination metadata
@@ -156,18 +157,16 @@ const { data, error } = await supabase
     title: 'My New Post',
     content: { blocks: [] }, // JSON content
     status: 'draft',
-    author_id: authorId
+    author_id: authorId,
   })
   .select()
   .single();
 
 // Add tags
-await supabase
-  .from('post_tags')
-  .insert([
-    { post_id: data.id, tag_id: tagId1 },
-    { post_id: data.id, tag_id: tagId2 }
-  ]);
+await supabase.from('post_tags').insert([
+  { post_id: data.id, tag_id: tagId1 },
+  { post_id: data.id, tag_id: tagId2 },
+]);
 ```
 
 ### Integration with Backend API
@@ -183,13 +182,13 @@ export const GET = createApiHandler({
   querySchema: z.object({
     page: z.coerce.number().default(1),
     limit: z.coerce.number().default(10),
-    status: z.enum(['draft', 'published', 'archived']).optional()
+    status: z.enum(['draft', 'published', 'archived']).optional(),
   }),
   requireAuth: false, // Public endpoint
   handler: async ({ input, ctx }) => {
     const blogService = new BlogService(ctx.auth?.supabase || supabase);
     return await blogService.listPosts(input);
-  }
+  },
 });
 
 // app/api/posts/[slug]/route.ts
@@ -198,13 +197,13 @@ export const GET = createApiHandler({
   handler: async ({ ctx, params }) => {
     const blogService = new BlogService(ctx.auth?.supabase || supabase);
     const post = await blogService.getPostBySlug(params.slug);
-    
+
     if (!post) {
       throw new AppError('Post not found', 'NOT_FOUND', 404);
     }
-    
+
     return post;
-  }
+  },
 });
 ```
 
@@ -217,12 +216,15 @@ export const GET = createApiHandler({
 Fetches a single post by slug with all relations.
 
 **Parameters:**
+
 - `slug` - Post slug (unique identifier)
 
 **Returns:**
+
 - `BlogPost | null` - Post with author, categories, and tags, or null if not found
 
 **Example:**
+
 ```typescript
 const post = await blogService.getPostBySlug('my-post');
 ```
@@ -232,20 +234,23 @@ const post = await blogService.getPostBySlug('my-post');
 Lists posts with pagination and filtering.
 
 **Parameters:**
+
 - `options` - Optional configuration:
   - `status?: 'draft' | 'published' | 'archived'` - Filter by status
   - `page?: number` - Page number (default: 1)
   - `limit?: number` - Items per page (default: 10)
 
 **Returns:**
+
 - `{ data: BlogPost[], meta: PaginationMeta }` - Posts and pagination metadata
 
 **Example:**
+
 ```typescript
 const { data, meta } = await blogService.listPosts({
   page: 1,
   limit: 10,
-  status: 'published'
+  status: 'published',
 });
 ```
 
@@ -266,7 +271,7 @@ interface BlogPost {
   author_id?: string;
   created_at: string;
   updated_at: string;
-  
+
   // Relations (populated by getPostBySlug)
   author?: Author;
   tags?: Tag[];
@@ -307,6 +312,7 @@ The module uses the following database schema (see `migrations/schema.sql`):
 ### RLS Policies
 
 The schema includes example RLS policies:
+
 - Public can view published posts
 - Admins can do everything (customize based on your role system)
 
@@ -345,10 +351,10 @@ import { BlogService } from '@/modules/blog-engine';
 const blogService = new BlogService(supabase);
 const { data: posts } = await blogService.listPosts({ status: 'published' });
 
-const routes = posts.map(post => ({
+const routes = posts.map((post) => ({
   loc: `https://example.com/blog/${post.slug}`,
   lastmod: post.updated_at,
-  priority: 0.8
+  priority: 0.8,
 }));
 
 const generator = new SitemapGenerator({ siteUrl: 'https://example.com' });

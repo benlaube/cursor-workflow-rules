@@ -19,6 +19,7 @@ This guide explains how to properly use Supabase's built-in authentication featu
 ### 2.1 Core Auth Features
 
 Supabase Auth includes:
+
 - ✅ **User Management** - `auth.users` table (managed by Supabase)
 - ✅ **Email/Password Auth** - Built-in signup, signin, signout
 - ✅ **OAuth Providers** - Google, GitHub, etc. (configure in Dashboard)
@@ -32,6 +33,7 @@ Supabase Auth includes:
 ### 2.2 What We Add (Necessary Extensions)
 
 We only add what Supabase doesn't provide:
+
 - ✅ **Public Profiles Table** - Because `auth.users` is not queryable from frontend
 - ✅ **Role-Based Access Control** - Using `app_metadata.role` in JWT claims
 - ✅ **RLS Policies** - Database-level security
@@ -51,22 +53,20 @@ await supabase.auth.admin.updateUserById(userId, {
   app_metadata: {
     role: 'admin', // This becomes available in JWT
   },
-})
+});
 
 // Checking role (from JWT)
-const role = user.app_metadata?.role // ✅ Secure, from JWT
+const role = user.app_metadata?.role; // ✅ Secure, from JWT
 ```
 
 **❌ DON'T: Store roles only in public tables (insecure)**
 
 ```typescript
 // ❌ Bad: User could modify their own profile
-const { data: profile } = await supabase
-  .from('profiles')
-  .select('role')
-  .eq('id', user.id)
+const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id);
 
-if (profile?.role === 'admin') { // ❌ Not secure!
+if (profile?.role === 'admin') {
+  // ❌ Not secure!
   // ...
 }
 ```
@@ -98,11 +98,13 @@ CREATE POLICY "Admins can see all"
 ### 3.3 Why We Have Both `profiles.role` and `app_metadata.role`
 
 **Purpose of `profiles.role`:**
+
 - Convenience for queries (e.g., "get all admins")
 - UI display (showing user's role)
 - Analytics/reporting
 
 **Purpose of `app_metadata.role`:**
+
 - **Source of truth** for security
 - Available in JWT (cannot be tampered with)
 - Used in RLS policies
@@ -121,19 +123,20 @@ CREATE POLICY "Admins can see all"
 const { data, error } = await supabase.auth.signUp({
   email: 'user@example.com',
   password: 'secure-password',
-})
+});
 
 // Sign in - Supabase handles session
 const { data, error } = await supabase.auth.signInWithPassword({
   email: 'user@example.com',
   password: 'secure-password',
-})
+});
 
 // Sign out - Supabase clears session
-await supabase.auth.signOut()
+await supabase.auth.signOut();
 ```
 
 **No custom code needed** - Supabase handles:
+
 - Password hashing
 - Session management
 - Token refresh
@@ -148,10 +151,11 @@ const { data, error } = await supabase.auth.signInWithOAuth({
   options: {
     redirectTo: 'https://yourapp.com/auth/callback',
   },
-})
+});
 ```
 
 **No custom OAuth code needed** - Supabase handles:
+
 - OAuth flow
 - Token exchange
 - User creation
@@ -163,10 +167,11 @@ const { data, error } = await supabase.auth.signInWithOAuth({
 // Passwordless login - Supabase sends email
 const { data, error } = await supabase.auth.signInWithOtp({
   email: 'user@example.com',
-})
+});
 ```
 
 **No custom email code needed** - Supabase handles:
+
 - Email sending
 - Token generation
 - Link validation
@@ -178,10 +183,11 @@ const { data, error } = await supabase.auth.signInWithOtp({
 const { data, error } = await supabase.auth.mfa.enroll({
   factorType: 'totp',
   friendlyName: 'My Phone',
-})
+});
 ```
 
 **No custom MFA code needed** - Supabase handles:
+
 - TOTP secret generation
 - QR code creation
 - Verification
@@ -193,12 +199,14 @@ const { data, error } = await supabase.auth.mfa.enroll({
 ### 5.1 ❌ Don't Build Custom Auth
 
 **Don't:**
+
 - Build custom password hashing
 - Build custom session management
 - Build custom token generation
 - Build custom OAuth flows
 
 **Do:**
+
 - Use Supabase's built-in methods
 - Configure in Supabase Dashboard
 - Use Supabase SSR for server-side auth
@@ -206,11 +214,13 @@ const { data, error } = await supabase.auth.mfa.enroll({
 ### 5.2 ❌ Don't Store Auth Data in Public Tables
 
 **Don't:**
+
 - Store passwords in `profiles` table
 - Store tokens in `profiles` table
 - Store session data in `profiles` table
 
 **Do:**
+
 - Let Supabase manage `auth.users`
 - Store only public profile data in `profiles`
 - Use Supabase's session management
@@ -218,11 +228,13 @@ const { data, error } = await supabase.auth.mfa.enroll({
 ### 5.3 ❌ Don't Bypass Supabase Auth
 
 **Don't:**
+
 - Create users directly in `auth.users` table
 - Manually set JWT tokens
 - Skip Supabase's auth flow
 
 **Do:**
+
 - Use Supabase Admin API for user management
 - Use Supabase's auth methods
 - Let Supabase handle JWT generation
@@ -310,5 +322,4 @@ public.profiles (Our extension)
 
 ---
 
-*Last Updated: 2025-01-27*
-
+_Last Updated: 2025-01-27_

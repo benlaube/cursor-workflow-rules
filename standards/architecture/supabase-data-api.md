@@ -1,6 +1,7 @@
 # Supabase_Data_API_PostgREST_Guide_v1.0
 
 ## Metadata
+
 - **Created:** 2025-01-27
 - **Last Updated:** 2025-01-27
 - **Version:** 1.0
@@ -52,12 +53,14 @@ Auto-generated endpoints:
 ### 2.2 When to Use Data API vs Custom API Routes
 
 **Use Data API (PostgREST) for:**
+
 - ✅ Simple CRUD operations
 - ✅ Filtering, sorting, pagination
 - ✅ Relationship queries (joins)
 - ✅ Any operation that maps directly to database queries
 
 **Use Custom API Routes for:**
+
 - ❌ Complex business logic
 - ❌ Multi-step operations
 - ❌ External API integrations
@@ -79,13 +82,13 @@ Local:      http://localhost:54321/rest/v1/
 
 For a table named `posts`:
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/rest/v1/posts` | List all posts (respects RLS) |
-| `GET` | `/rest/v1/posts?id=eq.1` | Get post with id=1 |
-| `POST` | `/rest/v1/posts` | Create new post |
-| `PATCH` | `/rest/v1/posts?id=eq.1` | Update post with id=1 |
-| `DELETE` | `/rest/v1/posts?id=eq.1` | Delete post with id=1 |
+| Method   | Endpoint                 | Description                   |
+| -------- | ------------------------ | ----------------------------- |
+| `GET`    | `/rest/v1/posts`         | List all posts (respects RLS) |
+| `GET`    | `/rest/v1/posts?id=eq.1` | Get post with id=1            |
+| `POST`   | `/rest/v1/posts`         | Create new post               |
+| `PATCH`  | `/rest/v1/posts?id=eq.1` | Update post with id=1         |
+| `DELETE` | `/rest/v1/posts?id=eq.1` | Delete post with id=1         |
 
 ### 3.3 Authentication
 
@@ -154,6 +157,7 @@ Filter rows using operators:
 ```
 
 **Operators:**
+
 - `eq` - equals
 - `neq` - not equals
 - `gt` - greater than
@@ -257,12 +261,12 @@ curl -X GET 'https://project.supabase.co/rest/v1/posts?select=*' \
 // Using fetch
 const response = await fetch('https://project.supabase.co/rest/v1/posts?select=*', {
   headers: {
-    'apikey': 'YOUR_ANON_KEY',
-    'Authorization': 'Bearer YOUR_JWT_TOKEN',
+    apikey: 'YOUR_ANON_KEY',
+    Authorization: 'Bearer YOUR_JWT_TOKEN',
     'Content-Type': 'application/json',
   },
-})
-const data = await response.json()
+});
+const data = await response.json();
 ```
 
 ### 6.2 JavaScript Client (Recommended)
@@ -270,24 +274,20 @@ const data = await response.json()
 The `@supabase/supabase-js` client uses PostgREST endpoints under the hood:
 
 ```typescript
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // This uses: GET /rest/v1/posts?select=*
-const { data } = await supabase.from('posts').select('*')
+const { data } = await supabase.from('posts').select('*');
 
 // This uses: GET /rest/v1/posts?id=eq.1&select=*
-const { data: post } = await supabase
-  .from('posts')
-  .select('*')
-  .eq('id', 1)
-  .single()
+const { data: post } = await supabase.from('posts').select('*').eq('id', 1).single();
 
 // This uses: POST /rest/v1/posts
 const { data: newPost } = await supabase
   .from('posts')
-  .insert({ title: 'New Post', content: '...' })
+  .insert({ title: 'New Post', content: '...' });
 ```
 
 **Both approaches use the same endpoints!** The JavaScript client is a convenience wrapper.
@@ -329,9 +329,9 @@ Authorization: Bearer <SERVICE_ROLE_KEY>
 ### 8.1 Complete CRUD Example
 
 ```typescript
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // CREATE
 const { data: newPost } = await supabase
@@ -342,7 +342,7 @@ const { data: newPost } = await supabase
     user_id: userId,
   })
   .select()
-  .single()
+  .single();
 
 // READ (List)
 const { data: posts } = await supabase
@@ -350,14 +350,14 @@ const { data: posts } = await supabase
   .select('*,author:users(*)')
   .eq('status', 'published')
   .order('created_at', { ascending: false })
-  .limit(10)
+  .limit(10);
 
 // READ (Single)
 const { data: post } = await supabase
   .from('posts')
   .select('*,author:users(*)')
   .eq('id', postId)
-  .single()
+  .single();
 
 // UPDATE
 const { data: updatedPost } = await supabase
@@ -365,13 +365,10 @@ const { data: updatedPost } = await supabase
   .update({ title: 'Updated Title' })
   .eq('id', postId)
   .select()
-  .single()
+  .single();
 
 // DELETE
-const { error } = await supabase
-  .from('posts')
-  .delete()
-  .eq('id', postId)
+const { error } = await supabase.from('posts').delete().eq('id', postId);
 ```
 
 ### 8.2 Advanced Filtering
@@ -386,7 +383,7 @@ const { data } = await supabase
   .or('tags.cs.{javascript},tags.cs.{react}')
   .order('views', { ascending: false })
   .limit(20)
-  .offset(0)
+  .offset(0);
 ```
 
 ### 8.3 Relationship Queries
@@ -395,13 +392,15 @@ const { data } = await supabase
 // Get post with author and comments
 const { data } = await supabase
   .from('posts')
-  .select(`
+  .select(
+    `
     *,
     author:users(*),
     comments:comments(*,author:users(*))
-  `)
+  `
+  )
   .eq('id', postId)
-  .single()
+  .single();
 ```
 
 ---
@@ -421,12 +420,12 @@ const { data } = await supabase
 
 ### 9.2 Common Error Codes
 
-| Code | Meaning | Solution |
-|------|---------|----------|
-| `PGRST116` | Not found | Check if record exists |
-| `PGRST204` | No rows returned | Check filters |
-| `PGRST301` | Invalid filter | Check query syntax |
-| `42501` | RLS policy violation | Check RLS policies |
+| Code       | Meaning              | Solution               |
+| ---------- | -------------------- | ---------------------- |
+| `PGRST116` | Not found            | Check if record exists |
+| `PGRST204` | No rows returned     | Check filters          |
+| `PGRST301` | Invalid filter       | Check query syntax     |
+| `42501`    | RLS policy violation | Check RLS policies     |
 
 ---
 
@@ -481,6 +480,7 @@ For large datasets, use `range` header instead of `offset`:
 **Remember:** Every table automatically gets REST endpoints. No need to create custom API routes for basic CRUD.
 
 **Workflow:**
+
 1. Create table via migration
 2. Set up RLS policies
 3. Endpoints are immediately available at `/rest/v1/table_name`
@@ -489,12 +489,14 @@ For large datasets, use `range` header instead of `offset`:
 ### 11.2 When to Use Data API vs Custom Routes
 
 **Use Data API when:**
+
 - Simple CRUD operations
 - Standard filtering/sorting/pagination
 - Relationship queries
 - Operations that map 1:1 to database queries
 
 **Create Custom API Routes when:**
+
 - Complex business logic
 - Multi-step operations
 - External API calls
@@ -528,5 +530,4 @@ For large datasets, use `range` header instead of `offset`:
 
 ---
 
-*Last Updated: 2025-01-27*
-
+_Last Updated: 2025-01-27_

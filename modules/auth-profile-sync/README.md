@@ -1,15 +1,18 @@
 # Auth Profile Sync Module
 
 ## Metadata
+
 - **Module:** auth-profile-sync
 - **Version:** 1.1
 - **Created:** 2025-11-18
 - **Last Updated:** 2025-01-27
 
 ## Purpose
+
 This module automatically keeps a `public.profiles` table in sync with Supabase's private `auth.users` table. This is essential because `auth.users` is not queryable by your frontend for security reasons.
 
 The module also provides comprehensive guides and helpers for:
+
 - Email verification flows
 - OAuth provider integration (Google, GitHub, etc.)
 - Multi-Factor Authentication (MFA)
@@ -17,12 +20,14 @@ The module also provides comprehensive guides and helpers for:
 ## Contents
 
 ### Core Files
+
 - `profile-sync.sql`: PostgreSQL migration that:
   - Creates the `profiles` table (if missing)
   - Sets up Row Level Security (RLS) policies
   - Installs a secure database trigger to copy user data on signup
 
 ### Feature Guides
+
 - `email-verification.md`: Complete guide for email verification
   - Database schema updates
   - Frontend implementation
@@ -55,48 +60,55 @@ The module also provides comprehensive guides and helpers for:
 ## Usage
 
 ### 1. Apply the Migration
+
 Copy the contents of `profile-sync.sql` and run it in your Supabase SQL Editor or apply it via your migration tool.
 
 ### 2. Frontend Integration
+
 When a user signs in, you can immediately query their profile:
 
 ```typescript
-const { data: profile } = await supabase
-  .from('profiles')
-  .select('*')
-  .eq('id', user.id)
-  .single()
+const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single();
 ```
 
 ### 3. Email Verification
+
 See `email-verification.md` for:
+
 - Database schema updates for verification tracking
 - Frontend sign-up and verification flows
 - API routes for resending verification emails
 - UI components for verification status
 
 ### 4. OAuth Providers
+
 See `oauth-setup.md` for:
+
 - Configuring Google, GitHub, and other providers
 - Storing provider information in profiles
 - Linking multiple providers to one account
 - Provider management UI
 
 ### 5. Multi-Factor Authentication
+
 See `mfa-helpers.ts` for:
+
 - Enrolling TOTP authenticators
 - Verifying MFA during sign-in
 - Managing multiple MFA factors
 - Syncing MFA status to profiles
 
 ### 6. Dev User Setup (Development Only)
+
 See `dev-user-setup.md` for:
+
 - Creating a default dev user with admin permissions
 - Setting up role-based access control
 - Automated setup script
 - Security best practices
 
 ### 6. Customization
+
 To add more fields (e.g., `phone_number` or `role`), edit the `handle_new_user` function in `profile-sync.sql` to map additional fields from `new.raw_user_meta_data`.
 
 ## Features
@@ -143,4 +155,3 @@ To add more fields (e.g., `phone_number` or `role`), edit the `handle_new_user` 
 - **Profile Social Graph** - Social connections and relationships
 - **Profile Privacy Controls** - Advanced privacy controls for profile data
 - **Profile Compliance** - GDPR/CCPA compliance features
-
