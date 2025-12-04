@@ -1,9 +1,9 @@
-# Git Repository Standards v1.2
+# Git Repository Standards
 
 ## Metadata
 - **Created:** 2025-11-17
-- **Last Updated:** 04-12-2025 13:05:03 EST
-- **Version:** 1.2
+- **Last Updated:** 04-12-2025 16:40:36 EST
+- **Version:** 1.3
 - **Description:** Standards for Git usage, branching strategies, commit messages, and PR workflows. Adhering to this ensures history is readable and deployments are predictable.
 - **Type:** Governing Standard - Defines requirements for Git workflow
 - **Applicability:** All git operations throughout development lifecycle
@@ -122,10 +122,51 @@ Every repo must exclude:
 
 ---
 
-## F. AI Agent Behavior
+## F. Git Hooks Configuration
+
+### F.1 Required Hooks
+Every repository MUST have git hooks configured to automate quality checks:
+
+**Pre-Commit Hook:**
+- Security checks (secrets scan, .env detection)
+- Linting (auto-fix when possible)
+- Formatting (auto-fix with Prettier/Black)
+- Type checking (if applicable)
+
+**Commit-Msg Hook:**
+- Validates Conventional Commits format
+- Checks commit type and subject length
+- Enforces imperative mood
+
+### F.2 Recommended Setup: Husky + lint-staged
+
+**For Node.js projects:**
+1. Install: `npm install --save-dev husky lint-staged @commitlint/cli @commitlint/config-conventional`
+2. Initialize: `npx husky init`
+3. Configure: Add `lint-staged` to package.json
+4. Create hooks: `.husky/pre-commit` and `.husky/commit-msg`
+
+**For Python projects:**
+Use `pre-commit` framework with similar hooks.
+
+### F.3 Automatic Setup
+
+AI agents MUST automatically set up git hooks when:
+- Hooks are missing during pre-flight check
+- Setting up a new repository
+- Git hooks are not configured
+
+**Command:** Run `setup-git-hooks` command (`.cursor/commands/setup-git-hooks.md`)
+
+**See:** `.cursor/rules/git/git-hooks-standards.mdc` for complete implementation details.
+
+---
+
+## G. AI Agent Behavior
 - **Branch Creation:** Always ask for the task context to name the branch correctly.
 - **Commit Messages:** Always write semantic commit messages. Never use "update code" or "misc changes".
 - **PR Description:** Auto-generate a detailed PR description based on the diff.
+- **Git Hooks Setup:** Automatically configure git hooks when missing (run `setup-git-hooks` command).
 
 ---
 
@@ -137,10 +178,15 @@ This standard is enforced by the following Cursor rules:
 - **`git-commit-messages.mdc`** - Enforces Conventional Commits format and pre-commit security checks (Section C)
 - **`git-pr-preparation.mdc`** - Validates branch and commits before PR, auto-generates PR description (Section D)
 - **`git-repository-hygiene.mdc`** - Monitors .gitignore patterns and tracked sensitive files (Section E)
-- **`git-hooks-standards.mdc`** - Standards for configuring git hooks (pre-commit, commit-msg, pre-push)
-- **`git-workflow-integration.mdc`** - Coordinates git operations and validates git status (Sections A, F)
+- **`git-hooks-standards.mdc`** - Standards for configuring git hooks automatically (Section F)
+- **`git-workflow-integration.mdc`** - Coordinates git operations and validates git status (Sections A, G)
 
-These rules automatically apply during git operations to ensure compliance with this standard.
+## Related Cursor Commands
 
-# End of Standard – Git Repository Standards v1.2
+- **`setup-git-hooks.md`** - Automates git hooks configuration (implements Section F)
+- **`pre-flight-check.md`** - Verifies git hooks are configured before starting work
+
+These rules and commands automatically apply during git operations to ensure compliance with this standard.
+
+# End of Standard – Git Repository Standards
 

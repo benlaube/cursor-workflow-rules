@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Status:** Active
-- **Created:** 12-02-2025 00:00:00 EST
+- **Created:** 02-12-2025 00:00:00 EST
 - **Last Updated:** 12-04-2025 14:32:51 EST
 - **Version:** 1.0.0
 - **Description:** Create a project rule that guides the AI agent on when and how to create tasks in Notion for bugs, incomplete work, and future development. Establishes guidelines for task creation, linking, and updates in the Notion Dev Tasks database.

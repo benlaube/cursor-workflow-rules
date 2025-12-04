@@ -1,15 +1,15 @@
 ---
 description: Standard development task workflow from pre-flight to post-flight. Applies throughout development lifecycle.
-version: 1.4.0
+version: 1.5.0
 created: 12-04-2025
-lastUpdated: 04-12-2025 16:20:33 EST
+lastUpdated: 04-12-2025 16:41:43 EST
 alwaysApply: true
 globs: ""
 type: Workflow Integration Rule - Manages task lifecycle and development workflow
 applicability: When files matching globs are edited.
 dependencies: []
 relatedCommands: [[create-start-scripts.md](../commands/create-start-scripts.md), [project-audit.md](../commands/project-audit.md), [audit-security.md](../commands/audit-security.md)]
-relatedRules: [[pre-flight-check.mdc](./pre-flight-check.mdc), [pr-review-check.mdc](./pr-review-check.mdc), [auto-heal.mdc](./auto-heal.mdc), [environment.mdc](./environment.mdc), [date-time.mdc](./date-time.mdc), [workflow-standards-documentation-maintenance.mdc](./workflow-standards-documentation-maintenance.mdc), [documentation-dependency-tracking.mdc](./documentation-dependency-tracking.mdc), [git-workflow-integration.mdc](./git/git-workflow-integration.mdc), [git-branch-naming.mdc](./git/git-branch-naming.mdc), [git-commit-messages.mdc](./git/git-commit-messages.mdc), [git-pr-preparation.mdc](./git/git-pr-preparation.mdc)]
+relatedRules: [[pre-flight-check.mdc](./pre-flight-check.mdc), [pr-review-check.mdc](./pr-review-check.mdc), [auto-heal.mdc](./auto-heal.mdc), [environment.mdc](./environment.mdc), [date-time.mdc](./date-time.mdc), [dry-principle.mdc](./dry-principle.mdc), [workflow-standards-documentation-maintenance.mdc](./workflow-standards-documentation-maintenance.mdc), [documentation-dependency-tracking.mdc](./documentation-dependency-tracking.mdc), [git-workflow-integration.mdc](./git/git-workflow-integration.mdc), [git-branch-naming.mdc](./git/git-branch-naming.mdc), [git-commit-messages.mdc](./git/git-commit-messages.mdc), [git-pr-preparation.mdc](./git/git-pr-preparation.mdc)]
 relatedStandards: [[project-planning/documentation-management.md](../standards/project-planning/documentation-management.md), [process/checklists/pre_flight_checklist_v1_0.md](../standards/process/checklists/pre_flight_checklist_v1_0.md), [process/checklists/pr_review_checklist_v1_0.md](../standards/process/checklists/pr_review_checklist_v1_0.md)]
 ---
 
@@ -37,15 +37,16 @@ Before writing code, the agent MUST:
 ## 2. During Development
 
 1.  **Atomic Changes:** Make small, testable changes.
-2.  **Self-Correction:** If a command fails, attempt to self-heal (see `.cursor/rules/auto-heal.mdc`) before asking the user.
-3.  **Tool Usage:** Use specialized tools (`read_file`, `grep`) over generic terminal commands.
-4.  **Function Documentation:** Every function must have comments with description and dependencies (per user rules).
-5.  **Database Schema Requirements:** When creating/modifying database tables:
+2.  **DRY Principle:** Before creating new content, search for existing solutions. Reference existing standards/rules/modules instead of duplicating. See `.cursor/rules/dry-principle.mdc` for guidance.
+3.  **Self-Correction:** If a command fails, attempt to self-heal (see `.cursor/rules/auto-heal.mdc`) before asking the user.
+4.  **Tool Usage:** Use specialized tools (`read_file`, `grep`) over generic terminal commands.
+5.  **Function Documentation:** Every function must have comments with description and dependencies (per user rules).
+6.  **Database Schema Requirements:** When creating/modifying database tables:
     - Ensure tables and fields have descriptions
     - Use descriptive names (not abbreviated)
     - Include `created_at` and `updated_at` columns
     - See user rules for complete requirements
-6.  **Notion Task Creation (If Project is Bound):** If a Notion Project Binding rule exists:
+7.  **Notion Task Creation (If Project is Bound):** If a Notion Project Binding rule exists:
     - When discovering bugs that can't be fixed immediately, create a task in Notion "Dev Tasks" database.
     - When work is incomplete and must be paused, create a task to track the remaining work.
     - When identifying future development items or technical debt, create tasks proactively.

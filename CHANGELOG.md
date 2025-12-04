@@ -8,6 +8,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Git Hooks Configuration** (04-12-2025 16:40:36 EST)
+  - **Added:** `.husky/pre-commit` - Pre-commit hook with security checks, linting, and formatting
+  - **Added:** `.husky/commit-msg` - Commit message validation (Conventional Commits)
+  - **Added:** `.commitlintrc.json` - Commitlint configuration for message validation
+  - **Added:** `.cursor/commands/setup-git-hooks.md` (v1.0.0) - Command to automatically set up git hooks
+  - **Updated:** `package.json` - Added `lint-staged` configuration and `prepare` script
+  - **Updated:** `.cursor/rules/pre-flight-check.mdc` (v2.0.4 → v2.1.0) - Added git hooks verification
+  - **Updated:** `.cursor/rules/git/git-hooks-standards.mdc` (v1.0.4 → v1.1.0) - Added automatic setup section
+  - **Updated:** `standards/process/git-repository-standards.md` (v1.2 → v1.3) - Added Section F (Git Hooks Configuration)
+  - **Purpose:** Automate code quality and commit standards enforcement at commit-time
+  - **Hooks Implemented:**
+    - **Pre-commit:** Security checks (secrets, .env), linting, formatting, type checking
+    - **Commit-msg:** Conventional Commits validation (type, length, format)
+  - **Security Checks:**
+    - Scans for API keys, passwords, tokens, secrets
+    - Prevents committing .env files
+    - Blocks commit if secrets detected
+  - **Quality Checks:**
+    - Runs ESLint on TypeScript files (auto-fix)
+    - Runs Markdownlint on documentation (auto-fix)
+    - Formats code with Prettier (auto-fix)
+  - **Benefits:**
+    - Prevents bad commits before they happen
+    - Enforces Conventional Commits format automatically
+    - Auto-fixes most formatting and linting issues
+    - Consistent with AI agent behavior (same checks)
+  - **Integration:**
+    - Pre-flight check verifies hooks are installed
+    - Auto-runs `setup-git-hooks` command if missing
+    - Aligned with `git-commit-messages.mdc` and `git-repository-hygiene.mdc`
+  - **Related Standards:** Implements `standards/process/git-repository-standards.md` Section F
+
 - **Linting Configuration** (04-12-2025 16:25:06 EST)
   - **Added:** `.eslintrc.js` - ESLint configuration for TypeScript modules
   - **Added:** `.prettierrc` - Prettier formatting configuration
@@ -42,6 +74,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Auto-fix capabilities for most issues
     - Integration with pre-flight and PR review checks
   - **Related Standards:** Implements `standards/process/code-quality-linting-standards.md`
+
+- **DRY Principle Rule** (04-12-2025 16:41:43 EST)
+  - **Added:** `.cursor/rules/dry-principle.mdc` (v1.0.0) - Auto-applied rule enforcing DRY (Don't Repeat Yourself) principle
+  - **Purpose:** Ensures single source of truth for all documentation and code by preventing duplication
+  - **Core Principle:** "Every piece of knowledge must have a single, authoritative representation within a system"
+  - **Features:**
+    - Mandatory search for existing content before creating new
+    - Reference pattern guidance (how to reference vs duplicate)
+    - Authority hierarchy enforcement (Standards → Rules → Commands → Checklists)
+    - Duplication detection and refactoring strategies
+    - Module reuse enforcement (check `modules/` before writing new code)
+    - Clear exceptions to DRY (quick summaries, templates, safety info)
+  - **Integration:**
+    - Added Section 3 to `ai-interaction-rules.mdc` (v1.2.0 → v1.3.0) - DRY Principle core directive
+    - Added to `task-workflow.mdc` Section 2 (v1.4.0 → v1.5.0) - DRY reminder during development
+    - Added to `AGENTS.md` Section 8.2 - Auto-applied rules list
+  - **Examples:**
+    - `cursor-rule-creation.mdc` defines metadata requirements (authoritative)
+    - `validate-rule-metadata.md` references Section 2 for requirements (validation)
+    - `cursor-command-creation.mdc` references rules, doesn't duplicate content
+  - **Benefits:**
+    - Prevents content duplication across 400+ files in repository
+    - Easier maintenance (update once, applies everywhere)
+    - Clear authority structure (everyone knows where to look)
+    - Reduced file sizes and cognitive load for agents
+    - Automatic enforcement through auto-applied rule
+    - Aligns with today's refactoring (rule-metadata → validate-rule-metadata)
+  - **Impact:** All AI agents now actively check for existing content and reference instead of duplicating, making the codebase more maintainable
 
 ### Changed
 - **Git Rules Organization** (04-12-2025 16:34:28 EST)

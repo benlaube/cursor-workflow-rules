@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Created:** 2025-01-27
-- **Last Updated:** 04-12-2025 16:31:26 EST
+- **Last Updated:** 04-12-2025 16:46:02 EST
 - **Version:** 1.0
 - **Description:** Project context and memory for AI Developer Agent
 
@@ -71,6 +71,7 @@ We are currently focusing on:
 - "Cursor rules (`.mdc` files) use YAML frontmatter for metadata, while standards/docs use Markdown headers - they have different but complementary metadata structures."
 - "Rules should declare their type from 8 standard types (Behavioral, Environment, Workflow, Project-Specific, Conditional, Error Recovery, Security, Documentation) to clarify purpose and audience."
 - "Enhanced metadata fields (Type, Related Commands/Rules/Standards, How to Use) improve cross-referencing and make documentation more navigable for both AI agents and developers."
+- "DRY (Don't Repeat Yourself) principle is enforced through `.cursor/rules/dry-principle.mdc` - every piece of knowledge has a single authoritative source. Commands reference rules, rules reference standards. Never duplicate content; always reference with 'See [file] Section X for details'. This prevents maintenance burden and ensures consistency."
 
 ## 6. Standard Developer Lifecycle
 
@@ -207,20 +208,20 @@ All checklists are located in `standards/process/checklists/`:
 
 - **Pre-Flight:** `standards/process/checklists/pre_flight_checklist_v1_0.md`
   - Validates environment and repo state before coding
-  - Related command: `pre-flight-check` (`.cursor/commands/pre-flight-check.md`)
+  - Related rule: `pre-flight-check.mdc` (`.cursor/rules/pre-flight-check.mdc`) - Auto-applied
 
 - **PR Review:** `standards/process/checklists/pr_review_checklist_v1_0.md`
   - Validates code quality, security, and documentation before PR
-  - Related command: `pr-review-check` (`.cursor/commands/pr-review-check.md`)
+  - Related rule: `pr-review-check.mdc` (`.cursor/rules/pr-review-check.mdc`) - Auto-applied
 
 - **Linting:** `standards/process/checklists/linting_checklist_v1_0.md`
   - Validates code quality through linting at different stages
-  - Related command: `validate-code-quality` (`.cursor/commands/validate-code-quality.md`)
+  - Related rule: `linting-behavior.mdc` (`.cursor/rules/linting-behavior.mdc`) - Auto-applied
   - Related standard: `standards/process/code-quality-linting-standards.md`
 
 - **Project Audit:** `standards/process/checklists/project_audit_checklist_v1_0.md`
   - Audits project structure, modules, database, and code hygiene
-  - Related command: `project-audit` (`.cursor/commands/project-audit.md`)
+  - Related command: `audit-project` (`.cursor/commands/audit-project.md`)
 
 - **Security Audit:** `standards/security/security-audit-checklist.md`
   - Validates security posture (secrets, dependencies, RLS, API security)
@@ -234,11 +235,8 @@ All checklists are located in `standards/process/checklists/`:
 ### 8.2 Commands (Executable Workflows)
 All commands are located in `.cursor/commands/`:
 
-- **`pre-flight-check`** (`.cursor/commands/pre-flight-check.md`) - Environment validation before coding
 - **`create-start-scripts`** (`.cursor/commands/create-start-scripts.md`) - Generate launch scripts (`start_app.sh` and `scripts/*.sh`)
-- **`pr-review-check`** (`.cursor/commands/pr-review-check.md`) - Pre-PR validation
-- **`validate-code-quality`** (`.cursor/commands/validate-code-quality.md`) - Standalone lint check command
-- **`project-audit`** (`.cursor/commands/project-audit.md`) - Project structure and standards validation
+- **`audit-project`** (`.cursor/commands/audit-project.md`) - Project structure and standards validation
 - **`security_audit`** (`.cursor/commands/audit-security.mdc`) - Security vulnerabilities and secrets scan
 - **`audit-documentation-rules-metadata`** (`.cursor/commands/audit-documentation-rules-metadata.md`) - Orchestrates metadata validation for all documentation and rule files
 - **`audit-readmes`** (`.cursor/commands/audit-readmes.md`) - Validates all README.md files against structure and content standards
@@ -255,7 +253,8 @@ All commands are located in `.cursor/commands/`:
 - **`.cursor/rules/workflow-standards-documentation-maintenance.mdc`** - Documentation maintenance requirements (project-specific to Workflow Rules repository)
 - **`.cursor/rules/documentation-dependency-tracking.mdc`** - Ensures documentation dependencies and cross-references are maintained when files are modified (applies automatically)
 - **`.cursor/rules/cursor-rule-creation.mdc`** - Ensures Cursor rules follow proper structure and metadata standards (applies when creating/modifying rules)
-- **`.cursor/rules/command-creation.mdc`** - Ensures Cursor commands follow proper structure and metadata standards (applies when creating/modifying commands)
+- **`.cursor/rules/cursor-command-creation.mdc`** - Ensures Cursor commands follow proper structure and metadata standards (applies when creating/modifying commands)
+- **`.cursor/rules/dry-principle.mdc`** - Enforces DRY (Don't Repeat Yourself) principle - single source of truth for all documentation and code (applies automatically)
 - **`.cursor/rules/readme-standards.mdc`** - Ensures README.md files follow standard structure and content requirements (applies when creating/modifying README files)
 - **Git Workflow Rules:**
   - **`.cursor/rules/git/git-branch-naming.mdc`** - Enforces branch naming conventions and prevents direct commits to main/master (applies when creating/validating branches)
@@ -287,8 +286,8 @@ All standards are located in `standards/`:
 | Starting new task | Auto (`.cursor/rules/task-workflow.mdc` → `pre-flight-check.mdc`) | `pre_flight_checklist_v1_0.md` | - |
 | Launching dev env | `./start_app.sh dev` (or `create-start-scripts` if missing) | - | `application-launch.md` |
 | Before PR | Auto (`.cursor/rules/pr-review-check.mdc`) | `pr_review_checklist_v1_0.md` | - |
-| Lint check | `validate-code-quality` (`.cursor/commands/validate-code-quality.md`) | `linting_checklist_v1_0.md` | `code-quality-linting-standards.md` |
-| Onboarding repo | `project-audit` (`.cursor/commands/project-audit.md`) | `project_audit_checklist_v1_0.md` | `project-structure.md` |
+| Lint check | Auto (`.cursor/rules/linting-behavior.mdc`) | `linting_checklist_v1_0.md` | `code-quality-linting-standards.md` |
+| Onboarding repo | `audit-project` (`.cursor/commands/audit-project.md`) | `project_audit_checklist_v1_0.md` | `project-structure.md` |
 | Security review | `security_audit` (`.cursor/commands/audit-security.mdc`) | `security-audit-checklist.md` | - |
 | README review | `audit-readmes` (`.cursor/commands/audit-readmes.md`) | - | `readme-standards.mdc` |
 | RLS deep dive | Auto (Supabase rule) | `.cursor/rules/supabase-rls-policy-review.mdc` | `access-control.md` |
@@ -298,6 +297,6 @@ All standards are located in `standards/`:
 
 ---
 
-*Last Updated: 04-12-2025 16:31:26 EST*
+*Last Updated: 04-12-2025 16:46:02 EST*
 
 **Maintenance:** Update the "Last Updated" date whenever you modify this file. See `.cursor/rules/workflow-standards-documentation-maintenance.mdc` for comprehensive documentation update requirements.

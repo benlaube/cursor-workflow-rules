@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Status:** Active
-- **Created:** 12-02-2025 00:00:00 EST
+- **Created:** 02-12-2025 00:00:00 EST
 - **Last Updated:** 12-04-2025 14:32:51 EST
 - **Version:** 2.0.0
 - **Description:** Generate or update launch shell scripts (start_app.sh + scripts/*.sh) and deprecate old .cursor launch commands. Detects stack and services, creates launch scripts, and handles port management.

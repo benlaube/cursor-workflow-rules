@@ -1,8 +1,8 @@
 ---
 description: Standards for configuring git hooks including pre-commit, commit-msg, and pre-push hooks. Applies when setting up repositories or configuring git hooks.
-version: 1.0.4
+version: 1.1.0
 created: 12-04-2025
-lastUpdated: 12-04-2025 16:13:13 EST
+lastUpdated: 04-12-2025 16:40:36 EST
 alwaysApply: true
 globs: ""
 type: Conditional Rule - Git hooks configuration standards
@@ -35,35 +35,58 @@ This rule **automatically applies** when:
 
 ## Agent Responsibilities
 
+### 0. Automatic Hook Setup
+
+**When setting up a new repository or when hooks are missing, AI agents MUST automatically:**
+
+1. **Install Dependencies:**
+   ```bash
+   npm install --save-dev husky lint-staged @commitlint/cli @commitlint/config-conventional
+   ```
+
+2. **Initialize Husky:**
+   ```bash
+   npx husky init  # Husky v9+
+   ```
+
+3. **Configure package.json:**
+   - Add `"prepare": "husky"` script
+   - Add `lint-staged` configuration
+
+4. **Create Hook Files:**
+   - `.husky/pre-commit` - Linting + formatting + security checks
+   - `.husky/commit-msg` - Conventional Commits validation
+
+5. **Create Config:**
+   - `.commitlintrc.json` - Commit message rules
+
+**This setup is MANDATORY for all projects. See Section 6 for the complete setup command.**
+
 ### 1. Pre-Commit Hook Standards
 
 #### 1.1 Required Checks
 Pre-commit hooks MUST perform these checks:
 
-**1. Code Formatting:**
+**1. Security Checks (FIRST - Most Critical):**
+- Scan staged files for secrets (API keys, passwords, tokens)
+- Check if `.env` files are staged
+- **FAIL if secrets or .env detected** (prevent commit)
+
+**2. Code Formatting:**
 - Run formatter (Prettier, Black, etc.) on staged files
 - Auto-fix formatting issues when possible
 - Fail if formatting cannot be auto-fixed
 
-**2. Linting:**
+**3. Linting:**
 - Run linter (ESLint, Ruff, etc.) on staged files
 - Auto-fix lint issues when possible
 - Fail on errors that cannot be auto-fixed
 
-**3. Secrets Scanning:**
-- Scan staged files for secrets (API keys, passwords, tokens)
-- Use tools like `git-secrets`, `truffleHog`, or custom scripts
-- **FAIL if secrets detected** (prevent commit)
-
-**4. .env File Check:**
-- Verify `.env` files are not staged
-- **FAIL if .env is staged** (prevent commit)
-
-**5. Type Checking (if applicable):**
+**4. Type Checking (if applicable):**
 - Run type checker (TypeScript, mypy, etc.) on staged files
 - Fail on type errors
 
-#### 1.2 Recommended Tools
+#### 1.2 Recommended Tools (Husky + lint-staged)
 
 **Husky (Node.js projects):**
 ```json

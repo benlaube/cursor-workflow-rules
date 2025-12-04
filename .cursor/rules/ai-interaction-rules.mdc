@@ -1,15 +1,15 @@
 ---
 description: Defines behavior and standards for AI agents interacting with this repository
-version: 1.2.0
+version: 1.3.0
 created: 12-04-2025
-lastUpdated: 04-12-2025 16:20:33 EST
+lastUpdated: 04-12-2025 16:41:43 EST
 alwaysApply: true
 globs: ""
 type: Auto-Applied Behavioral Rule - Guides AI agent behavior and coding standards
 applicability: When files matching globs are edited.
 dependencies: []
 relatedCommands: [launch.md, create-start-scripts.md]
-relatedRules: [[environment.mdc](./environment.mdc), [task-workflow.mdc](./task-workflow.mdc)]
+relatedRules: [[environment.mdc](./environment.mdc), [task-workflow.mdc](./task-workflow.mdc), [dry-principle.mdc](./dry-principle.mdc)]
 relatedStandards: [[project-planning/documentation-management.md](../standards/project-planning/documentation-management.md), [database/schema.md](../standards/database/schema.md)]
 ---
 
@@ -38,7 +38,17 @@ This document defines the behavior and standards for AI agents (Cursor, Windsurf
 - Need to read a secret? Use `modules/settings-manager`.
 - **How to Use**: Import the module directly if in a monorepo, or copy the relevant files to your project's `lib/` or `modules/` folder if starting fresh.
 
-### 3. Safety First
+### 3. DRY Principle (Don't Repeat Yourself)
+**Rule:** Every piece of knowledge must have a single, authoritative representation. Reference existing content instead of duplicating it.
+**Action:**
+- Before writing definitions, search for existing content in `standards/`, `.cursor/rules/`, or `modules/`
+- If it exists: Reference it (e.g., "See `[file]` Section X for details")
+- If creating new: Make it authoritative and comprehensive
+- Follow hierarchy: Standards → Rules → Commands → Checklists (reference up, never down)
+**Why:** Single source of truth prevents inconsistency and reduces maintenance burden.
+**See:** `.cursor/rules/dry-principle.mdc` for complete DRY guidance and refactoring patterns.
+
+### 4. Safety First
 **Rule:** 
 - Never commit secrets (API keys, passwords).
 - Always verify file paths before writing.

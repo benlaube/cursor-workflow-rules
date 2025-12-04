@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Security checks first (CRITICAL - prevent committing secrets)
+echo "🔐 Running security checks..."
+
+# Check for .env files
+if git diff --cached --name-only | grep -E "^\.env$"; then
+  echo "❌ .env file is staged. Remove from staging: git reset HEAD .env"
+  exit 1
+fi
+
+# Scan for actual secrets in code files (not documentation or hooks)
+# Only check .ts, .tsx, .js, .jsx, .py files for hardcoded secrets
+if git diff --cached --name-only | grep -E '\.(ts|tsx|js|jsx|py)$' | \
+   xargs -I {} git diff --cached {} | \
+   grep -E 'password.*=.*["\047][^"\047]+["\047]|api_key.*=.*["\047][^"\047]+["\047]|sk_live_[a-zA-Z0-9]{24,}|ghp_[a-zA-Z0-9]{36,}'; then
+  echo "❌ Hardcoded secrets detected in code files."
+  echo "Tip: Use environment variables instead of hardcoding secrets."
+  exit 1
+fi
+
+echo "✅ Security checks passed"
+
+# Run lint-staged (linting + formatting)
+echo "🔍 Running linters and formatters..."
+npx lint-staged
+
+echo "✅ Pre-commit checks complete"

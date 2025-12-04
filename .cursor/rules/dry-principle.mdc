@@ -1,0 +1,292 @@
+---
+description: Enforces DRY (Don't Repeat Yourself) principle - ensuring single source of truth for all documentation and code. Every piece of knowledge must have a single, authoritative representation.
+version: 1.0.0
+lastUpdated: 04-12-2025 16:41:43 EST
+globs: ""
+alwaysApply: true
+type: Auto-Applied Behavioral Rule - Prevents duplication and enforces single source of truth
+relatedRules: [cursor-rule-creation.mdc, cursor-command-creation.mdc, documentation-dependency-tracking.mdc]
+relatedStandards: [project-planning/documentation-management.md, module-structure.md]
+---
+
+# DRY Principle Rule
+
+## When This Rule Applies
+
+This rule **always applies** when creating or modifying any file in the repository.
+
+---
+
+## Core Principle
+
+**"Every piece of knowledge must have a single, unambiguous, authoritative representation within a system."**
+
+Instead of copying information to multiple places:
+1. Define it **once** in an authoritative location
+2. **Reference** it everywhere else
+3. Keep references **up to date**
+
+---
+
+## Agent Responsibilities
+
+### 1. Before Creating New Content
+
+**MANDATORY: Search for existing content first**
+
+Before writing any definition, requirement, or procedure:
+
+1. **Search the codebase:**
+   - Standards: `standards/**/*.md`
+   - Rules: `.cursor/rules/**/*.mdc`
+   - Commands: `.cursor/commands/**/*.md`
+   - Modules: `modules/*/README.md`
+
+2. **Check if it exists:**
+   - If YES → Reference it, don't duplicate it
+   - If NO → Create it in the appropriate authoritative location
+
+3. **Ask: Where should this be authoritative?**
+   - **Standards** → Broad requirements, "what" and "why"
+   - **Rules** → Agent behavior, "how" for auto-application
+   - **Commands** → Validation/workflows, specific procedures
+   - **Modules** → Reusable code patterns
+
+### 2. Reference Pattern (How to Reference)
+
+**When referencing existing content:**
+
+```markdown
+For complete [topic] requirements, see `[file]` Section X.
+
+Quick summary:
+- Key point 1
+- Key point 2
+- Key point 3
+```
+
+**Examples:**
+- ✅ "For metadata requirements, see `.cursor/rules/cursor-rule-creation.mdc` Section 2."
+- ✅ "See `standards/project-planning/documentation-management.md` Section 7 for changelog format."
+- ✅ "Reference `modules/error-handler/README.md` for usage examples."
+
+### 3. Authority Hierarchy
+
+**Always reference UP the hierarchy, never DOWN:**
+
+```
+Standards (highest authority)
+    ↑ referenced by
+Rules (implement standards)
+    ↑ referenced by
+Commands (validate rules)
+    ↑ referenced by
+Checklists (quick reference)
+```
+
+**Examples:**
+- ✅ Command references Rule: `validate-rule-metadata.md` references `cursor-rule-creation.mdc`
+- ✅ Rule references Standard: `cursor-rule-creation.mdc` references `cursor-rules-standards.md`
+- ❌ Standard duplicating Command: Never duplicate command details in a standard
+
+### 4. When Duplication is Detected
+
+**If you find duplicated content:**
+
+1. **Identify authoritative source:**
+   - Which file should own this content?
+   - Which is most comprehensive?
+   - Which is referenced more often?
+
+2. **Refactor to reference pattern:**
+   - Keep full content in authoritative file
+   - Convert duplicates to references
+   - Add "See [file] Section X for details"
+
+3. **Update cross-references:**
+   - Ensure bidirectional links if needed
+   - Update `relatedFiles` metadata
+   - Follow `documentation-dependency-tracking.mdc`
+
+### 5. Exceptions to DRY
+
+**Acceptable duplication (with caveats):**
+
+**1. Quick Reference Summaries:**
+```markdown
+## Quick Reference
+- Field 1: Brief description
+- Field 2: Brief description
+
+**For complete details, see [authoritative-file] Section X.**
+```
+
+**2. File Templates:**
+- Templates in `templates/` are meant to be copied
+- Each instance becomes independent (not a violation)
+
+**3. Examples with Context:**
+- Showing same pattern in different contexts is OK
+- Must be relevant to current file's purpose
+- Keep examples concise
+
+**4. Critical Safety Information:**
+- Security warnings can be repeated if critical
+- Must still reference authoritative source
+
+**RULE: Even when duplicating, ALWAYS include reference to authoritative source.**
+
+### 6. Module Reuse
+
+**Before writing new code:**
+
+1. **Check `modules/` directory:**
+   - Does this functionality already exist?
+   - `logger-module`, `error-handler`, `settings-manager`, etc.
+
+2. **If exists:**
+   - Import/use existing module
+   - Reference module's README for usage
+   - Don't reimplement similar functionality
+
+3. **If doesn't exist:**
+   - Create new module following `standards/module-structure.md`
+   - Make it reusable for future use
+
+**See `AGENTS.md` Section 2 (Module Usage) for complete guidance.**
+
+---
+
+## Examples
+
+### Good DRY Pattern
+
+**File A (Authoritative):** `cursor-rule-creation.mdc` Section 2
+```markdown
+### 2. Required YAML Frontmatter Fields
+
+Every `.mdc` rule file MUST have:
+
+[... complete 50-line definition of all fields ...]
+```
+
+**File B (Reference):** `validate-rule-metadata.md`
+```markdown
+### Step 2: Validate YAML Frontmatter
+
+Check that YAML frontmatter exists and contains all required fields.
+
+**Required fields (in order):**
+1. description
+2. version
+3. lastUpdated
+[... brief list ...]
+
+**For detailed field requirements and examples, see `.cursor/rules/cursor-rule-creation.mdc` Section 2.**
+```
+
+### Bad WET Pattern (Write Everything Twice)
+
+**File A:** `rule-metadata.mdc`
+```markdown
+## Required Fields
+
+description (REQUIRED):
+- 1-2 sentences that describe what the rule does
+[... 30 lines ...]
+```
+
+**File B:** `cursor-rule-creation.mdc`
+```markdown
+## Required Fields
+
+description (REQUIRED):
+- 1-2 sentences that describe what the rule does
+[... 30 lines duplicating File A ...]
+```
+
+**Problem:** Same content in two places → maintenance nightmare
+
+---
+
+## Refactoring Checklist
+
+When refactoring duplicated content:
+
+- [ ] Identify all files with duplicated content
+- [ ] Determine which should be authoritative
+- [ ] Keep full content in authoritative file only
+- [ ] Convert others to reference pattern
+- [ ] Update metadata (relatedFiles, dependencies)
+- [ ] Verify references work (correct paths, section numbers)
+- [ ] Update CHANGELOG with refactoring
+- [ ] Test that references are clear and helpful
+
+---
+
+## Integration with Other Rules
+
+### `cursor-rule-creation.mdc`
+- Implements DRY by showing reference patterns
+- This rule codifies why references are used
+
+### `cursor-command-creation.mdc`
+- Implements DRY (commands reference rules)
+- This rule explains the principle behind it
+
+### `documentation-dependency-tracking.mdc`
+- Tracks references between files
+- This rule ensures references exist instead of duplication
+
+### `ai-interaction-rules.mdc`
+- General AI behavior guidance
+- This rule provides specific DRY guidance
+
+---
+
+## Related Files
+
+- **Rules:**
+  - [cursor-rule-creation.mdc](./cursor-rule-creation.mdc) - Example of DRY: defines metadata once
+  - [cursor-command-creation.mdc](./cursor-command-creation.mdc) - Example of DRY: references rules
+  - [documentation-dependency-tracking.mdc](./documentation-dependency-tracking.mdc) - Tracks references
+  - [ai-interaction-rules.mdc](./ai-interaction-rules.mdc) - General AI behavior (includes Module Usage)
+- **Standards:**
+  - [documentation-management.md](../../standards/project-planning/documentation-management.md) - Documentation organization
+  - [module-structure.md](../../standards/module-structure.md) - Module reuse patterns
+- **Reference:** 
+  - `AGENTS.md` Section 2 - Module Usage (Don't Reinvent the Wheel)
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically to all file creation and modification.**
+
+**Agents should:**
+1. **Before writing:** Search for existing similar content
+2. **If exists:** Reference it with "See [file] Section X for details"
+3. **If creating new:** Make it comprehensive and authoritative
+4. **When duplicating:** Always include reference to authoritative source
+5. **Check modules:** Use existing modules instead of reimplementing
+6. **Follow hierarchy:** Standards → Rules → Commands → Checklists
+7. **Detect duplication:** Refactor when found using reference pattern
+
+**Validation checklist:**
+- [ ] Searched for existing content before creating new
+- [ ] Used references instead of duplicating definitions
+- [ ] Included "See [file] Section X" for detailed topics
+- [ ] Followed authority hierarchy (reference up, not down)
+- [ ] Checked `modules/` for existing code before writing new
+- [ ] Updated metadata with cross-references
+- [ ] No verbatim duplication of requirements/definitions
+
+---
+
+## Notes
+
+- **DRY applies to both documentation AND code**
+- **References make maintenance easier** - update once, applies everywhere
+- **Clear hierarchy prevents confusion** - everyone knows where to look
+- **Module reuse is DRY for code** - use existing modules instead of reimplementing
+- **This rule was created using DRY** - references existing content instead of duplicating it

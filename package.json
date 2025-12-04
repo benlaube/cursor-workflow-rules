@@ -16,18 +16,35 @@
     "lint:ts:fix": "node node_modules/eslint/bin/eslint.js 'modules/**/*.{ts,tsx}' --fix",
     "format": "node node_modules/prettier/bin/prettier.cjs --write '**/*.{ts,tsx,js,jsx,json,md}'",
     "format:check": "node node_modules/prettier/bin/prettier.cjs --check '**/*.{ts,tsx,js,jsx,json,md}'",
-    "type-check": "node node_modules/typescript/bin/tsc --noEmit"
+    "type-check": "node node_modules/typescript/bin/tsc --noEmit",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "node node_modules/eslint/bin/eslint.js --fix",
+      "node node_modules/prettier/bin/prettier.cjs --write"
+    ],
+    "*.md": [
+      "node node_modules/markdownlint-cli/markdownlint.js --fix",
+      "node node_modules/prettier/bin/prettier.cjs --write"
+    ],
+    "*.{json,js}": [
+      "node node_modules/prettier/bin/prettier.cjs --write"
+    ]
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "markdownlint-cli": "^0.37.0",
     "prettier": "^3.0.0",
     "typescript": "^5.0.0"
   }
 }
-

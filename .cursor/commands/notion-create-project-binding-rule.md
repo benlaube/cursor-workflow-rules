@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Status:** Active
-- **Created:** 12-02-2025 00:00:00 EST
+- **Created:** 02-12-2025 00:00:00 EST
 - **Last Updated:** 12-04-2025 14:32:51 EST
 - **Version:** 2.0.0
 - **Description:** Create or update a Project Rule that binds this repo to a Notion Dev Project. Searches for existing projects, creates new ones if needed, and establishes the binding rule for Notion integration.

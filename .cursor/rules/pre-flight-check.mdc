@@ -1,8 +1,8 @@
 ---
-description: Auto-applied rule that validates environment and repository state before starting any coding task. Triggers when beginning new work or making significant changes.
-version: 2.0.4
+description: Auto-applied rule that validates environment and repository state before starting any coding task. Includes git hooks verification. Triggers when beginning new work or making significant changes.
+version: 2.1.0
 created: 12-04-2025
-lastUpdated: 12-04-2025 16:13:13 EST
+lastUpdated: 04-12-2025 16:40:36 EST
 alwaysApply: true
 globs: ""
 type: Workflow Integration Rule - Pre-flight validation before coding
@@ -61,21 +61,33 @@ This rule **automatically applies** when:
 
 **Verify environment is ready:**
 
-1. **Dependencies Check:**
+1. **Git Hooks Check:**
+   - **Check if Husky is configured:**
+     - Verify `.husky/` directory exists
+     - Verify `.husky/pre-commit` and `.husky/commit-msg` exist
+     - Check hooks are executable
+   - **If missing:** Auto-run `setup-git-hooks` command
+   - **Verify:**
+     - `package.json` has `prepare` script
+     - `package.json` has `lint-staged` configuration
+     - `.commitlintrc.json` exists
+   - ✅ Git hooks configured
+
+2. **Dependencies Check:**
    - **Node.js:** Check if `node_modules` exists
      - If missing: Auto-run `npm install`
    - **Python:** Check if `.venv` exists
      - If missing: Auto-create and run `pip install -r requirements.txt`
    - ✅ Dependencies installed
 
-2. **Configuration Check:**
+3. **Configuration Check:**
    - Verify `.env` exists (or `.env.local`)
    - If missing: Auto-copy from `.env.example`
    - Compare keys between `.env` and `.env.example`
    - Warn about missing keys
    - ✅ Configuration complete
 
-3. **Secrets Validation:**
+4. **Secrets Validation:**
    - For Supabase: Verify `SUPABASE_URL` and `SUPABASE_ANON_KEY` set
    - For other services: Check required API keys
    - ✅ Secrets configured
