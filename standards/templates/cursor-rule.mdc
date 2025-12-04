@@ -1,0 +1,61 @@
+---
+description: [Brief description of what this rule does and when to apply it (1-2 sentences)]
+version: 1.0.0
+created: MM-DD-YYYY
+lastUpdated: MM-DD-YYYY HH:MM:SS EST
+alwaysApply: [true/false]
+globs: "file/pattern"
+type: [Rule Type - Brief description (Must match standard types)]
+applicability: [When/where this rule applies]
+dependencies: []
+relatedCommands: []
+relatedRules: []
+relatedStandards: []
+---
+
+# [Rule Title]
+
+## When This Rule Applies
+
+[Clear description of when/where this rule triggers]
+
+---
+
+## Core Principle
+
+[High-level explanation of what this rule achieves]
+
+---
+
+## Agent Responsibilities
+
+### 1. [First Responsibility]
+[Detailed explanation with examples]
+
+### 2. [Second Responsibility]
+[Detailed explanation with examples]
+
+---
+
+## Examples
+
+[Optional: Provide concrete examples of correct/incorrect behavior]
+
+---
+
+## Related Files
+
+- **Commands:**
+  - [command.md](../commands/command.md) - Description
+- **Rules:**
+  - [rule.mdc](./rule.mdc) - Description
+- **Standards:**
+  - [standard.md](../../standards/standard.md) - Description
+
+---
+
+## How to Use This Rule
+
+[Clear instructions for agents on how to apply this rule]
+
+**This rule applies automatically when [condition]. Agents should [expected behavior].**

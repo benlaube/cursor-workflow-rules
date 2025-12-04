@@ -1,13 +1,16 @@
 ---
 description: Auto-applied rule ensuring all .md documentation files have complete metadata. Applies when creating or modifying files in docs/, standards/, or .cursor/commands/ directories.
-version: 1.0.0
-lastUpdated: 04-12-2025 11:12:43 EST
-globs: docs/**/*.md,standards/**/*.md,.cursor/commands/**/*.md
+version: 1.1.0
+created: 12-04-2025
+lastUpdated: 04-12-2025 16:10:49 EST
 alwaysApply: false
+globs: docs/**/*.md,standards/**/*.md,.cursor/commands/**/*.md
 type: Documentation Maintenance Rule - Ensures documentation metadata completeness
-relatedCommands: [audit-documentation-rules-metadata.md]
-relatedRules: [documentation-dependency-tracking.mdc]
-relatedStandards: [project-planning/documentation.md, process/cursor-rules-standards.md]
+applicability: When files matching globs are edited.
+dependencies: []
+relatedCommands: [[audit-documentation-rules-metadata.md](../commands/audit-documentation-rules-metadata.md)]
+relatedRules: [[documentation-dependency-tracking.mdc](./documentation-dependency-tracking.mdc)]
+relatedStandards: [[project-planning/documentation-management.md](../standards/project-planning/documentation-management.md), [process/cursor-rules-standards.md](../standards/process/cursor-rules-standards.md)]
 ---
 
 # Documentation Metadata Rule
@@ -86,7 +89,7 @@ Every `.md` documentation file MUST have:
 #### Version (REQUIRED)
 - Standards/Docs: `X.Y` format (e.g., `1.0`, `1.1`)
 - Commands: `X.Y.Z` format (e.g., `1.0.0`, `1.1.0`)
-- Increment when content changes (see `.cursor/rules/environment.mdc`)
+- Increment when content changes (see `.cursor/rules/version-management.mdc`)
 
 #### Description (REQUIRED)
 - Brief description of document's purpose
@@ -170,9 +173,9 @@ Every `.md` documentation file MUST have:
 - **Description:** Standards for creating and structuring Cursor rules
 - **Type:** Governing Standard - Defines requirements for Cursor rule creation
 - **Applicability:** When creating or modifying Cursor rules
-- **Dependencies:**
-  - [environment.mdc](../../.cursor/rules/environment.mdc) - Version numbering standards
-  - [documentation.md](../project-planning/documentation.md) - General documentation standards
+  - **Dependencies:**
+    - [version-management.mdc](../../.cursor/rules/version-management.mdc) - Version numbering standards
+    - [documentation-management.md](../project-planning/documentation-management.md) - Documentation management standards
 - **How to Use:** Reference this standard when creating new Cursor rules or modifying existing ones
 ```
 
@@ -215,7 +218,7 @@ This rule works with:
   - [documentation-dependency-tracking.mdc](./documentation-dependency-tracking.mdc) - Tracks doc dependencies
   - [rule-metadata.mdc](./rule-metadata.mdc) - Ensures rule file metadata
 - **Standards:**
-  - [documentation.md](../../standards/project-planning/documentation.md) - Documentation management standards
+  - [documentation-management.md](../../standards/project-planning/documentation-management.md) - Documentation management standards
   - [cursor-rules-standards.md](../../standards/process/cursor-rules-standards.md) - Rule creation standards
 
 ---

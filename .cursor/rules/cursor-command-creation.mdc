@@ -1,0 +1,449 @@
+---
+description: Auto-applied rule for creating and modifying Cursor commands with proper metadata and structure. Applies when creating or modifying files in .cursor/commands/ directory and subdirectories.
+version: 1.1.0
+created: 12-04-2025
+lastUpdated: 04-12-2025 16:10:49 EST
+alwaysApply: false
+globs: **/.cursor/commands/**/*.md
+type: Documentation Maintenance Rule - Ensures command file structure and metadata completeness
+applicability: When files matching globs are edited.
+dependencies: []
+relatedCommands: [[audit-documentation-rules-metadata.md](../commands/audit-documentation-rules-metadata.md)]
+relatedRules: [[cursor-rule-creation.mdc](./cursor-rule-creation.mdc), [documentation-metadata.mdc](./documentation-metadata.mdc), [documentation-dependency-tracking.mdc](./documentation-dependency-tracking.mdc)]
+relatedStandards: [[project-planning/documentation-management.md](../standards/project-planning/documentation-management.md), [process/cursor-rules-standards.md](../standards/process/cursor-rules-standards.md)]
+---
+
+# Cursor Command Creation, Modification, & Maintenance Rule
+
+## When This Rule Applies
+
+This rule **automatically applies** when:
+- Creating a new file in `.cursor/commands/` directory or any subdirectory
+- Modifying any existing `.cursor/commands/**/*.md` file (including nested subdirectories)
+- Any Cursor command file is opened for editing (at any nesting level)
+
+---
+
+## Core Principle
+
+**Cursor commands must be well-structured, consistently formatted, and properly documented.** This rule ensures all Cursor commands follow standardized structure with complete metadata.
+
+---
+
+## Agent Responsibilities
+
+### 1. Before Creating a New Command
+
+**Verify this should be a command, not a rule:**
+- ✅ Command: User needs to decide when to run it
+- ✅ Command: One-time operation or complex multi-step workflow
+- ✅ Command: Requires confirmation or user input
+- ❌ Rule: Behavior that should apply automatically without user invocation
+
+**Check if similar command exists:**
+- Search `.cursor/commands/` for related commands
+- Avoid duplicating existing command functionality
+- Consider extending existing command instead of creating new one
+
+**Check command length appropriateness:**
+- Target length: 100-500 lines (optimal: 200-300 lines)
+- Complex workflows can be longer if needed
+- If exceeding 500 lines, consider splitting into sub-commands
+
+**Determine command type:**
+- **Validation Command:** Pre-flight checks, audits, linting
+- **Workflow Command:** Multi-step processes (PR preparation, project setup)
+- **Generation Command:** Creating files, templates, scaffolding
+- **Analysis Command:** Inspecting code, dependencies, documentation
+- **Maintenance Command:** Cleanup, updates, migrations
+
+### 2. While Creating/Modifying a Command
+
+**MANDATORY: Include complete Metadata section:**
+
+```markdown
+## Metadata
+- **Status:** Active
+- **Created:** DD-MM-YYYY HH:MM:SS EST
+- **Last Updated:** DD-MM-YYYY HH:MM:SS EST
+- **Version:** X.Y.Z (semantic versioning)
+- **Description:** Brief description of what this command does
+- **Type:** Executable Command - Who should use this
+- **Applicability:** When/where this command applies
+- **Dependencies:** (Optional) List of related files with markdown links
+- **Related Cursor Commands:** (Optional) List of related command files
+- **Related Cursor Rules:** (Optional) List of related rule files
+- **Related Standards:** (Optional) List of related standard files
+- **How to Use:** Brief instructions on how to execute this command
+```
+
+**MANDATORY: Include all required sections in content:**
+
+```markdown
+# Command Name
+
+## Metadata
+[Complete metadata as shown above]
+
+---
+
+## Purpose
+
+[High-level explanation of what this command achieves]
+
+---
+
+## When to Use
+
+[Clear description of scenarios when this command should be run]
+
+---
+
+## Prerequisites
+
+- [ ] Requirement 1
+- [ ] Requirement 2
+- [ ] Requirement 3
+
+---
+
+## Steps
+
+### Step 1: [First Step]
+[Detailed explanation with commands/actions]
+
+### Step 2: [Second Step]
+[Detailed explanation with commands/actions]
+
+---
+
+## Expected Output
+
+**Success Case:**
+```
+[Example of successful output]
+```
+
+**Failure Case:**
+```
+[Example of failure output and how to handle]
+```
+
+---
+
+## Validation
+
+- [ ] Validation check 1
+- [ ] Validation check 2
+
+---
+
+## Related Files
+
+- **Commands:** 
+  - [command.md](./command.md) - Brief description
+- **Rules:** 
+  - [rule.mdc](../rules/rule.mdc) - Brief description
+- **Standards:** 
+  - [standard.md](../../standards/standard.md) - Brief description
+- **Checklists:**
+  - [checklist.md](../../standards/process/checklists/checklist.md) - Brief description
+
+---
+
+## Notes
+
+[Any additional notes, warnings, or considerations]
+```
+
+**Field-Specific Guidelines:**
+
+1. **Status** (REQUIRED):
+   - `Active` - Currently in use and up to date
+   - `Deprecated` - No longer recommended, kept for reference
+   - `Draft` - Work in progress, not finalized
+   - `Review` - Needs review or updating
+
+2. **Created** (REQUIRED):
+   - Format: `DD-MM-YYYY HH:MM:SS EST` (date and time in EST timezone)
+   - Date when command was first created
+
+3. **Last Updated** (REQUIRED):
+   - Format: `DD-MM-YYYY HH:MM:SS EST` (date and time in EST timezone)
+   - Example: `04-12-2025 14:30:00 EST`
+   - Use EST timezone for all timestamps
+   - Update EVERY time command content changes
+
+4. **Version** (REQUIRED):
+   - Format: `X.Y.Z` (semantic versioning)
+   - Start new commands at `1.0.0`
+   - Increment when:
+     - **Major (X.0.0):** Breaking changes to command behavior
+     - **Minor (X.Y.0):** New features, parameters, or options added
+     - **Patch (X.Y.Z):** Bug fixes, clarifications, documentation updates
+
+5. **Description** (REQUIRED):
+   - Brief, clear description of what the command does
+   - One sentence is sufficient
+   - Should clearly state the command's purpose
+
+6. **Type** (REQUIRED):
+   - Format: `Executable Command - [Who should use this]`
+   - Examples:
+     - `Executable Command - Used by AI agents for pre-coding validation`
+     - `Executable Command - Used by developers and AI agents for project audits`
+     - `Executable Command - Used by AI agents to generate launch scripts`
+
+7. **Applicability** (REQUIRED):
+   - When/where this command applies
+   - Examples:
+     - `Before starting any coding work or significant changes`
+     - `Before submitting a pull request`
+     - `When onboarding a new repository`
+     - `Periodically or before major releases`
+
+8. **Dependencies** (OPTIONAL):
+   - List of related files with markdown links
+   - Format:
+     ```markdown
+     - **Dependencies:**
+       - [file1.md](../path/file1.md) - Relationship description
+       - [file2.md](../../path/file2.md) - Relationship description
+     ```
+
+9. **Related Cursor Commands** (OPTIONAL):
+   - List of related command filenames (not full paths)
+   - Examples: `[pre-flight-check.md, pr-review-check.md]`
+   - List commands that:
+     - Are similar or complementary
+     - Should be run in sequence
+     - Are referenced by this command
+
+10. **Related Cursor Rules** (OPTIONAL):
+    - List of related rule filenames (not full paths)
+    - Examples: `[pre-flight-check.mdc, task-workflow.mdc]`
+    - List rules that:
+      - Implement this command automatically
+      - Reference this command
+      - Complement this command
+
+11. **Related Standards** (OPTIONAL):
+    - List of standard paths (relative from `.cursor/commands/`)
+    - Examples: `[../../standards/process/code-quality-linting-standards.md]`
+    - List standards that:
+      - This command validates
+      - Define requirements this command checks
+      - Provide additional context
+
+12. **How to Use** (REQUIRED):
+    - Brief instructions on how to execute this command
+    - Should be clear and actionable
+    - Examples:
+      - `Run this command automatically at the start of work sessions`
+      - `Execute manually before submitting a PR`
+      - `Run when setting up a new project or repository`
+
+### 3. After Creating/Modifying a Command
+
+**MANDATORY STEPS:**
+
+#### Step 3.1: Validate Command Structure
+
+Run through this checklist:
+- [ ] Metadata section is complete with all required fields
+- [ ] Status is set appropriately (Active/Draft/Review/Deprecated)
+- [ ] Created date uses DD-MM-YYYY format
+- [ ] Last Updated uses DD-MM-YYYY HH:MM:SS EST format
+- [ ] Version follows semantic versioning (X.Y.Z)
+- [ ] Description is clear and concise
+- [ ] Type describes who should use the command
+- [ ] Applicability states when/where command applies
+- [ ] Dependencies are listed with markdown links (if applicable)
+- [ ] Related commands/rules/standards are listed (if applicable)
+- [ ] "How to Use" provides clear instructions
+- [ ] "Purpose" section explains what command achieves
+- [ ] "When to Use" section lists scenarios
+- [ ] "Prerequisites" section lists requirements
+- [ ] "Steps" section provides detailed instructions
+- [ ] "Expected Output" shows success/failure cases
+- [ ] "Validation" section provides verification steps
+- [ ] "Related Files" section lists dependencies with descriptions
+
+#### Step 3.2: Update Dependencies
+
+**If you listed relatedCommands, relatedRules, or relatedStandards:**
+1. Read each referenced file
+2. Check if they should reference this command back (bidirectional)
+3. Update their metadata if needed
+
+**Example:** If your command references `pre-flight-check.mdc`, check if that rule should list your command in its "Related Commands" section.
+
+#### Step 3.3: Update Related Documentation
+
+**Always update:**
+1. **`CHANGELOG.md`** - Add entry with timestamp (EST timezone)
+   ```markdown
+   ### 04-12-2025 15:30:00 EST - Added
+   - **Cursor Command:** `.cursor/commands/new-command.md` (v1.0.0) - Brief description of purpose
+   ```
+
+**Update if applicable:**
+2. **`AGENTS.md`** - If command affects workflow
+   - Section 3: Active Context (if currently working on commands)
+   - Section 6: Standard Developer Lifecycle
+   - Section 8.2: Commands list
+
+3. **Integration Guides** - If command should be copied to other projects
+   - Update `INTEGRATION_GUIDE.md` to mention command
+   - Update `QUICK_INTEGRATION.md` copy commands
+
+#### Step 3.4: Test the Command
+
+**Validation steps:**
+1. **Markdown Validation:** Check all links work
+2. **Logic Validation:** Does the command work as expected?
+3. **Prerequisites Check:** Are prerequisites accurate?
+4. **Output Verification:** Does output match "Expected Output" section?
+
+---
+
+## Version Management
+
+### When to Increment Version
+
+**Major version (X.0.0):**
+- Breaking changes in command behavior
+- Command no longer works with previous versions
+- Required parameters changed
+- Output format significantly changed
+
+**Minor version (X.Y.0):**
+- New steps added
+- New parameters or options
+- Significant enhancements or features
+- New validation checks
+
+**Patch version (X.Y.Z):**
+- Typo fixes
+- Clarifications without behavior change
+- Documentation improvements
+- Fixed broken links
+
+**Always update both:**
+- `Version:` field in Metadata section
+- `Last Updated:` field in Metadata section
+
+---
+
+## Examples
+
+### Good Metadata Section
+```markdown
+## Metadata
+- **Status:** Active
+- **Created:** 04-12-2025 14:30:00 EST
+- **Last Updated:** 04-12-2025 14:30:00 EST
+- **Version:** 1.0.0
+- **Description:** Validates environment and repo state before coding starts
+- **Type:** Executable Command - Used by AI agents for pre-coding validation
+- **Applicability:** Before starting any coding work or significant changes
+- **Related Cursor Rules:** [pre-flight-check.mdc, task-workflow.mdc]
+- **How to Use:** Run this command automatically when starting a new task
+```
+
+### Common Mistakes
+- ❌ **Incomplete Metadata:** Missing required fields (Status, Created, Last Updated, Version, Type, Applicability, How to Use)
+- ❌ **Wrong date format:** Use `DD-MM-YYYY HH:MM:SS EST` for both Created and Last Updated
+- ❌ **Vague Type:** Use format `Executable Command - [Who should use this]`
+- ❌ **Missing Prerequisites:** Always include prerequisites section
+- ❌ **Missing Expected Output:** Always show success/failure examples
+- ❌ **Full paths in related files:** Use filename only, not full paths
+- ❌ **Not updating Last Updated:** Update every time content changes
+
+**For comprehensive command templates and examples, see this rule's content structure section above.**
+
+---
+
+## Integration with Other Rules
+
+This rule works in conjunction with:
+
+### `.cursor/rules/documentation-dependency-tracking.mdc`
+- That rule tracks dependencies when ANY documentation is modified
+- This rule focuses specifically on Cursor commands (`.md` files in `.cursor/commands/`)
+- Both rules ensure metadata is complete
+
+### `.cursor/rules/documentation-metadata.mdc`
+- That rule handles general `.md` documentation files
+- This rule provides command-specific guidance
+- Both rules work together for comprehensive documentation
+
+### `.cursor/rules/cursor-rule-creation.mdc`
+- That rule handles `.mdc` rule files
+- This rule handles `.md` command files
+- Together they ensure all Cursor files follow standards
+
+### `.cursor/rules/version-management.mdc`
+- Defines version numbering standards for all documentation file types
+- Single source of truth for semantic versioning
+
+### `.cursor/rules/runtime-configuration.mdc`
+- Defines runtime environment and configuration standards
+- References version-management.mdc for versioning
+
+---
+
+## Related Files
+
+- **Commands:**
+  - [audit-documentation-rules-metadata.md](./audit-documentation-rules-metadata.md) - Audits command metadata completeness
+- **Rules:**
+  - [cursor-rule-creation.mdc](../rules/cursor-rule-creation.mdc) - Rule creation standards
+  - [documentation-metadata.mdc](../rules/documentation-metadata.mdc) - General doc metadata
+  - [documentation-dependency-tracking.mdc](../rules/documentation-dependency-tracking.mdc) - Tracks doc dependencies
+  - [version-management.mdc](../rules/version-management.mdc) - Version numbering standards for all documentation
+  - [runtime-configuration.mdc](../rules/runtime-configuration.mdc) - Runtime environment configuration
+- **Standards:**
+  - [documentation-management.md](../../standards/project-planning/documentation-management.md) - Documentation management standards
+  - [cursor-rules-standards.md](../../standards/process/cursor-rules-standards.md) - Related standard for rules
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically when creating or modifying Cursor commands (`.cursor/commands/*.md` files).**
+
+**Agents should:**
+1. Verify complete Metadata section with all required fields before creating command
+2. Use standard command structure with all required sections
+3. Include clear prerequisites, steps, and expected output
+4. Update version and Last Updated when modifying existing commands
+5. Update `CHANGELOG.md` after creating/modifying commands
+6. Follow `documentation-dependency-tracking.mdc` for dependency management
+7. Ensure "How to Use" section provides clear execution instructions
+
+**Validation checklist after creating/modifying:**
+- [ ] Metadata section complete with all required fields
+- [ ] Status set appropriately
+- [ ] Created date in DD-MM-YYYY format
+- [ ] Last Updated in DD-MM-YYYY HH:MM:SS EST format
+- [ ] Version incremented (if modification)
+- [ ] Description is clear
+- [ ] Type describes who should use it
+- [ ] Applicability states when/where it applies
+- [ ] Dependencies listed with markdown links
+- [ ] Related commands/rules/standards listed
+- [ ] "How to Use" provides clear instructions
+- [ ] All required sections present (Purpose, When to Use, Prerequisites, Steps, Expected Output, Validation, Related Files)
+- [ ] `CHANGELOG.md` updated (with EST timestamp)
+- [ ] Dependencies verified
+
+---
+
+## Notes
+
+- **Be thorough:** Command quality directly impacts user and agent effectiveness
+- **Provide examples:** Users and agents need concrete guidance
+- **Test before publishing:** Verify command works as documented
+- **Keep focused:** Each command should have a single, clear purpose
+- **Document failures:** Show how to handle common failure cases

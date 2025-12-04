@@ -20,7 +20,7 @@ This template provides a structured project layout with **Cursor rules** strateg
 project-template/
 ├── .cursor/rules/              # Root-level rules (apply everywhere)
 │   ├── ai-interaction-rules.mdc  # General coding behavior
-│   ├── environment.mdc           # Environment setup standards
+│   ├── runtime-configuration.mdc # Runtime environment configuration standards
 │   └── task-workflow.mdc         # Development workflow
 ├── src/
 │   ├── frontend/
@@ -70,7 +70,7 @@ Each rule file has a **"Customization Notes"** section. Adapt them for your proj
 
 1. **Root Rules** (`.cursor/rules/`):
    - `ai-interaction-rules.mdc` - Add project-specific conventions
-   - `environment.mdc` - Specify your tech stack versions
+   - `runtime-configuration.mdc` - Specify your tech stack versions
    - `task-workflow.mdc` - Define your git/PR workflow
 
 2. **Nested Rules** (in subdirectories):
@@ -149,7 +149,7 @@ When working in `src/frontend/components/UserCard.tsx`:
 
 **Active Rules:**
 - `.cursor/rules/ai-interaction-rules.mdc` (root)
-- `.cursor/rules/environment.mdc` (root)
+- `.cursor/rules/runtime-configuration.mdc` (root)
 - `.cursor/rules/task-workflow.mdc` (root)
 - `src/frontend/.cursor/rules/frontend-standards.mdc` ✨ (nested)
 
@@ -168,7 +168,7 @@ When adapting this template:
 
 ### Root Rules
 - [ ] Update `ai-interaction-rules.mdc` with project conventions
-- [ ] Update `environment.mdc` with tech stack versions
+- [ ] Update `runtime-configuration.mdc` with tech stack versions
 - [ ] Update `task-workflow.mdc` with git/PR workflow
 
 ### Nested Rules

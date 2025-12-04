@@ -1,21 +1,25 @@
-# Cursor Rules Standards v1.0
+# Cursor Rules Standards v1.4
 
 ## Metadata
-- **Created:** 04-12-2025
-- **Last Updated:** 04-12-2025 11:02:01 EST
-- **Version:** 1.2
+- **Created:** 12-04-2025
+- **Last Updated:** 12-04-2025 15:39:52 EST
+- **Version:** 1.5
 - **Description:** Standards for creating, structuring, and maintaining Cursor rules (`.cursor/rules/*.mdc` files)
 - **Type:** Governing Standard - Defines requirements for Cursor rule creation
 - **Applicability:** When creating or modifying Cursor rules
 - **Dependencies:**
-  - [environment.mdc](../../.cursor/rules/environment.mdc) - Version numbering standards for rules
-  - [documentation.md](../project-planning/documentation.md) - General documentation standards
+  - [version-management.mdc](../../.cursor/rules/version-management.mdc) - Version numbering standards for all documentation
+  - [runtime-configuration.mdc](../../.cursor/rules/runtime-configuration.mdc) - Runtime environment configuration
+  - [documentation-management.md](../project-planning/documentation-management.md) - Documentation management standards
+  - [cursor-rule-creation.mdc](../../.cursor/rules/cursor-rule-creation.mdc) - Auto-applied rule enforcing these standards
 
 ---
 
 ## 1. Purpose
 
 Cursor rules (`.mdc` files) are automatically applied by AI agents when working in the codebase. This standard defines how to create, structure, and maintain these rules to ensure consistency and effectiveness.
+
+This standard is the **Single Source of Truth** for Cursor rule structure. The `cursor-rule-creation.mdc` rule enforces these standards.
 
 ---
 
@@ -43,11 +47,14 @@ Every Cursor rule MUST have:
 ```yaml
 ---
 description: Brief description of what this rule does and when to apply it (1-2 sentences)
-version: X.Y.Z (semantic versioning - see environment.mdc)
-lastUpdated: DD-MM-YYYY HH:MM:SS EST (date and time in EST timezone)
-globs: **/* (REQUIRED - file pattern this rule applies to, NO quotes. Use empty string "" if alwaysApply is true)
+version: X.Y.Z (semantic versioning)
+created: MM-DD-YYYY (creation date)
+lastUpdated: MM-DD-YYYY HH:MM:SS EST (date and time in EST timezone)
 alwaysApply: true/false (whether rule applies to all files or just matching globs)
+globs: **/* (REQUIRED - file pattern this rule applies to, NO quotes. Use empty string "" if alwaysApply is true)
 type: Rule type (see Section 4, NO quotes)
+applicability: When/where this rule applies
+dependencies: [file1.md, file2.md] (optional - list of dependencies)
 relatedCommands: [command1.md, command2.md] (optional - related cursor commands)
 relatedRules: [rule1.mdc, rule2.mdc] (optional - other rules this interacts with)
 relatedStandards: [standard1.md, standard2.md] (optional - standards this rule implements)
@@ -65,10 +72,14 @@ relatedStandards: [standard1.md, standard2.md] (optional - standards this rule i
   - Major: Breaking changes or major behavior changes
   - Minor: New features or significant additions
   - Patch: Bug fixes, clarifications, minor updates
+- **created** (REQUIRED): Date rule was created (MM-DD-YYYY)
 - **lastUpdated** (REQUIRED): Date and time of last modification in EST timezone
-  - Format: `DD-MM-YYYY HH:MM:SS EST`
-  - Example: `04-12-2025 14:30:00 EST`
+  - Format: `MM-DD-YYYY HH:MM:SS EST`
+  - Example: `12-04-2025 14:30:00 EST`
   - Use EST timezone for all timestamps
+- **alwaysApply** (REQUIRED): Whether rule applies automatically
+  - `true`: Always applies (most common) - set `globs: ""` in this case
+  - `false`: Only applies to files matching `globs` pattern
 - **globs** (REQUIRED): File pattern(s) this rule applies to (NO quotes in .mdc files)
   - **Required field** - must be present in all rules
   - If `alwaysApply: true`, use empty string: `globs: ""`
@@ -82,6 +93,8 @@ relatedStandards: [standard1.md, standard2.md] (optional - standards this rule i
   - `true`: Always applies (most common) - set `globs: ""` in this case
   - `false`: Only applies to files matching `globs` pattern
 - **type** (REQUIRED): Document type (see Section 4)
+- **applicability** (REQUIRED): Brief description of when/where the rule applies (e.g., "When editing TypeScript files")
+- **dependencies** (OPTIONAL): Generic list of file dependencies (can combine related* fields or be separate)
 - **relatedCommands** (OPTIONAL): Array of related command filenames
 - **relatedRules** (OPTIONAL): Array of related rule filenames
 - **relatedStandards** (OPTIONAL): Array of related standard filenames
@@ -117,7 +130,7 @@ After the YAML frontmatter:
 
 ## Examples
 
-[Provide concrete examples of correct/incorrect behavior]
+[Optional: Provide concrete examples of correct/incorrect behavior]
 
 ---
 
@@ -159,7 +172,7 @@ alwaysApply: true
 
 ### Type 2: Environment/Configuration Rule
 **Purpose:** Defines environment expectations and setup
-**Example:** `environment.mdc`
+**Example:** `runtime-configuration.mdc`
 **YAML:**
 ```yaml
 type: Environment Configuration Rule - Defines runtime expectations
@@ -243,10 +256,14 @@ globs: {standards/**/*.md,docs/**/*.md,.cursor/rules/*.mdc,.cursor/commands/*.md
 
 ## 6. Version Management
 
+**See `.cursor/rules/version-management.mdc` for complete versioning standards.**
+
 ### 6.1 Semantic Versioning for Rules
 - **Major (X.0.0):** Breaking changes, major behavior changes
 - **Minor (X.Y.0):** New features, new sections, significant additions
 - **Patch (X.Y.Z):** Bug fixes, clarifications, typo fixes
+
+**For detailed guidelines, examples, and decision trees, see `.cursor/rules/version-management.mdc`.**
 
 ### 6.2 When to Increment Version
 - **Always** when modifying rule content
@@ -257,6 +274,8 @@ globs: {standards/**/*.md,docs/**/*.md,.cursor/rules/*.mdc,.cursor/commands/*.md
 ### 6.3 Document Changes
 - Add entry to `CHANGELOG.md` for significant rule changes
 - Major version changes should include migration notes
+
+**Reference:** `.cursor/rules/version-management.mdc` provides comprehensive versioning guidance for all file types (rules, commands, standards, checklists).
 
 ---
 
@@ -289,14 +308,14 @@ List rules that:
 
 **Format in YAML:**
 ```yaml
-relatedRules: [environment.mdc, auto-heal.mdc]
+relatedRules: [runtime-configuration.mdc, auto-heal.mdc]
 ```
 
 **Format in content:**
 ```markdown
 ## Related Files
 - **Rules:**
-  - [environment.mdc](./environment.mdc) - Defines environment expectations
+  - [runtime-configuration.mdc](./runtime-configuration.mdc) - Defines runtime environment configuration
   - [auto-heal.mdc](./auto-heal.mdc) - Error recovery strategies
 ```
 
@@ -366,14 +385,14 @@ relatedStandards: [process/code-quality-linting-standards.md, documentation.md]
 
 ### 9.1 Before Publishing a Rule
 - [ ] YAML frontmatter is valid and complete
-- [ ] All required fields are present (description, version, lastUpdated, globs, alwaysApply, type)
+- [ ] All required fields are present
 - [ ] Description is 1-2 sentences describing what the rule does AND when to apply it
 - [ ] Version follows semantic versioning (X.Y.Z format)
-- [ ] lastUpdated uses DD-MM-YYYY HH:MM:SS EST format
+- [ ] lastUpdated uses MM-DD-YYYY HH:MM:SS EST format
 - [ ] globs is present (empty string "" if alwaysApply is true, pattern if false)
 - [ ] Type is declared and accurate (one of 8 standard types)
 - [ ] Related commands/rules/standards are listed
-- [ ] Examples are provided
+- [ ] Examples are provided (optional)
 - [ ] "How to Use" section is clear
 - [ ] Cross-references are accurate and links work
 
@@ -389,14 +408,20 @@ relatedStandards: [process/code-quality-linting-standards.md, documentation.md]
 ## 10. Common Patterns and Templates
 
 ### 10.1 Basic Rule Template
+
+**Template File:** [`standards/templates/cursor-rule.mdc`](../../standards/templates/cursor-rule.mdc)
+
 ```markdown
 ---
 description: Brief description of what this rule does and when to apply it (1-2 sentences)
 version: 1.0.0
-lastUpdated: 04-12-2025 14:30:00 EST
-globs: ""
+created: MM-DD-YYYY
+lastUpdated: MM-DD-YYYY HH:MM:SS EST
 alwaysApply: true
+globs: ""
 type: Auto-Applied Behavioral Rule - Guides AI agent behavior
+applicability: When/where this rule applies
+dependencies: []
 relatedCommands: []
 relatedRules: []
 relatedStandards: []
@@ -458,10 +483,13 @@ This rule applies automatically when [condition]. Agents should [expected behavi
 ---
 description: Brief description of what this rule does and when to apply it (1-2 sentences)
 version: 1.0.0
-lastUpdated: 04-12-2025 14:30:00 EST
-globs: **/*.{ts,tsx}
+created: MM-DD-YYYY
+lastUpdated: MM-DD-YYYY HH:MM:SS EST
 alwaysApply: false
+globs: **/*.{ts,tsx}
 type: Conditional Rule - Applies to specific file types
+applicability: When editing TypeScript files
+dependencies: []
 relatedCommands: []
 relatedRules: []
 relatedStandards: []
@@ -595,10 +623,12 @@ project/
 ---
 description: [Domain] development standards. Applies when working in [directory]/ directory.
 version: 1.0.0
-lastUpdated: 04-12-2025 14:30:00 EST
-globs: **/*.{relevant,extensions}
+created: MM-DD-YYYY
+lastUpdated: MM-DD-YYYY HH:MM:SS EST
 alwaysApply: false
+globs: **/*.{relevant,extensions}
 type: Conditional Rule - [Domain] development role
+applicability: When working in [directory]
 relatedStandards: [domain/standard.md]
 ---
 
@@ -630,12 +660,14 @@ See `standards/[domain]/` for comprehensive [domain] standards.
 ## 14. Related Files
 
 - **Rules:**
-  - [environment.mdc](../../.cursor/rules/environment.mdc) - Defines version numbering standards for rules
+  - [version-management.mdc](../../.cursor/rules/version-management.mdc) - Version numbering standards for all documentation
+  - [runtime-configuration.mdc](../../.cursor/rules/runtime-configuration.mdc) - Runtime environment configuration
   - [documentation-dependency-tracking.mdc](../../.cursor/rules/documentation-dependency-tracking.mdc) - Auto-tracks rule dependencies
+  - [cursor-rule-creation.mdc](../../.cursor/rules/cursor-rule-creation.mdc) - Auto-applied rule enforcing these standards
 - **Commands:**
   - [audit-documentation-rules-metadata.md](../../.cursor/commands/audit-documentation-rules-metadata.md) - Orchestrates metadata validation
 - **Standards:**
-  - [documentation.md](../project-planning/documentation.md) - General documentation standards
+  - [documentation-management.md](../project-planning/documentation-management.md) - Documentation management standards
 
 ---
 
@@ -647,7 +679,7 @@ See `standards/[domain]/` for comprehensive [domain] standards.
 3. Follow the content structure from Section 3.2
 4. Declare the rule type (Section 4)
 5. List related commands, rules, and standards
-6. Provide clear examples and usage instructions
+6. Provide clear examples and usage instructions (examples optional)
 7. Test the rule before publishing (Section 9)
 
 **When modifying an existing rule:**
@@ -656,4 +688,3 @@ See `standards/[domain]/` for comprehensive [domain] standards.
 3. Check reverse dependencies (what references this rule)
 4. Update `CHANGELOG.md` with changes
 5. Follow `documentation-dependency-tracking.mdc` requirements
-

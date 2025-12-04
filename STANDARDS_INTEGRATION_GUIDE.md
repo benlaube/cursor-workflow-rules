@@ -103,7 +103,7 @@ After copying, verify the structure:
 
 ```bash
 # In your new project:
-ls -la .cursor/rules/     # Should show: ai-interaction-rules.md, environment.mdc, self-healing.mdc, task-workflow.mdc, supabase-rls-policy-review.mdc
+ls -la .cursor/rules/     # Should show: ai-interaction-rules.md, runtime-configuration.mdc, auto-heal.mdc, task-workflow.mdc, supabase-rls-policy-review.mdc
 ls -la .cursor/commands/  # Should show: launch.mdc, security-audit.mdc, verify-access-control.mdc, full-project-health-check.md, project-audit.md, etc.
 ls -la standards/process/checklists/  # Should show: pre_flight_checklist_v1_0.md, pr_review_checklist_v1_0.md, project_audit_checklist_v1_0.md, linting_checklist_v1_0.md
 ls -la standards/security/  # Should show: security-audit-checklist.md, access-control.md
@@ -118,7 +118,7 @@ ls -la standards/security/  # Should show: security-audit-checklist.md, access-c
    - Add project-specific architecture highlights
    - Update persistent memory with project learnings
 
-2. **Review `.cursor/rules/environment.mdc`:**
+2. **Review `.cursor/rules/runtime-configuration.mdc`:**
    - Verify port numbers match your project (default: 3000 for Node, 8000 for Python)
    - Update Supabase setup instructions if not using Supabase
    - Adjust Docker/Supabase container management if not applicable
@@ -133,7 +133,7 @@ ls -la standards/security/  # Should show: security-audit-checklist.md, access-c
 Ask the AI agent:
 > "What rules are currently active? Show me the environment rules."
 
-The agent should reference `.cursor/rules/environment.mdc` and other rules.
+The agent should reference `.cursor/rules/runtime-configuration.mdc` and other rules.
 
 ---
 
@@ -145,7 +145,7 @@ The agent should reference `.cursor/rules/environment.mdc` and other rules.
 
 **Files to Copy:**
 - `ai-interaction-rules.mdc` - Core AI behavior directives
-- `environment.mdc` - Runtime expectations and environment setup
+- `runtime-configuration.mdc` - Runtime expectations and environment setup
 - `auto-heal.mdc` - Automatic error recovery
 - `task-workflow.mdc` - Development workflow integration
 - `pre-flight-check.mdc` - Auto-validates environment before coding
@@ -154,8 +154,8 @@ The agent should reference `.cursor/rules/environment.mdc` and other rules.
 - `linting-behavior.mdc` - Linting behavior and expectations
 - `documentation-dependency-tracking.mdc` - Tracks doc dependencies
 - `documentation-metadata.mdc` - Validates .md file metadata
-- `rule-metadata.mdc` - Validates .mdc file metadata
-- `cursor-rule-creation.mdc` - Ensures rules follow proper structure
+- `cursor-rule-creation.mdc` - Ensures rules follow proper structure and metadata (includes .mdc metadata requirements)
+- `cursor-command-creation.mdc` - Ensures commands follow proper structure and metadata
 
 **What These Do:**
 - **Always Applied:** Rules with `alwaysApply: true` in frontmatter are automatically loaded by Cursor
@@ -166,7 +166,7 @@ The agent should reference `.cursor/rules/environment.mdc` and other rules.
 - **Quality Gates:** Prevent starting work in broken environment or submitting broken code
 
 **Adaptation Needed:**
-- Review `environment.mdc` - Adapt Docker/Supabase sections if not using, verify package manager
+- Review `runtime-configuration.mdc` - Adapt Docker/Supabase sections if not using, verify package manager
 - Review `task-workflow.mdc` - Verify checklist paths match your project structure
 - Review `pre-flight-check.mdc` - Adapt validation steps for your tech stack
 - Review `pr-review-check.mdc` - Adapt validation steps for your build/test setup
@@ -220,7 +220,7 @@ The agent should reference `.cursor/rules/environment.mdc` and other rules.
 - `project-structure.md` - File organization rules
 - `database/schema.md` - Database conventions (if using databases)
 - `process/git-repository-standards.md` - Branch naming and commit conventions
-- `documentation.md` - Documentation management rules
+- `documentation-management.md` - Documentation management rules
 - `security/security-audit.md` - Security audit standards (moved from docs/process/)
 - `security/access-control.md` - Access control and RLS standards (if using Supabase)
 
@@ -322,7 +322,7 @@ Please:
 2. Copy the .cursor/commands/ directory and all its files
 3. Copy the checklists/ directory and all its files
 4. Copy templates/file-templates/AGENTS-TEMPLATE.md and rename to AGENTS.md, then adapt it for this project
-5. Review and adapt .cursor/rules/environment.mdc for this project's stack
+5. Review and adapt .cursor/rules/runtime-configuration.mdc for this project's stack
 6. Review and adapt .cursor/commands/launch.mdc for this project's startup process
 7. Verify all rules are active by listing them
 ```
@@ -334,7 +334,7 @@ Verify that all Cursor rules and commands are properly integrated:
 
 1. List all files in .cursor/rules/
 2. List all files in .cursor/commands/
-3. Read .cursor/rules/environment.mdc and confirm it matches this project's stack
+3. Read .cursor/rules/runtime-configuration.mdc and confirm it matches this project's stack
 4. Read .cursor/commands/launch.mdc and confirm it matches this project's startup process
 5. Confirm AGENTS.md has been adapted for this project
 ```
@@ -365,7 +365,7 @@ Use this checklist to ensure complete integration:
 
 ### Phase 2: Adaptation
 - [ ] Updated `AGENTS.md` with project mission and context
-- [ ] Reviewed `.cursor/rules/environment.mdc` for project-specific settings
+- [ ] Reviewed `.cursor/rules/runtime-configuration.mdc` for project-specific settings
 - [ ] Reviewed `.cursor/commands/launch.mdc` for project-specific startup
 - [ ] Removed or adapted Supabase-specific rules if not using Supabase
 - [ ] Updated port numbers and stack detection if needed

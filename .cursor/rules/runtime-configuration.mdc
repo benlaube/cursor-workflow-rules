@@ -1,71 +1,41 @@
 ---
-description: Runtime expectations, environment setup, and version numbering standards
-globs: **/*
+description: Runtime environment configuration, container management, and dependency standards for local development
+version: 2.0.1
+created: 12-04-2025
+lastUpdated: 12-04-2025 16:13:13 EST
 alwaysApply: true
-version: 1.3.0
-lastUpdated: 04-12-2025 13:17:07 EST
+globs: ""
 type: Environment/Configuration Rule - Defines runtime expectations and setup
-relatedCommands: [create-start-scripts.md]
-relatedRules: [auto-heal.mdc, task-workflow.mdc, date-time.mdc]
-relatedStandards: [architecture/supabase-local-setup.md, deployment/application-launch.md]
+applicability: All development work requiring runtime environment
+dependencies: []
+relatedCommands: [[create-start-scripts.md](../commands/create-start-scripts.md)]
+relatedRules: [[auto-heal.mdc](./auto-heal.mdc), [task-workflow.mdc](./task-workflow.mdc), [date-time.mdc](./date-time.mdc), [version-management.mdc](./version-management.mdc)]
+relatedStandards: [[architecture/supabase-local-setup.md](../standards/architecture/supabase-local-setup.md), [deployment/application-launch.md](../standards/deployment/application-launch.md)]
 ---
 
-# Environment & Runtime Standards
+# Runtime Configuration & Environment Standards
 
 ## Metadata
 - **Created:** 2025-11-17
-- **Last Updated:** 04-12-2025 13:17:07 EST
-- **Version:** 1.3
-- **Description:** Runtime expectations, environment setup, and version numbering standards
+- **Last Updated:** 04-12-2025 16:10:49 EST
+- **Version:** 2.0.0
+- **Description:** Runtime environment configuration, container management, and dependency standards for local development
 
-## Version Numbering Rules
+---
 
-### Rule Files (`.cursor/rules/*.mdc`)
-- **Format:** Semantic versioning (X.Y.Z)
-- **Major (X):** Breaking changes or major architectural changes
-- **Minor (Y):** New features or significant additions
-- **Patch (Z):** Bug fixes, clarifications, or minor updates
-- **Update Required:** Version must be incremented whenever the file content changes
-- **Metadata:** Include version in frontmatter: `version: X.Y.Z`
-- **Example:** If adding a new section → increment minor version (1.0.0 → 1.1.0)
+## Version Numbering
 
-### Command Files (`.cursor/commands/*.md`)
-- **Format:** Semantic versioning (X.Y.Z)
-- **Update Required:** Version must be incremented when:
-  - Command behavior changes
-  - New parameters or options are added
-  - Output format changes
-  - Dependencies or prerequisites change
-- **Metadata:** Include version in frontmatter or header comment
-- **Example:** `# Command: command-name v2.0.0`
+All files in this repository follow semantic versioning standards.
 
-### Standards Files (`standards/**/*.md`)
-- **Format:** Semantic versioning (X.Y)
-- **Major (X):** Breaking changes or major standard revisions
-- **Minor (Y):** New guidelines, clarifications, or additions
-- **Update Required:** Version must be incremented when:
-  - New requirements are added
-  - Existing requirements are modified
-  - Examples or patterns are significantly updated
-- **Metadata:** Include in document header: `Version: X.Y`
-- **Example:** `# Standard_Name_v1.2`
+**See `.cursor/rules/version-management.mdc` for complete versioning requirements** covering:
+- Rule files (`.cursor/rules/*.mdc`): X.Y.Z format
+- Command files (`.cursor/commands/*.md`): X.Y.Z format
+- Standards files (`standards/**/*.md`): X.Y format
+- Checklist files (`standards/process/checklists/*.md`): X.Y format
+- Version increment guidelines (major/minor/patch)
+- Integration with CHANGELOG.md
 
-### Checklist Files (`docs/process/checklists/*.md`)
-- **Format:** Semantic versioning (X.Y)
-- **Update Required:** Version must be incremented when:
-  - New checklist items are added
-  - Existing items are modified or removed
-  - Validation criteria change
-- **Naming:** Include version in filename: `checklist_name_v1_0.md`
-- **Metadata:** Include in document header: `Version: X.Y`
-
-### General Guidelines
-- **Always increment version** when making changes (no exceptions)
-- **Update "Last Updated" date** in metadata when version changes
-- **Document version changes** in CHANGELOG.md for significant updates
-- **Consistent format:** Use semantic versioning across all file types
-- **Version in filename:** For checklists, include version in filename (e.g., `_v1_0.md`)
-- **Version in metadata:** For rules, commands, and standards, include in frontmatter or header
+---
 
 ## 1. Runtime Expectations
 
@@ -141,6 +111,7 @@ When working with Docker or Supabase containers in multi-project environments:
   - [auto-heal.mdc](./auto-heal.mdc) - Error recovery strategies including container management
   - [task-workflow.mdc](./task-workflow.mdc) - Development workflow that uses these environment standards
   - [date-time.mdc](./date-time.mdc) - Date and time awareness for AI agents
+  - [version-management.mdc](./version-management.mdc) - Semantic versioning standards for all documentation
 - **Standards:**
   - [supabase-local-setup.md](../../standards/architecture/supabase-local-setup.md) - Supabase local setup guide
   - [application-launch.md](../../standards/deployment/application-launch.md) - Application launch standards
@@ -152,9 +123,9 @@ When working with Docker or Supabase containers in multi-project environments:
 **This rule applies automatically to all files in the repository.**
 
 **Agents should:**
-- Follow version numbering rules when updating any documentation (rules, commands, standards, checklists)
-- Always increment version numbers when making changes
+- Follow version numbering rules (see `version-management.mdc`)
 - Use `./start_app.sh` to launch applications (or run `create-start-scripts` if missing)
 - Use project-specific commands for Docker/Supabase containers (never affect all containers)
 - Ensure strict dependency isolation (use local `node_modules`, `.venv`, etc.)
-- For date/time operations, see `.cursor/rules/date-time.mdc`
+- For date/time operations, see `date-time.mdc`
+- For versioning guidance, see `version-management.mdc`

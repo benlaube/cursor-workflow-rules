@@ -1,0 +1,445 @@
+---
+description: Semantic versioning standards for all documentation file types (rules, commands, standards, checklists). Applies automatically when creating or modifying any versioned file.
+version: 1.1.4
+created: 12-04-2025
+lastUpdated: 12-04-2025 16:13:13 EST
+alwaysApply: true
+globs: ""
+type: Documentation Standard Rule - Defines versioning requirements for all documentation
+applicability: When creating or modifying rules, commands, standards, checklists, or any versioned documentation
+dependencies: []
+relatedCommands: [[audit-documentation-rules-metadata.md](../commands/audit-documentation-rules-metadata.md), [audit-command-metadata.md](../commands/audit-command-metadata.md)]
+relatedRules: [[cursor-rule-creation.mdc](./cursor-rule-creation.mdc), [cursor-command-creation.mdc](./cursor-command-creation.mdc), [documentation-metadata.mdc](./documentation-metadata.mdc), [runtime-configuration.mdc](./runtime-configuration.mdc)]
+relatedStandards: [[project-planning/documentation-management.md](../standards/project-planning/documentation-management.md), [process/cursor-rules-standards.md](../standards/process/cursor-rules-standards.md)]
+---
+
+# Version Management Rule
+
+## When This Rule Applies
+
+This rule **automatically applies** when:
+- Creating any new documentation file (rule, command, standard, checklist)
+- Modifying any existing documentation file
+- Incrementing version numbers
+- Reviewing version consistency across files
+
+---
+
+## Core Principle
+
+**All documentation files must follow semantic versioning appropriate to their type.** Consistent versioning enables:
+- Clear change tracking
+- Dependency management
+- Historical reference
+- Migration planning
+
+**Never skip version numbers. Never reuse version numbers. Always increment on content changes.**
+
+---
+
+## Version Formats by File Type
+
+### 1. Rule Files (`.cursor/rules/*.mdc`)
+
+**Format:** `X.Y.Z` (semantic versioning)
+
+**Version Field Location:**
+- YAML frontmatter: `version: X.Y.Z`
+- Metadata section: `**Version:** X.Y.Z`
+
+**When to Increment:**
+- **Major (X):** Breaking changes or major architectural changes
+  - Example: Changing rule trigger conditions that break existing behavior
+  - Example: Removing or fundamentally changing core requirements
+- **Minor (Y):** New features or significant additions
+  - Example: Adding new sections or responsibilities
+  - Example: Enhancing validation with new checks
+- **Patch (Z):** Bug fixes, clarifications, or minor updates
+  - Example: Fixing typos or improving examples
+  - Example: Clarifying existing guidance without changing behavior
+
+**Example:**
+```yaml
+---
+version: 1.2.3
+lastUpdated: 04-12-2025 15:54:51 EST
+---
+```
+
+### 2. Command Files (`.cursor/commands/*.md`)
+
+**Format:** `X.Y.Z` (semantic versioning)
+
+**Version Field Location:**
+- Metadata section: `**Version:** X.Y.Z`
+- Or header comment: `# Command: command-name v2.0.0`
+
+**When to Increment:**
+- **Major (X):** Breaking changes to command behavior
+  - Example: Changing required parameters
+  - Example: Changing output format in a breaking way
+- **Minor (Y):** New parameters, options, or features
+  - Example: Adding optional flags
+  - Example: Adding new validation steps
+- **Patch (Z):** Bug fixes, documentation updates, clarifications
+  - Example: Fixing error messages
+  - Example: Improving help text
+
+**Example:**
+```markdown
+## Metadata
+- **Version:** 2.1.0
+- **Last Updated:** 04-12-2025 15:54:51 EST
+```
+
+### 3. Standards Files (`standards/**/*.md`)
+
+**Format:** `X.Y` (two-part versioning)
+
+**Version Field Location:**
+- Metadata section: `**Version:** X.Y`
+- **Note:** Version numbers are NOT included in filenames
+
+**When to Increment:**
+- **Major (X):** Breaking changes or major standard revisions
+  - Example: Complete restructuring of requirements
+  - Example: Removing or replacing core guidelines
+  - Example: Changing fundamental patterns
+- **Minor (Y):** New guidelines, clarifications, or additions
+  - Example: Adding new sections
+  - Example: Adding examples or patterns
+  - Example: Refining existing requirements without breaking changes
+
+**Example:**
+```markdown
+# Standard: Documentation_Management
+
+## Metadata
+- **Version:** 1.11
+- **Last Updated:** 04-12-2025 15:54:51 EST
+```
+
+### 4. Checklist Files (`standards/process/checklists/*.md`)
+
+**Format:** `X.Y` (two-part versioning)
+
+**Version Field Location:**
+- Metadata section: `**Version:** X.Y`
+- **Note:** Version numbers are NOT included in filenames
+
+**When to Increment:**
+- **Major (X):** Breaking changes to checklist structure
+  - Example: Removing or replacing checklist items
+  - Example: Changing validation criteria significantly
+- **Minor (Y):** Adding items or refining criteria
+  - Example: Adding new checklist items
+  - Example: Modifying item descriptions
+  - Example: Adding validation details
+
+**Naming Convention:**
+- Format: `{purpose}_checklist.md` (no version in filename)
+- Examples:
+  - `pre_flight_checklist.md`
+  - `pr_review_checklist.md`
+  - `project_audit_checklist.md`
+
+**Example:**
+```markdown
+# Pre_Flight_Checklist
+
+**Version:** 1.0
+**Last_Updated:** 04-12-2025 15:54:51 EST
+```
+
+---
+
+## General Guidelines
+
+### Always Do:
+- ✅ **Always increment version** when making content changes (no exceptions)
+- ✅ **Update "Last Updated" date** in metadata when version changes
+- ✅ **Update both locations** if version appears in multiple places (frontmatter + metadata)
+- ✅ **Document version changes** in CHANGELOG.md for significant updates
+- ✅ **Use consistent format** across all file types
+- ✅ **Keep version numbers in metadata only** (never in filenames)
+- ✅ **Use semantic versioning** (understand what major/minor/patch mean)
+
+### Never Do:
+- ❌ **Never skip version numbers** (e.g., don't jump from 1.0 to 1.2)
+- ❌ **Never reuse version numbers** (once published, a version is permanent)
+- ❌ **Never change content without incrementing version**
+- ❌ **Never use inconsistent formats** (e.g., mixing X.Y and X.Y.Z in same file type)
+- ❌ **Never forget to update timestamp** when incrementing version
+
+---
+
+## Version Increment Decision Tree
+
+Use this flowchart to determine which version component to increment:
+
+```
+Does the change break existing behavior or remove features?
+├── YES → Increment MAJOR version
+└── NO  → Does the change add new features or sections?
+    ├── YES → Increment MINOR version
+    └── NO  → Is it a bug fix, typo, or clarification?
+        ├── YES → Increment PATCH version (if using X.Y.Z)
+        └── NO  → No version change needed (rare - only for non-content changes)
+```
+
+---
+
+## Examples
+
+### Example 1: Rule File Update (Minor Version)
+
+**Change:** Added new section "Integration with Other Rules"
+
+**Before:**
+```yaml
+version: 1.2.0
+lastUpdated: 03-12-2025 10:00:00 EST
+```
+
+**After:**
+```yaml
+version: 1.3.0
+lastUpdated: 04-12-2025 15:54:51 EST
+```
+
+**Reasoning:** New section = Minor version increment
+
+### Example 2: Command File Update (Patch Version)
+
+**Change:** Fixed typo in help text
+
+**Before:**
+```markdown
+**Version:** 2.1.0
+**Last Updated:** 03-12-2025 10:00:00 EST
+```
+
+**After:**
+```markdown
+**Version:** 2.1.1
+**Last Updated:** 04-12-2025 15:54:51 EST
+```
+
+**Reasoning:** Typo fix = Patch version increment
+
+### Example 3: Standard File Update (Major Version)
+
+**Change:** Completely restructured requirements, removing old sections
+
+**Before:**
+```markdown
+# Standard: Access_Control
+
+## Metadata
+- **Version:** 1.5
+- **Last Updated:** 03-12-2025 10:00:00 EST
+```
+
+**After:**
+```markdown
+# Standard: Access_Control
+
+## Metadata
+- **Version:** 2.0
+- **Last Updated:** 04-12-2025 15:54:51 EST
+```
+
+**Reasoning:** Breaking change = Major version increment (no filename change needed)
+
+### Example 4: Checklist File Update (Minor Version)
+
+**Change:** Added 3 new checklist items
+
+**Before:**
+```markdown
+# Pre_Flight_Checklist
+**Version:** 1.0
+**Last Updated:** 03-12-2025 10:00:00 EST
+```
+
+**After:**
+```markdown
+# Pre_Flight_Checklist
+**Version:** 1.1
+**Last Updated:** 04-12-2025 15:54:51 EST
+```
+
+**Reasoning:** New items = Minor version increment (no filename change needed)
+
+---
+
+## Integration with CHANGELOG.md
+
+When incrementing versions, update `CHANGELOG.md` for **significant changes**:
+
+**Update CHANGELOG.md for:**
+- ✅ Major version changes (always)
+- ✅ Minor version changes (usually)
+- ✅ New rules, commands, standards, or checklists
+- ✅ Breaking changes
+- ✅ Architectural updates
+
+**Can skip CHANGELOG.md for:**
+- ⚠️ Patch version changes (unless significant bug fix)
+- ⚠️ Typo fixes
+- ⚠️ Minor clarifications
+
+**CHANGELOG.md Format:**
+```markdown
+## [Unreleased] - DD-MM-YYYY HH:MM:SS EST
+
+### Changed
+- **file-name.mdc v1.2.0 → v1.3.0**: Added new section on XYZ
+- **command-name.md v2.1.0 → v2.2.0**: Added --verbose flag
+
+### Fixed
+- **file-name.mdc v1.2.0 → v1.2.1**: Fixed typo in example code
+```
+
+---
+
+## Version Metadata Requirements
+
+### For All File Types
+
+**Required Fields:**
+- `version:` field in frontmatter (rules) or metadata (commands/standards/checklists)
+- `lastUpdated:` field with timestamp in EST timezone
+- Format: `DD-MM-YYYY HH:MM:SS EST`
+
+**Getting Current Timestamp:**
+```bash
+TZ=America/New_York date "+%d-%m-%Y %H:%M:%S EST"
+```
+
+**Example Metadata Section:**
+```markdown
+## Metadata
+- **Created:** 04-12-2025
+- **Last Updated:** 04-12-2025 15:54:51 EST
+- **Version:** 1.2.0
+- **Description:** Brief description of the document's purpose
+```
+
+---
+
+## Cross-File Version Dependencies
+
+When a file references another file with breaking changes:
+
+1. **Check Referenced File Version:**
+   - If referenced file has major version change, review your file
+   - Update references if needed
+
+2. **Document Dependencies:**
+   - Use `relatedFiles`, `relatedCommands`, `relatedRules`, or `relatedStandards` fields
+   - AI agents will check these when validating compatibility
+
+3. **Update Your Version:**
+   - If you change references due to dependency update, increment your version
+
+**Example:**
+```yaml
+relatedRules: [cursor-rule-creation.mdc, version-management.mdc]
+# If cursor-rule-creation.mdc goes from v1.x to v2.x (breaking change),
+# review this file and update if needed
+```
+
+---
+
+## Validation Checklist
+
+When updating any file, verify:
+
+- [ ] Version number incremented appropriately (major/minor/patch)
+- [ ] Version number follows format for file type (X.Y.Z vs X.Y)
+- [ ] "Last Updated" timestamp updated with current EST time
+- [ ] Version appears in all required locations (frontmatter + metadata if applicable)
+- [ ] Version number is in metadata only (not in filename)
+- [ ] CHANGELOG.md updated (if significant change)
+- [ ] No version numbers skipped
+- [ ] Version number not reused
+
+---
+
+## Integration with Other Rules
+
+This rule is referenced by and coordinates with:
+
+### `cursor-rule-creation.mdc`
+- Enforces versioning standards for rule files
+- Uses this rule as reference for version format
+- Validates version increments
+
+### `cursor-command-creation.mdc`
+- Enforces versioning standards for command files
+- Uses this rule as reference for version format
+- Validates version increments
+
+### `documentation-metadata.mdc`
+- Enforces versioning standards for documentation files
+- Uses this rule as reference for version format
+- Validates metadata completeness including version
+
+### `runtime-configuration.mdc` (formerly environment.mdc)
+- Previously contained version numbering rules
+- Now references this rule for all versioning guidance
+
+---
+
+## Related Files
+
+- **Rules:**
+  - [cursor-rule-creation.mdc](./cursor-rule-creation.mdc) - Rule creation (references this for versioning)
+  - [cursor-command-creation.mdc](./cursor-command-creation.mdc) - Command creation (references this for versioning)
+  - [documentation-metadata.mdc](./documentation-metadata.mdc) - Doc metadata (references this for versioning)
+  - [runtime-configuration.mdc](./runtime-configuration.mdc) - Runtime config (formerly contained this content)
+- **Standards:**
+  - [documentation-management.md](../../standards/project-planning/documentation-management.md) - Doc management standards
+  - [cursor-rules-standards.md](../../standards/process/cursor-rules-standards.md) - Rule structure standards
+- **Commands:**
+  - [audit-documentation-rules-metadata.md](../commands/audit-documentation-rules-metadata.md) - Validates metadata including versions
+  - [audit-command-metadata.md](../commands/audit-command-metadata.md) - Validates command metadata including versions
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically when creating or modifying any versioned documentation file.**
+
+**Agents should:**
+1. **Identify file type** (rule/command/standard/checklist)
+2. **Use appropriate version format** (X.Y.Z or X.Y)
+3. **Determine increment type** (major/minor/patch) based on change
+4. **Update version number** in metadata (never in filename)
+5. **Update timestamp** with current EST time
+6. **Update CHANGELOG.md** if significant change
+7. **Validate** using checklist above
+
+**Quick Reference:**
+- **Rules:** `X.Y.Z` format in metadata, increment on any change
+- **Commands:** `X.Y.Z` format in metadata, increment on behavior/parameter changes
+- **Standards:** `X.Y` format in metadata, increment on requirement changes
+- **Checklists:** `X.Y` format in metadata, increment on item changes
+- **All files:** Version numbers in metadata only, never in filenames
+
+**Example Workflow:**
+```
+1. Agent modifies cursor-rule-creation.mdc
+2. Agent identifies: This is a rule file (X.Y.Z format)
+3. Agent determines: Added new section (minor change)
+4. Agent increments: 1.2.0 → 1.3.0
+5. Agent updates: lastUpdated field with current EST timestamp
+6. Agent checks: Both frontmatter and metadata updated
+7. Agent updates: CHANGELOG.md with entry
+8. Done ✅
+```
+
+---
+
+*This rule serves as the single source of truth for version management across all documentation file types in the repository. All other files reference this rule for versioning guidance.*

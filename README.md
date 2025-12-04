@@ -42,7 +42,7 @@ The agent **automatically switches context** based on which directory you're wor
 ├── standards/                  # "The Rules" - How we build software
 │   ├── process/
 │   │   ├── git-repository-standards.md  # Branching, committing, and repo setup
-│   ├── documentation.md        # How to write and organize docs
+│   ├── documentation-management.md  # How to write and organize docs
 │   ├── project-structure.md    # Standard file layout for new projects
 │   ├── configuration.md        # Rules for env vars and config files
 │   ├── sitemap.md              # How to build SEO-ready sitemaps
@@ -142,7 +142,7 @@ When integrating this repository into a new project, follow these steps:
 
 2. **Adapt for Project:**
    - Update `AGENTS.md` with project-specific context
-   - Review `.cursor/rules/environment.mdc` for stack-specific settings
+   - Review `.cursor/rules/runtime-configuration.mdc` for stack-specific settings
    - Review `.cursor/commands/launch.mdc` for startup process
 
 3. **Verify Integration:**
