@@ -1,0 +1,10 @@
+node_modules/
+dist/
+build/
+.next/
+out/
+*.config.js
+*.config.ts
+coverage/
+.turbo/
+

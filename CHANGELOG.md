@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Linting Configuration** (04-12-2025 16:25:06 EST)
+  - **Added:** `.eslintrc.js` - ESLint configuration for TypeScript modules
+  - **Added:** `.prettierrc` - Prettier formatting configuration
+  - **Added:** `.markdownlint.json` - Markdownlint configuration for documentation
+  - **Added:** `.eslintignore` - ESLint ignore patterns
+  - **Added:** `.prettierignore` - Prettier ignore patterns
+  - **Updated:** `package.json` - Added comprehensive linting scripts and dev dependencies
+  - **Purpose:** Enforce code quality and documentation standards through automated linting
+  - **Coverage:**
+    - Markdown linting for all documentation files
+    - ESLint + TypeScript for modules directory
+    - Prettier formatting for all code and markdown
+    - Type checking with TypeScript compiler
+  - **Scripts Added:**
+    - `npm run lint` - Run all linters (markdown + TypeScript)
+    - `npm run lint:fix` - Auto-fix all linting issues
+    - `npm run lint:md` - Lint markdown files only
+    - `npm run lint:ts` - Lint TypeScript files only
+    - `npm run format` - Format all files with Prettier
+    - `npm run format:check` - Check formatting without changes
+    - `npm run type-check` - Run TypeScript type checking
+  - **Dev Dependencies Added:**
+    - `eslint` (^8.0.0)
+    - `@typescript-eslint/parser` (^6.0.0)
+    - `@typescript-eslint/eslint-plugin` (^6.0.0)
+    - `markdownlint-cli` (^0.37.0)
+    - `prettier` (^3.0.0)
+    - `typescript` (^5.0.0)
+  - **Benefits:**
+    - Consistent code quality across modules
+    - Documentation quality validation
+    - Auto-fix capabilities for most issues
+    - Integration with pre-flight and PR review checks
+  - **Related Standards:** Implements `standards/process/code-quality-linting-standards.md`
+
 ### Changed
 - **Cursor Rules Metadata Links** (12-04-2025 16:13:13 EST)
   - **Updated:** All `.cursor/rules/*.mdc` metadata lists now use markdown links (dependencies, relatedCommands, relatedRules, relatedStandards) with correct relative paths.

@@ -7,10 +7,27 @@
     "modules/*"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npm run lint:md && npm run lint:ts",
+    "lint:fix": "npm run lint:md:fix && npm run lint:ts:fix && npm run format",
+    "lint:md": "markdownlint '**/*.md' --ignore node_modules --ignore modules/*/node_modules",
+    "lint:md:fix": "markdownlint '**/*.md' --fix --ignore node_modules --ignore modules/*/node_modules",
+    "lint:ts": "eslint 'modules/**/*.{ts,tsx}' --max-warnings 0",
+    "lint:ts:fix": "eslint 'modules/**/*.{ts,tsx}' --fix",
+    "format": "prettier --write '**/*.{ts,tsx,js,jsx,json,md}'",
+    "format:check": "prettier --check '**/*.{ts,tsx,js,jsx,json,md}'",
+    "type-check": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "markdownlint-cli": "^0.37.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  }
 }
 

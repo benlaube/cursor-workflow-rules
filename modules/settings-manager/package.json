@@ -13,8 +13,7 @@
     "QUICK_REFERENCE.md"
   ],
   "dependencies": {
-    "uuid": "^9.0.1",
-    "crypto": "built-in"
+    "uuid": "^9.0.1"
   },
   "peerDependencies": {
     "drizzle-orm": "^0.44.7"
