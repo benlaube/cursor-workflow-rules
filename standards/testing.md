@@ -136,7 +136,7 @@ class TestUserService:
 
 ### 3.1 Directory Structure
 
-Follow `standards/project-structure.md` Section 3.2 for test organization:
+Follow `standards/project-planning/project-structure.md` Section 3.2 for test organization:
 
 ```
 /tests
@@ -816,7 +816,7 @@ describe('Authentication E2E', () => {
 ## 10. Related Standards and References
 
 ### 10.1 Standards References
-- **Project Structure:** `standards/project-structure.md` (Section 3.2 - Test organization)
+- **Project Structure:** `standards/project-planning/project-structure.md` (Section 3.2 - Test organization)
 - **Module Structure:** `standards/module-structure.md` (Section 2 - Module testing requirements)
 - **Security Testing:** `standards/security/access-control.md` (Section 4 - RLS testing)
 - **Tech Stack:** `standards/tech-stack-document.md` (Testing tools section)

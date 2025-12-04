@@ -10,7 +10,7 @@
 
 **Version:** 1.1
 
-**Related Command:** `.cursor/commands/pr-review-check.md`
+**Related Rule:** `.cursor/rules/pr-review-check.mdc` (auto-applied)
 
 ---
 
@@ -22,7 +22,7 @@ This checklist combines actionable validation items with detailed execution guid
 - Verify documentation and changelog updates
 - Complete final verification steps
 
-**Automated Checks:** The `pr-review-check.md` command performs many of these checks automatically. Use this checklist for manual verification and comprehensive review.
+**Automated Checks:** The `pr-review-check.mdc` rule performs many of these checks automatically before PR submission. Use this checklist for manual verification and comprehensive review.
 
 ---
 
@@ -44,8 +44,8 @@ This checklist combines actionable validation items with detailed execution guid
      - If auto-fix succeeds: ✅ "Linter errors fixed"
      - If auto-fix fails or `auto-fix=false`: ❌ "Linter errors must be fixed manually"
    - If clean: ✅ "Code passes linter"
-   - **Reference:** See `standards/process/linting.md` Section 6.2 for detailed PR review lint requirements
-   - **Reference:** See `standards/process/linting.md` Section 6.2 for detailed PR review lint requirements
+   - **Reference:** See `standards/process/code-quality-linting-standards.md` Section 6.2 for detailed PR review lint requirements
+   - **Reference:** See `standards/process/code-quality-linting-standards.md` Section 6.2 for detailed PR review lint requirements
 
 ### 1.2 Formatting
 
@@ -218,7 +218,7 @@ This checklist combines actionable validation items with detailed execution guid
 ### 4.3 Changelog
 
 **Checklist Items:**
-- [ ] **Changelog:** Did I update `CHANGELOG.md` for user-facing changes? (See `standards/documentation.md` Section 7 for guidelines)
+- [ ] **Changelog:** Did I update `CHANGELOG.md` for user-facing changes? (See `standards/project-planning/documentation.md` Section 7 for guidelines)
 - [ ] **User-Facing Changes:** Identify user-facing changes from git diff
 - [ ] **Update Changelog:** Update CHANGELOG.md with timestamp and description
 
@@ -228,7 +228,7 @@ This checklist combines actionable validation items with detailed execution guid
      - Detect user-facing changes from git diff
      - If changes detected but CHANGELOG not updated:
        - Prompt: "User-facing changes detected. Update CHANGELOG.md?"
-       - Reference: `standards/documentation.md` Section 7 for format
+       - Reference: `standards/project-planning/documentation.md` Section 7 for format
    - If updated: ✅ "CHANGELOG.md is up to date"
 
 ### 4.4 TODO Cleanup
@@ -355,5 +355,5 @@ This checklist is referenced in `AGENTS.md` as the **required step** before subm
 
 ---
 
-*This is the comprehensive checklist for PR review validation. Use the `pr-review-check.md` command for automated checks, and this checklist for manual verification.*
+*This is the comprehensive checklist for PR review validation. The `pr-review-check.mdc` rule runs these checks automatically before PR submission. Use this checklist for manual verification.*
 

@@ -9,7 +9,7 @@ globs:
 
 Use this command to audit an existing project against the ai-agent-knowledge-base standards. Ideal when onboarding a repo into the "Workflow Rules" universe or before major refactoring.
 
-**Source Checklist:** `standards/development-checklists/project-audit-checklist.md`
+**Source Checklist:** `standards/process/checklists/project_audit_checklist_v1_0.md`
 
 ## Usage
 

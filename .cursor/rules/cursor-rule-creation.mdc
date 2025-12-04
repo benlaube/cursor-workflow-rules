@@ -1,8 +1,8 @@
 ---
-description: Auto-applied rule for creating and modifying Cursor rules with proper metadata and structure
-version: 1.0.0
-lastUpdated: 2025-12-04
-globs: .cursor/rules/*.mdc
+description: Auto-applied rule for creating and modifying Cursor rules with proper metadata and structure. Applies when creating or modifying files in .cursor/rules/ directory.
+version: 1.1.0
+lastUpdated: 04-12-2025 11:02:01 EST
+globs: **/.cursor/rules/*.mdc
 alwaysApply: false
 type: Documentation Maintenance Rule - Ensures Cursor rules follow standards
 relatedCommands: [audit-documentation-metadata.md]
@@ -12,7 +12,7 @@ relatedStandards: [process/cursor-rules-standards.md, project-planning/documenta
 
 # Cursor Rule Creation & Maintenance Rule
 
-## When This Rule Applies
+## When This Rule Appliess
 
 This rule **automatically applies** when:
 - Creating a new file in `.cursor/rules/` directory
@@ -40,6 +40,18 @@ This rule **automatically applies** when:
 - Avoid duplicating existing rule functionality
 - Consider extending existing rule instead of creating new one
 
+**Check if this should be a nested rule:**
+- Should this be domain-specific (frontend, backend, database, etc.)?
+- Will this rule apply to a specific subdirectory?
+- Does this create a "role" for the agent in that area?
+- If yes, create nested rule in target directory (see Section: Creating Nested Rules)
+
+**Check rule length appropriateness:**
+- Target length: 100-300 lines (optimal: 150-200 lines)
+- Nested "role" rules: 50-150 lines
+- If exceeding 300 lines, consider splitting by concern
+- Reference full standard for details (don't duplicate everything)
+
 **Determine rule type (from `cursor-rules-standards.md` Section 4):**
 1. Auto-Applied Behavioral Rule
 2. Environment/Configuration Rule
@@ -56,10 +68,10 @@ This rule **automatically applies** when:
 
 ```yaml
 ---
-description: Brief one-sentence description of what this rule does
+description: Brief description of what this rule does and when to apply it (1-2 sentences)
 version: X.Y.Z (semantic versioning)
-lastUpdated: YYYY-MM-DD (ISO date format)
-globs: file/pattern (optional - omit if applies to all files, NO quotes)
+lastUpdated: DD-MM-YYYY HH:MM:SS EST (date and time in EST timezone)
+globs: file/pattern (REQUIRED - use empty string "" if alwaysApply is true, NO quotes)
 alwaysApply: true/false (true = applies to all files, false = only matching globs)
 type: Rule Type - Brief description (see cursor-rules-standards.md Section 4, NO quotes)
 relatedCommands: [command1.md, command2.md] (optional - related cursor commands)
@@ -136,12 +148,14 @@ relatedStandards: [standard1.md, standard2.md] (optional - standards this implem
 **Field-Specific Guidelines:**
 
 1. **description** (REQUIRED):
-   - One sentence max
-   - Starts with a verb
-   - Clearly states rule purpose
+   - 1-2 sentences that describe what the rule does AND when to apply it
+   - First sentence: What the rule does
+   - Second sentence (optional): When/where it applies
+   - The description tells the agent when to use the rule
    - Examples:
-     - ✅ Auto-applied rule for creating and modifying Cursor rules
-     - ❌ This rule helps with rules (too vague)
+     - ✅ "Auto-applied rule for creating and modifying Cursor rules. Applies when editing `.cursor/rules/*.mdc` files."
+     - ✅ "Frontend development standards for React components. Applies when working in `src/frontend/` directory."
+     - ❌ "This rule helps with rules" (too vague, doesn't say when to apply)
 
 2. **version** (REQUIRED):
    - Format: `X.Y.Z` (semantic versioning)
@@ -149,17 +163,21 @@ relatedStandards: [standard1.md, standard2.md] (optional - standards this implem
    - See `.cursor/rules/environment.mdc` for version increment rules
 
 3. **lastUpdated** (REQUIRED):
-   - Format: `YYYY-MM-DD`
-   - Use current date (run `date` command to verify)
+   - Format: `DD-MM-YYYY HH:MM:SS EST` (date and time in EST timezone)
+   - Example: `04-12-2025 14:30:00 EST`
+   - Use EST timezone for all timestamps
    - Update EVERY time rule content changes
+   - Get current EST time: `TZ=America/New_York date "+%d-%m-%Y %H:%M:%S EST"`
 
-4. **globs** (OPTIONAL):
-   - Omit if rule applies to all files
-   - Use glob patterns to target specific files (NO quotes in .mdc files)
+4. **globs** (REQUIRED):
+   - **Required field** - must be present in all rules
+   - If `alwaysApply: true`, use empty string: `globs: ""`
+   - If `alwaysApply: false`, specify pattern (NO quotes in .mdc files)
    - Examples:
-     - `**/*.ts` - All TypeScript files
-     - `**/*.{ts,tsx}` - TypeScript and TSX files
-     - `{standards/**/*.md,docs/**/*.md}` - Multiple patterns
+     - `globs: ""` - When alwaysApply is true
+     - `globs: **/*.ts` - All TypeScript files
+     - `globs: **/*.{ts,tsx}` - TypeScript and TSX files
+     - `globs: {standards/**/*.md,docs/**/*.md}` - Multiple patterns
 
 5. **alwaysApply** (REQUIRED):
    - `true`: Applies to all files/situations (most common)
@@ -190,21 +208,71 @@ relatedStandards: [standard1.md, standard2.md] (optional - standards this implem
 
 9. **relatedStandards** (OPTIONAL):
    - Array of standard paths (relative from `.cursor/rules/`)
-   - Examples: `[process/linting.md, project-planning/documentation.md]`
+   - Examples: `[process/code-quality-linting-standards.md, project-planning/documentation.md]`
    - List standards that:
      - This rule implements
      - Define requirements this rule enforces
 
-### 3. After Creating/Modifying a Rule
+### 3. Creating Nested Rules (Domain-Specific "Roles")
+
+**When to create nested rule:**
+- Domain-specific guidance (frontend, backend, database, etc.)
+- Working in specific subdirectory
+- Need agent to adopt a "role" for that area
+
+**Structure:**
+1. Create `.cursor/rules/` directory in target location
+2. Create domain-specific rule (e.g., `backend-standards.mdc`)
+3. Keep concise (50-150 lines for nested rules)
+4. Focus on actionable directives
+5. Reference full standard at end: "See `standards/[domain]/` for complete details"
+
+**Template for nested rules:**
+- Core requirements (what to do)
+- Common patterns (how to do it)
+- Examples (good vs bad)
+- Reference: "See `standards/[domain]/` for complete details"
+
+**Example nested rule structure:**
+```yaml
+---
+description: Backend API development standards for routes, services, and error handling. Applies when working in src/backend/ directory.
+version: 1.0.0
+lastUpdated: 04-12-2025 14:30:00 EST
+globs: **/*.{ts,js}
+alwaysApply: false
+type: Conditional Rule - Backend development role
+relatedStandards: [architecture/backend-module-plan.md]
+---
+
+# Backend Development Standards
+
+## When This Rule Applies
+When working in `src/backend/` directory.
+
+## Core Requirements
+[Key directives]
+
+## Examples
+[Good vs bad]
+
+## Related Standards
+See `standards/architecture/backend-module-plan.md` for complete backend patterns.
+```
+
+### 4. After Creating/Modifying a Rule
 
 **MANDATORY STEPS:**
 
-#### Step 3.1: Validate Rule Structure
+#### Step 4.1: Validate Rule Structure
 
 Run through this checklist:
 - [ ] YAML frontmatter is valid and complete
-- [ ] All required fields are present (description, version, lastUpdated, alwaysApply, type)
+- [ ] All required fields are present (description, version, lastUpdated, globs, alwaysApply, type)
+- [ ] Description is 1-2 sentences describing what the rule does AND when to apply it
 - [ ] Version follows semantic versioning (X.Y.Z)
+- [ ] lastUpdated uses DD-MM-YYYY HH:MM:SS EST format
+- [ ] globs is present (empty string "" if alwaysApply is true, pattern if false)
 - [ ] Type is declared and matches one of the 8 standard types
 - [ ] Related commands/rules/standards are listed (if applicable)
 - [ ] "When This Rule Applies" section is clear
@@ -214,7 +282,7 @@ Run through this checklist:
 - [ ] "Related Files" section lists dependencies with descriptions
 - [ ] "How to Use This Rule" section provides clear instructions
 
-#### Step 3.2: Update Dependencies
+#### Step 4.2: Update Dependencies
 
 **If you modified relatedCommands, relatedRules, or relatedStandards:**
 1. Read each referenced file
@@ -223,12 +291,12 @@ Run through this checklist:
 
 **Example:** If your rule references `pre-flight-check.md`, check if that command should list your rule in its "Related Rules" section.
 
-#### Step 3.3: Update Related Documentation
+#### Step 4.3: Update Related Documentation
 
 **Always update:**
-1. **`CHANGELOG.md`** - Add entry with timestamp
+1. **`CHANGELOG.md`** - Add entry with timestamp (EST timezone)
    ```markdown
-   ### 2025-12-04 15:30:00 - Added
+   ### 04-12-2025 15:30:00 EST - Added
    - **Cursor Rule:** `.cursor/rules/new-rule.mdc` (v1.0.0) - Brief description of purpose
    ```
 
@@ -242,7 +310,7 @@ Run through this checklist:
    - Update `INTEGRATION_GUIDE.md` to mention rule
    - Update `QUICK_INTEGRATION.md` copy commands
 
-#### Step 3.4: Test the Rule
+#### Step 4.4: Test the Rule
 
 **Validation steps:**
 1. **YAML Validation:** Ensure frontmatter parses correctly
@@ -287,9 +355,9 @@ Run through this checklist:
 **Good:**
 ```yaml
 ---
-description: Auto-applied rule for ensuring proper error handling in API routes
+description: Auto-applied rule for ensuring proper error handling in API routes. Applies when creating or modifying API route handlers in app/api or pages/api directories.
 version: 1.0.0
-lastUpdated: 2025-12-04
+lastUpdated: 04-12-2025 14:30:00 EST
 globs: **/{app,pages}/api/**/*.{ts,js}
 alwaysApply: false
 type: Auto-Applied Behavioral Rule - Ensures API error handling
@@ -315,6 +383,8 @@ This rule applies automatically when creating or modifying API route handlers in
 description: Error handling
 version: 1
 lastUpdated: 12/04/2025
+globs: ""
+alwaysApply: true
 type: API Rule
 ---
 
@@ -323,28 +393,28 @@ type: API Rule
 Handle errors in API routes.
 ```
 ❌ Problems:
-- Description too vague
+- Description too vague (doesn't say when to apply)
 - Version not semantic (should be 1.0.0)
-- Date format wrong (should be YYYY-MM-DD)
-- Missing required fields (alwaysApply, globs for conditional rules)
+- Date format wrong (should be DD-MM-YYYY HH:MM:SS EST)
+- Missing required fields (globs is required even if empty string)
 - Type doesn't match standard types (should be one of 8 types)
 - Missing relatedCommands, relatedRules, relatedStandards
 - Content structure incomplete (no examples, no "How to Use" section)
 
 ### Example 2: Modifying an Existing Rule
 
-**Scenario:** Adding new section to `linting.mdc`
+**Scenario:** Adding new section to `linting-behavior.mdc`
 
 **Before:**
 ```yaml
 version: 1.0.0
-lastUpdated: 2025-12-02
+lastUpdated: 02-12-2025 10:15:00 EST
 ```
 
 **After:**
 ```yaml
 version: 1.1.0  # ← Incremented minor version (new section)
-lastUpdated: 2025-12-04  # ← Updated date
+lastUpdated: 04-12-2025 14:30:00 EST  # ← Updated date and time in EST
 ```
 
 **Also updated:**
@@ -363,7 +433,7 @@ description: Some rule
 version: 1.0.0
 ---
 ```
-**Fix:** Include ALL required fields (lastUpdated, alwaysApply, type)
+**Fix:** Include ALL required fields (description with when to apply, lastUpdated with EST timestamp, globs, alwaysApply, type)
 
 ### ❌ Mistake 2: Wrong Version Format
 ```yaml
@@ -383,9 +453,9 @@ type: Rule for documentation  # ← Too vague
 
 ### ❌ Mistake 5: Not Updating lastUpdated
 ```yaml
-lastUpdated: 2025-12-01  # ← Stale! Rule was just modified today
+lastUpdated: 01-12-2025 10:00:00 EST  # ← Stale! Rule was just modified today
 ```
-**Fix:** Always update when modifying content (use `date` command)
+**Fix:** Always update when modifying content (use EST timezone: `TZ=America/New_York date "+%d-%m-%Y %H:%M:%S EST"`)
 
 ### ❌ Mistake 6: Listing Full Paths in Related Files
 ```yaml
@@ -449,13 +519,15 @@ This rule works in conjunction with:
 
 **Validation checklist after creating/modifying:**
 - [ ] YAML frontmatter complete and valid
+- [ ] Description is 1-2 sentences with when to apply
 - [ ] Version incremented (if modification)
-- [ ] lastUpdated updated
+- [ ] lastUpdated updated with EST timestamp
+- [ ] globs field present (empty string or pattern)
 - [ ] Type declared (one of 8 standard types)
 - [ ] Related files listed
 - [ ] Examples provided
 - [ ] "How to Use" section present
-- [ ] `CHANGELOG.md` updated
+- [ ] `CHANGELOG.md` updated (with EST timestamp)
 - [ ] Dependencies verified
 
 ---

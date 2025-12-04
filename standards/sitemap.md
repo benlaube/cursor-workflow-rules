@@ -2,8 +2,9 @@
 
 ## Metadata
 - **Created:** 2025-11-18
-- **Last Updated:** 2025-11-18
+- **Last Updated:** 2025-12-04
 - **Version:** 1.0
+- **Description:** Standards for automated sitemap generation using Supabase triggers, Edge Functions, and static XML file storage for optimal SEO.
 
 ## 1. Purpose of This Document
 

@@ -1,0 +1,234 @@
+---
+description: Database schema, migrations, and RLS policy standards. Applies when working with database files in database/ directory.
+version: 1.0.0
+lastUpdated: 04-12-2025 11:47:37 EST
+globs: **/*.sql
+alwaysApply: false
+type: Conditional Rule - Database management role
+relatedStandards: [database/schema.md, security/access-control.md]
+---
+
+# Database Management Standards
+
+## When This Rule Applies
+
+When working with database schema files, migrations, or RLS policies in `database/` directory.
+
+---
+
+## Core Requirements
+
+### Schema Design
+- **Descriptive names** (not abbreviated) - Use `user_profiles` not `usr_prof`
+- Every table has `created_at`, `updated_at` columns
+- UUID primary keys (use `gen_random_uuid()`)
+- Foreign keys with proper constraints
+- Add `COMMENT ON` for all tables and columns
+
+### Migrations
+- One migration per logical change
+- Timestamped filenames: `YYYYMMDDHHMMSS_description.sql`
+- Include rollback instructions in comments
+- Test migrations before applying
+- Never modify existing migrations (create new ones)
+
+### RLS Policies
+- Every table MUST have RLS enabled
+- Policies must be specific (avoid `true` conditions)
+- Document policy purpose with comments
+- Test with different user roles
+- Use helper functions for complex logic
+
+---
+
+## Examples
+
+### Good Schema
+
+```sql
+-- Create table with proper structure
+CREATE TABLE users (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  email text NOT NULL UNIQUE,
+  name text NOT NULL,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+-- Add comments for documentation
+COMMENT ON TABLE users IS 'Application user accounts';
+COMMENT ON COLUMN users.id IS 'Unique identifier for the user';
+COMMENT ON COLUMN users.email IS 'User email address for authentication';
+COMMENT ON COLUMN users.name IS 'User display name';
+
+-- Enable RLS
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Users can only read their own record
+CREATE POLICY "Users can read own record"
+  ON users FOR SELECT
+  TO authenticated
+  USING (auth.uid() = id);
+
+-- Policy: Users can update their own record
+CREATE POLICY "Users can update own record"
+  ON users FOR UPDATE
+  TO authenticated
+  USING (auth.uid() = id)
+  WITH CHECK (auth.uid() = id);
+```
+
+### Bad Schema
+
+```sql
+-- ❌ Abbreviated names, no timestamps, no comments, no RLS
+CREATE TABLE usr (
+  id serial PRIMARY KEY,
+  em text,
+  nm text
+);
+```
+
+---
+
+## Migration Structure
+
+### Good Migration
+
+```sql
+-- Migration: Add user profiles table
+-- Created: 2025-12-04
+-- Description: Create profiles table to store user bio and avatar
+
+BEGIN;
+
+CREATE TABLE user_profiles (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  bio text,
+  avatar_url text,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE(user_id)
+);
+
+COMMENT ON TABLE user_profiles IS 'Extended user profile information';
+COMMENT ON COLUMN user_profiles.bio IS 'User biography (max 500 characters)';
+COMMENT ON COLUMN user_profiles.avatar_url IS 'URL to user avatar image';
+
+-- Enable RLS
+ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
+
+-- RLS Policies
+CREATE POLICY "Anyone can view profiles"
+  ON user_profiles FOR SELECT
+  TO authenticated
+  USING (true);
+
+CREATE POLICY "Users can update own profile"
+  ON user_profiles FOR UPDATE
+  TO authenticated
+  USING (user_id = auth.uid())
+  WITH CHECK (user_id = auth.uid());
+
+COMMIT;
+
+-- Rollback:
+-- DROP TABLE IF EXISTS user_profiles CASCADE;
+```
+
+---
+
+## RLS Policy Patterns
+
+### Read Own Data
+
+```sql
+CREATE POLICY "users_read_own"
+  ON table_name FOR SELECT
+  TO authenticated
+  USING (user_id = auth.uid());
+```
+
+### Admin Access
+
+```sql
+CREATE POLICY "admins_all_access"
+  ON table_name FOR ALL
+  TO authenticated
+  USING (
+    EXISTS (
+      SELECT 1 FROM user_roles
+      WHERE user_id = auth.uid()
+      AND role = 'admin'
+    )
+  );
+```
+
+### Public Read, Owner Write
+
+```sql
+CREATE POLICY "public_read"
+  ON posts FOR SELECT
+  TO authenticated
+  USING (true);
+
+CREATE POLICY "owner_update"
+  ON posts FOR UPDATE
+  TO authenticated
+  USING (author_id = auth.uid())
+  WITH CHECK (author_id = auth.uid());
+```
+
+---
+
+## Database Functions
+
+### Update Timestamp Trigger
+
+```sql
+-- Function to update updated_at column
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Apply trigger to table
+CREATE TRIGGER update_users_updated_at
+  BEFORE UPDATE ON users
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+```
+
+---
+
+## Testing RLS Policies
+
+### Test with Different Roles
+
+```sql
+-- Test as authenticated user
+SET LOCAL role = authenticated;
+SET LOCAL request.jwt.claim.sub = 'user-uuid-here';
+
+-- Try to read data
+SELECT * FROM users WHERE id = 'user-uuid-here';  -- Should work
+SELECT * FROM users WHERE id = 'other-user-uuid';  -- Should fail if policy correct
+
+-- Reset
+RESET role;
+```
+
+---
+
+## Related Standards
+
+See `standards/database/schema.md` and `standards/security/access-control.md` for comprehensive database standards including:
+- Schema design principles
+- Indexing strategies
+- Performance optimization
+- RLS policy patterns
+- Security best practices

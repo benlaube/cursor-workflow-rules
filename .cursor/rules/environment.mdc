@@ -1,17 +1,21 @@
 ---
-description: Runtime Expectations & Environment Setup
-globs: "**/*"
+description: Runtime expectations, environment setup, and version numbering standards
+globs: **/*
 alwaysApply: true
-version: 1.1
-lastUpdated: 2025-12-02
+version: 1.3.0
+lastUpdated: 04-12-2025 13:17:07 EST
+type: Environment/Configuration Rule - Defines runtime expectations and setup
+relatedCommands: [create-start-scripts.md]
+relatedRules: [auto-heal.mdc, task-workflow.mdc, date-time.mdc]
+relatedStandards: [architecture/supabase-local-setup.md, deployment/application-launch.md]
 ---
 
 # Environment & Runtime Standards
 
 ## Metadata
 - **Created:** 2025-11-17
-- **Last Updated:** 2025-12-02
-- **Version:** 1.1
+- **Last Updated:** 04-12-2025 13:17:07 EST
+- **Version:** 1.3
 - **Description:** Runtime expectations, environment setup, and version numbering standards
 
 ## Version Numbering Rules
@@ -104,28 +108,9 @@ Ensure the following MCP servers are active if relevant:
 - **Python:** Always use a virtual environment.
 - **Lockfiles:** Never delete lockfiles to "fix" errors. Fix the dependency conflict instead.
 
-## 5. Temporal Awareness (Date & Time)
+## 5. Container Management Rules (CRITICAL)
 
-**Rule:** The AI agent must be aware of the current date and time when responding to prompts, especially for time-sensitive information.
-
-**When to Check Current Date:**
-- When responding about deadlines, timelines, or scheduling
-- When updating `CHANGELOG.md` or documentation with timestamps
-- When discussing version releases, deprecations, or EOL dates
-- When calculating relative dates (e.g., "3 months ago", "next week")
-- When working with date-based logic or time-sensitive features
-
-**How to Get Current Date:**
-- Use terminal command: `date` (Unix/Mac) or `date /t` (Windows)
-- For ISO format: `date -u +"%Y-%m-%dT%H:%M:%SZ"` (Unix/Mac)
-- For timestamps in code: Use system date/time functions, not hardcoded values
-
-**Important Notes:**
-- Do not assume the current date from training data cutoff
-- Always verify the current date when time-sensitive information is involved
-- When updating `AGENTS.md` or `CHANGELOG.md`, use the actual current date, not placeholders
-
-## 6. Container Management Rules (CRITICAL)
+**Note:** For date and time awareness requirements, see `.cursor/rules/date-time.mdc`.
 
 When working with Docker or Supabase containers in multi-project environments:
 
@@ -145,3 +130,31 @@ When working with Docker or Supabase containers in multi-project environments:
 4.  **Error Recovery:**
    - See `.cursor/rules/auto-heal.mdc` Section 6 for detailed container management error recovery.
    - See `standards/architecture/supabase-local-setup.md` Section 10 for Supabase-specific container isolation guidelines.
+
+---
+
+## Related Files
+
+- **Commands:**
+  - [create-start-scripts.md](../commands/create-start-scripts.md) - Generates application launch scripts
+- **Rules:**
+  - [auto-heal.mdc](./auto-heal.mdc) - Error recovery strategies including container management
+  - [task-workflow.mdc](./task-workflow.mdc) - Development workflow that uses these environment standards
+  - [date-time.mdc](./date-time.mdc) - Date and time awareness for AI agents
+- **Standards:**
+  - [supabase-local-setup.md](../../standards/architecture/supabase-local-setup.md) - Supabase local setup guide
+  - [application-launch.md](../../standards/deployment/application-launch.md) - Application launch standards
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically to all files in the repository.**
+
+**Agents should:**
+- Follow version numbering rules when updating any documentation (rules, commands, standards, checklists)
+- Always increment version numbers when making changes
+- Use `./start_app.sh` to launch applications (or run `create-start-scripts` if missing)
+- Use project-specific commands for Docker/Supabase containers (never affect all containers)
+- Ensure strict dependency isolation (use local `node_modules`, `.venv`, etc.)
+- For date/time operations, see `.cursor/rules/date-time.mdc`

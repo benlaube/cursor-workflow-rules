@@ -1,0 +1,127 @@
+---
+description: Development workflow integration for task lifecycle management. Applies throughout development lifecycle.
+version: 1.0.0
+lastUpdated: 04-12-2025 11:47:37 EST
+globs: ""
+alwaysApply: true
+type: Workflow Integration Rule - Manages task lifecycle
+relatedCommands: []
+relatedRules: [ai-interaction-rules.mdc, environment.mdc]
+relatedStandards: [project-planning/documentation.md]
+---
+
+# Task Workflow Rule
+
+> **📝 Note:** This is a template rule. Adapt it for your project's specific workflow.
+
+## 1. Before Starting a Task (Pre-Flight)
+
+Before writing code, the agent MUST:
+
+1. **Understand the Task:**
+   - Clarify requirements if unclear
+   - Identify affected files and components
+   - Plan approach
+
+2. **Check Environment:**
+   - Verify dependencies are installed
+   - Ensure `.env` is configured
+   - Check git status (clean working tree)
+
+3. **Review Standards:**
+   - Check `standards/` for relevant patterns
+   - Review related code for consistency
+   - Identify reusable utilities
+
+---
+
+## 2. During Development
+
+1. **Atomic Changes:**
+   - Make small, testable changes
+   - Commit frequently with clear messages
+   - Test as you go
+
+2. **Follow Standards:**
+   - Use established patterns
+   - Follow naming conventions
+   - Write tests for new features
+
+3. **Document as You Go:**
+   - Add comments for complex logic
+   - Update relevant docs if needed
+   - Keep CHANGELOG.md updated
+
+---
+
+## 3. After Completing a Task (Post-Flight)
+
+Before marking complete:
+
+1. **Test Thoroughly:**
+   - Run tests (`npm test` or equivalent)
+   - Test manually if applicable
+   - Verify no regressions
+
+2. **Code Quality:**
+   - Run linter and fix issues
+   - Format code consistently
+   - Remove debug code
+
+3. **Documentation:**
+   - Update `CHANGELOG.md` for user-facing changes
+   - Update relevant docs
+   - Add/update code comments
+
+4. **Review:**
+   - Self-review changes
+   - Check for missed edge cases
+   - Verify error handling
+
+---
+
+## 4. Git Workflow
+
+### Branch Naming
+- Format: `feature/description` or `fix/description`
+- Use kebab-case: `feature/add-user-auth`
+
+### Commit Messages
+- Format: `type: description`
+- Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
+- Example: `feat: add user authentication`
+
+### Before Committing
+- [ ] All tests pass
+- [ ] Linter passes
+- [ ] No debug code
+- [ ] Relevant docs updated
+
+---
+
+## 5. Documentation & Versioning
+
+- **Update Docs:** When changing features or architecture
+- **Update CHANGELOG:** For user-facing changes
+- **Version Bump:** Follow semantic versioning
+
+---
+
+## Integration with Standards
+
+This workflow integrates with:
+- **Standards** in `standards/` directory
+- **Nested Rules** for domain-specific guidance
+- **Commands** (if your project has custom commands)
+
+---
+
+## Customization Notes
+
+When adapting this workflow:
+- Add your git branching strategy
+- Define your commit message format
+- Add project-specific pre-flight checks
+- Define your PR/review process
+- Add any CI/CD integration steps
+- Customize for your team's workflow

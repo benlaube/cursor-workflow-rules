@@ -1,0 +1,254 @@
+---
+description: Auto-applied rule ensuring all .md documentation files have complete metadata. Applies when creating or modifying files in docs/, standards/, or .cursor/commands/ directories.
+version: 1.0.0
+lastUpdated: 04-12-2025 11:12:43 EST
+globs: docs/**/*.md,standards/**/*.md,.cursor/commands/**/*.md
+alwaysApply: false
+type: Documentation Maintenance Rule - Ensures documentation metadata completeness
+relatedCommands: [audit-documentation-rules-metadata.md]
+relatedRules: [documentation-dependency-tracking.mdc]
+relatedStandards: [project-planning/documentation.md, process/cursor-rules-standards.md]
+---
+
+# Documentation Metadata Rule
+
+## When This Rule Applies
+
+This rule **automatically applies** when:
+- Creating or modifying any `.md` file in `docs/` directory
+- Creating or modifying any `.md` file in `standards/` directory
+- Creating or modifying any `.md` file in `.cursor/commands/` directory
+
+---
+
+## Core Principle
+
+**All documentation files must have complete, accurate metadata.** This ensures:
+- Documents are discoverable and understandable
+- Cross-references are maintained
+- Version history is tracked
+- Dependencies are documented
+
+---
+
+## Agent Responsibilities
+
+### 1. Before Creating/Modifying Documentation
+
+**Check if metadata section exists:**
+- Look for `## Metadata` section at the top of the file
+- If missing, you MUST add it
+
+**Review existing metadata:**
+- Verify all required fields are present
+- Check if version needs incrementing
+- Verify "Last Updated" is current
+
+### 2. Required Metadata Fields
+
+Every `.md` documentation file MUST have:
+
+```markdown
+## Metadata
+- **Status:** [Active|Deprecated|Draft|Review]
+- **Created:** DD-MM-YYYY
+- **Last Updated:** DD-MM-YYYY HH:MM:SS EST
+- **Version:** X.Y (for standards/docs) or X.Y.Z (for commands)
+- **Description:** Brief description of the document's purpose
+- **Type:** [Document type] - Who should use this document
+- **Applicability:** When/where this document applies
+- **Dependencies:** (Optional) List of related files with markdown links
+- **Related Cursor Commands:** (Optional) List of related command files
+- **Related Cursor Rules:** (Optional) List of related rule files
+- **Related Standards:** (Optional) List of related standard files
+- **How to Use:** Brief instructions on how to use this document
+```
+
+### 3. Field Requirements
+
+#### Status (REQUIRED)
+- `Active` - Currently in use and up to date
+- `Deprecated` - No longer recommended, kept for reference
+- `Draft` - Work in progress, not finalized
+- `Review` - Needs review or updating
+
+#### Created (REQUIRED)
+- Format: `DD-MM-YYYY`
+- Date when document was first created
+- Example: `04-12-2025`
+
+#### Last Updated (REQUIRED)
+- Format: `DD-MM-YYYY HH:MM:SS EST`
+- Update EVERY time content changes
+- Use EST timezone: `TZ=America/New_York date "+%d-%m-%Y %H:%M:%S EST"`
+- Example: `04-12-2025 11:12:43 EST`
+
+#### Version (REQUIRED)
+- Standards/Docs: `X.Y` format (e.g., `1.0`, `1.1`)
+- Commands: `X.Y.Z` format (e.g., `1.0.0`, `1.1.0`)
+- Increment when content changes (see `.cursor/rules/environment.mdc`)
+
+#### Description (REQUIRED)
+- Brief description of document's purpose
+- One sentence is sufficient
+- Should clearly state what the document covers
+
+#### Type (REQUIRED)
+- Document type and intended audience
+- Format: `[Type] - [Who should use it]`
+- Examples:
+  - `Governing Standard - Defines requirements for developers and AI agents`
+  - `Executable Command - Used by AI agents to automate workflows`
+  - `Checklist - Used by developers and AI agents for validation`
+  - `Architecture Guide - Technical reference for developers`
+
+#### Applicability (REQUIRED)
+- When/where this document applies
+- Examples:
+  - `All code changes throughout development lifecycle`
+  - `When setting up local Supabase environment`
+  - `Before every PR submission`
+  - `All database schema changes`
+
+#### Dependencies (OPTIONAL)
+- List of related files with markdown links
+- Format:
+  ```markdown
+  - **Dependencies:**
+    - [file1.md](./path/file1.md) - Relationship description
+    - [file2.md](../path/file2.md) - Relationship description
+  ```
+
+#### Related Fields (OPTIONAL)
+- Can use separate fields OR combined Dependencies field
+- `Related Cursor Commands:` - List command filenames
+- `Related Cursor Rules:` - List rule filenames
+- `Related Standards:` - List standard paths
+
+#### How to Use (REQUIRED)
+- Brief instructions on how to use this document
+- Should be clear and actionable
+- Examples:
+  - `Run this command before starting any coding work`
+  - `Reference this standard when creating new modules`
+  - `Follow this checklist before submitting a PR`
+
+### 4. When Modifying Documentation
+
+**MANDATORY STEPS:**
+
+1. **Update Last Updated:**
+   - Set to current date/time in EST: `DD-MM-YYYY HH:MM:SS EST`
+   - Use: `TZ=America/New_York date "+%d-%m-%Y %H:%M:%S EST"`
+
+2. **Increment Version:**
+   - Major: Breaking changes or major revisions
+   - Minor: New sections, significant additions
+   - Patch: Bug fixes, clarifications
+
+3. **Update Dependencies:**
+   - Add new files you reference
+   - Remove files you no longer reference
+   - Update relationship descriptions if changed
+
+4. **Verify Status:**
+   - Update to `Review` if content is outdated
+   - Update to `Active` if content is current
+
+---
+
+## Examples
+
+### Good Metadata Section
+
+```markdown
+## Metadata
+- **Status:** Active
+- **Created:** 04-12-2025
+- **Last Updated:** 04-12-2025 11:12:43 EST
+- **Version:** 1.2
+- **Description:** Standards for creating and structuring Cursor rules
+- **Type:** Governing Standard - Defines requirements for Cursor rule creation
+- **Applicability:** When creating or modifying Cursor rules
+- **Dependencies:**
+  - [environment.mdc](../../.cursor/rules/environment.mdc) - Version numbering standards
+  - [documentation.md](../project-planning/documentation.md) - General documentation standards
+- **How to Use:** Reference this standard when creating new Cursor rules or modifying existing ones
+```
+
+### Bad Metadata Section
+
+```markdown
+## Metadata
+- Created: 2025-12-04
+- Version: 1
+```
+❌ Problems:
+- Missing Status, Last Updated, Description, Type, Applicability
+- Wrong date format (should be DD-MM-YYYY)
+- Missing "How to Use"
+- No dependencies listed
+
+---
+
+## Integration with Other Rules
+
+This rule works with:
+
+### `documentation-dependency-tracking.mdc`
+- That rule tracks dependencies when files are modified
+- This rule ensures metadata structure is complete
+- Both rules work together for comprehensive documentation maintenance
+
+### `cursor-rule-creation.mdc`
+- That rule handles `.mdc` rule files
+- This rule handles `.md` documentation files
+- Together they ensure all files have proper metadata
+
+---
+
+## Related Files
+
+- **Commands:**
+  - [audit-documentation-rules-metadata.md](../commands/audit-documentation-rules-metadata.md) - Orchestrates metadata validation
+- **Rules:**
+  - [documentation-dependency-tracking.mdc](./documentation-dependency-tracking.mdc) - Tracks doc dependencies
+  - [rule-metadata.mdc](./rule-metadata.mdc) - Ensures rule file metadata
+- **Standards:**
+  - [documentation.md](../../standards/project-planning/documentation.md) - Documentation management standards
+  - [cursor-rules-standards.md](../../standards/process/cursor-rules-standards.md) - Rule creation standards
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically when creating or modifying `.md` files in `docs/`, `standards/`, or `.cursor/commands/` directories.**
+
+**Agents should:**
+1. Check for metadata section at top of file
+2. Verify all required fields are present
+3. Update Last Updated with current EST timestamp
+4. Increment version if content changed
+5. Update dependencies if files are referenced
+6. Ensure Status reflects current state
+7. Add "How to Use" section if missing
+
+**Validation checklist:**
+- [ ] Status field present
+- [ ] Created date in DD-MM-YYYY format
+- [ ] Last Updated in DD-MM-YYYY HH:MM:SS EST format
+- [ ] Version follows semantic versioning
+- [ ] Description is clear and concise
+- [ ] Type describes document and audience
+- [ ] Applicability states when/where it applies
+- [ ] Dependencies listed (if any)
+- [ ] "How to Use" section present
+
+---
+
+## Notes
+
+- **Be thorough:** Complete metadata makes documents discoverable
+- **Update timestamps:** Always use EST timezone
+- **Track dependencies:** Helps maintain cross-reference integrity
+- **Keep Status current:** Reflects document's actual state

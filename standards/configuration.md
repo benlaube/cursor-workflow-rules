@@ -92,7 +92,7 @@ In production, these same environment variables should be set with production Su
 - Never commit `.env.local` to version control
 - The `SUPABASE_SERVICE_ROLE_KEY` should only be used in server-side contexts (Edge Functions, API routes)
 - For client-side code, use `SUPABASE_ANON_KEY` only
-- See `templates/general/env.example` for a complete template
+- See `templates/file-templates/env.example` for a complete template
 
 ## 4. AI Agent Rules for Config
 - **Discovery:** When asked for a value (e.g., "What is the site name?"), check `/config/site.ts` first.

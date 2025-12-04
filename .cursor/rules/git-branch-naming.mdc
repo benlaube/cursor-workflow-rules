@@ -1,0 +1,268 @@
+---
+description: Enforces branch naming conventions and prevents direct commits to main/master. Applies when creating branches, validating branch names, or switching branches.
+version: 1.0.0
+lastUpdated: 04-12-2025 12:42:51 EST
+globs: ""
+alwaysApply: true
+type: Conditional Rule - Branch naming and protection
+relatedCommands: []
+relatedRules: [git-workflow-integration.mdc]
+relatedStandards: [process/git-repository-standards.md]
+---
+
+# Git Branch Naming Rule
+
+## When This Rule Applies
+
+This rule **automatically applies** when:
+- Creating a new branch
+- Validating branch names
+- Switching branches
+- Working on branches that don't follow naming conventions
+
+---
+
+## Core Principle
+
+**All work happens on feature branches with standardized naming.** Direct commits to `main` or `master` are forbidden. Branch names must follow a consistent format to enable semantic history and automated tooling.
+
+**Source Standard:** `standards/process/git-repository-standards.md` Section B (Branching Strategy)
+
+---
+
+## Agent Responsibilities
+
+### 1. Branch Name Validation
+
+#### 1.1 Format Requirements
+Branch names MUST follow this format:
+```
+{type}/{context}-{short-desc}
+```
+
+**Components:**
+- **Type:** One of the allowed types (see Section 1.2)
+- **Context:** Area of codebase affected (e.g., `auth`, `api`, `ui`, `docs`)
+- **Short Description:** Brief description in kebab-case (3-5 words)
+
+**Format Rules:**
+- Use `kebab-case` (lowercase with dashes)
+- Keep description short but descriptive (3-5 words)
+- No ticket numbers unless mandated by team policy
+- No special characters except dashes
+
+#### 1.2 Allowed Types
+- **`feat`**: New feature (correlates with MINOR in SemVer)
+- **`fix`**: Bug fix (correlates with PATCH in SemVer)
+- **`docs`**: Documentation only changes
+- **`chore`**: Build process or auxiliary tool changes
+- **`refactor`**: Code change that neither fixes a bug nor adds a feature
+- **`test`**: Adding missing tests or correcting existing tests
+- **`style`**: Formatting, missing semi-colons, etc (no code change)
+- **`perf`**: Code change that improves performance
+
+#### 1.3 Validation Examples
+
+**Good Examples:**
+- ✅ `feat/user-auth-login` - Feature for user authentication login
+- ✅ `fix/api-timeout-bug` - Fix for API timeout bug
+- ✅ `docs/update-readme` - Documentation update for README
+- ✅ `chore/bump-dependencies` - Dependency update
+- ✅ `refactor/auth-service` - Refactoring auth service
+- ✅ `test/user-profile-api` - Tests for user profile API
+
+**Bad Examples:**
+- ❌ `MyFeature` - No type prefix, not kebab-case
+- ❌ `fix_bug_123` - Uses underscores, includes ticket number
+- ❌ `Feat/Login` - Mixed case, wrong separator
+- ❌ `feature-123` - Missing type prefix, includes ticket number
+- ❌ `feat/user-auth` - Missing description
+- ❌ `feat/user-authentication-login-system` - Too long (should be 3-5 words)
+
+### 2. Main Branch Protection
+
+#### 2.1 Prevent Direct Commits
+**CRITICAL:** Never allow direct commits to `main` or `master` branches.
+
+**When on main/master:**
+- ⚠️ "You are on main branch. No direct commits allowed. Create a feature branch first."
+- **Action Required:** Create a feature branch before making changes
+- **Exception:** Only if explicitly requested by user for emergency hotfix (still prefer hotfix branch)
+
+#### 2.2 Branch Creation Workflow
+When creating a new branch:
+
+1. **Sync Main First:**
+   - Run: `git checkout main && git pull origin main`
+   - Ensures branch is based on latest code
+   - If fails: ❌ "Failed to sync main branch"
+
+2. **Create Branch:**
+   - Run: `git checkout -b {branch-name}`
+   - Validate branch name format before creating
+   - If fails: ❌ "Failed to create branch. Branch may already exist."
+
+3. **Set Upstream:**
+   - Run: `git push -u origin {branch-name}`
+   - If fails: ⚠️ "Failed to push branch. You can push manually later."
+   - If succeeds: ✅ "Pushed branch to remote"
+
+### 3. Auto-Suggest Branch Names
+
+#### 3.1 Context-Based Suggestions
+When user requests branch creation, ask for task context to suggest appropriate branch name:
+
+**Example Interaction:**
+```
+User: "I need to add user authentication"
+Agent: "What type of change is this? (feat/fix/docs/chore/refactor/test/style/perf)"
+User: "feat"
+Agent: "What area of the codebase? (e.g., auth, api, ui)"
+User: "auth"
+Agent: "Suggested branch: feat/auth-user-authentication"
+```
+
+#### 3.2 Branch Name Generation
+Generate branch name from:
+- Task description (extract type and context)
+- Files being modified (infer context)
+- User's stated intent
+
+**Always validate generated name** before creating branch.
+
+### 4. Branch Lifecycle Management
+
+#### 4.1 Branch Lifecycle
+Follow this lifecycle for feature branches:
+
+1. **Sync main:** `git checkout main && git pull origin main`
+2. **Create branch:** `git checkout -b {type}/{context}-{short-desc}`
+3. **Work & Commit:** Make changes and commit using Conventional Commits
+4. **Push:** `git push -u origin {branch-name}`
+5. **Open PR:** Create pull request when ready
+6. **Merge:** Use "Squash and Merge" when PR is approved
+7. **Delete:** Delete branch after merge
+
+#### 4.2 Optional Develop Branch
+For larger teams, `develop` branch may exist as staging ground:
+- Feature branches merge to `develop` first
+- `develop` merges to `main` for releases
+- Follow same naming conventions for branches merging to `develop`
+
+---
+
+## Examples
+
+### Example 1: Creating Feature Branch
+
+**Scenario:** User wants to add Google OAuth login
+
+**Good:**
+```
+Agent: "Creating branch: feat/auth-google-oauth-login"
+→ Validates format: ✅ Type (feat), context (auth), description (google-oauth-login)
+→ Syncs main: ✅
+→ Creates branch: ✅
+→ Pushes to remote: ✅
+```
+
+**Bad:**
+```
+Agent: "Creating branch: google-oauth"
+→ ❌ Missing type prefix
+→ ❌ Missing context
+→ ❌ Too vague
+```
+
+### Example 2: Validating Existing Branch
+
+**Scenario:** User is on branch `fix/api-timeout`
+
+**Good:**
+```
+Agent: "Branch name follows standards: fix/api-timeout"
+→ ✅ Type: fix
+→ ✅ Context: api
+→ ✅ Description: timeout
+```
+
+**Bad:**
+```
+Agent: "Branch name doesn't follow format"
+→ ❌ Branch: "fix_api_timeout_bug_123"
+→ Issues: Uses underscores, includes ticket number, too long
+→ Expected: fix/api-timeout-bug
+```
+
+### Example 3: Preventing Main Branch Commits
+
+**Scenario:** User tries to commit on main branch
+
+**Good:**
+```
+Agent: "⚠️ You are on main branch. No direct commits allowed. Create a feature branch first."
+→ Suggests: "Would you like me to create a branch for this change?"
+→ If yes: Creates appropriate branch based on changes
+```
+
+**Bad:**
+```
+Agent: [Allows commit on main]
+→ ❌ Violates branch protection
+→ ❌ Breaks workflow standards
+```
+
+---
+
+## Integration with Other Rules
+
+This rule works with:
+
+### `git-workflow-integration.mdc`
+- Coordinates git status validation
+- Ensures branch is valid before other git operations
+- Validates working tree state
+
+### `git-commit-messages.mdc`
+- Branch type should align with commit type when possible
+- Example: `feat/` branch should have `feat:` commits
+
+### `git-pr-preparation.mdc`
+- Validates branch name before PR creation
+- Uses branch name to generate PR title
+
+---
+
+## Related Files
+
+- **Rules:**
+  - [git-workflow-integration.mdc](./git-workflow-integration.mdc) - Coordinates git operations
+  - [git-commit-messages.mdc](./git-commit-messages.mdc) - Commit message validation
+  - [git-pr-preparation.mdc](./git-pr-preparation.mdc) - PR preparation
+- **Standards:**
+  - [git-repository-standards.md](../../standards/process/git-repository-standards.md) - Git workflow standards (Section B: Branching Strategy)
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically when creating branches, validating branch names, or switching branches.**
+
+**Agents should:**
+1. Always validate branch name format before creating branches
+2. Never allow direct commits to `main` or `master` branches
+3. Ask for task context to suggest appropriate branch names
+4. Sync main branch before creating new feature branches
+5. Use kebab-case with format: `{type}/{context}-{short-desc}`
+6. Validate branch name matches allowed types (feat, fix, docs, chore, refactor, test, style, perf)
+7. Set upstream tracking when creating branches
+8. Follow branch lifecycle: sync → create → work → push → PR → merge → delete
+
+**Validation checklist:**
+- [ ] Branch name follows format: `{type}/{context}-{short-desc}`
+- [ ] Type is one of allowed types
+- [ ] Uses kebab-case (lowercase with dashes)
+- [ ] Description is 3-5 words
+- [ ] Not committing directly to main/master
+- [ ] Synced main before creating branch
+- [ ] Set upstream tracking after creation

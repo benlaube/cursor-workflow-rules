@@ -337,7 +337,7 @@ The module is designed to work with the auto-healing runtime rules (`.cursor/rul
 - `modules/logger-module/` - Logging module (integrated with error-handler)
 - `modules/backend-api/` - API handler module (uses error-handler)
 - `.cursor/rules/auto-heal.mdc` - Auto-healing runtime rules
-- `standards/process/linting.md` - Code quality standards
+- `standards/process/code-quality-linting-standards.md` - Code quality standards
 
 ## Possible Enhancements
 

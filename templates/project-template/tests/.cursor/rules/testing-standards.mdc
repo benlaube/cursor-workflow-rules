@@ -1,0 +1,274 @@
+---
+description: Testing standards for unit and integration tests. Applies when writing tests in tests/ directory.
+version: 1.0.0
+lastUpdated: 04-12-2025 11:47:37 EST
+globs: **/*.{test,spec}.{ts,js}
+alwaysApply: false
+type: Conditional Rule - Testing role
+relatedStandards: [testing.md]
+---
+
+# Testing Standards
+
+## When This Rule Applies
+
+When writing tests in `tests/` directory or any `*.test.ts` or `*.spec.ts` files.
+
+--- 
+
+## Core Requirements
+
+### Test Structure
+- **Arrange, Act, Assert** pattern
+- One assertion per test (when possible)
+- Descriptive test names
+- Use `describe` blocks for grouping
+- Clean up after tests (teardown)
+
+### Coverage
+- **80%+ code coverage** for unit tests
+- **100% coverage** for critical paths (auth, payments, security)
+- Test happy path and error cases
+- Test edge cases and boundary conditions
+
+### Naming
+- **Test files:** `{file-under-test}.test.ts`
+- **Test names:** `should [expected behavior] when [condition]`
+- **Describe blocks:** Match the component/function/class name
+
+---
+
+## Examples
+
+### Good Test
+
+```typescript
+describe('userService.create', () => {
+  it('should create user when valid data provided', async () => {
+    // Arrange
+    const userData = { 
+      name: 'John Doe', 
+      email: 'john@example.com' 
+    };
+    
+    // Act
+    const result = await userService.create(userData);
+    
+    // Assert
+    expect(result.ok).toBe(true);
+    expect(result.value).toHaveProperty('id');
+    expect(result.value.email).toBe('john@example.com');
+  });
+
+  it('should return error when email is invalid', async () => {
+    // Arrange
+    const userData = { 
+      name: 'John', 
+      email: 'invalid-email' 
+    };
+    
+    // Act
+    const result = await userService.create(userData);
+    
+    // Assert
+    expect(result.ok).toBe(false);
+    expect(result.error.message).toContain('email');
+  });
+
+  it('should return error when email already exists', async () => {
+    // Arrange
+    const userData = { name: 'John', email: 'existing@example.com' };
+    await userService.create(userData);  // Create first user
+    
+    // Act
+    const result = await userService.create(userData);  // Try duplicate
+    
+    // Assert
+    expect(result.ok).toBe(false);
+    expect(result.error.message).toContain('already in use');
+  });
+});
+```
+
+### Bad Test
+
+```typescript
+// ❌ Vague test name, no arrange/act/assert, multiple assertions
+it('test user creation', async () => {
+  const result = await userService.create({ name: 'John', email: 'john@example.com' });
+  expect(result.ok).toBe(true);
+  expect(result.value.name).toBe('John');
+  expect(result.value.email).toBe('john@example.com');
+});
+```
+
+---
+
+## Test Organization
+
+### Grouping with Describe Blocks
+
+```typescript
+describe('UserCard Component', () => {
+  describe('Rendering', () => {
+    it('should display user name', () => {
+      // Test rendering
+    });
+
+    it('should display user email', () => {
+      // Test rendering
+    });
+  });
+
+  describe('Interactions', () => {
+    it('should call onEdit when edit button clicked', () => {
+      // Test interaction
+    });
+  });
+
+  describe('Edge Cases', () => {
+    it('should handle null user gracefully', () => {
+      // Test edge case
+    });
+  });
+});
+```
+
+---
+
+## Mocking
+
+### Good Mocking
+
+```typescript
+import { vi } from 'vitest';
+
+describe('API call with retry', () => {
+  it('should retry on failure', async () => {
+    // Arrange: Mock API to fail twice, then succeed
+    const mockFetch = vi.fn()
+      .mockRejectedValueOnce(new Error('Network error'))
+      .mockRejectedValueOnce(new Error('Network error'))
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ data: 'success' }) });
+    
+    global.fetch = mockFetch;
+    
+    // Act
+    const result = await fetchWithRetry('https://api.example.com/data');
+    
+    // Assert
+    expect(mockFetch).toHaveBeenCalledTimes(3);
+    expect(result).toEqual({ data: 'success' });
+  });
+});
+```
+
+### Mock Rules
+- Mock external dependencies (APIs, databases)
+- Don't mock the code under test
+- Use factory functions for test data
+- Clear mocks between tests
+
+---
+
+## Async Testing
+
+### Handling Promises
+
+```typescript
+it('should handle async operations', async () => {
+  // Use async/await (preferred)
+  const result = await asyncFunction();
+  expect(result).toBe('expected');
+  
+  // Or return the promise
+  return asyncFunction().then(result => {
+    expect(result).toBe('expected');
+  });
+});
+```
+
+### Handling Errors
+
+```typescript
+it('should throw error when invalid input', async () => {
+  // Use expect().rejects for async errors
+  await expect(asyncFunction('invalid')).rejects.toThrow('Invalid input');
+  
+  // Or with try/catch
+  try {
+    await asyncFunction('invalid');
+    fail('Should have thrown error');
+  } catch (error) {
+    expect(error.message).toContain('Invalid input');
+  }
+});
+```
+
+---
+
+## Setup and Teardown
+
+### Using beforeEach/afterEach
+
+```typescript
+describe('Database tests', () => {
+  let testUser: User;
+  
+  beforeEach(async () => {
+    // Setup: Create test data
+    testUser = await db.users.create({
+      name: 'Test User',
+      email: 'test@example.com'
+    });
+  });
+  
+  afterEach(async () => {
+    // Teardown: Clean up test data
+    await db.users.delete({ where: { id: testUser.id } });
+  });
+  
+  it('should find user by email', async () => {
+    const result = await userService.findByEmail('test@example.com');
+    expect(result.ok).toBe(true);
+    expect(result.value.id).toBe(testUser.id);
+  });
+});
+```
+
+---
+
+## Test Data Factories
+
+### Creating Reusable Test Data
+
+```typescript
+// test/factories/user.ts
+export function createTestUser(overrides?: Partial<User>): User {
+  return {
+    id: crypto.randomUUID(),
+    name: 'Test User',
+    email: `test-${Date.now()}@example.com`,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...overrides,
+  };
+}
+
+// Usage in tests
+it('should work with test user', () => {
+  const user = createTestUser({ name: 'Custom Name' });
+  expect(user.name).toBe('Custom Name');
+});
+```
+
+---
+
+## Related Standards
+
+See `standards/testing.md` for comprehensive testing guide including:
+- Test-driven development (TDD) approach
+- Integration testing strategies
+- E2E testing patterns
+- Performance testing
+- CI/CD integration

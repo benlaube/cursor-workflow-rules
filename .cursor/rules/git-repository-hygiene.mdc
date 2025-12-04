@@ -1,0 +1,370 @@
+---
+description: Monitors repository hygiene including .gitignore patterns, tracked sensitive files, and stale branches. Always active for repository maintenance.
+version: 1.0.0
+lastUpdated: 04-12-2025 12:42:51 EST
+globs: ""
+alwaysApply: true
+type: Behavioral Rule - Repository maintenance and hygiene
+relatedCommands: []
+relatedRules: [git-commit-messages.mdc, git-workflow-integration.mdc]
+relatedStandards: [process/git-repository-standards.md]
+---
+
+# Git Repository Hygiene Rule
+
+## When This Rule Applies
+
+This rule **always applies** for repository maintenance. It monitors:
+- .gitignore patterns
+- Tracked sensitive files
+- Repository state and cleanup opportunities
+
+---
+
+## Core Principle
+
+**Maintain clean, secure repository state.** Ensure .gitignore includes all required patterns, no sensitive files are tracked, and repository is well-maintained.
+
+**Source Standard:** `standards/process/git-repository-standards.md` Section E (.gitignore Standards)
+
+---
+
+## Agent Responsibilities
+
+### 1. .gitignore Validation
+
+#### 1.1 Required Excludes
+Every repository MUST exclude these patterns in `.gitignore`:
+
+**Dependencies:**
+- `node_modules/` - Node.js dependencies
+- `venv/`, `.venv/` - Python virtual environments
+- `__pycache__/`, `*.pyc` - Python cache files
+- `.pnp/`, `.pnp.js` - Yarn PnP files
+
+**Environment Files:**
+- `.env` - Environment variables (CRITICAL)
+- `.env.local`, `.env.*.local` - Local environment overrides
+- `.env.development`, `.env.production` - Environment-specific files
+
+**OS Files:**
+- `.DS_Store` - macOS Finder metadata
+- `Thumbs.db` - Windows thumbnail cache
+- `desktop.ini` - Windows folder settings
+
+**Editor Files:**
+- `.vscode/` - VS Code settings (unless shared)
+- `.idea/` - IntelliJ/WebStorm settings (unless shared)
+- `*.swp`, `*.swo` - Vim swap files
+- `*~` - Backup files
+
+**Logs:**
+- `*.log` - Log files
+- `npm-debug.log*`, `yarn-debug.log*`, `yarn-error.log*` - Package manager logs
+- `logs/` - Log directories
+
+**Build Artifacts:**
+- `dist/`, `build/`, `.next/`, `out/` - Build output directories
+- `*.tsbuildinfo` - TypeScript build info
+- `.turbo/` - Turbo build cache
+
+**Security Files:**
+- `*.pem`, `*.key` - Private keys (CRITICAL)
+- `credentials.json`, `secrets.json` - Credential files
+- `*.crt`, `*.cert` - Certificate files (if sensitive)
+
+#### 1.2 Validation Process
+**Check .gitignore exists:**
+```bash
+test -f .gitignore && echo "exists" || echo "missing"
+```
+
+**If missing:**
+- ⚠️ ".gitignore file is missing. Create one with required patterns."
+- Suggest: "Create `.gitignore` with standard patterns"
+
+**If exists:**
+- ✅ ".gitignore exists"
+- Check for required patterns (see Section 1.1)
+- List missing patterns
+
+**If patterns missing:**
+- ⚠️ "Add missing patterns to .gitignore: {list}"
+- Suggest: "Add these patterns to ensure sensitive files are ignored"
+
+**If complete:**
+- ✅ ".gitignore includes required patterns"
+
+### 2. Tracked Files Check
+
+#### 2.1 Sensitive Files Check
+**Check for tracked sensitive files:**
+```bash
+git ls-files | grep -E "\.env$|node_modules/|\.DS_Store|\.pem$|\.key$|credentials\.json"
+```
+
+**If found:**
+- ❌ "Sensitive files are tracked. Remove from git: `git rm --cached {file}`"
+- List tracked sensitive files
+- **Action Required:**
+  1. Remove from git: `git rm --cached {file}`
+  2. Add to .gitignore if not already present
+  3. Commit removal: `git commit -m "chore: remove sensitive files from tracking"`
+
+**If clean:**
+- ✅ "No sensitive files tracked"
+
+#### 2.2 .env File Check
+**CRITICAL:** Ensure `.env` is never tracked.
+
+**Check if .env is tracked:**
+```bash
+git ls-files | grep -E "^\.env$"
+```
+
+**If tracked:**
+- ❌ ".env file is tracked. Remove immediately: `git rm --cached .env`"
+- Verify `.env` is in `.gitignore`
+- **Action Required:**
+  1. Remove: `git rm --cached .env`
+  2. Verify `.gitignore` includes `.env`
+  3. Commit: `git commit -m "chore: remove .env from tracking"`
+
+**If not tracked:**
+- ✅ ".env not tracked"
+
+#### 2.3 node_modules Check
+**Check if node_modules is tracked:**
+```bash
+git ls-files | grep "node_modules/"
+```
+
+**If tracked:**
+- ⚠️ "node_modules is tracked. Remove: `git rm -r --cached node_modules/`"
+- Verify `node_modules/` is in `.gitignore`
+
+**If not tracked:**
+- ✅ "node_modules not tracked"
+
+### 3. Repository State
+
+#### 3.1 Stale Branches
+**Check for merged branches:**
+```bash
+git branch --merged main
+```
+
+**If merged branches exist:**
+- ⚠️ "Consider deleting merged branches: {list}"
+- Suggest: "Delete with: `git branch -d {branch}`"
+- **Note:** Only delete if branch is fully merged
+
+**Check for stale local branches:**
+```bash
+git branch -vv | grep ': gone]'
+```
+
+**If stale branches exist:**
+- ⚠️ "Stale branches (remote deleted): {list}"
+- Suggest: "Delete with: `git branch -D {branch}`"
+
+#### 3.2 Large Files Check
+**Check for large files in repository:**
+```bash
+git rev-list --objects --all | git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' | awk '/^blob/ {print substr($0,6)}' | sort --numeric-sort --key=2 | tail -10
+```
+
+**If large files found:**
+- ⚠️ "Large files detected: {list}"
+- Suggest: "Consider using Git LFS for large files"
+- Review if files should be in repository
+
+#### 3.3 Repository Size
+**Check repository size:**
+```bash
+du -sh .git
+```
+
+**If repository is large (>100MB):**
+- ⚠️ "Repository size is {size}. Consider cleanup."
+- Suggest: "Run `git gc` to optimize repository"
+- Check for large files or unnecessary history
+
+### 4. Security Patterns
+
+#### 4.1 Required Security Patterns
+Ensure `.gitignore` includes these security-critical patterns:
+
+**Private Keys:**
+- `*.pem` - PEM format private keys
+- `*.key` - Private key files
+- `*.p12`, `*.pfx` - PKCS#12 certificate files
+
+**Credentials:**
+- `credentials.json` - Credential files
+- `secrets.json` - Secret files
+- `*.secret` - Secret files
+
+**Environment Variables:**
+- `.env` - Environment variables (CRITICAL)
+- `.env.*` - All environment file variants
+
+**If missing:**
+- ❌ "Security patterns missing from .gitignore"
+- **Action Required:** Add immediately
+
+**If present:**
+- ✅ "Security patterns present in .gitignore"
+
+### 5. Auto-Fix Capabilities
+
+#### 5.1 Missing .gitignore Patterns
+**If patterns are missing:**
+- Auto-suggest adding to `.gitignore`
+- Provide exact patterns to add
+- Don't auto-add without user confirmation (security-sensitive)
+
+#### 5.2 Tracked Sensitive Files
+**If sensitive files are tracked:**
+- List files that need removal
+- Provide exact commands to remove
+- Don't auto-remove without user confirmation (destructive)
+
+---
+
+## Examples
+
+### Example 1: Missing .gitignore Patterns
+
+**Scenario:** .gitignore exists but missing `.env` pattern
+
+**Response:**
+```
+⚠️ .gitignore is missing required patterns.
+
+Missing patterns:
+- .env
+- .env.local
+- *.pem
+
+Action Required:
+Add these patterns to .gitignore:
+
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+```
+
+### Example 2: Tracked Sensitive Files
+
+**Scenario:** .env file is tracked in git
+
+**Response:**
+```
+❌ Sensitive files are tracked.
+
+Tracked files:
+- .env
+
+Action Required:
+1. Remove from git: git rm --cached .env
+2. Verify .env is in .gitignore
+3. Commit removal: git commit -m "chore: remove .env from tracking"
+
+⚠️ WARNING: If .env contains secrets, rotate them after removal.
+```
+
+### Example 3: Stale Branches
+
+**Scenario:** Multiple merged branches exist
+
+**Response:**
+```
+⚠️ Consider deleting merged branches.
+
+Merged branches:
+- feat/user-auth-login
+- fix/api-timeout-bug
+- docs/update-readme
+
+Action Required:
+Delete with: git branch -d feat/user-auth-login fix/api-timeout-bug docs/update-readme
+
+Or delete individually:
+git branch -d feat/user-auth-login
+git branch -d fix/api-timeout-bug
+git branch -d docs/update-readme
+```
+
+### Example 4: Complete Hygiene Check
+
+**Response:**
+```
+✅ Git Hygiene Check complete.
+
+.gitignore: ✅ All required patterns present
+Tracked Files: ✅ No sensitive files tracked
+Repository: ✅ Clean state
+
+Recommendations:
+- No action required
+```
+
+---
+
+## Integration with Other Rules
+
+This rule works with:
+
+### `git-commit-messages.mdc`
+- Ensures .env files are not committed
+- Validates no secrets in staged files
+
+### `git-workflow-integration.mdc`
+- Coordinates repository state checks
+- Integrates with git status validation
+
+---
+
+## Related Files
+
+- **Rules:**
+  - [git-commit-messages.mdc](./git-commit-messages.mdc) - Pre-commit security checks
+  - [git-workflow-integration.mdc](./git-workflow-integration.mdc) - Git workflow coordination
+- **Standards:**
+  - [git-repository-standards.md](../../standards/process/git-repository-standards.md) - Git workflow standards (Section E: .gitignore Standards)
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically for repository maintenance.**
+
+**Agents should:**
+1. Validate .gitignore includes all required patterns
+2. Check for tracked sensitive files (especially .env)
+3. Verify no node_modules or build artifacts are tracked
+4. Suggest cleanup of stale/merged branches
+5. Monitor repository size and large files
+6. Ensure security patterns are present in .gitignore
+7. Provide actionable commands for fixing issues
+8. Never auto-remove tracked files without user confirmation
+
+**Validation checklist:**
+- [ ] .gitignore exists
+- [ ] .gitignore includes all required patterns
+- [ ] No sensitive files tracked (.env, *.pem, *.key, credentials.json)
+- [ ] No node_modules tracked
+- [ ] No build artifacts tracked
+- [ ] Security patterns present in .gitignore
+- [ ] Stale branches identified (if any)
+- [ ] Repository size reasonable
+
+**Security-critical checks:**
+- [ ] .env pattern in .gitignore
+- [ ] .env file not tracked
+- [ ] *.pem, *.key patterns in .gitignore
+- [ ] No private keys tracked
+- [ ] No credential files tracked

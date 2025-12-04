@@ -11,8 +11,8 @@
 ```bash
 # From the new project root, assuming this repo is cloned or accessible:
 cp -r /path/to/workflow-standards/.cursor .cursor
-cp -r /path/to/workflow-standards/docs/process docs/process
-cp /path/to/workflow-standards/templates/general/AGENTS-TEMPLATE.md AGENTS.md
+cp -r /path/to/workflow-standards/standards/process standards/process
+cp /path/to/workflow-standards/templates/file-templates/AGENTS-TEMPLATE.md AGENTS.md
 cp /path/to/workflow-standards/CHANGELOG.md CHANGELOG.md
 ```
 
@@ -28,12 +28,12 @@ ls .cursor/rules/        # Should show: ai-interaction-rules.md, environment.mdc
 ls .cursor/commands/     # Should show: launch.mdc, security-audit.mdc, verify-access-control.mdc
 
 # Check checklists exist
-ls standards/development-checklists/  # Should show: pre-flight-checklist.md, pr-review-checklist.md, project-audit-checklist.md
+ls standards/process/checklists/  # Should show: pre_flight_checklist_v1_0.md, pr_review_checklist_v1_0.md, project_audit_checklist_v1_0.md, linting_checklist_v1_0.md
 ```
 
 ## Required Adaptations
 
-1. **AGENTS.md** (copied from templates/general/AGENTS-TEMPLATE.md) - Fill in project mission, phase, and architecture
+1. **AGENTS.md** (copied from templates/file-templates/AGENTS-TEMPLATE.md) - Fill in project mission, phase, and architecture
 2. **.cursor/rules/environment.mdc** - Verify ports and stack match
 3. **.cursor/commands/launch.mdc** - Verify startup process matches
 
@@ -46,5 +46,5 @@ The agent should reference `.cursor/rules/environment.mdc`.
 
 ---
 
-**Full instructions:** See [`INTEGRATION_GUIDE.md`](./INTEGRATION_GUIDE.md)
+**Full instructions:** See [`STANDARDS_INTEGRATION_GUIDE.md`](./STANDARDS_INTEGRATION_GUIDE.md)
 

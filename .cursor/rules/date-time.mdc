@@ -1,0 +1,174 @@
+---
+description: Ensures AI agents are aware of current date and time for time-sensitive operations. Applies automatically to all interactions.
+version: 1.0.0
+lastUpdated: 04-12-2025 13:17:07 EST
+globs: **/*
+alwaysApply: true
+type: Auto-Applied Behavioral Rule - Temporal awareness for AI agents
+relatedCommands: []
+relatedRules: [task-workflow.mdc, environment.mdc]
+relatedStandards: []
+---
+
+# Date & Time Awareness Rule
+
+## Metadata
+- **Created:** 04-12-2025
+- **Last Updated:** 04-12-2025 13:17:07 EST
+- **Version:** 1.0.0
+- **Description:** Ensures AI agents are aware of current date and time when responding to time-sensitive prompts and updating documentation
+
+## When This Rule Applies
+
+This rule **automatically applies** to all AI agent interactions, ensuring temporal awareness for time-sensitive operations.
+
+---
+
+## Core Principle
+
+**The AI agent must be aware of the current date and time when responding to prompts, especially for time-sensitive information.** Never assume dates from training data or use placeholders.
+
+---
+
+## Agent Responsibilities
+
+### 1. When to Check Current Date
+
+The agent MUST check the current date when:
+- Responding about deadlines, timelines, or scheduling
+- Updating `CHANGELOG.md` or documentation with timestamps
+- Discussing version releases, deprecations, or EOL dates
+- Calculating relative dates (e.g., "3 months ago", "next week")
+- Working with date-based logic or time-sensitive features
+- Updating `AGENTS.md` or any documentation with "Last Updated" timestamps
+
+### 2. How to Get Current Date
+
+**Terminal Commands:**
+- **Unix/Mac:** `date` (basic format) or `TZ=America/New_York date "+%d-%m-%Y %H:%M:%S EST"` (EST format)
+- **Windows:** `date /t` (basic format)
+- **ISO Format (Unix/Mac):** `date -u +"%Y-%m-%dT%H:%M:%SZ"`
+
+**In Code:**
+- Use system date/time functions, not hardcoded values
+- For timestamps: Use `Date.now()`, `new Date()`, `datetime.now()`, etc.
+- Never hardcode dates or assume current date from training data
+
+### 3. Date Format Standards
+
+**For Documentation Metadata:**
+- **Format:** `DD-MM-YYYY HH:MM:SS EST` (e.g., `04-12-2025 13:10:00 EST`)
+- **Command:** `TZ=America/New_York date "+%d-%m-%Y %H:%M:%S EST"`
+- **Use for:** "Last Updated" fields in metadata sections
+
+**For CHANGELOG.md:**
+- **Format:** `DD-MM-YYYY HH:MM:SS EST` (e.g., `04-12-2025 13:10:00 EST`)
+- **Use for:** Timestamping changelog entries
+
+**For Code:**
+- Use ISO 8601 format when appropriate: `YYYY-MM-DDTHH:MM:SSZ`
+- Use system date/time functions appropriate to the language
+
+### 4. Important Notes
+
+- **Never assume dates:** Do not assume the current date from training data cutoff
+- **Always verify:** Always verify the current date when time-sensitive information is involved
+- **No placeholders:** When updating `AGENTS.md` or `CHANGELOG.md`, use the actual current date, not placeholders like "YYYY-MM-DD" or "[Date]"
+- **Timezone awareness:** When using EST timezone, always specify it explicitly in the format
+
+---
+
+## Examples
+
+### Example 1: Updating CHANGELOG.md
+
+**Before:**
+```markdown
+- **Feature Added** (YYYY-MM-DD)
+```
+
+**After (with date check):**
+```bash
+# Agent runs: TZ=America/New_York date "+%d-%m-%Y %H:%M:%S EST"
+# Result: 04-12-2025 13:10:00 EST
+```
+
+```markdown
+- **Feature Added** (04-12-2025 13:10:00 EST)
+```
+
+### Example 2: Calculating Relative Dates
+
+**User:** "What was 3 months ago?"
+
+**Agent behavior:**
+1. Check current date: `date` → `2025-12-04`
+2. Calculate: 3 months ago from December 2025 = September 2025
+3. Respond: "3 months ago was September 2025"
+
+### Example 3: Updating Documentation Metadata
+
+**Before:**
+```markdown
+- **Last Updated:** 2025-12-02
+```
+
+**After (with date check):**
+```bash
+# Agent runs: TZ=America/New_York date "+%d-%m-%Y %H:%M:%S EST"
+# Result: 04-12-2025 13:10:00 EST
+```
+
+```markdown
+- **Last Updated:** 04-12-2025 13:10:00 EST
+```
+
+---
+
+## Integration with Other Rules
+
+This rule works with:
+
+### `task-workflow.mdc`
+- Section 1.4 references temporal awareness for time-sensitive tasks
+- Ensures date checking before starting time-sensitive work
+
+### `environment.mdc`
+- Previously contained this content (now moved to this dedicated rule)
+- Environment rule references this rule for date/time operations
+
+---
+
+## Related Files
+
+- **Rules:**
+  - [task-workflow.mdc](./task-workflow.mdc) - References temporal awareness for time-sensitive tasks
+  - [environment.mdc](./environment.mdc) - Environment standards (previously contained this content)
+- **Standards:**
+  - [documentation.md](../../standards/project-planning/documentation.md) - Documentation standards that require date timestamps
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically to all AI agent interactions.**
+
+**Agents should:**
+1. Check current date using `date` command (or `TZ=America/New_York date "+%d-%m-%Y %H:%M:%S EST"` for EST format) when:
+   - Updating documentation with timestamps
+   - Responding to time-sensitive queries
+   - Calculating relative dates
+   - Updating CHANGELOG.md or AGENTS.md
+2. Never assume dates from training data
+3. Always use actual current date, not placeholders
+4. Use appropriate date format based on context (EST format for metadata, ISO for code)
+
+**Date checking checklist:**
+- [ ] Current date verified using `date` command
+- [ ] EST format used for documentation metadata: `DD-MM-YYYY HH:MM:SS EST`
+- [ ] No placeholders or assumed dates used
+- [ ] Timezone explicitly specified when using EST
+
+---
+
+*This rule ensures AI agents maintain temporal awareness for accurate, time-sensitive operations throughout the development lifecycle.*

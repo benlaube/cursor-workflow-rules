@@ -8,9 +8,9 @@
 
 **Last_Updated:** 2025-12-02 12:00
 
-**Related Command:** `.cursor/commands/lint-check.md`
+**Related Command:** `.cursor/commands/validate-code-quality.md`
 
-**Related Standard:** `standards/process/linting.md`
+**Related Standard:** `standards/process/code-quality-linting-standards.md`
 
 ---
 
@@ -21,7 +21,7 @@ This checklist provides validation items for linting at different stages of deve
 - **Pre-Flight (Light Pass):** Quick validation before starting work
 - **PR Review (Strict Pass):** Comprehensive validation before PR submission
 
-**Automated Checks:** The `lint-check.md` command performs many of these checks automatically. Use this checklist for manual verification and comprehensive review.
+**Automated Checks:** The `validate-code-quality.md` command performs many of these checks automatically. Use this checklist for manual verification and comprehensive review.
 
 ---
 
@@ -101,13 +101,13 @@ Before opening/updating a PR, ensure all linting requirements are met:
 
 ## Related Documentation
 
-- **Linting Standard:** `standards/process/linting.md` - Comprehensive linting requirements and policies
-- **Linting Rule:** `.cursor/rules/linting.mdc` - AI agent behavior expectations
-- **Linting Command:** `.cursor/commands/lint-check.md` - Standalone lint check command
+- **Linting Standard:** `standards/process/code-quality-linting-standards.md` - Comprehensive linting requirements and policies
+- **Linting Rule:** `.cursor/rules/linting-behavior.mdc` - AI agent behavior expectations
+- **Linting Command:** `.cursor/commands/validate-code-quality.md` - Standalone lint check command
 - **Pre-Flight Check:** `.cursor/commands/pre-flight-check.md` - Includes light lint pass
 - **PR Review Check:** `.cursor/commands/pr-review-check.md` - Includes full lint pass
 
 ---
 
-*This checklist provides validation items for linting at different stages. For detailed requirements, see `standards/process/linting.md`. For automated execution, use `.cursor/commands/lint-check.md`.*
+*This checklist provides validation items for linting at different stages. For detailed requirements, see `standards/process/code-quality-linting-standards.md`. For automated execution, use `.cursor/commands/validate-code-quality.md`.*
 

@@ -7,6 +7,265 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed - BREAKING
+- **Date & Time Awareness Extracted to Dedicated Rule** (04-12-2025 13:17:07 EST)
+  - **BREAKING:** Extracted Section 5 "Temporal Awareness (Date & Time)" from `environment.mdc` into dedicated rule
+  - **Added:** `.cursor/rules/date-time.mdc` - New dedicated rule for date and time awareness
+  - **Updated:** `.cursor/rules/environment.mdc` (v1.2.0 → v1.3.0) - Removed Section 5, added reference to new rule
+  - **Updated:** All references to "environment.mdc Section 5" now point to `date-time.mdc`
+  - **Updated Files:**
+    - `AGENTS.md` - Updated Section 7.8 to reference new rule
+    - `task-workflow.mdc` - Updated Section 1.4 to reference new rule
+    - All AGENTS template files - Updated temporal awareness references
+  - **Reason:** Better separation of concerns - date/time awareness is now a focused, dedicated rule
+  - **Migration:** Update any hardcoded references from "environment.mdc Section 5" to "date-time.mdc"
+
+- **Linting Files Renamed for Better Clarity** (04-12-2025 13:08:13 EST)
+  - **BREAKING:** Renamed linting files to be more descriptive
+  - **Renamed:**
+    - `.cursor/rules/linting.mdc` → `.cursor/rules/linting-behavior.mdc` (describes AI agent behavior)
+    - `.cursor/commands/lint-check.md` → `.cursor/commands/validate-code-quality.md` (more descriptive action name)
+    - `standards/process/linting.md` → `standards/process/code-quality-linting-standards.md` (more descriptive standard name)
+  - **Updated:** All references across `.cursor/rules/`, `.cursor/commands/`, `AGENTS.md`, checklists, and documentation files
+  - **Reason:** Improve clarity and discoverability - file names now clearly indicate their purpose
+  - **Migration:** Update any hardcoded references from old names to new names
+
+- **Checklists Consolidated and Git Standards Reorganized** (04-12-2025 13:05:03 EST)
+  - **BREAKING:** Consolidated duplicate checklists from `standards/development-checklists/` and `standards/process/checklists/` into single location
+  - **Moved:** All checklists consolidated into `standards/process/checklists/` with versioned naming
+  - **Moved:** `standards/git-flow.md` → `standards/process/git-repository-standards.md` (more descriptive name)
+  - **Removed:** `standards/development-checklists/` directory (duplicate content removed)
+  - **Updated Files:**
+    - Checklists now use versioned naming: `pre_flight_checklist_v1_0.md`, `pr_review_checklist_v1_0.md`, `project_audit_checklist_v1_0.md`, `linting_checklist_v1_0.md`
+    - All references updated across `.cursor/rules/`, `.cursor/commands/`, `AGENTS.md`, `README.md`, `STANDARDS_INTEGRATION_GUIDE.md`, and template files
+  - **Reason:** Eliminate duplication, improve organization, and follow consistent versioned naming convention
+  - **Migration:** Update any hardcoded paths from `standards/development-checklists/` to `standards/process/checklists/` and `standards/git-flow.md` to `standards/process/git-repository-standards.md`
+
+- **Git Workflow Refactored into Action-Specific Rules** (04-12-2025 12:42:51 EST)
+  - **BREAKING:** Replaced monolithic `git-workflow` command with 6 focused, auto-applying Cursor rules
+  - **Removed:** `.cursor/commands/git-workflow.md` (replaced by rules)
+  - **Added Rules:**
+    - `git-branch-naming.mdc` - Branch naming conventions and main branch protection
+    - `git-commit-messages.mdc` - Commit message validation and pre-commit security checks
+    - `git-pr-preparation.mdc` - PR preparation and validation
+    - `git-repository-hygiene.mdc` - Repository hygiene and .gitignore monitoring
+    - `git-hooks-standards.mdc` - Git hooks configuration standards (NEW)
+    - `git-workflow-integration.mdc` - Git workflow coordination
+  - **Updated:** `standards/process/git-repository-standards.md` (v1.1 → v1.2, moved from `standards/git-flow.md`) - Added Related Rules section
+  - **Updated:** `AGENTS.md` - Added git workflow rules to Section 8.2
+  - **Reason:** Better separation of concerns, auto-apply behavior, and improved maintainability
+  - **Migration:** Rules automatically apply - no manual migration needed. If you referenced `git-workflow` command, use the appropriate rule instead.
+
+### Changed
+- **Tech Stack Standard Reformatted** (04-12-2025 16:00:00 EST)
+  - **Updated:** `standards/project-planning/tech-stack-document.md` (v1.0 → v1.1)
+  - **Fixed:** Mislabeled as "Rule" - now correctly labeled as "Standard"
+  - **Enhanced Metadata:** Added complete metadata (Status, Type, Dependencies, How to Use)
+  - **Improved Structure:** Expanded from 4 sections to 10 comprehensive sections
+  - **New Sections:**
+    - Overview and Purpose (Section 1)
+    - File Location and Naming (Section 2)
+    - Section Guidelines with best practices (Section 3.1)
+    - Best Practices (Section 4)
+    - Maintenance Workflow (Section 5)
+    - Complete Example TECH_STACK.md (Section 6)
+    - Integration with Project Documentation (Section 7)
+    - Common Pitfalls (Section 8)
+    - Quick Reference Checklist (Section 9)
+    - Related Documentation (Section 10)
+  - **Reason:** Align with new documentation metadata standards and provide more comprehensive guidance
+
+### Added
+- **Roadmap Standard** (04-12-2025 15:45:00 EST)
+  - **Created:** `standards/project-planning/roadmap-standard.md` (v1.0)
+  - **Purpose:** Standard for creating and maintaining project roadmaps
+  - **Includes:**
+    - File location and naming conventions
+    - Required metadata and sections
+    - Best practices and common pitfalls
+    - Example structures for small/medium/large projects
+    - Integration with CHANGELOG.md and AGENTS.md
+    - When to create new versions vs update existing
+  - **Reference:** Complete guide with 11 sections covering roadmap creation, maintenance, and archiving
+
+- **Documentation Index Guidelines** (04-12-2025 15:45:00 EST)
+  - **Added:** Section 12 to `standards/project-planning/documentation.md`
+  - **Includes:**
+    - When to create documentation index vs using README
+    - Index structure and organization strategies
+    - Maintenance guidelines and update frequency
+    - Alternative approaches for small projects
+    - Decision tree for INDEX.md vs README.md
+    - Best practices and example structures
+  - **Purpose:** Provides clear guidance on creating and maintaining documentation indexes
+
+### Changed
+- **Consolidated Documentation Standards Files** (04-12-2025 15:30:00 EST)
+  - **Deleted Redundant Files:**
+    - `docs/DOCUMENTATION_STANDARDS.md` → Content maintained only in `standards/project-planning/documentation-standards.md`
+    - `standards/documentation.md` → Content maintained only in `standards/project-planning/documentation.md`
+  - **Reason:** Eliminated confusion from having duplicate files in multiple locations
+  - **Updated References:** Updated all references across:
+    - `AGENTS.md`
+    - `standards/README.md`
+    - `STANDARDS_INTEGRATION_GUIDE.md`
+    - `templates/general/AGENTS-TEMPLATE.md`
+    - `standards/templates/AGENTS-TEMPLATE.md`
+    - `standards/development-checklists/pr-review-checklist.md`
+    - `standards/process/checklists/pr_review_checklist_v1_0.md`
+    - `modules/docs-interface/README.md`
+    - `standards/project-planning/documentation-standards.md` (updated to v1.2)
+    - `standards/project-planning/documentation.md`
+  - **Single Source of Truth:** All documentation standards now consolidated in `standards/project-planning/` directory
+
+### Removed
+- **Project-Specific Roadmaps** (04-12-2025 15:45:00 EST)
+  - **Deleted:**
+    - `docs/roadmap/roadmap_v1_0.md`
+    - `docs/roadmap/roadmap_v1_1.md`
+    - `docs/roadmap/` directory (now empty)
+  - **Reason:** These were project-specific roadmaps for this repository, not reusable standards/templates
+  - **Replacement:** Created `standards/project-planning/roadmap-standard.md` as the governing standard for how to create roadmaps
+  - **Note:** Projects using this standards library should create their own roadmaps following the new standard
+
+### Changed
+- **Renamed Integration Guide** (04-12-2025 12:14:38 EST)
+  - **Renamed:** `INTEGRATION_GUIDE.md` → `STANDARDS_INTEGRATION_GUIDE.md`
+  - **Title Updated:** `Integration_Guide_v1.1` → `Standards_Integration_Guide_v1.2`
+  - **Reason:** Clearer naming that explicitly states this is about integrating the standards library
+  - **Updated References:** Updated all references in AGENTS.md, README.md, QUICK_INTEGRATION.md, standards/, templates/, and CHANGELOG.md
+  - **Note:** Module-level `INTEGRATION_GUIDE.md` files (in `modules/*/`) remain unchanged as they serve different purposes
+
+- **Converted Workflow Commands to Auto-Applied Rules** (04-12-2025 12:14:38 EST)
+  - **Converted to Rules:**
+    - `.cursor/commands/pre-flight-check.md` → `.cursor/rules/pre-flight-check.mdc` (v2.0.0)
+    - `.cursor/commands/pr-review-check.md` → `.cursor/rules/pr-review-check.mdc` (v2.0.0)
+  - **Now Auto-Applied:** Rules automatically trigger at appropriate workflow phases
+  - **YAML Frontmatter:** Updated with complete metadata (DD-MM-YYYY HH:MM:SS EST format, required globs)
+  - **Type:** Both classified as "Workflow Integration Rule"
+  - **Trigger Conditions:**
+    - Pre-flight: Detects when starting new task or significant work
+    - PR Review: Detects when task completing or PR requested
+  - **Auto-Healing:** Both rules include self-healing for common issues
+  - **Benefits:**
+    - **Automatic enforcement** - No need to remember to run commands
+    - **Workflow integration** - Triggers at appropriate lifecycle points
+    - **Quality gates** - Prevents starting in broken env or submitting broken code
+    - **Self-healing** - Auto-fixes dependencies, linter, .env issues
+  - **Updated References:**
+    - Updated `AGENTS.md` Sections 6.1, 6.4, 7.1, 7.4, and Quick Reference table
+    - Updated `task-workflow.mdc` Sections 1 and 3 to reference auto-applied rules
+    - Removed from commands list, added to rules list
+
+### Added
+- **README Audit Command** (04-12-2025 12:03:35 EST)
+  - **New Command:** Created `.cursor/commands/audit-readmes.md` - Comprehensive README validation command
+  - **Automatic Type Detection:** Identifies README type (Root, Module, Standards, Feature) based on location
+  - **Structure Validation:** Checks for required sections based on README type
+  - **Link Validation:** Verifies relative links and reports broken references
+  - **Quality Checks:**
+    - Detects placeholder text (TODO, Coming soon, TBD, etc.)
+    - Identifies vague descriptions
+    - Validates code examples in module READMEs
+    - Checks for missing imports in code examples
+  - **Comprehensive Reporting:**
+    - Summary statistics (total, compliant, warnings, critical)
+    - Issues by severity (Critical, Warning, Info)
+    - README-specific details with actionable recommendations
+    - Multiple output formats (console, file, JSON)
+  - **Integration Points:**
+    - Run after module creation to validate new READMEs
+    - Include in PR review process for documentation changes
+    - Periodic maintenance (monthly/quarterly) to catch documentation drift
+  - **Related Rule:** Works with `.cursor/rules/readme-standards.mdc` to enforce standards
+  - **Benefits:**
+    - Ensures consistent README quality across repository
+    - Catches missing sections before they become issues
+    - Identifies broken links automatically
+    - Provides actionable recommendations for improvements
+    - Reduces manual documentation review time
+
+- **Project Template with Nested Cursor Rules** (04-12-2025 11:47:37 EST)
+  - **Template Created:** `templates/project-template/` - Complete project template with nested Cursor rules for role-based agent behavior
+  - **Directory Structure:** Pre-configured layout with `.cursor/rules/` directories in key subdirectories
+  - **Domain-Specific Rules Created:**
+    - `src/frontend/.cursor/rules/frontend-standards.mdc` - Frontend development standards (React, TypeScript, hooks)
+    - `src/backend/.cursor/rules/backend-standards.mdc` - Backend API standards (routes, services, error handling)
+    - `database/.cursor/rules/database-standards.mdc` - Database management standards (schema, migrations, RLS)
+    - `tests/.cursor/rules/testing-standards.mdc` - Testing standards (unit, integration, mocking)
+    - `docs/.cursor/rules/documentation-standards.mdc` - Documentation standards (structure, style, versioning)
+  - **Root Rules Adapted:**
+    - `ai-interaction-rules.mdc` - General coding behavior (adapted for template use)
+    - `environment.mdc` - Environment setup standards (adapted for template use)
+    - `task-workflow.mdc` - Development workflow (adapted for template use)
+  - **Rule Length Guidelines:** Each nested rule is 50-150 lines, focusing on core directives and referencing full standards
+  - **Template README:** Comprehensive guide explaining how to use and customize the template
+  - **Benefits:**
+    - **Automatic role switching** - Single agent window acts as multiple specialists
+    - **Context-aware behavior** - Agent adapts based on file location
+    - **Better organization** - Rules live where they're needed
+    - **Reduced cognitive load** - Agent only sees relevant rules for current work
+    - **Scalable** - Easy to add new domains by creating new nested rules
+  - **Integration Updates:**
+    - Updated `STANDARDS_INTEGRATION_GUIDE.md` with template usage as recommended approach
+    - Updated `README.md` with prominent template section and benefits
+    - Added directory layout showing nested rules structure
+
+- **Metadata Standards Updates** (04-12-2025 11:39:42 EST)
+  - **Date Format Standardization:** All dates now use `DD-MM-YYYY` format
+  - **Timestamp Requirement:** All timestamps use `DD-MM-YYYY HH:MM:SS EST` format in EST timezone
+  - **globs Field Requirement:** `globs` field is now REQUIRED for all `.mdc` rules
+    - If `alwaysApply: true`, use empty string: `globs: ""`
+    - If `alwaysApply: false`, specify pattern (NO quotes in .mdc files)
+  - **Description Enhancement:** Rule descriptions must be 1-2 sentences describing what the rule does AND when to apply it
+  - **Updated Standards:** `standards/process/cursor-rules-standards.md` (v1.2) - Updated field definitions
+  - **Updated Creation Rule:** `.cursor/rules/cursor-rule-creation.mdc` (v1.1.0) - Updated templates and validation
+  - **Benefits:**
+    - Clearer rule applicability in descriptions
+    - Consistent timestamp format across all files
+    - Required globs field prevents ambiguity
+    - EST timezone provides consistent time reference
+
+- **README Standards Rule** (2025-12-04 11:55:29 EST)
+  - **Auto-Applied Rule:** Created `.cursor/rules/readme-standards.mdc` - Comprehensive standard for creating and structuring README.md files
+  - **Four README Types Defined:**
+    - Root README (project overview) - High-level project overview and quick start guide
+    - Module README (usage guide) - How to use a specific module with features, installation, usage
+    - Standards README (navigation guide) - Overview and navigation for standards
+    - Feature/Tool README (documentation) - Documentation for specific features or tools
+  - **Required Structure by Type:** Complete structure templates for each README type
+  - **Content Guidelines:**
+    - Writing style (clear, concise, practical)
+    - Code examples (complete, runnable, commented)
+    - Links and cross-references (relative paths, contextual)
+  - **Validation Checklist:** Comprehensive checklist for validating README completeness
+  - **Examples:** Good vs bad README patterns with explanations
+  - **Integration:** Rule automatically applies when creating/modifying `**/README.md` files
+  - **Benefits:**
+    - Consistent README structure across all project components
+    - Clear guidance for what to include in each README type
+    - Practical, copy-pasteable examples
+    - Better discoverability and usability for modules and standards
+    - Improved onboarding experience for new developers
+
+### Changed
+- **Documentation Metadata Audit Refactoring** (04-12-2025 11:12:43 EST)
+  - **Refactored Audit Command:** Renamed and simplified `audit-documentation-metadata.md` → `audit-documentation-rules-metadata.md` (v2.0.0)
+  - **New Architecture:** Command now orchestrates two specialized rules instead of duplicating validation logic
+  - **New Rules Created:**
+    - `documentation-metadata.mdc` - Auto-applied rule for validating `.md` file metadata (docs, standards, commands)
+    - `rule-metadata.mdc` - Auto-applied rule for validating `.mdc` file metadata (Cursor rules)
+  - **Benefits:**
+    - Separation of concerns: each rule handles its file type
+    - Auto-enforcement: rules apply automatically during editing
+    - Simpler command: orchestrates existing rules instead of duplicating logic
+    - Better maintainability: update metadata requirements in one place (the rule)
+    - Consistency: same validation logic for both manual edits and audits
+  - **Updated References:**
+    - Updated `AGENTS.md` to reference new command name
+    - Updated `standards/process/cursor-rules-standards.md` to reference new command
+    - Old command file marked for deprecation
+
 ### Added
 - **Cursor Rules Standard & Creation Rule** (2025-12-04 16:00:00)
   - **Standard:** Created `standards/process/cursor-rules-standards.md` - Comprehensive standard for creating and maintaining Cursor rules
@@ -96,14 +355,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixed version inconsistency in `standards/project-planning/documentation.md` (title and metadata now both show v1.8)
   - Added missing "Description" metadata field to multiple standards files:
     - `standards/project-planning/documentation.md`
-    - `standards/git-flow.md`
+    - `standards/process/git-repository-standards.md`
     - `standards/module-structure.md`
     - `standards/sitemap.md`
   - Updated all metadata "Last Updated" dates to reflect recent changes
 - **Cross-Reference Updates** (2025-12-04 14:00:00)
   - Updated all file paths in core documentation files:
     - `AGENTS.md` - Updated all standards paths to reflect new structure
-    - `INTEGRATION_GUIDE.md` - Updated template and standards paths
+    - `STANDARDS_INTEGRATION_GUIDE.md` - Updated template and standards paths
     - `QUICK_INTEGRATION.md` - Updated copy commands and paths
     - `README.md` - Updated AI agent integration instructions
     - `standards/README.md` - Updated navigation and organization
@@ -402,9 +661,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Comprehensive Linting System** (2025-12-02 05:28:12)
-  - **Linting Standard:** Created `standards/process/linting.md` - Comprehensive linting standard defining requirements, tools, policies, and AI agent behavior expectations
-  - **Linting Rule:** Created `.cursor/rules/linting.mdc` - Auto-applied rule that guides AI agent behavior around linting (always applies)
-  - **Linting Command:** Created `.cursor/commands/lint-check.md` - Standalone executable workflow for running lint checks independently or as part of pre-flight and PR review
+  - **Linting Standard:** Created `standards/process/code-quality-linting-standards.md` (renamed from `linting.md`) - Comprehensive linting standard defining requirements, tools, policies, and AI agent behavior expectations
+  - **Linting Rule:** Created `.cursor/rules/linting-behavior.mdc` (renamed from `linting.mdc`) - Auto-applied rule that guides AI agent behavior around linting (always applies)
+  - **Linting Command:** Created `.cursor/commands/validate-code-quality.md` (renamed from `lint-check.md`) - Standalone executable workflow for running lint checks independently or as part of pre-flight and PR review
   - **Linting Checklist:** Created `standards/process/checklists/linting_checklist_v1_0.md` - Human-readable validation checklist for linting at different stages
   - **Integration:** Updated `pre-flight-check` and `pr-review-check` commands to reference linting standard
   - **Checklist Updates:** Updated pre-flight and PR review checklists to reference linting standard for detailed requirements
@@ -454,7 +713,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Updated References:** All references to these files updated across:
     - AGENTS.md and AGENTS-TEMPLATE.md
     - All checklist files
-    - INTEGRATION_GUIDE.md and QUICK_INTEGRATION.md
+    - STANDARDS_INTEGRATION_GUIDE.md and QUICK_INTEGRATION.md
     - Standards documentation
     - CHANGELOG.md
     - Internal command and rule file references
@@ -503,7 +762,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Template Created:** Created `templates/general/AGENTS-TEMPLATE.md` as the template version for integration into other projects
   - **Project-Specific AGENTS.md:** Updated root `AGENTS.md` with actual project content for Workflow Rules / Coding Standards repository
   - **Clear Separation:** `AGENTS.md` is now project-specific, while `templates/general/AGENTS-TEMPLATE.md` is the template to copy
-  - **Updated References:** Updated all documentation (README.md, INTEGRATION_GUIDE.md, QUICK_INTEGRATION.md) to reference the template file
+  - **Updated References:** Updated all documentation (README.md, STANDARDS_INTEGRATION_GUIDE.md, QUICK_INTEGRATION.md) to reference the template file
   - **Benefits:** Clear distinction between template and project-specific content, easier integration process
 
 - **Workflow Standards Documentation Maintenance Rule** (2025-01-27)
@@ -514,7 +773,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `AGENTS.md` - Project context and memory
     - `CHANGELOG.md` - Change history
     - `README.md` - Project overview
-    - `INTEGRATION_GUIDE.md` - Integration instructions
+    - `STANDARDS_INTEGRATION_GUIDE.md` - Integration instructions
     - `QUICK_INTEGRATION.md` - Quick reference
     - Module README.md files - Module documentation
   - **Features:**
@@ -554,7 +813,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **New Location:** `.cursor/rules/supabase-rls-policy-review.mdc`
   - **Intelligent Application:** Rule automatically applies when Supabase is detected (via `supabase/` directory or environment variables)
   - **Removed Redundancy:** Deleted `docs/process/checklists/rls_policy_review_checklist_v1_0.md` as it was redundant for project-specific functionality
-  - **Updated References:** Updated `AGENTS.md`, `INTEGRATION_GUIDE.md`, `docs/DOCUMENTATION_STANDARDS.md`, and `standards/documentation.md` to reference the new rule
+  - **Updated References:** Updated `AGENTS.md`, `STANDARDS_INTEGRATION_GUIDE.md`, `docs/DOCUMENTATION_STANDARDS.md`, and `standards/documentation.md` to reference the new rule
   - **Benefits:** Rule applies automatically when relevant, reducing manual intervention and ensuring RLS security is always considered for Supabase projects
 
 ### Added
@@ -700,7 +959,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentation Cleanup & Clarity** (2025-11-25 17:40:00)
   - **Removed Duplication:**
     - Deleted duplicate checklists from root `checklists/` directory (moved to `docs/process/checklists/`)
-    - Updated all references in `INTEGRATION_GUIDE.md`, `QUICK_INTEGRATION.md`, `README.md`, and `standards/git-flow.md` to point to canonical location
+    - Updated all references in `STANDARDS_INTEGRATION_GUIDE.md`, `QUICK_INTEGRATION.md`, `README.md`, and `standards/process/git-repository-standards.md` to point to canonical location
   - **Clarified Module Docs vs Standards:**
     - Added Section 9 to `standards/documentation.md` explaining distinction
     - Module docs (`modules/*/README.md`) = How to USE a module
@@ -713,14 +972,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentation Standards Compliance** (2025-11-25)
   - Updated all checklist files with proper metadata blocks and versioned titles per Documentation Management Rule
   - Updated all standards documentation files to include complete metadata blocks (Created, Last Updated, Version, Description) and proper underscore-separated versioned titles
-  - Updated integration guides (`INTEGRATION_GUIDE.md`, `QUICK_INTEGRATION.md`) with metadata blocks and versioned titles
+  - Updated integration guides (`STANDARDS_INTEGRATION_GUIDE.md`, `QUICK_INTEGRATION.md`) with metadata blocks and versioned titles
   - Updated roadmap files in `/docs/roadmap/` to use proper title format
   - All documentation files now comply with `standards/documentation.md` requirements
   - **Checklist Format:** All checklists now use simplified format with Type declarations, timestamps, and command references
   - **Security Audit:** Unified `security-audit` command with comprehensive `security_audit_standards_v1_0.md` standard
 
 ### Added
-- **Integration Guide for New Projects** (`INTEGRATION_GUIDE.md`)
+- **Integration Guide for New Projects** (`STANDARDS_INTEGRATION_GUIDE.md`)
   - Comprehensive guide for integrating rules, commands, and standards into new projects
   - Step-by-step instructions for both developers and AI agents
   - Integration checklist with verification steps

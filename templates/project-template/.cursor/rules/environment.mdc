@@ -1,0 +1,106 @@
+---
+description: Runtime expectations, environment setup, and version numbering standards. Applies to all development work.
+version: 1.0.0
+lastUpdated: 04-12-2025 11:47:37 EST
+globs: ""
+alwaysApply: true
+type: Environment Configuration Rule - Defines runtime expectations
+relatedCommands: []
+relatedRules: [ai-interaction-rules.mdc]
+relatedStandards: []
+---
+
+# Environment & Runtime Standards
+
+> **📝 Note:** This is a template rule. Adapt it for your project's specific environment needs.
+
+## 1. Runtime Expectations
+
+This project operates in a standard development environment.
+
+**Core Principles:**
+- **Strict Isolation:** Dependencies must be local (e.g., `node_modules`, `.venv`)
+- **Configuration:** All config comes from `.env` or environment variables
+- **No Hardcoding:** Never hardcode ports, URLs, or secrets
+
+---
+
+## 2. Local Development Environment
+
+### Dependencies
+- **Node.js:** Use version specified in `.nvmrc` or `package.json` engines field
+- **Python:** Use version specified in `.python-version` or `pyproject.toml`
+- **Package Manager:** Use lockfile to determine (npm, yarn, pnpm for Node)
+
+### Environment Variables
+- **Required:** Copy `.env.example` to `.env` and fill in required values
+- **Never commit:** Ensure `.env` is in `.gitignore`
+- **Documentation:** Document all required env vars in `.env.example`
+
+---
+
+## 3. Version Numbering Rules
+
+### For Documentation (`.md` files)
+- **Format:** `X.Y` (e.g., `1.0`, `1.1`)
+- **Major (X):** Breaking changes or major revisions
+- **Minor (Y):** New sections, significant additions
+
+### For Rules (`.mdc` files)
+- **Format:** `X.Y.Z` (semantic versioning)
+- **Major (X.0.0):** Breaking changes
+- **Minor (X.Y.0):** New features
+- **Patch (X.Y.Z):** Bug fixes, clarifications
+
+### For Code (Application)
+- **Format:** `X.Y.Z` (semantic versioning)
+- Follow [Semantic Versioning 2.0.0](https://semver.org/)
+
+---
+
+## 4. Dependency Management
+
+### Node.js Projects
+- Use lockfiles (`package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`)
+- Run `npm install` (or equivalent) to install dependencies
+- Keep dependencies up to date (security patches)
+
+### Python Projects
+- Use virtual environment (`.venv` or `venv`)
+- Use `requirements.txt` or `pyproject.toml`
+- Activate venv before running: `source .venv/bin/activate`
+
+---
+
+## 5. Temporal Awareness (Date & Time)
+
+**Rule:** The AI agent must be aware of the current date and time when responding.
+
+**When to Check Current Date:**
+- When updating timestamps in documentation
+- When discussing deadlines or timelines
+- When working with date-based logic
+
+**How to Get Current Date:**
+- Use terminal command: `date`
+- For ISO format: `date -u +"%Y-%m-%dT%H:%M:%SZ"`
+
+---
+
+## 6. Container Management (if applicable)
+
+If your project uses Docker or similar:
+- Use project-specific commands
+- Don't affect containers from other projects
+- Document container setup in `docs/`
+
+---
+
+## Customization Notes
+
+When adapting this rule for your project:
+- Specify exact Node/Python versions required
+- Document any additional tools (Docker, Supabase, etc.)
+- Add project-specific environment setup steps
+- Define your versioning strategy
+- Add any tool-specific requirements

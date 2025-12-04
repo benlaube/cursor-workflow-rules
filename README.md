@@ -6,12 +6,42 @@ This repository serves as the **central brain** for your development workflow. I
 
 Instead of explaining your coding preferences to an AI agent every time, you simply point it to this repository. It tells the agent **how** to build (Standards) and gives it the **tools** to build with (Modules).
 
+## 🚀 Quick Start with Project Template
+
+**The fastest way to start a new project is to use our complete project template with nested Cursor rules.**
+
+```bash
+cp -r templates/project-template/ /path/to/your/new-project/
+```
+
+### What You Get
+
+- **Pre-configured directory structure** with best practices
+- **Nested Cursor rules** that create domain-specific "roles" for your AI agent:
+  - 🎨 **Frontend specialist** when working in `src/frontend/`
+  - ⚙️ **Backend specialist** when working in `src/backend/`
+  - 🗄️ **Database manager** when working in `database/`
+  - 🧪 **QA engineer** when working in `tests/`
+  - 📝 **Technical writer** when working in `docs/`
+
+### How Nested Rules Work
+
+The agent **automatically switches context** based on which directory you're working in:
+- Working in `src/frontend/`? Agent knows React patterns, component structure, Tailwind CSS
+- Working in `src/backend/`? Agent knows API routes, error handling, Result patterns
+- Working in `database/`? Agent knows schema design, migrations, RLS policies
+
+**See [`templates/project-template/README.md`](./templates/project-template/README.md) for complete usage and customization guide.**
+
+---
+
 ## 🗂️ Directory Layout
 
 ```text
 /
 ├── standards/                  # "The Rules" - How we build software
-│   ├── git-flow.md             # Branching, committing, and repo setup
+│   ├── process/
+│   │   ├── git-repository-standards.md  # Branching, committing, and repo setup
 │   ├── documentation.md        # How to write and organize docs
 │   ├── project-structure.md    # Standard file layout for new projects
 │   ├── configuration.md        # Rules for env vars and config files
@@ -32,6 +62,15 @@ Instead of explaining your coding preferences to an AI agent every time, you sim
 │   └── security/
 │       └── access-control.md   # RLS and Authorization policies
 │
+├── templates/                  # "The Blueprints" - Ready-to-use project structures
+│   └── project-template/       # Complete project template with nested Cursor rules
+│       ├── .cursor/rules/      # Root-level rules
+│       ├── src/frontend/.cursor/rules/  # Frontend role
+│       ├── src/backend/.cursor/rules/   # Backend role
+│       ├── database/.cursor/rules/      # Database role
+│       ├── tests/.cursor/rules/         # Testing role
+│       └── docs/.cursor/rules/          # Documentation role
+│
 ├── modules/                    # "The Tools" - Copy/Pasteable Code
 │   ├── backend-api/            # Next.js API route wrappers with Supabase SSR
 │   ├── auth-profile-sync/      # Auth & User Profile synchronization logic
@@ -44,7 +83,9 @@ Instead of explaining your coding preferences to an AI agent every time, you sim
 │   ├── sitemap-module/         # Sitemap generator for Supabase Storage
 │   └── testing-module/         # Mocks for Supabase & Logging (Vitest)
 │
-├── standards/development-checklists/    # "The Process" - Quality Assurance Checklists
+├── standards/process/
+│   ├── checklists/                      # "The Process" - Quality Assurance Checklists
+│   └── git-repository-standards.md      # Git workflow standards
 │   ├── pre-flight-checklist.md     # Run this before writing code
 │   └── pr-review-checklist.md      # Run this before merging code
 │
@@ -57,14 +98,14 @@ Instead of explaining your coding preferences to an AI agent every time, you sim
 
 ### For New Projects: Integration Guide
 
-**📖 See [`INTEGRATION_GUIDE.md`](./INTEGRATION_GUIDE.md) for complete instructions on applying these rules and commands to a new project.**
+**📖 See [`STANDARDS_INTEGRATION_GUIDE.md`](./STANDARDS_INTEGRATION_GUIDE.md) for complete instructions on applying these rules and commands to a new project.**
 
 Quick start for AI agents:
-> "Integrate the workflow rules from this repository. Copy `.cursor/rules/`, `.cursor/commands/`, `standards/development-checklists/`, and `templates/general/AGENTS-TEMPLATE.md` (rename to `AGENTS.md`). Then adapt them for this project's stack and configuration."
+> "Integrate the workflow rules from this repository. Copy `.cursor/rules/`, `.cursor/commands/`, `standards/process/checklists/`, and `templates/file-templates/AGENTS-TEMPLATE.md` (rename to `AGENTS.md`). Then adapt them for this project's stack and configuration."
 
 ### 1. Starting a New Project
 Tell your AI Agent:
-> "Initialize a new project following the structure in `standards/project-structure.md`. Use `templates/general/env.example` as the base configuration."
+> "Initialize a new project following the structure in `standards/project-planning/project-structure.md`. Use `templates/file-templates/env.example` as the base configuration."
 
 ### 2. Building API Routes (Backend)
 Use the standardized handler that manages Auth, Validation, and Errors automatically:
@@ -96,8 +137,8 @@ When integrating this repository into a new project, follow these steps:
 1. **Copy Essential Files:**
    - Copy `.cursor/rules/` directory (all files)
    - Copy `.cursor/commands/` directory (all files)
-   - Copy `standards/development-checklists/` directory (all files)
-   - Copy `templates/general/AGENTS-TEMPLATE.md` and rename to `AGENTS.md`
+   - Copy `standards/process/checklists/` directory (all files)
+   - Copy `templates/file-templates/AGENTS-TEMPLATE.md` and rename to `AGENTS.md`
 
 2. **Adapt for Project:**
    - Update `AGENTS.md` with project-specific context
@@ -109,4 +150,4 @@ When integrating this repository into a new project, follow these steps:
    - Test launch command
    - Verify self-healing rules work
 
-**See [`INTEGRATION_GUIDE.md`](./INTEGRATION_GUIDE.md) for detailed instructions and checklist.**
+**See [`STANDARDS_INTEGRATION_GUIDE.md`](./STANDARDS_INTEGRATION_GUIDE.md) for detailed instructions and checklist.**

@@ -1,0 +1,628 @@
+---
+description: Standards for creating and structuring README.md files. Applies when creating or modifying README.md files throughout the repository.
+version: 1.0.0
+lastUpdated: 04-12-2025 11:30:00 EST
+globs: **/README.md
+alwaysApply: false
+type: Documentation Maintenance Rule - Ensures README files follow standard structure
+relatedCommands: []
+relatedRules: [documentation-metadata.mdc]
+relatedStandards: [documentation.md, module-structure.md]
+---
+
+# README Standards Rule
+
+## When This Rule Applies
+
+This rule applies automatically when creating or modifying any `README.md` file in the repository.
+
+---
+
+## Core Principle
+
+**Every README.md file must be clear, complete, and follow a consistent structure appropriate to its purpose.** Different types of READMEs serve different audiences and purposes, but all must provide essential information for users to understand and use what they're reading about.
+
+---
+
+## README Types
+
+There are four main types of README files, each with specific requirements:
+
+### Type 1: Root README (Project Overview)
+**Location:** `/README.md`  
+**Purpose:** High-level project overview and quick start guide  
+**Audience:** Developers discovering or integrating the project
+
+### Type 2: Module README (Usage Guide)
+**Location:** `modules/{module-name}/README.md`  
+**Purpose:** How to use a specific module  
+**Audience:** Developers integrating the module into their projects
+
+### Type 3: Standards README (Navigation Guide)
+**Location:** `standards/README.md` or `standards/{category}/README.md`  
+**Purpose:** Overview and navigation for standards  
+**Audience:** Developers and AI agents seeking standards
+
+### Type 4: Feature/Tool README (Documentation)
+**Location:** Various (e.g., `docs/{feature}/README.md`, `tools/{tool}/README.md`)  
+**Purpose:** Documentation for specific features or tools  
+**Audience:** Users of the feature or tool
+
+---
+
+## Required Structure by Type
+
+### Root README Structure
+
+```markdown
+# Project Title
+
+Brief description of what this project is and why it exists (1-2 sentences).
+
+## 📚 Purpose
+
+Explain the high-level purpose and value proposition. Answer:
+- What problem does this solve?
+- Who is this for?
+- Why should someone use this?
+
+## 🗂️ Directory Layout
+
+```text
+/
+├── standards/          # Description
+├── modules/            # Description
+├── .cursor/            # Description
+└── docs/               # Description
+```
+
+## 🚀 How to Use This Repository
+
+### For New Projects: Integration Guide
+
+Link to detailed integration guide and provide quick start command for AI agents.
+
+### Use Case 1: [Primary Use Case]
+Brief explanation and AI agent command example.
+
+### Use Case 2: [Secondary Use Case]
+Brief explanation and AI agent command example.
+
+## 🤖 AI Agent Instructions (Meta-Rules)
+
+If you are an AI Agent reading this:
+1. Key instruction 1
+2. Key instruction 2
+3. Key instruction 3
+
+### For AI Agents Setting Up New Projects
+
+Step-by-step instructions for AI agents to integrate this repository.
+```
+
+**Required Sections:**
+- ✅ Title and brief description (1-2 sentences)
+- ✅ Purpose section (explains value proposition)
+- ✅ Directory layout (visual tree structure)
+- ✅ How to use (organized by use case)
+- ✅ AI agent instructions (if repository provides standards/rules)
+
+---
+
+### Module README Structure
+
+```markdown
+# Module Name
+
+Brief description of what this module does (1 sentence).
+
+## Features
+
+- ✅ Feature 1 with brief explanation
+- ✅ Feature 2 with brief explanation
+- ✅ Feature 3 with brief explanation
+
+## Dependencies
+
+List all required dependencies with versions:
+- `package-name` - Purpose
+- `other-package` - Purpose
+
+Peer dependencies (if any):
+- `peer-package` (peer dependency) - Purpose
+
+## Installation
+
+### Step 1: Copy Module
+```bash
+cp -r modules/module-name /path/to/your/project/lib/module-name
+```
+
+### Step 2: Install Dependencies
+```bash
+npm install package-name other-package
+```
+
+### Step 3: Additional Setup (if needed)
+Any additional configuration or setup steps.
+
+## Usage
+
+### Basic Usage
+
+```typescript
+// Clear, commented code example
+import { MainFunction } from '@/lib/module-name';
+
+const result = MainFunction();
+```
+
+### Advanced Usage (if applicable)
+
+```typescript
+// More complex example with explanation
+```
+
+### Configuration Options (if applicable)
+
+```typescript
+interface ModuleOptions {
+  option1: string; // Description
+  option2: boolean; // Description
+}
+```
+
+## How It Works (optional but recommended)
+
+High-level explanation of how the module works internally, especially if it simplifies complex patterns.
+
+## Integration with Other Systems (if applicable)
+
+Explain how this module integrates with databases, APIs, frameworks, etc.
+
+## Response Format / API Reference (if applicable)
+
+Document expected inputs/outputs, data structures, etc.
+
+## Error Handling (if applicable)
+
+Explain error handling patterns used by the module.
+
+## Related Documentation
+
+- Link to related standards with descriptions
+- Link to integration guides
+- Link to architecture docs
+
+## Possible Enhancements
+
+### Short-term Improvements
+- Feature idea 1
+- Feature idea 2
+
+### Medium-term Enhancements
+- Feature idea 3
+- Feature idea 4
+
+### Long-term Enhancements
+- Feature idea 5
+- Feature idea 6
+```
+
+**Required Sections:**
+- ✅ Title and brief description (1 sentence)
+- ✅ Features (bulleted list with checkmarks)
+- ✅ Dependencies (all required packages)
+- ✅ Installation (step-by-step with copy commands)
+- ✅ Usage (at least one clear example)
+- ✅ Related Documentation (links to standards/guides)
+
+**Optional But Recommended:**
+- ⚪ How It Works (especially if module simplifies complexity)
+- ⚪ Configuration Options (if module is configurable)
+- ⚪ Error Handling (if module has error patterns)
+- ⚪ Possible Enhancements (roadmap/future features)
+
+---
+
+### Standards README Structure
+
+```markdown
+# Standards Directory
+
+## Metadata
+- **Created:** YYYY-MM-DD
+- **Last Updated:** YYYY-MM-DD
+- **Version:** X.Y
+- **Description:** Brief description of this directory's purpose
+
+---
+
+## Purpose
+
+Explain what standards are and why they exist.
+
+## What's a Standard?
+
+Define what constitutes a standard document:
+- Requirements
+- Patterns
+- Examples
+- Rationale
+
+---
+
+## How Standards Are Organized
+
+### Root Level Standards (Project-Wide)
+- `file1.md` - Description
+- `file2.md` - Description
+
+### `/subdirectory`
+Subdirectory purpose
+- `file3.md` - Description
+- `file4.md` - Description
+
+---
+
+## Using Standards
+
+### For Developers
+1. Instructions for developers
+
+### For AI Agents
+1. Instructions for AI agents
+
+---
+
+## Standard Metadata Requirements
+
+Document required metadata format for standards.
+
+---
+
+## Related Documentation
+
+Link to comprehensive guides and master references.
+
+---
+
+## Standards vs Other Documentation Types
+
+Table comparing standards to checklists, commands, etc.
+
+---
+
+## Quick Navigation by Task
+
+Organize standards by common tasks with links.
+
+---
+
+## Contributing to Standards
+
+Guidelines for updating or creating standards.
+```
+
+**Required Sections:**
+- ✅ Metadata (Created, Last Updated, Version, Description)
+- ✅ Purpose (what standards are)
+- ✅ Organization (how standards are structured)
+- ✅ Usage (for developers and AI agents)
+- ✅ Related Documentation (links to guides)
+- ✅ Quick Navigation (organized by task)
+
+---
+
+### Feature/Tool README Structure
+
+```markdown
+# Feature/Tool Name
+
+Brief description (1-2 sentences).
+
+## Overview
+
+More detailed explanation of purpose and capabilities.
+
+## Features
+
+- Feature 1
+- Feature 2
+- Feature 3
+
+## Prerequisites / Requirements
+
+List any prerequisites or requirements.
+
+## Installation / Setup
+
+Step-by-step setup instructions.
+
+## Usage
+
+### Basic Usage
+Examples and instructions.
+
+### Advanced Usage
+More complex examples.
+
+## Configuration
+
+Configuration options and environment variables.
+
+## Troubleshooting
+
+Common issues and solutions.
+
+## Related Documentation
+
+Links to related docs.
+```
+
+**Required Sections:**
+- ✅ Title and description
+- ✅ Overview or Purpose
+- ✅ Features or Capabilities
+- ✅ Usage instructions
+- ✅ Related Documentation
+
+---
+
+## Content Guidelines
+
+### Writing Style
+
+1. **Be Clear and Concise**
+   - Use short, direct sentences
+   - Avoid jargon unless necessary (define it if used)
+   - Write for someone discovering the project/module for the first time
+
+2. **Use Examples**
+   - Provide concrete code examples
+   - Comment examples to explain what's happening
+   - Show both basic and advanced usage
+
+3. **Be Practical**
+   - Focus on "how to use" not "how it was built"
+   - Include copy-pasteable commands
+   - Provide actual file paths and concrete instructions
+
+4. **Use Emojis Sparingly**
+   - Root README: Use emojis for major sections (📚, 🗂️, 🚀, 🤖)
+   - Module README: Use checkmarks (✅) for features
+   - Standards README: Generally avoid emojis
+   - Feature README: Optional, use for clarity
+
+### Code Examples
+
+1. **Always Include:**
+   - Import statements
+   - Comments explaining what's happening
+   - Expected output or behavior
+
+2. **Use TypeScript When Possible:**
+   - Include type annotations
+   - Show interface definitions
+   - Demonstrate type safety
+
+3. **Show Complete Examples:**
+   - Don't use `...` or `// more code` unless absolutely necessary
+   - Provide runnable examples when possible
+
+### Links and Cross-References
+
+1. **Use Relative Paths:**
+   - `[Module README](./modules/module-name/README.md)`
+   - `[Standard](./standards/standard-name.md)`
+
+2. **Provide Context:**
+   - Don't just link - explain why the link is relevant
+   - Example: "See `standards/module-structure.md` for complete module organization patterns"
+
+3. **Check Links:**
+   - Verify all links work before committing
+   - Update links when files are moved
+
+---
+
+## Metadata Requirements
+
+### Root README
+- ❌ No metadata section required (content speaks for itself)
+
+### Module README
+- ❌ No formal metadata section required
+- ✅ But should include:
+  - Dependencies with versions
+  - Related documentation links
+  - Installation instructions with concrete commands
+
+### Standards README
+- ✅ Full metadata section required (Status, Created, Last Updated, Version, Description)
+- See `documentation-metadata.mdc` for complete requirements
+
+### Feature/Tool README
+- ⚪ Optional metadata section
+- ✅ Should include version if versioned
+
+---
+
+## Common Mistakes to Avoid
+
+### ❌ Too Vague
+Bad: "This module helps with logging."  
+Good: "Structured JSON logging with multi-dimensional categorization, context propagation, and multi-destination output (console, file, database)."
+
+### ❌ Missing Installation Steps
+Bad: "Install the dependencies and use it."  
+Good: Provide exact `cp` and `npm install` commands.
+
+### ❌ No Examples
+Bad: "Use the `setupLogger` function to create a logger."  
+Good: Show actual code with imports, configuration, and usage.
+
+### ❌ Broken Links
+Bad: Links that point to non-existent files  
+Good: Verify all links work
+
+### ❌ Assuming Knowledge
+Bad: "Configure SSR as usual."  
+Good: Link to SSR setup guide or explain the steps.
+
+---
+
+## Validation Checklist
+
+Before committing a README.md file, verify:
+
+### All README Types
+- [ ] Title is clear and descriptive
+- [ ] Brief description (1-2 sentences) is present
+- [ ] Purpose/Overview section explains why it exists
+- [ ] All links are relative and verified to work
+- [ ] Code examples include imports and comments
+- [ ] No placeholder text (e.g., "TODO", "Coming soon")
+
+### Root README
+- [ ] Directory layout visual tree is present
+- [ ] How to use section organized by use case
+- [ ] AI agent instructions included
+- [ ] Links to integration guide
+
+### Module README
+- [ ] Features list with checkmarks
+- [ ] Dependencies with versions and purposes
+- [ ] Installation with copy commands
+- [ ] At least one usage example
+- [ ] Related documentation links
+
+### Standards README
+- [ ] Metadata section with all required fields
+- [ ] Organization section with file listings
+- [ ] Usage instructions for developers and AI agents
+- [ ] Quick navigation by task
+
+---
+
+## Examples
+
+### Good Module README Opening
+
+```markdown
+# Backend API Module
+
+Standardized API handler wrapper for Next.js with Supabase SSR integration, automatic error handling, input validation, and standardized responses.
+
+## Features
+
+- ✅ **Supabase SSR Integration** - Automatic JWT handling via `@supabase/ssr`
+- ✅ **Input Validation** - Zod schema validation for body and query params
+- ✅ **Authentication** - Built-in auth middleware using Supabase
+- ✅ **Error Handling** - Automatic try/catch with standardized error responses
+- ✅ **Type Safety** - Full TypeScript support with inferred types
+
+## Dependencies
+
+- `@supabase/ssr` - Server-side Supabase client helpers
+- `@supabase/supabase-js` - Supabase client library
+- `zod` - Schema validation
+- `next` - Next.js framework
+```
+
+**Why it's good:**
+- Clear description with key features
+- Features use checkmarks and bold labels
+- Dependencies listed with purposes
+
+---
+
+### Bad Module README Opening
+
+```markdown
+# My Module
+
+This is a module for APIs.
+
+## Install
+
+Install it.
+
+## Use
+
+Use the function.
+```
+
+**Why it's bad:**
+- Vague description
+- No features list
+- No dependencies
+- No concrete installation instructions
+- No usage examples
+
+---
+
+## Integration with Other Rules
+
+This rule works with:
+
+### `documentation-metadata.mdc`
+- That rule ensures metadata is complete for documentation files
+- This rule defines README-specific structure
+- Standards READMEs must follow both rules
+
+### `module-structure.md`
+- That standard defines required files in modules (including README.md)
+- This rule defines what the README.md should contain
+
+### `documentation.md`
+- That standard defines overall documentation management
+- This rule is specific to README files
+
+---
+
+## Related Files
+
+- **Rules:**
+  - [documentation-metadata.mdc](./documentation-metadata.mdc) - Ensures metadata completeness
+- **Standards:**
+  - [documentation.md](../../standards/project-planning/documentation.md) - Documentation management
+  - [module-structure.md](../../standards/module-structure.md) - Module organization
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically when creating or modifying README.md files.**
+
+**Agents should:**
+
+1. **Identify README type** (Root, Module, Standards, or Feature)
+2. **Follow the appropriate structure** from Section 3
+3. **Include all required sections** for that type
+4. **Write clear, concrete content** (not vague descriptions)
+5. **Provide runnable examples** with imports and comments
+6. **Verify all links work** (use relative paths)
+7. **Check validation checklist** before committing
+
+**When creating a new README:**
+- Copy the structure template for the appropriate type
+- Fill in all required sections
+- Add optional sections if they add value
+- Provide concrete examples, not placeholders
+
+**When updating an existing README:**
+- Preserve existing structure unless improving it
+- Add missing required sections
+- Update examples to be clear and runnable
+- Fix any broken links
+
+---
+
+## Notes
+
+- READMEs are the first thing users see - make them count
+- Write for someone discovering the project for the first time
+- Provide copy-pasteable commands and examples
+- Link to detailed docs, don't duplicate them
+- Keep root READMEs high-level, module READMEs practical

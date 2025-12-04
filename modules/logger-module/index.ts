@@ -154,7 +154,15 @@ export {
   getLogFiles,
   getLogFileContent,
   queryDatabaseLogs,
+  exportLogsToCSV,
+  exportLogsToJSON,
+  downloadLogFile,
+  getLogStats,
+  getErrorTrends,
+  getTopErrors,
+  clearFileListCache,
   type LogViewerOptions,
+  type LogError,
 } from './src/viewer';
 
 export {
@@ -165,6 +173,25 @@ export {
   startLogViewer,
   type StandaloneLogViewerOptions,
 } from './src/viewer/standalone';
+
+// Next.js Log Viewer
+export {
+  GET as NextJsLogViewerGET,
+  GET_FILES as NextJsLogViewerGET_FILES,
+  GET_FILE as NextJsLogViewerGET_FILE,
+  GET_DATABASE as NextJsLogViewerGET_DATABASE,
+  GET_SUMMARY as NextJsLogViewerGET_SUMMARY,
+  GET_UI as NextJsLogViewerGET_UI,
+  GET_EXPORT_CSV as NextJsLogViewerGET_EXPORT_CSV,
+  GET_EXPORT_JSON as NextJsLogViewerGET_EXPORT_JSON,
+  GET_DOWNLOAD_FILE as NextJsLogViewerGET_DOWNLOAD_FILE,
+} from './src/viewer/nextjs';
+
+export {
+  createNextJsLogViewerRoutes,
+  nextJsLogViewerHandlers,
+  createPagesRouterHandler,
+} from './src/viewer/nextjs-router';
 
 // Audit Handler
 export {

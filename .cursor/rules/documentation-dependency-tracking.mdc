@@ -141,20 +141,20 @@ grep -r "current-file-name.md" standards/ docs/ .cursor/
 
 ## Dependency Update Workflow
 
-### Example Scenario: Modifying `standards/process/linting.md`
+### Example Scenario: Modifying `standards/process/code-quality-linting-standards.md`
 
 **1. Before Modifying:**
 ```markdown
 # Current metadata shows dependencies:
 - **Dependencies:**
-  - [lint-check.md](../../.cursor/commands/lint-check.md) - Command that implements this standard
+  - [validate-code-quality.md](../../.cursor/commands/validate-code-quality.md) - Command that implements this standard
   - [linting_checklist_v1_0.md](./checklists/linting_checklist_v1_0.md) - Validation checklist
 ```
 
 **2. You Make Changes:**
 - Add new section on Python linting
 - Add reference to `ruff` configuration
-- Mention `.cursor/rules/linting.mdc`
+- Mention `.cursor/rules/linting-behavior.mdc`
 
 **3. After Modifying (MANDATORY):**
 
@@ -164,9 +164,9 @@ grep -r "current-file-name.md" standards/ docs/ .cursor/
 - **Last Updated:** 2025-12-04 14:30:00
 - **Version:** 1.3 (was 1.2, incremented minor version)
 - **Dependencies:**
-  - [lint-check.md](../../.cursor/commands/lint-check.md) - Command that implements this standard
+  - [validate-code-quality.md](../../.cursor/commands/validate-code-quality.md) - Command that implements this standard
   - [linting_checklist_v1_0.md](./checklists/linting_checklist_v1_0.md) - Validation checklist
-  - [linting.mdc](../../.cursor/rules/linting.mdc) - NEW: Auto-applied linting rule for agents
+  - [linting-behavior.mdc](../../.cursor/rules/linting-behavior.mdc) - NEW: Auto-applied linting rule for agents
 ```
 
 **Step B: Find reverse dependencies**
@@ -176,28 +176,28 @@ grep -r "linting\.md" standards/ .cursor/
 ```
 
 Found:
-- `.cursor/commands/lint-check.md` - References this standard
-- `.cursor/rules/linting.mdc` - References this standard
+- `.cursor/commands/validate-code-quality.md` - References this standard
+- `.cursor/rules/linting-behavior.mdc` - References this standard
 - `AGENTS.md` - References this standard
 
 **Step C: Verify each reverse dependency**
-- Read `lint-check.md`: Does it need updates for Python linting? YES
-- Read `linting.mdc`: Does it need updates? Maybe, check content
+- Read `validate-code-quality.md`: Does it need updates for Python linting? YES
+- Read `linting-behavior.mdc`: Does it need updates? Maybe, check content
 - Read `AGENTS.md`: Is reference still accurate? YES, but update if section numbers changed
 
 **Step D: Verify forward dependencies**
-- Check `lint-check.md` exists and is current ✓
+- Check `validate-code-quality.md` exists and is current ✓
 - Check `linting_checklist_v1_0.md` exists ✓
-- Check `linting.mdc` exists ✓ (just added)
+- Check `linting-behavior.mdc` exists ✓ (just added)
 
 **Step E: Update related documentation**
 - Update `CHANGELOG.md`:
   ```markdown
   ### 2025-12-04 14:30:00 - Changed
-  - **standards/process/linting.md (v1.3):** Added Python linting section with ruff configuration
-  ```
-- Update `lint-check.md`: Add Python linting checks
-- Update `linting.mdc`: Add Python linting behavior notes
+  - **standards/process/code-quality-linting-standards.md (v1.3):** Added Python linting section with ruff configuration
+```
+- Update `validate-code-quality.md`: Add Python linting checks
+- Update `linting-behavior.mdc`: Add Python linting behavior notes
 
 ---
 
@@ -248,7 +248,7 @@ grep({
 **Relationship:** "This standard is implemented by..."
 
 **Example:**
-- `standards/process/linting.md` is implemented by `.cursor/commands/lint-check.md`
+- `standards/process/code-quality-linting-standards.md` is implemented by `.cursor/commands/validate-code-quality.md`
 
 **Bidirectional:** YES
 - Standard should reference the command
@@ -258,7 +258,7 @@ grep({
 **Relationship:** "This document explains/expands on..."
 
 **Example:**
-- `.cursor/rules/linting.mdc` references `standards/process/linting.md` for details
+- `.cursor/rules/linting-behavior.mdc` references `standards/process/code-quality-linting-standards.md` for details
 
 **Bidirectional:** MAYBE
 - Rule should reference the standard
@@ -287,7 +287,7 @@ grep({
 **Relationship:** "This is a specific implementation of..."
 
 **Example:**
-- `standards/process/checklists/linting_checklist_v1_0.md` is derived from `standards/process/linting.md`
+- `standards/process/checklists/linting_checklist_v1_0.md` is derived from `standards/process/code-quality-linting-standards.md`
 
 **Bidirectional:** YES
 - Checklist should reference parent standard
@@ -320,8 +320,8 @@ See `.cursor/commands/new-command.md` for implementation details.
 
 ### ❌ Mistake 3: Not Checking Reverse Dependencies
 ```markdown
-# You updated linting.md but didn't check if lint-check.md needs updating
-# Now lint-check.md references outdated section numbers or removed content
+# You updated code-quality-linting-standards.md but didn't check if validate-code-quality.md needs updating
+# Now validate-code-quality.md references outdated section numbers or removed content
 ```
 
 **Fix:** Always grep for reverse dependencies and verify them.
@@ -407,26 +407,26 @@ When the agent updates dependencies, it should report:
 ```markdown
 ## Dependency Update Report
 
-**File Modified:** `standards/process/linting.md`
+**File Modified:** `standards/process/code-quality-linting-standards.md`
 
 **Metadata Updates:**
 - Version: 1.2 → 1.3
 - Last Updated: 2025-12-04 14:30:00
-- New Dependencies: Added `.cursor/rules/linting.mdc`
+- New Dependencies: Added `.cursor/rules/linting-behavior.mdc`
 
 **Reverse Dependencies Checked:**
-- ✓ `.cursor/commands/lint-check.md` - Updated to include Python linting
-- ✓ `.cursor/rules/linting.mdc` - No changes needed
+- ✓ `.cursor/commands/validate-code-quality.md` - Updated to include Python linting
+- ✓ `.cursor/rules/linting-behavior.mdc` - No changes needed
 - ✓ `AGENTS.md` - Verified references are accurate
 
 **Forward Dependencies Verified:**
-- ✓ `lint-check.md` - Exists and is current
+- ✓ `validate-code-quality.md` - Exists and is current
 - ✓ `linting_checklist_v1_0.md` - Exists and is current
-- ✓ `linting.mdc` - Newly added, exists
+- ✓ `linting-behavior.mdc` - Newly added, exists
 
 **Related Documentation Updated:**
 - ✓ `CHANGELOG.md` - Entry added
-- ✓ `lint-check.md` - Updated for Python linting
+- ✓ `validate-code-quality.md` - Updated for Python linting
 - N/A `AGENTS.md` - No workflow changes
 
 All dependencies verified and updated.

@@ -1,0 +1,148 @@
+---
+description: Frontend development standards for React components, hooks, and styling. Applies when working in src/frontend/ directory.
+version: 1.0.0
+lastUpdated: 04-12-2025 11:47:37 EST
+globs: **/*.{tsx,jsx,ts,js}
+alwaysApply: false
+type: Conditional Rule - Frontend development role
+relatedStandards: [ui/chat-interface.md]
+---
+
+# Frontend Development Standards
+
+## When This Rule Applies
+
+When working in `src/frontend/` directory with React components, hooks, or styles.
+
+---
+
+## Core Requirements
+
+### Component Structure
+- Use functional components with TypeScript
+- Props interface at top of file
+- Component as named export (not default export)
+- Styles with Tailwind CSS or CSS modules
+
+### File Organization
+- One component per file
+- Co-locate tests with components (`ComponentName.test.tsx`)
+- Hooks in dedicated `hooks/` directory
+- Utilities in `utils/` directory
+
+### Naming Conventions
+- **Components:** PascalCase (e.g., `UserProfile.tsx`)
+- **Hooks:** camelCase with `use` prefix (e.g., `useAuth.ts`)
+- **Utilities:** camelCase (e.g., `formatDate.ts`)
+- **Types:** PascalCase with `Props` or `Type` suffix (e.g., `UserCardProps`)
+
+---
+
+## Examples
+
+### Good Component
+
+```tsx
+interface UserCardProps {
+  name: string;
+  email: string;
+  onEdit?: () => void;
+}
+
+export function UserCard({ name, email, onEdit }: UserCardProps) {
+  return (
+    <div className="p-4 border rounded shadow-sm">
+      <h3 className="text-lg font-bold">{name}</h3>
+      <p className="text-gray-600">{email}</p>
+      {onEdit && (
+        <button onClick={onEdit} className="mt-2 text-blue-500">
+          Edit
+        </button>
+      )}
+    </div>
+  );
+}
+```
+
+### Bad Component
+
+```tsx
+// ❌ No types, default export, inline styles, no props interface
+export default function Card(props) {
+  return (
+    <div style={{padding: 4}}>
+      {props.name}
+    </div>
+  );
+}
+```
+
+---
+
+## Hooks Guidelines
+
+### Custom Hook Structure
+
+```tsx
+interface UseAuthReturn {
+  user: User | null;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  loading: boolean;
+}
+
+export function useAuth(): UseAuthReturn {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Implementation...
+
+  return { user, login, logout, loading };
+}
+```
+
+### Hook Rules
+- Always return an object (not an array) for clarity
+- Type the return value explicitly
+- Handle loading and error states
+- Clean up side effects in `useEffect` cleanup function
+
+---
+
+## State Management
+
+### Local State
+- Use `useState` for component-local state
+- Use `useReducer` for complex state logic
+
+### Global State
+- Use context for app-wide state
+- Avoid prop drilling (pass through >2 levels)
+- Consider state management library for large apps (Zustand, Jotai)
+
+---
+
+## Performance
+
+### Memoization
+- Use `React.memo` for expensive components
+- Use `useMemo` for expensive calculations
+- Use `useCallback` for functions passed as props
+
+### Example
+
+```tsx
+const MemoizedUserList = React.memo(function UserList({ users }: Props) {
+  return <ul>{users.map(user => <li key={user.id}>{user.name}</li>)}</ul>;
+});
+```
+
+---
+
+## Related Standards
+
+See `standards/ui/` for comprehensive frontend standards including:
+- Component patterns
+- Accessibility requirements
+- Performance optimization
+- Testing strategies

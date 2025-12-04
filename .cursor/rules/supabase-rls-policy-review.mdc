@@ -1,9 +1,13 @@
 ---
-description: Supabase Row Level Security (RLS) Policy Review - Deep-dive validation of database security policies. Applies when Supabase is detected in the project.
-version: 1.0.0
-lastUpdated: 2025-12-02
-globs: "**/*.sql"
+description: Deep-dive validation of Supabase Row Level Security database policies
+version: 1.1.0
+lastUpdated: 2025-12-04
+globs: **/*.sql
 alwaysApply: false
+type: Security/Compliance Rule - Auto-applied when Supabase detected
+relatedCommands: [audit-security.mdc, project-audit.md]
+relatedRules: []
+relatedStandards: [security/access-control.md, architecture/supabase-local-setup.md]
 ---
 
 # Supabase RLS Policy Review Rule
@@ -253,4 +257,38 @@ This rule is automatically applied when:
 1. Always enable RLS immediately: `ALTER TABLE <table> ENABLE ROW LEVEL SECURITY;`
 2. Create policies following patterns in `standards/security/access-control.md`
 3. Verify policies prevent ownership changes and enforce tenant isolation
+
+---
+
+## Related Files
+
+- **Commands:**
+  - [audit-security.mdc](../commands/audit-security.mdc) - Security audit command that triggers RLS review
+  - [project-audit.md](../commands/project-audit.md) - Project audit includes database security
+- **Standards:**
+  - [access-control.md](../../standards/security/access-control.md) - Access control and RLS standards
+  - [supabase-local-setup.md](../../standards/architecture/supabase-local-setup.md) - Supabase setup and configuration
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically when Supabase is detected in the project (via `supabase/` directory or Supabase environment variables) and when working with SQL files.**
+
+**Agents should:**
+- Automatically check if Supabase is present before database changes
+- Review all RLS policies when creating or modifying tables
+- Verify RLS is enabled on all tables (especially public schema)
+- Check policy logic prevents unauthorized access and data leakage
+- Ensure policies prevent ownership changes via UPDATE
+- Verify role-based access is properly implemented
+- Reference `standards/security/access-control.md` for secure patterns
+- Generate SQL fixes for any policy issues found
+
+**When to trigger RLS review:**
+- Creating or modifying database tables
+- Adding or updating RLS policies
+- Performing security audits
+- Before deploying database changes
+- During project onboarding
 4. Use `auth.jwt()` for role checks, not public table columns

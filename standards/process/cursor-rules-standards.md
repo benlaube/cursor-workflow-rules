@@ -1,9 +1,9 @@
 # Cursor Rules Standards v1.0
 
 ## Metadata
-- **Created:** 2025-12-04
-- **Last Updated:** 2025-12-04
-- **Version:** 1.0
+- **Created:** 04-12-2025
+- **Last Updated:** 04-12-2025 11:02:01 EST
+- **Version:** 1.2
 - **Description:** Standards for creating, structuring, and maintaining Cursor rules (`.cursor/rules/*.mdc` files)
 - **Type:** Governing Standard - Defines requirements for Cursor rule creation
 - **Applicability:** When creating or modifying Cursor rules
@@ -42,10 +42,10 @@ Every Cursor rule MUST have:
 ### 3.1 YAML Frontmatter (REQUIRED)
 ```yaml
 ---
-description: Brief description of what this rule does (one sentence)
+description: Brief description of what this rule does and when to apply it (1-2 sentences)
 version: X.Y.Z (semantic versioning - see environment.mdc)
-lastUpdated: YYYY-MM-DD (ISO date format)
-globs: **/* (optional - file pattern this rule applies to, NO quotes)
+lastUpdated: DD-MM-YYYY HH:MM:SS EST (date and time in EST timezone)
+globs: **/* (REQUIRED - file pattern this rule applies to, NO quotes. Use empty string "" if alwaysApply is true)
 alwaysApply: true/false (whether rule applies to all files or just matching globs)
 type: Rule type (see Section 4, NO quotes)
 relatedCommands: [command1.md, command2.md] (optional - related cursor commands)
@@ -55,18 +55,32 @@ relatedStandards: [standard1.md, standard2.md] (optional - standards this rule i
 ```
 
 **Field Definitions:**
-- **description** (REQUIRED): One sentence summary of rule purpose
+- **description** (REQUIRED): 1-2 sentences that describe what the rule does AND when to apply it
+  - First sentence: What the rule does
+  - Second sentence (optional): When/where it applies
+  - Examples:
+    - ✅ "Auto-applied rule for creating and modifying Cursor rules. Applies when editing `.cursor/rules/*.mdc` files."
+    - ✅ "Frontend development standards for React components. Applies when working in `src/frontend/` directory."
 - **version** (REQUIRED): Semantic versioning (X.Y.Z format)
   - Major: Breaking changes or major behavior changes
   - Minor: New features or significant additions
   - Patch: Bug fixes, clarifications, minor updates
-- **lastUpdated** (REQUIRED): Date of last modification (YYYY-MM-DD format)
-- **globs** (OPTIONAL): File pattern(s) this rule applies to (NO quotes in .mdc files)
-  - Examples: `**/*.ts`, `**/*.{ts,tsx}`, `**/*`
-  - Omit if rule applies universally
+- **lastUpdated** (REQUIRED): Date and time of last modification in EST timezone
+  - Format: `DD-MM-YYYY HH:MM:SS EST`
+  - Example: `04-12-2025 14:30:00 EST`
+  - Use EST timezone for all timestamps
+- **globs** (REQUIRED): File pattern(s) this rule applies to (NO quotes in .mdc files)
+  - **Required field** - must be present in all rules
+  - If `alwaysApply: true`, use empty string: `globs: ""`
+  - If `alwaysApply: false`, specify pattern: `globs: **/*.ts` or `globs: **/*.{ts,tsx}`
+  - Examples:
+    - `globs: ""` (when alwaysApply is true)
+    - `globs: **/*.ts` (TypeScript files)
+    - `globs: **/*.{ts,tsx}` (TypeScript and TSX files)
+    - `globs: {standards/**/*.md,docs/**/*.md}` (Multiple patterns)
 - **alwaysApply** (REQUIRED): Whether rule applies automatically
-  - `true`: Always applies (most common)
-  - `false`: Only applies to matching globs
+  - `true`: Always applies (most common) - set `globs: ""` in this case
+  - `false`: Only applies to files matching `globs` pattern
 - **type** (REQUIRED): Document type (see Section 4)
 - **relatedCommands** (OPTIONAL): Array of related command filenames
 - **relatedRules** (OPTIONAL): Array of related rule filenames
@@ -136,7 +150,7 @@ Every rule must declare its type in the YAML frontmatter:
 
 ### Type 1: Auto-Applied Behavioral Rule
 **Purpose:** Guides agent behavior automatically
-**Example:** `linting.mdc`, `ai-interaction-rules.mdc`
+**Example:** `linting-behavior.mdc`, `ai-interaction-rules.mdc`
 **YAML:**
 ```yaml
 type: Auto-Applied Behavioral Rule - Guides AI agent behavior
@@ -200,7 +214,7 @@ alwaysApply: true
 
 ### Type 8: Documentation Maintenance Rule
 **Purpose:** Ensures documentation stays updated
-**Example:** `documentation-dependency-tracking.mdc`
+**Example:** `documentation-dependency-tracking.mdc`, `readme-standards.mdc`
 **YAML:**
 ```yaml
 type: Documentation Maintenance Rule - Tracks doc dependencies automatically
@@ -294,14 +308,14 @@ List standards that:
 
 **Format in YAML:**
 ```yaml
-relatedStandards: [process/linting.md, documentation.md]
+relatedStandards: [process/code-quality-linting-standards.md, documentation.md]
 ```
 
 **Format in content:**
 ```markdown
 ## Related Files
 - **Standards:**
-  - [linting.md](../../standards/process/linting.md) - Defines linting requirements
+  - [code-quality-linting-standards.md](../../standards/process/code-quality-linting-standards.md) - Defines linting requirements
   - [documentation.md](../../standards/project-planning/documentation.md) - Documentation standards
 ```
 
@@ -338,15 +352,26 @@ relatedStandards: [process/linting.md, documentation.md]
 - ✅ Keep rules focused and concise
 - ❌ Don't let rules grow too large (>1000 lines needs refactoring)
 
+### 8.6 Rule Length Guidelines
+- **Optimal length:** 100-300 lines per rule (sweet spot: 150-200 lines)
+- **Absolute maximum:** 500 lines (as per Cursor documentation)
+- **Nested "role" rules:** 50-150 lines (core directives only)
+- **When to split:** If rule exceeds 300 lines, consider splitting by concern
+- **Keep nested rules concise:** Focus on actionable directives, reference full standards for details
+- **Use nested rules for role-based behavior:** Create domain-specific "roles" that adapt agent behavior by directory
+
 ---
 
 ## 9. Rule Testing and Validation
 
 ### 9.1 Before Publishing a Rule
 - [ ] YAML frontmatter is valid and complete
-- [ ] All required fields are present
-- [ ] Version follows semantic versioning
-- [ ] Type is declared and accurate
+- [ ] All required fields are present (description, version, lastUpdated, globs, alwaysApply, type)
+- [ ] Description is 1-2 sentences describing what the rule does AND when to apply it
+- [ ] Version follows semantic versioning (X.Y.Z format)
+- [ ] lastUpdated uses DD-MM-YYYY HH:MM:SS EST format
+- [ ] globs is present (empty string "" if alwaysApply is true, pattern if false)
+- [ ] Type is declared and accurate (one of 8 standard types)
 - [ ] Related commands/rules/standards are listed
 - [ ] Examples are provided
 - [ ] "How to Use" section is clear
@@ -366,11 +391,12 @@ relatedStandards: [process/linting.md, documentation.md]
 ### 10.1 Basic Rule Template
 ```markdown
 ---
-description: Brief one-sentence description
+description: Brief description of what this rule does and when to apply it (1-2 sentences)
 version: 1.0.0
-lastUpdated: 2025-12-04
+lastUpdated: 04-12-2025 14:30:00 EST
+globs: ""
 alwaysApply: true
-type: "Auto-Applied Behavioral Rule - Guides AI agent behavior"
+type: Auto-Applied Behavioral Rule - Guides AI agent behavior
 relatedCommands: []
 relatedRules: []
 relatedStandards: []
@@ -430,12 +456,12 @@ This rule applies automatically when [condition]. Agents should [expected behavi
 ### 10.2 File-Specific Rule Template
 ```markdown
 ---
-description: Brief one-sentence description
+description: Brief description of what this rule does and when to apply it (1-2 sentences)
 version: 1.0.0
-lastUpdated: 2025-12-04
-globs: "**/*.{ts,tsx}"
+lastUpdated: 04-12-2025 14:30:00 EST
+globs: **/*.{ts,tsx}
 alwaysApply: false
-type: "Conditional Rule - Applies to specific file types"
+type: Conditional Rule - Applies to specific file types
 relatedCommands: []
 relatedRules: []
 relatedStandards: []
@@ -482,7 +508,7 @@ Before removal:
 
 Rules are automatically tracked by:
 - **`documentation-dependency-tracking.mdc`** - Tracks rule dependencies when modified
-- **`audit-documentation-metadata.md`** - Audits rule metadata completeness
+- **`audit-documentation-rules-metadata.md`** - Orchestrates metadata validation for all documentation and rule files
 
 When modifying a rule, agents MUST:
 1. Update YAML frontmatter (version, lastUpdated)
@@ -494,7 +520,7 @@ When modifying a rule, agents MUST:
 
 ## 13. Examples of Well-Structured Rules
 
-### Example 1: Behavioral Rule (`linting.mdc`)
+### Example 1: Behavioral Rule (`linting-behavior.mdc`)
 - ✅ Clear YAML frontmatter with all fields
 - ✅ Specific "When This Rule Applies" section
 - ✅ Concrete examples of expected behavior
@@ -513,6 +539,92 @@ When modifying a rule, agents MUST:
 - ✅ Detailed agent responsibilities
 - ✅ Examples with scenarios
 
+### Example 4: Documentation Maintenance Rule (`readme-standards.mdc`)
+- ✅ Uses `globs` to target specific file pattern (`**/README.md`)
+- ✅ Defines multiple document types (Root, Module, Standards, Feature)
+- ✅ Provides complete structure templates for each type
+- ✅ Content guidelines with good/bad examples
+- ✅ Validation checklist for completeness
+- ✅ Clear integration with other documentation rules
+
+---
+
+## 15. Nested Rules Strategy
+
+### 15.1 Purpose
+Nested rules create domain-specific "roles" for the AI agent. When working in different directories, the agent automatically adopts different behaviors and expertise based on the nested rules in those directories.
+
+### 15.2 Benefits
+- **Role-based agent behavior:** Single agent window acts as multiple specialists
+- **Automatic context switching:** Agent behavior adapts based on file location
+- **Better organization:** Rules live where they're needed
+- **Reduced cognitive load:** Agent only sees relevant rules for current work
+
+### 15.3 Structure
+Place `.cursor/rules/` directories in subdirectories where domain-specific guidance is needed:
+
+```
+project/
+  .cursor/rules/              # Root-level rules (always apply)
+  src/
+    frontend/
+      .cursor/rules/          # Frontend-specific rules
+        frontend-standards.mdc
+    backend/
+      .cursor/rules/          # Backend-specific rules
+        backend-standards.mdc
+  database/
+    .cursor/rules/            # Database-specific rules
+      database-standards.mdc
+```
+
+### 15.4 Naming Conventions
+- Use domain-specific names: `frontend-standards.mdc`, `backend-standards.mdc`, `database-standards.mdc`
+- Keep names descriptive and clear
+- Follow kebab-case pattern
+
+### 15.5 Content Guidelines
+- **Keep concise:** 50-150 lines for nested "role" rules
+- **Focus on directives:** What to do, not exhaustive documentation
+- **Reference full standards:** End with "See `standards/[domain]/` for complete details"
+- **Provide examples:** Good vs bad patterns
+- **Actionable:** Clear, specific instructions
+
+### 15.6 Template for Nested Rules
+```yaml
+---
+description: [Domain] development standards. Applies when working in [directory]/ directory.
+version: 1.0.0
+lastUpdated: 04-12-2025 14:30:00 EST
+globs: **/*.{relevant,extensions}
+alwaysApply: false
+type: Conditional Rule - [Domain] development role
+relatedStandards: [domain/standard.md]
+---
+
+# [Domain] Development Standards
+
+## When This Rule Applies
+When working in `[directory]/` directory with [domain-specific files].
+
+## Core Requirements
+[Key directives - what to do]
+
+## Examples
+[Good vs bad examples]
+
+## Related Standards
+See `standards/[domain]/` for comprehensive [domain] standards.
+```
+
+### 15.7 Best Practices
+- ✅ Create nested rules for distinct domains (frontend, backend, database, etc.)
+- ✅ Keep nested rules focused on core directives
+- ✅ Reference comprehensive standards for details
+- ✅ Use `globs` to target specific file types
+- ❌ Don't duplicate root-level rules in nested locations
+- ❌ Don't create nested rules for every subdirectory (only when domain-specific guidance is needed)
+
 ---
 
 ## 14. Related Files
@@ -521,7 +633,7 @@ When modifying a rule, agents MUST:
   - [environment.mdc](../../.cursor/rules/environment.mdc) - Defines version numbering standards for rules
   - [documentation-dependency-tracking.mdc](../../.cursor/rules/documentation-dependency-tracking.mdc) - Auto-tracks rule dependencies
 - **Commands:**
-  - [audit-documentation-metadata.md](../../.cursor/commands/audit-documentation-metadata.md) - Audits rule metadata
+  - [audit-documentation-rules-metadata.md](../../.cursor/commands/audit-documentation-rules-metadata.md) - Orchestrates metadata validation
 - **Standards:**
   - [documentation.md](../project-planning/documentation.md) - General documentation standards
 

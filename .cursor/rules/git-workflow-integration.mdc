@@ -1,0 +1,394 @@
+---
+description: Coordinates git operations and validates git status. Always active to ensure git workflow rules work together and git state is validated.
+version: 1.0.0
+lastUpdated: 04-12-2025 12:42:51 EST
+globs: ""
+alwaysApply: true
+type: Behavioral Rule - Git workflow coordination
+relatedCommands: []
+relatedRules: [git-branch-naming.mdc, git-commit-messages.mdc, git-pr-preparation.mdc, git-repository-hygiene.mdc, git-hooks-standards.mdc, task-workflow.mdc]
+relatedStandards: [process/git-repository-standards.md]
+---
+
+# Git Workflow Integration Rule
+
+## When This Rule Applies
+
+This rule **always applies** to coordinate git operations and validate git state. It ensures:
+- Git status is validated before operations
+- Other git rules work together
+- AI agent behavior follows git standards
+
+---
+
+## Core Principle
+
+**Coordinate git operations and validate state.** This rule ensures all git workflow rules work together and git state is validated before operations.
+
+**Source Standard:** `standards/process/git-repository-standards.md` Section A (When to Apply), Section F (AI Agent Behavior)
+
+---
+
+## Agent Responsibilities
+
+### 1. Git Status Validation
+
+#### 1.1 Current Branch Check
+**Before any git operation, check current branch:**
+```bash
+git branch --show-current
+```
+
+**If on main/master:**
+- ⚠️ "You are on main branch. No direct commits allowed. Create a feature branch first."
+- **Action Required:** Create feature branch before making changes
+- **Exception:** Only if explicitly emergency hotfix
+
+**If on feature branch:**
+- ✅ "On feature branch: {branch-name}"
+- Validate branch name (see `git-branch-naming.mdc`)
+
+#### 1.2 Working Tree Check
+**Check working tree state:**
+```bash
+git status --porcelain
+```
+
+**If uncommitted changes:**
+- List modified files
+- ⚠️ "Working tree has uncommitted changes"
+- **Context-dependent actions:**
+  - Before branch creation: Warn but allow (user may want to stash)
+  - Before commit: ✅ "Ready to commit"
+  - Before PR: Check if changes are committed
+
+**If clean:**
+- ✅ "Working tree is clean"
+
+#### 1.3 Sync with Remote
+**Check if local branch is behind remote:**
+```bash
+git fetch origin
+git rev-list HEAD..origin/main --count
+```
+
+**If behind:**
+- ⚠️ "Local branch is behind origin/main by {count} commits"
+- **Action Required:** "Run `git pull origin main` to sync before proceeding"
+- **Context:** Important before creating PR or merging
+
+**If up to date:**
+- ✅ "Local branch is synced with origin/main"
+
+**If ahead:**
+- ✅ "Local branch is {count} commits ahead of origin/main"
+- **Context:** Ready for PR
+
+### 2. Rule Coordination
+
+#### 2.1 Branch Operations
+**When creating/validating branches:**
+- Trigger: `git-branch-naming.mdc`
+- Validate: Branch name format, main branch protection
+- Coordinate: Git status validation (this rule)
+
+**Workflow:**
+1. Check git status (this rule)
+2. Validate branch name (`git-branch-naming.mdc`)
+3. Create branch if valid
+4. Set upstream tracking
+
+#### 2.2 Commit Operations
+**When committing code:**
+- Trigger: `git-commit-messages.mdc`
+- Validate: Commit message format, secrets, .env files
+- Coordinate: Git status validation (this rule)
+
+**Workflow:**
+1. Check git status (this rule)
+2. Validate staged files exist
+3. Scan for secrets (`git-commit-messages.mdc`)
+4. Validate commit message format (`git-commit-messages.mdc`)
+5. Allow commit if all checks pass
+
+#### 2.3 PR Operations
+**When preparing PR:**
+- Trigger: `git-pr-preparation.mdc`
+- Validate: Branch, commits, generate PR description
+- Coordinate: Git status validation (this rule)
+
+**Workflow:**
+1. Check git status (this rule)
+2. Validate branch (`git-branch-naming.mdc`)
+3. Validate commits (`git-commit-messages.mdc`)
+4. Generate PR description (`git-pr-preparation.mdc`)
+5. Run pre-PR validation (`pr-review-check.mdc`)
+
+#### 2.4 Repository Hygiene
+**Always monitor:**
+- Trigger: `git-repository-hygiene.mdc`
+- Validate: .gitignore, tracked files, repository state
+- Coordinate: Git status validation (this rule)
+
+**Workflow:**
+1. Check .gitignore patterns (`git-repository-hygiene.mdc`)
+2. Check tracked sensitive files (`git-repository-hygiene.mdc`)
+3. Suggest cleanup if needed
+
+### 3. AI Agent Behavior
+
+#### 3.1 Branch Creation
+**When user requests branch creation:**
+- Always ask for task context to name branch correctly
+- Never create branches on `main` or `master`
+- Always use format: `{type}/{context}-{short-desc}`
+- Sync main before creating branch
+- Set upstream tracking after creation
+
+**Example:**
+```
+User: "I need to add user authentication"
+Agent: "What type of change? (feat/fix/docs/chore/refactor/test/style/perf)"
+User: "feat"
+Agent: "What area? (e.g., auth, api, ui)"
+User: "auth"
+Agent: "Creating branch: feat/auth-user-authentication"
+→ Validates format ✅
+→ Syncs main ✅
+→ Creates branch ✅
+→ Sets upstream ✅
+```
+
+#### 3.2 Commit Messages
+**When committing code:**
+- Always write semantic commit messages
+- Never use "update code", "misc changes", or vague descriptions
+- Use imperative mood: "add feature" not "added feature"
+- Include scope when relevant: `feat(auth):` not just `feat:`
+- Validate before committing (format, secrets, .env)
+
+**Example:**
+```
+Agent: "Committing changes..."
+→ Validates commit message: ✅ "feat(auth): add google oauth login support"
+→ Scans for secrets: ✅ No secrets found
+→ Checks .env: ✅ .env not staged
+→ Commits: ✅ Success
+```
+
+#### 3.3 PR Preparation
+**When preparing PR:**
+- Auto-generate detailed PR description based on commits
+- Include test plan prompts
+- Reference relevant standards and checklists
+- Validate branch and commits before PR
+
+**Example:**
+```
+Agent: "Preparing PR..."
+→ Validates branch: ✅ "feat/auth-google-oauth"
+→ Validates commits: ✅ All follow Conventional Commits
+→ Generates PR title: ✅ "feat(auth): add google oauth login support"
+→ Generates PR description: ✅ Includes summary, type, test plan, checklist
+```
+
+#### 3.4 Validation
+**Before any git operation:**
+- Always validate git status
+- Check for secrets before staging
+- Verify .gitignore compliance
+- Ensure working tree is ready
+
+### 4. Integration with Task Workflow
+
+#### 4.1 Before Starting Task
+**Pre-flight checks:**
+- Check git status (this rule)
+- Verify on feature branch (not main)
+- Check working tree is clean or has uncommitted changes
+- Sync with remote if needed
+
+**Reference:** See `task-workflow.mdc` and `pre-flight-check.mdc`
+
+#### 4.2 During Task
+**Git operations:**
+- Create branches as needed (validate format)
+- Commit changes (validate message, scan secrets)
+- Push changes (validate before push)
+
+#### 4.3 After Completing Task
+**Pre-PR checks:**
+- Validate branch and commits
+- Generate PR description
+- Run pre-PR validation
+- Prepare for PR submission
+
+**Reference:** See `task-workflow.mdc` and `pr-review-check.mdc`
+
+### 5. Error Recovery
+
+#### 5.1 Common Issues
+**Port conflicts, dependency issues, etc.:**
+- Reference: See `auto-heal.mdc` for error recovery
+- This rule focuses on git-specific state validation
+
+#### 5.2 Git-Specific Issues
+**Working tree conflicts:**
+- Detect merge conflicts
+- Suggest resolution steps
+- Prevent operations during conflicts
+
+**Branch sync issues:**
+- Detect divergence from remote
+- Suggest rebase or merge
+- Prevent push if divergent
+
+---
+
+## Examples
+
+### Example 1: Starting New Task
+
+**Scenario:** User wants to start new feature
+
+**Response:**
+```
+✅ Pre-flight git check complete.
+
+Git Status:
+- Current branch: main
+- Working tree: Clean
+- Remote sync: Up to date
+
+⚠️ You are on main branch. Creating feature branch first.
+
+What type of change? (feat/fix/docs/chore/refactor/test/style/perf)
+→ User: "feat"
+What area? (e.g., auth, api, ui)
+→ User: "auth"
+What feature?
+→ User: "google oauth login"
+
+Creating branch: feat/auth-google-oauth-login
+→ Syncing main... ✅
+→ Creating branch... ✅
+→ Setting upstream... ✅
+
+Ready for development on feat/auth-google-oauth-login
+```
+
+### Example 2: Committing Changes
+
+**Scenario:** User wants to commit changes
+
+**Response:**
+```
+✅ Git status check complete.
+
+Git Status:
+- Current branch: feat/auth-google-oauth-login
+- Working tree: 3 files modified
+- Staged files: 2 files
+
+Validating commit...
+→ Commit message: "feat(auth): add google oauth login support" ✅
+→ Secrets scan: ✅ No secrets found
+→ .env check: ✅ .env not staged
+→ Format validation: ✅ Follows Conventional Commits
+
+Ready to commit:
+git commit -m "feat(auth): add google oauth login support"
+```
+
+### Example 3: Preparing PR
+
+**Scenario:** User wants to create PR
+
+**Response:**
+```
+✅ Pre-PR validation complete.
+
+Git Status:
+- Current branch: feat/auth-google-oauth-login
+- Working tree: Clean
+- Commits ahead: 2 commits
+- Remote sync: Up to date
+
+Branch Validation:
+→ Branch name: ✅ Follows format
+→ Not on main: ✅
+
+Commit Validation:
+→ All commits follow Conventional Commits: ✅
+
+PR Title: feat(auth): add google oauth login support
+
+PR Description Template:
+[Generated template with summary, type, test plan, checklist]
+
+Ready to create PR.
+```
+
+---
+
+## Integration with Other Rules
+
+This rule coordinates:
+
+### All Git Rules
+- `git-branch-naming.mdc` - Branch operations
+- `git-commit-messages.mdc` - Commit operations
+- `git-pr-preparation.mdc` - PR operations
+- `git-repository-hygiene.mdc` - Repository maintenance
+- `git-hooks-standards.mdc` - Hook configuration
+
+### Workflow Rules
+- `task-workflow.mdc` - Task lifecycle integration
+- `pre-flight-check.mdc` - Pre-flight validation
+- `pr-review-check.mdc` - Pre-PR validation
+
+---
+
+## Related Files
+
+- **Rules:**
+  - [git-branch-naming.mdc](./git-branch-naming.mdc) - Branch naming and protection
+  - [git-commit-messages.mdc](./git-commit-messages.mdc) - Commit message validation
+  - [git-pr-preparation.mdc](./git-pr-preparation.mdc) - PR preparation
+  - [git-repository-hygiene.mdc](./git-repository-hygiene.mdc) - Repository hygiene
+  - [git-hooks-standards.mdc](./git-hooks-standards.mdc) - Git hooks configuration
+  - [task-workflow.mdc](./task-workflow.mdc) - Task lifecycle
+  - [pre-flight-check.mdc](./pre-flight-check.mdc) - Pre-flight validation
+  - [pr-review-check.mdc](./pr-review-check.mdc) - Pre-PR validation
+- **Standards:**
+  - [git-repository-standards.md](../../standards/process/git-repository-standards.md) - Git workflow standards (Sections A, F)
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically to coordinate git operations and validate git state.**
+
+**Agents should:**
+1. Always validate git status before git operations
+2. Check current branch (prevent main/master commits)
+3. Check working tree state (clean vs uncommitted changes)
+4. Check sync with remote (behind/ahead/up to date)
+5. Coordinate other git rules based on operation type
+6. Follow AI agent behavior guidelines (Section 3)
+7. Integrate with task workflow (before/during/after tasks)
+8. Provide clear status messages for all git operations
+
+**Git status validation checklist:**
+- [ ] Current branch checked (not main/master for commits)
+- [ ] Working tree state checked (clean/uncommitted)
+- [ ] Remote sync checked (behind/ahead/up to date)
+- [ ] Appropriate git rule triggered based on operation
+- [ ] Clear status messages provided
+
+**Operation coordination:**
+- [ ] Branch operations → `git-branch-naming.mdc`
+- [ ] Commit operations → `git-commit-messages.mdc`
+- [ ] PR operations → `git-pr-preparation.mdc`
+- [ ] Hygiene checks → `git-repository-hygiene.mdc`
+- [ ] Hook setup → `git-hooks-standards.mdc`

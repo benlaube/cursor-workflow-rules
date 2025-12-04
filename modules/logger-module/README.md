@@ -686,6 +686,26 @@ if (isILogger(someObject)) {
 }
 ```
 
+### Accessing Pino Logger
+
+For advanced Pino usage, you can access the underlying Pino logger:
+
+```typescript
+import { setupLogger } from './modules/logger-module';
+
+const logger = setupLogger('my-service', {
+  env: 'development',
+  serviceName: 'my-app',
+});
+
+// Access underlying Pino logger (optional method)
+if (logger.getPinoLogger) {
+  const pinoLogger = logger.getPinoLogger();
+  // Use Pino-specific features
+  pinoLogger.child({ customField: 'value' });
+}
+```
+
 ## Runtime-Specific Usage
 
 ### Node.js
@@ -750,6 +770,8 @@ app.use(createExpressMiddleware(logger));
 
 ### Next.js
 
+#### App Router Integration
+
 ```typescript
 // middleware.ts
 import { setupLogger } from './modules/logger-module';
@@ -762,6 +784,119 @@ const logger = setupLogger('nextjs-app', {
 
 export default createNextJsMiddleware(logger);
 ```
+
+```typescript
+// app/api/logs/route.ts - Main logs endpoint
+import { NextJsLogViewerGET } from './modules/logger-module';
+
+export const GET = NextJsLogViewerGET;
+```
+
+```typescript
+// app/api/logs/files/route.ts - List log files
+import { NextJsLogViewerGET_FILES } from './modules/logger-module';
+
+export const GET = NextJsLogViewerGET_FILES;
+```
+
+```typescript
+// app/api/logs/files/[filename]/route.ts - Get log file content
+import { NextJsLogViewerGET_FILE } from './modules/logger-module';
+import { NextRequest } from 'next/server';
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { filename: string } }
+) {
+  return NextJsLogViewerGET_FILE(request, { params });
+}
+```
+
+```typescript
+// app/api/logs/database/route.ts - Query database logs
+import { NextJsLogViewerGET_DATABASE } from './modules/logger-module';
+import { createClient } from '@supabase/supabase-js';
+import { NextRequest } from 'next/server';
+
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!);
+
+export async function GET(request: NextRequest) {
+  return NextJsLogViewerGET_DATABASE(request, {
+    enableDatabase: true,
+    supabaseClient: supabase,
+  });
+}
+```
+
+```typescript
+// app/api/logs/summary/route.ts - Get summary statistics
+import { NextJsLogViewerGET_SUMMARY } from './modules/logger-module';
+import { NextRequest } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  return NextJsLogViewerGET_SUMMARY(request);
+}
+```
+
+```typescript
+// app/api/logs/ui/route.ts - HTML log viewer
+import { NextJsLogViewerGET_UI } from './modules/logger-module';
+
+export const GET = NextJsLogViewerGET_UI;
+```
+
+```typescript
+// app/api/logs/export/csv/route.ts - Export CSV
+import { NextJsLogViewerGET_EXPORT_CSV } from './modules/logger-module';
+import { NextRequest } from 'next/server';
+
+export async function GET(request: NextRequest) {
+  return NextJsLogViewerGET_EXPORT_CSV(request);
+}
+```
+
+#### Using the Router Helper (Recommended)
+
+```typescript
+// app/api/logs/route.ts
+import { createNextJsLogViewerRoutes } from './modules/logger-module/viewer/nextjs-router';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!);
+
+const routes = createNextJsLogViewerRoutes({
+  logDir: './logs',
+  enableDatabase: true,
+  supabaseClient: supabase,
+});
+
+export const GET = routes.GET;
+```
+
+```typescript
+// app/api/logs/files/route.ts
+import { createNextJsLogViewerRoutes } from './modules/logger-module/viewer/nextjs-router';
+
+export const GET = createNextJsLogViewerRoutes().GET_FILES;
+```
+
+#### Pages Router Integration
+
+```typescript
+// pages/api/logs/index.ts
+import { createPagesRouterHandler } from './modules/logger-module/viewer/nextjs-router';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!);
+
+export default createPagesRouterHandler({
+  logDir: './logs',
+  enableDatabase: true,
+  supabaseClient: supabase,
+});
+```
+
+#### API Route with Logging
 
 ```typescript
 // app/api/route.ts
@@ -1088,9 +1223,118 @@ if (result.ok) {
 }
 ```
 
+### Pagination Support
+
+Both `getAnalyzedLogs()` and `queryDatabaseLogs()` support pagination:
+
+```typescript
+import { getAnalyzedLogs, queryDatabaseLogs } from './modules/logger-module/viewer';
+
+// Paginated log analysis
+const result = await getAnalyzedLogs({
+  logDir: './logs',
+  page: 1,
+  pageSize: 50,
+  minLevel: 'error',
+});
+
+console.log(`Page ${result.pagination?.page} of ${result.pagination?.totalPages}`);
+console.log(`Showing ${result.errors.length} of ${result.pagination?.total} errors`);
+
+// Paginated database query
+const dbResult = await queryDatabaseLogs(supabaseClient, {
+  page: 2,
+  pageSize: 100,
+  level: 'error',
+});
+
+console.log(`Database logs: ${dbResult.data.length} entries`);
+console.log(`Total: ${dbResult.pagination?.total}, Page: ${dbResult.pagination?.page}`);
+```
+
+### Export Functionality
+
+Export logs in CSV or JSON format:
+
+```typescript
+import { exportLogsToCSV, exportLogsToJSON, downloadLogFile } from './modules/logger-module/viewer';
+
+// Export to CSV
+const csv = await exportLogsToCSV({
+  logDir: './logs',
+  maxEntries: 1000,
+  minLevel: 'error',
+});
+// Save to file or send as download
+
+// Export to JSON
+const json = await exportLogsToJSON({
+  logDir: './logs',
+  maxEntries: 1000,
+  minLevel: 'error',
+});
+// Save to file or send as download
+
+// Download log file
+const fileData = await downloadLogFile('./logs/session_20250127.log', './logs');
+// fileData contains: { content, filename, size }
+```
+
+### Advanced Database Queries
+
+Enhanced database query capabilities:
+
+```typescript
+import { queryDatabaseLogs, getLogStats, getErrorTrends, getTopErrors } from './modules/logger-module/viewer';
+
+// Multi-level filtering
+const logs = await queryDatabaseLogs(supabaseClient, {
+  levels: ['error', 'fatal', 'failure'],
+  component: 'backend',
+  source: 'api',
+  startTime: new Date('2025-01-01'),
+  endTime: new Date('2025-01-31'),
+  page: 1,
+  pageSize: 50,
+});
+
+// Get aggregated statistics
+const stats = await getLogStats(supabaseClient, {
+  startTime: new Date('2025-01-01'),
+  endTime: new Date('2025-01-31'),
+  component: 'backend',
+});
+
+console.log('Errors by level:', stats.byLevel);
+console.log('Errors by component:', stats.byComponent);
+console.log('Total errors:', stats.errorCount);
+
+// Get error trends over time
+const trends = await getErrorTrends(supabaseClient, {
+  startTime: new Date('2025-01-01'),
+  endTime: new Date('2025-01-31'),
+  interval: 'day', // 'hour', 'day', or 'week'
+  component: 'backend',
+});
+
+// Get most frequent errors
+const topErrors = await getTopErrors(supabaseClient, {
+  limit: 10,
+  startTime: new Date('2025-01-01'),
+  endTime: new Date('2025-01-31'),
+  component: 'backend',
+});
+
+topErrors.forEach(error => {
+  console.log(`${error.message}: ${error.count} occurrences`);
+});
+```
+
 ### Query Database Logs (If Enabled)
 
-If database logging is enabled, query the Supabase `logs` table:
+If database logging is enabled, you can query the Supabase `logs` table directly or use the viewer functions:
+
+**Using SQL (Direct Database Access):**
 
 ```sql
 -- Recent errors
@@ -1112,9 +1356,19 @@ FROM logs
 WHERE level = 'error' AND stack_trace IS NOT NULL;
 ```
 
+**Using Viewer Functions (Recommended):**
+
+See the "Advanced Database Queries" section above for examples using `queryDatabaseLogs()`, `getLogStats()`, `getErrorTrends()`, and `getTopErrors()`.
+
 ### Log Viewer Service (Built-in)
 
-The logger-module includes a built-in log viewer that can be integrated into your application or run standalone.
+The logger-module includes a built-in log viewer with enhanced features:
+- **HTML UI**: Interactive web-based log viewer with filters and search
+- **Export Support**: Export logs to CSV or JSON format
+- **Pagination**: Handle large log sets efficiently
+- **Database Integration**: Query and analyze logs stored in Supabase
+- **Advanced Filtering**: Date ranges, regex search, multi-level filtering
+- **Performance Optimizations**: Caching and streaming for large files
 
 #### Option 1: Integrated into Express App (Recommended)
 
@@ -1124,13 +1378,37 @@ Add log viewer routes to your existing Express application:
 // app.ts or server.ts
 import express from 'express';
 import { setupLogger, createLogViewerRouter } from './modules/logger-module';
-import { analyzeLogs, categorizeError } from './modules/error-handler';
+import { createClient } from '@supabase/supabase-js';
 
 const app = express();
 const logger = setupLogger('api-server', {
   env: 'development',
   serviceName: 'my-api',
   enableFile: true,
+  enableDatabase: true,
+});
+
+// Supabase client for database logging
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!);
+
+// Add log viewer routes
+app.use('/logs', createLogViewerRouter({
+  logDir: './logs',
+  enableDatabase: true,
+  supabaseClient: supabase,
+}));
+
+// Available routes:
+// GET /logs - HTML log viewer UI
+// GET /logs/files - List log files
+// GET /logs/files/:filename - Get log file content
+// GET /logs/database - Query database logs (with pagination)
+// GET /logs/database/stats - Get aggregated statistics
+// GET /logs/database/trends - Get error trends over time
+// GET /logs/database/top-errors - Get most frequent errors
+// GET /logs/export/csv - Export logs as CSV
+// GET /logs/export/json - Export logs as JSON
+// GET /logs/files/:filename/download - Download log file
 });
 
 // Add log viewer at /logs endpoint

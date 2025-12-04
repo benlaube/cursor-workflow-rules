@@ -1,9 +1,13 @@
 ---
-description: Workflow Standards Project Documentation Maintenance & Update Requirements
-version: 1.0.0
-lastUpdated: 2025-12-02
-globs: "**/*"
+description: Documentation maintenance requirements for Workflow Rules repository
+version: 1.1.0
+lastUpdated: 2025-12-04
+globs: **/*
 alwaysApply: true
+type: Project-Specific Rule - Applies to Workflow Rules repository only
+relatedCommands: []
+relatedRules: [documentation-dependency-tracking.mdc, task-workflow.mdc]
+relatedStandards: [project-planning/documentation.md]
 ---
 
 # Workflow Standards Documentation Maintenance Rule
@@ -63,7 +67,7 @@ When making any documentation or feature change, review and update these files a
      - AI Agent Instructions (if workflow changes)
    - **Note:** Keep high-level; detailed instructions belong in `INTEGRATION_GUIDE.md`
 
-4. **`INTEGRATION_GUIDE.md`** - Detailed integration instructions
+4. **`STANDARDS_INTEGRATION_GUIDE.md`** - Detailed integration instructions
    - **When:** Integration process, commands, or file structure changes
    - **What to Update:**
      - File lists and verification steps (if files change)
@@ -129,7 +133,7 @@ When making a change, use this checklist:
 - [ ] **AGENTS.md** - Updated if architecture, patterns, or workflow changed
 - [ ] **CHANGELOG.md** - Always updated with timestamp and description
 - [ ] **README.md** - Updated if structure, modules, or quick start changed
-- [ ] **INTEGRATION_GUIDE.md** - Updated if integration process changed
+- [ ] **STANDARDS_INTEGRATION_GUIDE.md** - Updated if integration process changed
 - [ ] **QUICK_INTEGRATION.md** - Updated if file lists or quick steps changed
 - [ ] **Module README.md** - Updated if module features or API changed
 - [ ] **Module INTEGRATION_GUIDE.md** - Updated if module integration changed
@@ -217,7 +221,7 @@ This rule integrates with `task-workflow.mdc`:
 **Documentation Updates Required:**
 - ✅ `CHANGELOG.md` - Add "Changed" entry with timestamp
 - ✅ `AGENTS.md` - Update Section 8.2 if command description changed
-- ✅ `INTEGRATION_GUIDE.md` - Update if command integration changed
+- ✅ `STANDARDS_INTEGRATION_GUIDE.md` - Update if command integration changed
 - ✅ `QUICK_INTEGRATION.md` - Update if command file name changed
 
 ### Example 3: Architecture Change
@@ -230,6 +234,7 @@ This rule integrates with `task-workflow.mdc`:
 - ✅ `CHANGELOG.md` - Add "Changed" entry (potentially "BREAKING")
 - ✅ `AGENTS.md` - Update Section 4 (Architecture) and Section 5 (Memory)
 - ✅ `README.md` - Update if architecture affects quick start
+- ✅ `STANDARDS_INTEGRATION_GUIDE.md` - Update if integration process affected
 - ✅ `standards/architecture/` - Update relevant architecture docs
 - ✅ Any module READMEs affected by the change
 
@@ -246,3 +251,30 @@ When integrating this repository into other projects:
 - **Keep the core principle:** Update documentation when features or architecture change
 
 **Remember:** Documentation is part of the code. Keep it updated, accurate, and consistent. If you're unsure whether to update a file, err on the side of updating it.
+
+---
+
+## Related Files
+
+- **Rules:**
+  - [documentation-dependency-tracking.mdc](./documentation-dependency-tracking.mdc) - Tracks documentation dependencies automatically
+  - [task-workflow.mdc](./task-workflow.mdc) - Development workflow that includes documentation updates
+- **Standards:**
+  - [documentation.md](../../standards/project-planning/documentation.md) - Documentation management standards
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically when making any documentation or feature change in the Workflow Rules / Coding Standards repository.**
+
+**Agents should:**
+- Update `CHANGELOG.md` for any feature, architecture, or significant change
+- Update `AGENTS.md` when workflow, architecture, or patterns change
+- Update `README.md` when structure, modules, or quick start changes
+- Update `INTEGRATION_GUIDE.md` when integration process changes
+- Update `QUICK_INTEGRATION.md` when file lists or quick steps change
+- Update module READMEs when module features or API changes
+- Follow the documentation update checklist in Section 4
+
+**Note:** When integrating this repository into other projects, adapt this rule to match the target project's documentation structure by removing references to files that don't exist (e.g., `INTEGRATION_GUIDE.md`) and adding project-specific files.

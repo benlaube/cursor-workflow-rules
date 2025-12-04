@@ -1,0 +1,411 @@
+---
+description: Validates branch and commits before PR, auto-generates PR title and description template. Applies when preparing PRs, marking tasks complete, or requesting reviews.
+version: 1.0.0
+lastUpdated: 04-12-2025 12:42:51 EST
+globs: ""
+alwaysApply: true
+type: Conditional Rule - PR preparation and validation
+relatedCommands: []
+relatedRules: [git-branch-naming.mdc, git-commit-messages.mdc, pr-review-check.mdc, git-workflow-integration.mdc]
+relatedStandards: [process/git-repository-standards.md]
+---
+
+# Git PR Preparation Rule
+
+## When This Rule Applies
+
+This rule **automatically applies** when:
+- Preparing a pull request
+- Marking a task as complete
+- User requests to create/submit a PR
+- Agent detects work is finishing
+- Before pushing code to remote for PR
+
+---
+
+## Core Principle
+
+**Never submit broken or incomplete PRs.** Before creating a PR, validate branch, commits, and generate comprehensive PR description with all required information.
+
+**Source Standard:** `standards/process/git-repository-standards.md` Section D (Pull Request Process)
+
+---
+
+## Agent Responsibilities
+
+### 1. Branch Validation
+
+#### 1.1 Main Branch Protection
+**CRITICAL:** Never create PR from `main` or `master` branch.
+
+**Check current branch:**
+```bash
+git branch --show-current
+```
+
+**If on main/master:**
+- ❌ "Cannot create PR from main/master branch"
+- **Action Required:** Create feature branch first
+- **Exception:** Only if explicitly emergency hotfix (still prefer hotfix branch)
+
+**If on feature branch:**
+- ✅ "Branch is ready for PR"
+
+#### 1.2 Branch Name Validation
+Verify branch name follows format: `{type}/{context}-{short-desc}`
+
+**If invalid:**
+- ⚠️ "Branch name doesn't follow format. Consider renaming before PR."
+- Suggest: "Rename branch: `git branch -m {old-name} {new-name}`"
+
+**If valid:**
+- ✅ "Branch name follows standards"
+
+**Reference:** See `git-branch-naming.mdc` for complete branch naming rules.
+
+### 2. Commit History Validation
+
+#### 2.1 Check Commits Ahead of Main
+**Verify commits exist:**
+```bash
+git log origin/main..HEAD --oneline
+git rev-list origin/main..HEAD --count
+```
+
+**If 0 commits:**
+- ⚠️ "No commits ahead of main. Nothing to PR."
+- **Action Required:** Make commits before creating PR
+
+**If commits exist:**
+- ✅ "{count} commits ahead of main"
+- List commits for review
+
+#### 2.2 Validate Commit Messages
+**Check each commit follows Conventional Commits:**
+
+```bash
+git log origin/main..HEAD --format="%s"
+```
+
+**For each commit:**
+- Verify format: `<type>(<scope>): <subject>`
+- Check type is allowed (feat, fix, docs, etc.)
+- Check subject is ≤50 characters
+- Check subject uses imperative mood
+
+**If invalid commits found:**
+- ⚠️ "Some commit messages don't follow standards. Consider amending."
+- List invalid commits
+- Suggest: "Amend commit: `git commit --amend -m 'feat(scope): new message'`"
+
+**If all valid:**
+- ✅ "All commit messages follow standards"
+
+**Reference:** See `git-commit-messages.mdc` for complete commit message rules.
+
+### 3. PR Title Generation
+
+#### 3.1 Generate from Commits
+**Use first commit message as PR title:**
+- Extract from: `git log origin/main..HEAD --format="%s" -n 1`
+- Format: `{type}({scope}): {subject}`
+
+**If multiple commits:**
+- Use most significant commit (priority: feat > fix > refactor > docs > chore)
+- Or use first commit if all are same type
+
+**Examples:**
+- Single commit: `feat(auth): add google oauth login support`
+- Multiple commits: Use most significant (e.g., `feat(api): implement rate limiting`)
+
+#### 3.2 PR Title Format
+PR title MUST follow Conventional Commit format:
+- ✅ Good: `fix(payment): resolve double-charge issue on retry`
+- ❌ Bad: "Fixed the bug"
+- ❌ Bad: "Payment fix"
+
+**If title doesn't follow format:**
+- ⚠️ "PR title should follow Conventional Commits format"
+- Suggest: "Use format: `{type}({scope}): {subject}`"
+
+### 4. PR Description Template
+
+#### 4.1 Required Sections
+Every PR description MUST include:
+
+**1. Summary:**
+- What changed?
+- Extract from commit messages
+- Provide clear, concise overview
+
+**2. Type of Change:**
+- Feature, Fix, Refactor, Documentation, etc.
+- Detect from commit types
+- If mixed, list all types
+
+**3. Test Plan:**
+- How was this tested?
+- Unit tests, manual verification, integration tests
+- **Prompt user for testing steps** if not clear from commits
+
+**4. Screenshots/Logs:**
+- Include if UI or logic change
+- Screenshots for UI changes
+- Logs for API/backend changes
+
+**5. Checklist:**
+- [ ] CI/CD checks pass
+- [ ] No secrets are exposed
+- [ ] Code follows style guide
+- [ ] Tests added/updated
+- [ ] Documentation updated
+- [ ] CHANGELOG.md updated (if user-facing)
+
+#### 4.2 PR Description Template
+
+Generate this template:
+
+```markdown
+## Summary
+{Extract from commit messages - clear overview of changes}
+
+## Type of Change
+{Feature | Fix | Refactor | Documentation | etc.}
+
+## Test Plan
+{User-provided or extracted from commits}
+- [ ] Unit tests pass
+- [ ] Manual verification completed
+- [ ] Integration tests pass (if applicable)
+
+## Screenshots/Logs
+{If UI or logic change, include screenshots or logs}
+
+## Checklist
+- [ ] CI/CD checks pass
+- [ ] No secrets are exposed
+- [ ] Code follows style guide
+- [ ] Tests added/updated
+- [ ] Documentation updated
+- [ ] CHANGELOG.md updated (if user-facing)
+
+## Related Issues
+{Link to related issues if applicable}
+```
+
+#### 4.3 Auto-Generate from Commits
+**Extract information from commit messages:**
+
+**Summary:**
+- Combine commit subjects into narrative
+- Example: "Adds Google OAuth login support and implements refresh token rotation"
+
+**Type of Change:**
+- Detect from commit types
+- Example: "Feature" (from `feat:` commits)
+
+**Test Plan:**
+- If commits mention tests: Extract test information
+- Otherwise: Prompt user for testing steps
+
+### 5. Pre-PR Validation Checklist
+
+#### 5.1 Code Quality
+**Before PR, verify:**
+- [ ] Code builds successfully
+- [ ] Tests pass (if applicable)
+- [ ] Linter passes (if configured)
+- [ ] No console.log or debug code
+- [ ] No commented-out code
+
+**Reference:** See `pr-review-check.mdc` for complete pre-PR validation.
+
+#### 5.2 Security
+**Before PR, verify:**
+- [ ] No secrets in code
+- [ ] .env files not committed
+- [ ] No hardcoded credentials
+- [ ] Input validation present (if applicable)
+
+#### 5.3 Documentation
+**Before PR, verify:**
+- [ ] Functions documented (if applicable)
+- [ ] README updated (if applicable)
+- [ ] CHANGELOG.md updated (if user-facing)
+- [ ] API docs updated (if applicable)
+
+### 6. Merge Strategy Reminder
+
+#### 6.1 Squash and Merge
+**Recommendation:** Use "Squash and Merge" when merging PR.
+
+**Benefits:**
+- Clean commit history
+- Single commit per feature
+- Easier to revert if needed
+
+**When to use:**
+- Feature branches with multiple commits
+- Bug fix branches with multiple commits
+- Any branch that should be a single commit in main
+
+**When NOT to use:**
+- Preserve commit history is important
+- Each commit is meaningful and should be kept separate
+
+---
+
+## Examples
+
+### Example 1: Simple Feature PR
+
+**Branch:** `feat/auth-google-oauth`
+**Commits:**
+- `feat(auth): add google oauth login support`
+- `test(auth): add tests for google oauth flow`
+
+**Generated PR:**
+```
+Title: feat(auth): add google oauth login support
+
+## Summary
+Adds Google OAuth login support to authentication system. Users can now sign in using their Google accounts.
+
+## Type of Change
+Feature
+
+## Test Plan
+- [x] Unit tests pass
+- [x] Manual verification completed (tested login flow)
+- [x] Integration tests pass
+
+## Checklist
+- [ ] CI/CD checks pass
+- [ ] No secrets are exposed
+- [ ] Code follows style guide
+- [x] Tests added/updated
+- [ ] Documentation updated
+- [ ] CHANGELOG.md updated
+```
+
+### Example 2: Bug Fix PR
+
+**Branch:** `fix/api-timeout-bug`
+**Commits:**
+- `fix(api): handle timeout errors gracefully`
+- `test(api): add tests for timeout handling`
+
+**Generated PR:**
+```
+Title: fix(api): handle timeout errors gracefully
+
+## Summary
+Fixes API timeout bug that caused 500 errors. Now returns 408 Request Timeout with proper error message.
+
+## Type of Change
+Fix
+
+## Test Plan
+- [x] Unit tests pass
+- [x] Manual verification completed (tested timeout scenario)
+- [x] Integration tests pass
+
+## Checklist
+- [ ] CI/CD checks pass
+- [ ] No secrets are exposed
+- [ ] Code follows style guide
+- [x] Tests added/updated
+- [ ] Documentation updated
+- [ ] CHANGELOG.md updated
+```
+
+### Example 3: Invalid Branch
+
+**Branch:** `MyFeature`
+**Issue:** Branch name doesn't follow format
+
+**Response:**
+```
+❌ Cannot create PR from this branch.
+
+Issues:
+- Branch name doesn't follow format (expected: {type}/{context}-{short-desc})
+
+Action Required:
+1. Rename branch: git branch -m MyFeature feat/my-feature
+2. Push renamed branch: git push -u origin feat/my-feature
+3. Then create PR
+```
+
+---
+
+## Integration with Other Rules
+
+This rule works with:
+
+### `git-branch-naming.mdc`
+- Validates branch name before PR
+- Uses branch name to generate PR title
+
+### `git-commit-messages.mdc`
+- Validates commit messages in PR
+- Uses commit messages to generate PR description
+
+### `pr-review-check.mdc`
+- Runs comprehensive pre-PR validation
+- Ensures code quality, security, documentation
+
+### `git-workflow-integration.mdc`
+- Coordinates git status validation
+- Ensures working tree is ready for PR
+
+---
+
+## Related Files
+
+- **Rules:**
+  - [git-branch-naming.mdc](./git-branch-naming.mdc) - Branch naming conventions
+  - [git-commit-messages.mdc](./git-commit-messages.mdc) - Commit message validation
+  - [pr-review-check.mdc](./pr-review-check.mdc) - Pre-PR validation
+  - [git-workflow-integration.mdc](./git-workflow-integration.mdc) - Git workflow coordination
+- **Standards:**
+  - [git-repository-standards.md](../../standards/process/git-repository-standards.md) - Git workflow standards (Section D: Pull Request Process)
+  - [pr_review_checklist_v1_0.md](../../standards/process/checklists/pr_review_checklist_v1_0.md) - PR review checklist
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically when preparing PRs, marking tasks complete, or requesting reviews.**
+
+**Agents should:**
+1. Validate branch is not main/master before PR
+2. Verify branch name follows format
+3. Check commits exist ahead of main
+4. Validate all commit messages follow Conventional Commits
+5. Generate PR title from commit messages (most significant commit)
+6. Auto-generate PR description template with:
+   - Summary (from commits)
+   - Type of Change (from commit types)
+   - Test Plan (prompt user if needed)
+   - Checklist (standard items)
+7. Remind to use "Squash and Merge" when merging
+8. Reference `pr-review-check.mdc` for complete pre-PR validation
+
+**Pre-PR checklist:**
+- [ ] Branch is not main/master
+- [ ] Branch name follows format
+- [ ] Commits exist ahead of main
+- [ ] All commit messages follow standards
+- [ ] PR title follows Conventional Commits format
+- [ ] PR description includes all required sections
+- [ ] Test plan provided
+- [ ] Checklist items reviewed
+
+**Next steps after PR creation:**
+1. Copy PR description template
+2. Fill in test plan details
+3. Add screenshots/logs if applicable
+4. Review checklist items
+5. Open PR on GitHub/GitLab
+6. Use "Squash and Merge" when merging

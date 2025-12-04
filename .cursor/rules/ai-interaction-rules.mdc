@@ -1,8 +1,12 @@
 ---
-description: AI Interaction Rules & Persona - Defines behavior and standards for AI agents interacting with this repository.
-version: 1.0.0
-lastUpdated: 2025-12-02
+description: Defines behavior and standards for AI agents interacting with this repository
+version: 1.1.0
+lastUpdated: 2025-12-04
 alwaysApply: true
+type: Auto-Applied Behavioral Rule - Guides AI agent behavior and coding standards
+relatedCommands: []
+relatedRules: [environment.mdc, task-workflow.mdc]
+relatedStandards: [project-planning/documentation.md, database/schema.md]
 ---
 
 # AI Interaction Rules & Persona
@@ -64,3 +68,28 @@ This document defines the behavior and standards for AI agents (Cursor, Windsurf
 ## Self-Correction
 - **Analyze Errors:** If a command fails, read the error message. Do not blindly retry the same command.
 - **Clarify Ambiguity:** If a user request conflicts with a rule in `standards/`, explicitly ask: "The standard says X, but you asked for Y. Should I update the standard or make an exception?"
+
+---
+
+## Related Files
+
+- **Rules:**
+  - [environment.mdc](./environment.mdc) - Environment expectations and runtime standards
+  - [task-workflow.mdc](./task-workflow.mdc) - Development workflow integration
+- **Standards:**
+  - [documentation.md](../../standards/project-planning/documentation.md) - Documentation management standards
+  - [schema.md](../../standards/database/schema.md) - Database schema conventions
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically to all AI agent interactions with this repository.**
+
+**Agents should:**
+- Check `standards/` before generating code (don't guess conventions)
+- Use existing modules from `modules/` directory instead of reinventing the wheel
+- Never commit secrets - always use environment variables
+- Update `CHANGELOG.md` when changing architectural patterns
+- Include `COMMENT ON` statements for all database migrations
+- Analyze errors and clarify ambiguities instead of blindly retrying commands

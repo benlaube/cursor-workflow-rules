@@ -1,0 +1,524 @@
+---
+description: Standards for configuring git hooks including pre-commit, commit-msg, and pre-push hooks. Applies when setting up repositories or configuring git hooks.
+version: 1.0.0
+lastUpdated: 04-12-2025 12:42:51 EST
+globs: ""
+alwaysApply: true
+type: Conditional Rule - Git hooks configuration standards
+relatedCommands: []
+relatedRules: [git-commit-messages.mdc, git-repository-hygiene.mdc]
+relatedStandards: [process/git-repository-standards.md]
+---
+
+# Git Hooks Standards Rule
+
+## When This Rule Applies
+
+This rule **automatically applies** when:
+- Setting up a new repository
+- Configuring git hooks
+- Setting up development environment
+- Installing hook management tools (Husky, etc.)
+
+---
+
+## Core Principle
+
+**Automate git workflow validation through hooks.** Pre-commit, commit-msg, and pre-push hooks should enforce the same standards that AI agents follow, ensuring consistency across all contributors.
+
+**Integration:** Hooks should implement the same checks as `git-commit-messages.mdc` and `git-repository-hygiene.mdc`.
+
+---
+
+## Agent Responsibilities
+
+### 1. Pre-Commit Hook Standards
+
+#### 1.1 Required Checks
+Pre-commit hooks MUST perform these checks:
+
+**1. Code Formatting:**
+- Run formatter (Prettier, Black, etc.) on staged files
+- Auto-fix formatting issues when possible
+- Fail if formatting cannot be auto-fixed
+
+**2. Linting:**
+- Run linter (ESLint, Ruff, etc.) on staged files
+- Auto-fix lint issues when possible
+- Fail on errors that cannot be auto-fixed
+
+**3. Secrets Scanning:**
+- Scan staged files for secrets (API keys, passwords, tokens)
+- Use tools like `git-secrets`, `truffleHog`, or custom scripts
+- **FAIL if secrets detected** (prevent commit)
+
+**4. .env File Check:**
+- Verify `.env` files are not staged
+- **FAIL if .env is staged** (prevent commit)
+
+**5. Type Checking (if applicable):**
+- Run type checker (TypeScript, mypy, etc.) on staged files
+- Fail on type errors
+
+#### 1.2 Recommended Tools
+
+**Husky (Node.js projects):**
+```json
+{
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && npm run type-check"
+    }
+  }
+}
+```
+
+**lint-staged (with Husky):**
+```json
+{
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{py}": [
+      "black",
+      "ruff check --fix"
+    ]
+  }
+}
+```
+
+**pre-commit (Python projects):**
+```yaml
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: detect-private-key
+```
+
+#### 1.3 Implementation Example
+
+**Simple pre-commit hook (`.git/hooks/pre-commit`):**
+```bash
+#!/bin/sh
+
+# Check for .env files
+if git diff --cached --name-only | grep -E "^\.env$"; then
+  echo "❌ .env file is staged. Remove from staging: git reset HEAD .env"
+  exit 1
+fi
+
+# Scan for secrets
+if git diff --cached | grep -iE "password|api_key|secret|token|sk_live|ghp_" | grep -v "^---\|^+++\|^-.*password.*="; then
+  echo "❌ Secrets detected in staged files. Remove before committing."
+  exit 1
+fi
+
+# Run linter (if configured)
+if command -v npm &> /dev/null && [ -f package.json ]; then
+  npm run lint -- --fix
+fi
+
+exit 0
+```
+
+### 2. Commit-Msg Hook Standards
+
+#### 2.1 Required Validation
+Commit-msg hooks MUST validate:
+
+**1. Conventional Commits Format:**
+- Verify format: `<type>(<scope>): <subject>`
+- Check type is allowed (feat, fix, docs, etc.)
+- Check subject is ≤50 characters
+- Check subject uses imperative mood
+
+**2. Format Validation:**
+- Reject if format doesn't match
+- Provide helpful error message
+- Suggest correct format
+
+#### 2.2 Recommended Tools
+
+**commitlint (Node.js projects):**
+```json
+{
+  "commitlint": {
+    "extends": ["@commitlint/config-conventional"]
+  }
+}
+```
+
+**Husky integration:**
+```json
+{
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  }
+}
+```
+
+#### 2.3 Implementation Example
+
+**Simple commit-msg hook (`.git/hooks/commit-msg`):**
+```bash
+#!/bin/sh
+
+commit_msg=$(cat "$1")
+
+# Check format: <type>(<scope>): <subject>
+if ! echo "$commit_msg" | grep -qE "^[a-z]+(\([^)]+\))?: .+"; then
+  echo "❌ Commit message doesn't follow Conventional Commits format"
+  echo "Expected: <type>(<scope>): <subject>"
+  echo "Example: feat(auth): add google oauth login support"
+  exit 1
+fi
+
+# Extract type
+type=$(echo "$commit_msg" | sed -E 's/^([a-z]+).*/\1/')
+
+# Check if type is allowed
+allowed_types="feat fix docs style refactor perf test chore"
+if ! echo "$allowed_types" | grep -q "$type"; then
+  echo "❌ Invalid commit type: $type"
+  echo "Allowed types: $allowed_types"
+  exit 1
+fi
+
+# Check subject length
+subject=$(echo "$commit_msg" | sed -E 's/^[^:]+: (.+)/\1/' | head -c 50)
+if [ ${#subject} -gt 50 ]; then
+  echo "❌ Subject is too long (max 50 characters)"
+  exit 1
+fi
+
+exit 0
+```
+
+### 3. Pre-Push Hook Standards
+
+#### 3.1 Required Checks
+Pre-push hooks SHOULD perform:
+
+**1. Test Execution:**
+- Run test suite before pushing
+- Fail if tests don't pass
+- Optional: Run only affected tests
+
+**2. Branch Protection:**
+- Prevent pushing directly to main/master
+- Allow only if explicitly bypassed (emergency)
+
+**3. Lint Check:**
+- Run full lint check (not just staged files)
+- Fail on lint errors
+
+#### 3.2 Implementation Example
+
+**Simple pre-push hook (`.git/hooks/pre-push`):**
+```bash
+#!/bin/sh
+
+# Prevent pushing to main/master
+protected_branch='main'
+current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+
+if [ "$protected_branch" = "$current_branch" ]; then
+  echo "❌ Direct push to $protected_branch is not allowed"
+  echo "Create a feature branch and open a PR instead"
+  exit 1
+fi
+
+# Run tests (if configured)
+if command -v npm &> /dev/null && [ -f package.json ]; then
+  npm test
+  if [ $? -ne 0 ]; then
+    echo "❌ Tests failed. Fix tests before pushing."
+    exit 1
+  fi
+fi
+
+exit 0
+```
+
+### 4. Hook Management Tools
+
+#### 4.1 Husky (Node.js)
+**Installation:**
+```bash
+npm install --save-dev husky
+npx husky install
+```
+
+**Configuration:**
+```json
+{
+  "scripts": {
+    "prepare": "husky install"
+  }
+}
+```
+
+**Add hooks:**
+```bash
+npx husky add .husky/pre-commit "npm run lint-staged"
+npx husky add .husky/commit-msg "npx --no -- commitlint --edit \$1"
+npx husky add .husky/pre-push "npm test"
+```
+
+#### 4.2 pre-commit (Python)
+**Installation:**
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+**Configuration (`.pre-commit-config.yaml`):**
+```yaml
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: detect-private-key
+      - id: check-merge-conflict
+  - repo: https://github.com/psf/black
+    rev: 23.3.0
+    hooks:
+      - id: black
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.272
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+```
+
+#### 4.3 Git Hooks Direct (Any Language)
+**Manual setup:**
+```bash
+# Make hooks executable
+chmod +x .git/hooks/pre-commit
+chmod +x .git/hooks/commit-msg
+chmod +x .git/hooks/pre-push
+```
+
+**Note:** Direct hooks are not version-controlled. Use Husky or pre-commit for team collaboration.
+
+### 5. Hook Failure Handling
+
+#### 5.1 Bypass Guidelines
+**When to allow bypass:**
+- Emergency hotfixes (with explicit approval)
+- WIP commits (use `--no-verify` flag)
+- Documentation-only changes (if hooks are too strict)
+
+**When NOT to allow bypass:**
+- Secrets in code (NEVER bypass)
+- .env files staged (NEVER bypass)
+- Main branch protection (NEVER bypass)
+
+#### 5.2 Error Messages
+**Provide helpful error messages:**
+- Explain what failed
+- Show how to fix
+- Provide example of correct format
+
+**Example:**
+```
+❌ Commit message doesn't follow Conventional Commits format
+
+Expected: <type>(<scope>): <subject>
+Example: feat(auth): add google oauth login support
+
+Your message: "add login"
+Fix: feat(auth): add google oauth login support
+```
+
+### 6. Integration with CI/CD
+
+#### 6.1 CI/CD Alignment
+Hooks should align with CI/CD checks:
+- Same linting rules
+- Same test execution
+- Same security scans
+
+**Benefits:**
+- Catch issues before CI/CD
+- Faster feedback loop
+- Reduce CI/CD failures
+
+#### 6.2 CI/CD as Backup
+CI/CD should still run all checks:
+- Hooks may be bypassed
+- CI/CD is source of truth
+- Hooks are developer convenience
+
+---
+
+## Examples
+
+### Example 1: Setting Up Husky
+
+**Scenario:** Setting up hooks for Node.js project
+
+**Response:**
+```
+Setting up git hooks with Husky:
+
+1. Install Husky:
+   npm install --save-dev husky
+
+2. Initialize:
+   npx husky install
+   npm pkg set scripts.prepare="husky install"
+
+3. Add pre-commit hook:
+   npx husky add .husky/pre-commit "npx lint-staged"
+
+4. Add commit-msg hook:
+   npx husky add .husky/commit-msg "npx --no -- commitlint --edit \$1"
+
+5. Configure lint-staged (package.json):
+   {
+     "lint-staged": {
+       "*.{ts,tsx}": ["eslint --fix", "prettier --write"]
+     }
+   }
+
+6. Configure commitlint (.commitlintrc.json):
+   {
+     "extends": ["@commitlint/config-conventional"]
+   }
+```
+
+### Example 2: Setting Up pre-commit (Python)
+
+**Scenario:** Setting up hooks for Python project
+
+**Response:**
+```
+Setting up git hooks with pre-commit:
+
+1. Install pre-commit:
+   pip install pre-commit
+
+2. Create .pre-commit-config.yaml:
+   repos:
+     - repo: https://github.com/pre-commit/pre-commit-hooks
+       rev: v4.4.0
+       hooks:
+         - id: trailing-whitespace
+         - id: end-of-file-fixer
+         - id: detect-private-key
+     - repo: https://github.com/psf/black
+       rev: 23.3.0
+       hooks:
+         - id: black
+
+3. Install hooks:
+   pre-commit install
+
+4. Test hooks:
+   pre-commit run --all-files
+```
+
+### Example 3: Custom Pre-Commit Hook
+
+**Scenario:** Simple custom hook for secrets scanning
+
+**Response:**
+```
+Creating custom pre-commit hook:
+
+1. Create .git/hooks/pre-commit:
+   #!/bin/sh
+   if git diff --cached | grep -iE "password|api_key|secret|token|sk_live|ghp_"; then
+     echo "❌ Secrets detected. Remove before committing."
+     exit 1
+   fi
+   exit 0
+
+2. Make executable:
+   chmod +x .git/hooks/pre-commit
+
+3. Test:
+   # Try committing with secret in code
+   # Hook should prevent commit
+```
+
+---
+
+## Integration with Other Rules
+
+This rule works with:
+
+### `git-commit-messages.mdc`
+- Hooks should implement same commit message validation
+- commit-msg hook enforces Conventional Commits format
+
+### `git-repository-hygiene.mdc`
+- Hooks should implement same security checks
+- pre-commit hook scans for secrets and .env files
+
+---
+
+## Related Files
+
+- **Rules:**
+  - [git-commit-messages.mdc](./git-commit-messages.mdc) - Commit message validation (hooks should implement)
+  - [git-repository-hygiene.mdc](./git-repository-hygiene.mdc) - Security checks (hooks should implement)
+- **Standards:**
+  - [git-repository-standards.md](../../standards/process/git-repository-standards.md) - Git workflow standards
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically when setting up repositories or configuring git hooks.**
+
+**Agents should:**
+1. Recommend hook management tools (Husky for Node.js, pre-commit for Python)
+2. Configure pre-commit hooks for:
+   - Code formatting (auto-fix)
+   - Linting (auto-fix when possible)
+   - Secrets scanning (FAIL if found)
+   - .env file check (FAIL if staged)
+3. Configure commit-msg hooks for:
+   - Conventional Commits format validation
+   - Type validation
+   - Subject length and mood validation
+4. Configure pre-push hooks for:
+   - Test execution
+   - Branch protection (prevent main/master pushes)
+5. Ensure hooks align with CI/CD checks
+6. Provide helpful error messages when hooks fail
+7. Document bypass guidelines (when appropriate)
+
+**Hook setup checklist:**
+- [ ] Pre-commit hook configured
+- [ ] Commit-msg hook configured
+- [ ] Pre-push hook configured (optional)
+- [ ] Hooks implement same checks as rules
+- [ ] Hooks provide helpful error messages
+- [ ] Hooks are version-controlled (via Husky/pre-commit)
+- [ ] CI/CD aligns with hook checks
+
+**Security-critical hooks:**
+- [ ] Pre-commit scans for secrets (FAIL if found)
+- [ ] Pre-commit checks for .env files (FAIL if staged)
+- [ ] Pre-push prevents main/master pushes

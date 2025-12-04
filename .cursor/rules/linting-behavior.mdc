@@ -1,0 +1,171 @@
+---
+description: Guides AI agent behavior around linting to maintain code quality without being noisy
+version: 1.2.0
+lastUpdated: 04-12-2025 13:08:13 EST
+globs: **/*
+alwaysApply: true
+type: Auto-Applied Behavioral Rule - Linting expectations for AI agents
+relatedCommands: [pre-flight-check.md, pr-review-check.md, validate-code-quality.md]
+relatedRules: [task-workflow.mdc]
+relatedStandards: [process/code-quality-linting-standards.md, process/checklists/linting_checklist_v1_0.md]
+---
+
+# Linting Rule
+
+## Metadata
+- **Created:** 2025-12-02
+- **Last Updated:** 2025-12-02
+- **Version:** 1.0.0
+- **Description:** Auto-applied rule that guides AI agent behavior around linting to maintain code quality without being noisy or disruptive.
+
+## When This Rule Applies
+
+This rule applies automatically to all code changes and development work. It guides AI agent behavior to ensure linting is handled appropriately throughout the development lifecycle.
+
+---
+
+## 1. When to Run Linting
+
+### 1.1 Before Implementing Big Changes
+
+- As part of `pre-flight-check`, run a light lint or at least:
+  - Confirm there are no glaring lint errors on the main branch or current base
+- See: `.cursor/commands/pre-flight-check.md` Section 3.3
+
+### 1.2 While Coding
+
+- Fix lint issues in the files you touch
+- Run lint incrementally (per file or per change) to catch issues early
+- Use auto-fix capabilities when available
+
+### 1.3 Before PR
+
+- Run full lint against the relevant scope (project/app, not just a single file)
+- Fix all errors; do not leave "I'll fix ESLint later" unless explicitly allowed by the user
+- See: `.cursor/commands/pr-review-check.md` Section 1.1
+
+---
+
+## 2. How to Fix Lint Issues
+
+### 2.1 Auto-Fix When Possible
+
+- Prefer auto-format commands over hand-formatting:
+  - `npm run lint -- --fix` (ESLint)
+  - `prettier --write .` (Prettier)
+  - `python -m ruff . --fix` (Ruff)
+  - `black .` (Black)
+
+### 2.2 Fix in Files You Touch
+
+- Fix lint issues in the files you modify
+- Do **not** start large lint-only refactors unless explicitly asked
+- If asked to "fix all ESLint issues in repo", then proceed with full refactor
+
+### 2.3 Report Status Once
+
+- Don't repeatedly promise "let me fix those ESLint errors…" in chat
+- Instead, quietly:
+  - Run the linter
+  - Fix violations in your edits
+  - Report the final lint status once per major change
+
+---
+
+## 3. Don't Fight the Config
+
+### 3.1 Respect Existing Configs
+
+- Use the existing ESLint/Ruff/Prettier rules as the source of truth
+- The AI agent MUST respect existing linter configs in the repo
+- MUST NOT silently change them without an explicit task to do so
+
+### 3.2 Proposing Config Changes
+
+- If the user asks to change lint rules, propose minimal, rational changes
+- Update the config + docs together when making changes
+- Explain the rationale for any proposed changes
+
+---
+
+## 4. Integration with Commands
+
+### 4.1 Pre-Flight Check
+
+- Light lint pass is part of pre-flight validation
+- See: `.cursor/commands/pre-flight-check.md`
+- Reference: `standards/process/code-quality-linting-standards.md` Section 6.1
+
+### 4.2 PR Review Check
+
+- Full lint pass is required before PR submission
+- See: `.cursor/commands/pr-review-check.md`
+- Reference: `standards/process/code-quality-linting-standards.md` Section 6.2
+
+### 4.3 Standalone Lint Check
+
+- Use `validate-code-quality` command for independent lint validation
+- See: `.cursor/commands/validate-code-quality.md`
+
+---
+
+## 5. What "Passing" Means
+
+### 5.1 No Errors
+
+- All linter invocations must exit with code 0
+- No "error"-level issues are tolerated
+
+### 5.2 Warnings Policy
+
+- Warnings are **not** ignored by default
+- Projects may choose:
+  - **Strict:** Warnings treated as errors (recommended for new/AI-heavy code)
+  - **Relaxed:** Warnings allowed but must not grow
+- New code should not introduce additional warnings
+
+### 5.3 Formatting
+
+- Use auto-formatters where configured
+- Prefer auto-format commands over hand-formatting
+
+---
+
+## 6. Related Documentation
+
+- **Linting Standard:** `standards/process/code-quality-linting-standards.md` - Comprehensive linting requirements
+- **Linting Command:** `.cursor/commands/validate-code-quality.md` - Standalone lint check command
+- **Linting Checklist:** `standards/process/checklists/linting_checklist_v1_0.md` - Validation checklist
+- **Pre-Flight Check:** `.cursor/commands/pre-flight-check.md` - Includes light lint pass
+- **PR Review Check:** `.cursor/commands/pr-review-check.md` - Includes full lint pass
+- **Task Workflow:** `.cursor/rules/task-workflow.mdc` - Development lifecycle integration
+
+---
+
+## Related Files
+
+- **Commands:**
+  - [pre-flight-check.md](../commands/pre-flight-check.md) - Environment validation before coding
+  - [pr-review-check.md](../commands/pr-review-check.md) - Pre-PR validation
+  - [validate-code-quality.md](../commands/validate-code-quality.md) - Standalone lint check command
+- **Rules:**
+  - [task-workflow.mdc](./task-workflow.mdc) - Development lifecycle integration
+- **Standards:**
+  - [code-quality-linting-standards.md](../../standards/process/code-quality-linting-standards.md) - Comprehensive linting requirements
+  - [linting_checklist_v1_0.md](../../standards/process/checklists/linting_checklist_v1_0.md) - Validation checklist
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically to all code changes and development work.**
+
+**Agents should:**
+- Run light lint pass as part of `pre-flight-check` before coding
+- Fix lint issues in files you touch while coding
+- Run full lint pass before PR submission with `pr-review-check`
+- Use auto-fix capabilities when available (ESLint --fix, Prettier, Ruff, Black)
+- Respect existing linter configs (don't change without explicit task)
+- Report lint status once per major change (don't repeatedly promise fixes)
+
+*This rule guides AI agent behavior around linting. For detailed requirements and policies, see `standards/process/code-quality-linting-standards.md`.*

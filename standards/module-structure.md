@@ -2,7 +2,9 @@
 
 ## Metadata
 - **Created:** 2025-11-19
+- **Last Updated:** 2025-12-04
 - **Version:** 1.0
+- **Description:** Standards for creating and structuring reusable modules, defining required directory structure, files, and naming conventions.
 
 ## When to Apply This Rule
 Apply this rule when creating new modules in `modules/` or when refactoring existing ones. Every module must be a self-contained unit.

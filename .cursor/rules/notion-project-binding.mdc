@@ -1,0 +1,114 @@
+---
+description: Notion project binding for Cursor Workflow Rules repository
+version: 2.1.0
+lastUpdated: 2025-12-04
+globs: **/*
+alwaysApply: true
+type: Project-Specific Rule - Notion integration for this repository
+relatedCommands: [notion-sync-project-metadata.md, notion-task-creation.md]
+relatedRules: [task-workflow.mdc, ai-interaction-rules.mdc]
+relatedStandards: []
+---
+
+# Project Rule: Notion Project Binding v2.0.0
+
+For this project:
+- **Notion Dev Project Name:** "Cursor Workflow Rules & Coding Standards"
+- **Project ID/Page ID:** To be created (see instructions below)
+- **Repository Path:** `/Users/benlaube/apps/Cursor - Workflow Rules : Coding Standards`
+- **Repo Folder:** `Cursor - Workflow Rules : Coding Standards`
+- **Database ID:** `ef116537-3e85-4145-a4c6-0cd39d44ff73` (Projects database)
+
+## Notion Project Details
+
+**Project Properties:**
+- **Name:** Cursor Workflow Rules & Coding Standards
+- **Status:** In Progress
+- **Category:** Dev Project
+- **Priority:** P1
+- **Development Platform:** Cursor
+- **Purpose:** Centralized repository of AI agent rules, coding standards, checklists, and reusable modules for consistent development across all projects.
+- **Why this matters:** Ensures consistency, security, and efficiency across all development projects by providing standardized rules and reusable components.
+- **Description:** This repository serves as the single source of truth for AI agent configurations, coding standards, development checklists, and reusable code modules used across all projects.
+
+## Manual Creation Instructions
+
+**IMPORTANT:** The Notion project page needs to be created manually in Notion:
+
+1. Open Notion and navigate to the "Projects" database (📁 icon)
+2. Click "New" to create a new project entry
+3. Fill in the properties as specified above
+4. Once created, update this file with the Project ID/Page ID
+
+## Integration Behavior
+
+When performing non-trivial work on this repository (new features, refactors, config changes, cleanup tasks), you should:
+
+1. **Sync Metadata:** Use the semantics of `notion-sync-project-metadata` command to sync project status and metadata with the Notion "Projects" database.
+
+2. **Check Open Tasks:** Query the Notion "Dev Tasks" database for open tasks linked to this project using the project relation.
+
+3. **Update Task Status:** When you complete or significantly progress a task:
+   - Update its Status in Notion (e.g., from "In Progress" to "Done")
+   - Leave a short note referencing the relevant commit/PR/file
+   - Add completion date if applicable
+
+4. **Create New Tasks:** When discovering:
+   - Bugs that can't be fixed immediately
+   - Technical debt items
+   - Future enhancements
+   - Incomplete work that must be paused
+   
+   Create tasks in the Notion "Dev Tasks" database with:
+   - Link to this project
+   - Clear description
+   - Priority level
+   - Status: "Backlog" or "To Do"
+
+## Important Notes
+
+- **DO NOT** modify or close tasks clearly owned by humans without leaving context
+- **DO NOT** update task status without adding a comment about what was done
+- **ALWAYS** link tasks to this project using the Project relation field
+- **REFERENCE** specific files, commits, or PRs when updating tasks
+
+## Archived Projects
+
+The following projects were archived and replaced by this binding:
+- "Developer Environment — Cursor Setup & Background Agents" (archived 2025-12-04)
+- "AI Agent Development Team with Notion as Project Management System" (archived 2025-12-04)
+
+---
+
+## Related Files
+
+- **Commands:**
+  - [notion-sync-project-metadata.md](../commands/notion-sync-project-metadata.md) - Syncs project metadata to Notion
+  - [notion-task-creation.md](../commands/notion-task-creation.md) - Creates tasks in Notion Dev Tasks database
+- **Rules:**
+  - [task-workflow.mdc](./task-workflow.mdc) - Task workflow that integrates with Notion
+  - [ai-interaction-rules.mdc](./ai-interaction-rules.mdc) - AI behavior rules that reference Notion integration
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically when performing non-trivial work on the Cursor Workflow Rules repository.**
+
+**Agents should:**
+- Sync project metadata to Notion using `notion-sync-project-metadata` semantics when significant changes occur
+- Check Notion "Dev Tasks" database for open tasks linked to this project before starting work
+- Update task status in Notion when completing or progressing tasks (with commit/PR references)
+- Create new tasks in Notion "Dev Tasks" database when discovering bugs, technical debt, or incomplete work
+- Link all tasks to this project using the Project relation field
+- Never modify human-owned tasks without leaving context
+- Always add comments when updating task status
+
+**Integration points:**
+- Triggered during task workflow (see `task-workflow.mdc`)
+- Referenced in AI interaction rules (see `ai-interaction-rules.mdc`)
+- Uses Notion MCP for database operations
+
+---
+
+*This rule was created on 2025-12-04 by the notion-create-project-binding-rule command.*

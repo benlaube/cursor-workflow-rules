@@ -1,14 +1,25 @@
 # Audit Documentation Metadata
 
+> **⚠️ DEPRECATED:** This command has been refactored and replaced.
+> 
+> **Use instead:** [`audit-documentation-rules-metadata.md`](./audit-documentation-rules-metadata.md)
+> 
+> The new command orchestrates two specialized rules:
+> - `documentation-metadata.mdc` - Validates `.md` file metadata
+> - `rule-metadata.mdc` - Validates `.mdc` file metadata
+> 
+> This file is kept for reference but should not be used. It will be removed in a future version.
+
 ## Metadata
+- **Status:** Deprecated
 - **Version:** 1.1.0
-- **Last Updated:** 2025-12-04 16:00:00
-- **Created:** 2025-12-04
-- **Description:** Command to audit and update metadata across standards and documentation files
+- **Last Updated:** 04-12-2025 11:12:43 EST
+- **Created:** 04-12-2025
+- **Description:** [DEPRECATED] Command to audit and update metadata across standards and documentation files. Use `audit-documentation-rules-metadata.md` instead.
 - **Type:** Executable Command - Used by AI agents for periodic documentation audits
-- **Related Cursor Rules:** [documentation-dependency-tracking.mdc, cursor-rule-creation.mdc]
+- **Related Cursor Rules:** [documentation-metadata.mdc, rule-metadata.mdc, documentation-dependency-tracking.mdc]
 - **Related Standards:** [process/cursor-rules-standards.md, project-planning/documentation.md]
-- **How to Use:** Run `audit-documentation-metadata` to scan all documentation and generate metadata completeness report
+- **How to Use:** **DO NOT USE** - Use `audit-documentation-rules-metadata` command instead
 
 ## Purpose
 
@@ -127,7 +138,7 @@ relatedStandards: [standard1.md, standard2.md] (optional)
    - Use markdown links in content:
      ```markdown
      - **Related Cursor Rules:**
-       - [linting.mdc](../../.cursor/rules/linting.mdc) - Linting behavior
+       - [linting-behavior.mdc](../../.cursor/rules/linting-behavior.mdc) - Linting behavior
      ```
 
 10. **Related Standards** (Optional)
@@ -136,7 +147,7 @@ relatedStandards: [standard1.md, standard2.md] (optional)
     - Use markdown links in content:
       ```markdown
       - **Related Standards:**
-        - [linting.md](../../standards/process/linting.md) - Linting requirements
+        - [code-quality-linting-standards.md](../../standards/process/code-quality-linting-standards.md) - Linting requirements
       ```
 
 11. **Dependencies** (Alternative to separate "Related" fields)
@@ -296,7 +307,7 @@ Create a final report with:
 
 **Dependencies Found:**
 - `.cursor/commands/pre-flight-check.md` (referenced 2 times)
-- `standards/process/linting.md` (referenced 1 time)
+- `standards/process/code-quality-linting-standards.md` (referenced 1 time)
 
 **Recommendation:** [Update|Review|No action needed]
 ```

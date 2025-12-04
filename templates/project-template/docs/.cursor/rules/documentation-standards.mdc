@@ -1,0 +1,260 @@
+---
+description: Documentation standards for maintaining project docs. Applies when creating or modifying documentation in docs/ directory.
+version: 1.0.0
+lastUpdated: 04-12-2025 11:47:37 EST
+globs: **/*.md
+alwaysApply: false
+type: Documentation Maintenance Rule - Docs management role
+relatedStandards: [project-planning/documentation.md]
+---
+
+# Documentation Standards
+
+## When This Rule Applies
+
+When creating or modifying documentation in `docs/` directory.
+
+---
+
+## Core Requirements
+
+### Metadata
+Every doc file must have:
+- **Created** date (DD-MM-YYYY format)
+- **Last Updated** date (DD-MM-YYYY HH:MM:SS EST format)
+- **Version** number (semantic versioning)
+- **Description** (brief purpose statement)
+
+### Structure
+- Clear title (`# Level 1` heading)
+- Table of contents for long docs (>200 lines)
+- Examples where appropriate
+- Cross-references to related docs
+
+### Style
+- Use markdown formatting
+- Code blocks with language tags
+- Clear, concise language
+- Active voice ("Use this pattern" not "This pattern can be used")
+
+---
+
+## Examples
+
+### Good Doc Structure
+
+```markdown
+# Feature_Name_v1.0
+
+## Metadata
+- **Created:** 04-12-2025
+- **Last Updated:** 04-12-2025 11:47:37 EST
+- **Version:** 1.0
+- **Description:** User authentication with OAuth 2.0
+
+## Overview
+
+Brief description of what this feature does and why it exists.
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Examples](#examples)
+- [API Reference](#api-reference)
+
+## Installation
+
+Step-by-step installation instructions.
+
+```bash
+npm install @package/auth
+```
+
+## Usage
+
+How to use the feature in your application.
+
+```typescript
+import { useAuth } from '@package/auth';
+
+function MyComponent() {
+  const { user, login } = useAuth();
+  // ...
+}
+```
+
+## Examples
+
+### Example 1: Basic Authentication
+
+Concrete example with code.
+
+## API Reference
+
+Detailed API documentation.
+
+## Related
+
+- [Security Guide](./security.md)
+- [API Documentation](./api.md)
+```
+
+### Bad Doc Structure
+
+```markdown
+# Feature
+
+Some info about feature.
+
+Code:
+useAuth()
+
+Done.
+```
+
+❌ Problems:
+- No metadata
+- Vague title
+- No structure or organization
+- Missing examples
+- No cross-references
+
+---
+
+## Code Blocks
+
+### Always Include Language Tags
+
+````markdown
+Good:
+```typescript
+const user = await fetchUser();
+```
+
+Bad:
+```
+const user = await fetchUser();
+```
+````
+
+### Common Language Tags
+- `typescript` or `ts`
+- `javascript` or `js`
+- `bash` or `shell`
+- `sql`
+- `json`
+- `yaml`
+- `markdown` or `md`
+
+---
+
+## Writing Style
+
+### Use Active Voice
+
+✅ **Good:** "Run the command to install dependencies"
+❌ **Bad:** "The command can be run to install dependencies"
+
+### Be Concise
+
+✅ **Good:** "Use `useState` for local state"
+❌ **Bad:** "In order to manage state that is local to a component, you should use the `useState` hook"
+
+### Provide Context
+
+✅ **Good:** "Run `npm test` to verify all tests pass before committing"
+❌ **Bad:** "Run `npm test`"
+
+---
+
+## Cross-References
+
+### Linking to Other Docs
+
+```markdown
+See [API Documentation](./api.md) for endpoint details.
+
+For authentication patterns, refer to:
+- [OAuth Guide](./auth/oauth.md)
+- [JWT Patterns](./auth/jwt.md)
+```
+
+### External Links
+
+```markdown
+For more information, see [React Documentation](https://react.dev).
+```
+
+---
+
+## Diagrams and Images
+
+### Using Mermaid Diagrams
+
+````markdown
+```mermaid
+graph TD
+    A[User] -->|Login| B[Auth Service]
+    B -->|Token| C[Protected Resource]
+```
+````
+
+### Including Images
+
+```markdown
+![Architecture Diagram](./images/architecture.png)
+
+*Figure 1: System architecture overview*
+```
+
+---
+
+## Versioning Documentation
+
+### When to Update Version
+
+- **Major (X.0):** Breaking changes, major reorganization
+- **Minor (X.Y):** New sections, significant additions
+- **Patch:** Usually not used for docs
+
+### Update Checklist
+
+When updating docs:
+- [ ] Update "Last Updated" with current timestamp (EST)
+- [ ] Increment version if significant change
+- [ ] Update cross-references if structure changed
+- [ ] Review for accuracy and completeness
+
+---
+
+## Documentation Types
+
+### API Documentation
+- Endpoint URL
+- HTTP method
+- Request/response examples
+- Error codes
+- Authentication requirements
+
+### User Guides
+- Step-by-step instructions
+- Screenshots or diagrams
+- Common pitfalls
+- Troubleshooting section
+
+### Technical Specifications
+- Architecture overview
+- Data models
+- Integration points
+- Performance characteristics
+
+---
+
+## Related Standards
+
+See `standards/project-planning/documentation.md` for comprehensive documentation standards including:
+- Documentation management rules
+- Metadata requirements
+- Cross-referencing guidelines
+- Versioning strategies

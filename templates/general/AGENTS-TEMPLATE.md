@@ -5,7 +5,7 @@
 > 2. Customize all sections with your project-specific information
 > 3. Remove this template note
 > 4. Update the "Last Updated" date
-> 5. See `INTEGRATION_GUIDE.md` for complete integration instructions
+> 5. See `STANDARDS_INTEGRATION_GUIDE.md` for complete integration instructions
 
 ## Metadata
 - **Created:** [Date when you create your AGENTS.md]
@@ -76,7 +76,7 @@ Follow this lifecycle for all development work. Each step has a corresponding co
 
 ### 6.1 Before Coding
 **Command:** `pre-flight-check` (`.cursor/commands/pre-flight-check.md`)  
-**Checklist:** `standards/development-checklists/pre-flight-checklist.md`
+**Checklist:** `standards/process/checklists/pre-flight-checklist.md`
 
 **Always run this first.** Validates:
 - Git branch and working tree status
@@ -106,7 +106,7 @@ After pre-flight passes, launch the dev environment:
 
 ### 6.4 Before PR
 **Command:** `pr-review-check` (`.cursor/commands/pr-review-check.md`)  
-**Checklist:** `standards/development-checklists/pr-review-checklist.md`
+**Checklist:** `standards/process/checklists/pr-review-checklist.md`
 
 **Required before every PR.** Validates:
 - Code quality (lint, format, types)
@@ -121,7 +121,7 @@ After pre-flight passes, launch the dev environment:
 - `full-project-health-check` - Run all audits together
 
 **Checklists:**
-- `standards/development-checklists/project-audit-checklist.md`
+- `standards/process/checklists/project-audit-checklist.md`
 - `standards/security/security-audit-checklist.md`
 
 **Rules (Auto-Applied):**
@@ -148,7 +148,7 @@ Run these:
    - Coding patterns: `standards/` (root level)
    - Database: `standards/database/`
    - Security: `standards/security/`
-   - **Documentation Index:** See `docs/DOCUMENTATION_STANDARDS.md` for comprehensive documentation guide
+   - **Documentation Index:** See `standards/project-planning/documentation-standards.md` for comprehensive documentation guide
 
 ### 7.3 Project Onboarding
 3. **For new repositories or major refactors, run `project-audit`**
@@ -172,9 +172,9 @@ Run these:
 6. **Update Docs:** If you change the architecture, update the docs
    - Update `standards/` if architecture changes
    - Update `CHANGELOG.md` for user-facing changes
-   - See `standards/documentation.md` Section 7 for changelog guidelines
+   - See `standards/project-planning/documentation.md` Section 7 for changelog guidelines
    - **Follow `.cursor/rules/workflow-standards-documentation-maintenance.mdc`** for comprehensive documentation update requirements (if applicable)
-   - **See `standards/documentation.md`** for complete documentation management standards
+   - **See `standards/project-planning/documentation.md`** for complete documentation management standards
 
 ### 7.7 Safe Operations
 7. **Safe Mode:** Do not delete data without confirmation
@@ -183,24 +183,24 @@ Run these:
 ### 7.8 Temporal Awareness
 9. **Temporal Awareness:** Always check the current date when responding to time-sensitive prompts
    - Use `date` command or system date functions
-   - See `.cursor/rules/environment.mdc` Section 5 for details
+   - See `.cursor/rules/date-time.mdc` for details
 
 ---
 
 ## 8. Related Checklists & Commands
 
 ### 8.1 Checklists (Human-Readable Validation)
-All checklists are located in `standards/development-checklists/` and `standards/security/`:
+All checklists are located in `standards/process/checklists/` and `standards/security/`:
 
-- **Pre-Flight:** `standards/development-checklists/pre-flight-checklist.md`
+- **Pre-Flight:** `standards/process/checklists/pre-flight-checklist.md`
   - Validates environment and repo state before coding
   - Related command: `pre-flight-check` (`.cursor/commands/pre-flight-check.md`)
 
-- **PR Review:** `standards/development-checklists/pr-review-checklist.md`
+- **PR Review:** `standards/process/checklists/pr-review-checklist.md`
   - Validates code quality, security, and documentation before PR
   - Related command: `pr-review-check` (`.cursor/commands/pr-review-check.md`)
 
-- **Project Audit:** `standards/development-checklists/project-audit-checklist.md`
+- **Project Audit:** `standards/process/checklists/project-audit-checklist.md`
   - Audits project structure, modules, database, and code hygiene
   - Related command: `project-audit` (`.cursor/commands/project-audit.md`)
 
@@ -231,8 +231,8 @@ All commands are located in `.cursor/commands/`:
 ### 8.3 Standards (Governing Documents)
 All standards are located in `standards/`:
 
-- **Documentation:** `standards/documentation.md` - Documentation management rules
-- **Documentation Index:** `docs/DOCUMENTATION_STANDARDS.md` - Comprehensive documentation guide and index
+- **Documentation:** `standards/project-planning/documentation.md` - Documentation management rules
+- **Documentation Index:** `standards/project-planning/documentation-standards.md` - Comprehensive documentation guide and index
 - **Project Structure:** `standards/project-structure.md` - File organization standards
 - **Module Structure:** `standards/module-structure.md` - Module organization standards
 - **Security:** `standards/security/access-control.md` - Access control and RLS standards
@@ -245,15 +245,15 @@ All standards are located in `standards/`:
 
 | Situation | Command | Checklist | Standard |
 |-----------|---------|-----------|----------|
-| Starting new task | `pre-flight-check` (`.cursor/commands/pre-flight-check.md`) | `standards/development-checklists/pre-flight-checklist.md` | - |
+| Starting new task | `pre-flight-check` (`.cursor/commands/pre-flight-check.md`) | `standards/process/checklists/pre-flight-checklist.md` | - |
 | Launching dev env | `./start_app.sh dev` (or `create-start-scripts` if missing) | - | `application-launch.md` |
-| Before PR | `pr-review-check` (`.cursor/commands/pr-review-check.md`) | `standards/development-checklists/pr-review-checklist.md` | - |
-| Onboarding repo | `project-audit` (`.cursor/commands/project-audit.md`) | `standards/development-checklists/project-audit-checklist.md` | `project-structure.md` |
+| Before PR | `pr-review-check` (`.cursor/commands/pr-review-check.md`) | `standards/process/checklists/pr-review-checklist.md` | - |
+| Onboarding repo | `project-audit` (`.cursor/commands/project-audit.md`) | `standards/process/checklists/project-audit-checklist.md` | `project-structure.md` |
 | Security review | `security_audit` (`.cursor/commands/audit-security.mdc`) | `standards/security/security-audit-checklist.md` | - |
 | RLS deep dive | Auto (Supabase rule) | `.cursor/rules/supabase-rls-policy-review.mdc` | `access-control.md` |
 | Full health check | `full-project-health-check` | All checklists | All standards |
 
-**Note:** Commands are located in `.cursor/commands/`, checklists in `standards/development-checklists/` and `standards/security/`, and standards in `standards/`. Adjust paths if your project structure differs.
+**Note:** Commands are located in `.cursor/commands/`, checklists in `standards/process/checklists/` and `standards/security/`, and standards in `standards/`. Adjust paths if your project structure differs.
 
 ---
 

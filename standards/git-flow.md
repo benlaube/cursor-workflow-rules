@@ -2,11 +2,18 @@
 
 ## Metadata
 - **Created:** 2025-11-17
-- **Last Updated:** 2025-11-18
-- **Version:** 1.1
-
-## Description
-Standards for Git usage, branching strategies, commit messages, and PR workflows. Adhering to this ensures history is readable and deployments are predictable.
+- **Last Updated:** 04-12-2025 12:42:51 EST
+- **Version:** 1.2
+- **Description:** Standards for Git usage, branching strategies, commit messages, and PR workflows. Adhering to this ensures history is readable and deployments are predictable.
+- **Type:** Governing Standard - Defines requirements for Git workflow
+- **Applicability:** All git operations throughout development lifecycle
+- **Related Rules:**
+  - [git-branch-naming.mdc](../../.cursor/rules/git-branch-naming.mdc) - Enforces branch naming conventions (Section B)
+  - [git-commit-messages.mdc](../../.cursor/rules/git-commit-messages.mdc) - Enforces commit message standards (Section C)
+  - [git-pr-preparation.mdc](../../.cursor/rules/git-pr-preparation.mdc) - PR preparation and validation (Section D)
+  - [git-repository-hygiene.mdc](../../.cursor/rules/git-repository-hygiene.mdc) - Repository hygiene and .gitignore standards (Section E)
+  - [git-hooks-standards.mdc](../../.cursor/rules/git-hooks-standards.mdc) - Git hooks configuration standards
+  - [git-workflow-integration.mdc](../../.cursor/rules/git-workflow-integration.mdc) - Coordinates git operations and AI agent behavior (Sections A, F)
 
 ---
 
@@ -95,7 +102,7 @@ Before merging, the Reviewer (AI or Human) must verify:
 - [ ] CI/CD checks pass.
 - [ ] No secrets are exposed.
 - [ ] Code follows style guide.
-- [ ] `standards/development-checklists/pr-review-checklist.md` has been followed.
+- [ ] `standards/process/checklists/pr_review_checklist_v1_0.md` has been followed.
 
 ---
 
@@ -119,4 +126,19 @@ Every repo must exclude:
 - **Commit Messages:** Always write semantic commit messages. Never use "update code" or "misc changes".
 - **PR Description:** Auto-generate a detailed PR description based on the diff.
 
-# End of Rule – Git_Repository_Standards_v1.1
+---
+
+## Related Cursor Rules
+
+This standard is enforced by the following Cursor rules:
+
+- **`git-branch-naming.mdc`** - Enforces branch naming conventions and prevents direct commits to main/master (Section B)
+- **`git-commit-messages.mdc`** - Enforces Conventional Commits format and pre-commit security checks (Section C)
+- **`git-pr-preparation.mdc`** - Validates branch and commits before PR, auto-generates PR description (Section D)
+- **`git-repository-hygiene.mdc`** - Monitors .gitignore patterns and tracked sensitive files (Section E)
+- **`git-hooks-standards.mdc`** - Standards for configuring git hooks (pre-commit, commit-msg, pre-push)
+- **`git-workflow-integration.mdc`** - Coordinates git operations and validates git status (Sections A, F)
+
+These rules automatically apply during git operations to ensure compliance with this standard.
+
+# End of Rule – Git_Repository_Standards_v1.2

@@ -1,0 +1,219 @@
+---
+description: Backend API development standards for routes, services, and error handling. Applies when working in src/backend/ directory.
+version: 1.0.0
+lastUpdated: 04-12-2025 11:47:37 EST
+globs: **/*.{ts,js}
+alwaysApply: false
+type: Conditional Rule - Backend development role
+relatedStandards: [architecture/backend-module-plan.md]
+---
+
+# Backend Development Standards
+
+## When This Rule Applies
+
+When working in `src/backend/` directory with API routes, services, or business logic.
+
+---
+
+## Core Requirements
+
+### API Route Structure
+- Use standard handler wrapper (see `modules/backend-api`)
+- Zod validation for all inputs
+- Proper error handling with Result pattern
+- Return standardized response format
+
+### Error Handling
+- Use `Result<T, E>` pattern (not throwing exceptions)
+- Wrap promises with `safe()` helper
+- Use `withRetry()` for transient failures
+- Categorize errors properly (operational vs programmer errors)
+
+### Service Layer
+- Business logic in services (not in routes)
+- One responsibility per service
+- Services return Results, not throw errors
+- Services are testable in isolation
+
+---
+
+## Examples
+
+### Good API Route
+
+```typescript
+import { apiHandler } from '@/lib/api-handler';
+import { z } from 'zod';
+import { userService } from '@/services/user';
+
+const createUserSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+});
+
+export default apiHandler(async (req, context) => {
+  const body = createUserSchema.parse(req.body);
+  const result = await userService.create(body);
+  
+  if (!result.ok) {
+    return { error: result.error.message, status: 400 };
+  }
+  
+  return { data: result.value, status: 201 };
+});
+```
+
+### Bad API Route
+
+```typescript
+// ❌ No validation, throws errors, mixed concerns
+export default async function handler(req, res) {
+  const user = await db.users.create({
+    name: req.body.name,  // No validation!
+    email: req.body.email
+  });
+  
+  res.json(user);  // What if it throws?
+}
+```
+
+---
+
+## Service Pattern
+
+### Good Service
+
+```typescript
+import { Result, safe } from '@/lib/error-handler';
+
+interface CreateUserData {
+  name: string;
+  email: string;
+}
+
+export class UserService {
+  async create(data: CreateUserData): Promise<Result<User, Error>> {
+    // Validate business rules
+    const emailExists = await this.checkEmailExists(data.email);
+    if (emailExists) {
+      return { ok: false, error: new Error('Email already in use') };
+    }
+    
+    // Use safe() wrapper for database calls
+    const result = await safe(
+      db.users.create({
+        name: data.name,
+        email: data.email,
+      })
+    );
+    
+    return result;
+  }
+  
+  private async checkEmailExists(email: string): Promise<boolean> {
+    const result = await safe(
+      db.users.findFirst({ where: { email } })
+    );
+    return result.ok && result.value !== null;
+  }
+}
+
+export const userService = new UserService();
+```
+
+---
+
+## Input Validation
+
+### Always use Zod schemas
+
+```typescript
+import { z } from 'zod';
+
+// Define schema
+const updateProfileSchema = z.object({
+  name: z.string().min(1).max(100),
+  bio: z.string().max(500).optional(),
+  avatarUrl: z.string().url().optional(),
+});
+
+// Validate
+const body = updateProfileSchema.parse(req.body);
+```
+
+### Validation Rules
+- Validate all external inputs
+- Return clear error messages
+- Use schemas for documentation
+- Reuse schemas between routes
+
+---
+
+## Database Access
+
+### Use safe() wrapper
+
+```typescript
+import { safe } from '@/lib/error-handler';
+
+// Good: Wrapped in safe()
+const result = await safe(db.users.findMany());
+if (!result.ok) {
+  return { ok: false, error: result.error };
+}
+const users = result.value;
+
+// Bad: Unwrapped (can throw)
+const users = await db.users.findMany();  // ❌
+```
+
+### Transactions
+
+```typescript
+const result = await safe(
+  db.$transaction(async (tx) => {
+    const user = await tx.users.create({ data: userData });
+    await tx.profiles.create({ data: { userId: user.id } });
+    return user;
+  })
+);
+```
+
+---
+
+## Response Format
+
+### Standardized Responses
+
+```typescript
+// Success
+return {
+  data: result.value,
+  status: 200,
+};
+
+// Error
+return {
+  error: 'User not found',
+  status: 404,
+};
+
+// Validation error
+return {
+  error: 'Validation failed',
+  details: validationErrors,
+  status: 400,
+};
+```
+
+---
+
+## Related Standards
+
+See `standards/architecture/backend-module-plan.md` for complete backend patterns including:
+- API handler implementation
+- Error handling strategies
+- Database patterns
+- Testing approaches
+- Security best practices

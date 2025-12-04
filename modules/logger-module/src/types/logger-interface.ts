@@ -116,6 +116,16 @@ export interface ILogger {
    * @returns Promise that resolves when shutdown is complete
    */
   shutdown?(): Promise<void>;
+
+  /**
+   * Gets the underlying Pino logger instance.
+   * 
+   * This method is optional and Pino-specific. It's useful for advanced
+   * Pino usage scenarios where direct access to the Pino logger is needed.
+   * 
+   * @returns The underlying Pino logger instance, or undefined if not available
+   */
+  getPinoLogger?(): any;
 }
 
 /**
@@ -141,6 +151,7 @@ export function isILogger(obj: unknown): obj is ILogger {
     (typeof logger.audit === 'function' || logger.audit === undefined) &&
     typeof logger.withContext === 'function' &&
     typeof logger.addContext === 'function' &&
-    typeof logger.getStats === 'function'
+    typeof logger.getStats === 'function' &&
+    (typeof logger.getPinoLogger === 'function' || logger.getPinoLogger === undefined)
   );
 }

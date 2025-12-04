@@ -1,0 +1,112 @@
+---
+description: Defines behavior and standards for AI agents interacting with this project. Applies to all AI agent interactions.
+version: 1.0.0
+lastUpdated: 04-12-2025 11:47:37 EST
+globs: ""
+alwaysApply: true
+type: Auto-Applied Behavioral Rule - Guides AI agent behavior and coding standards
+relatedCommands: []
+relatedRules: [environment.mdc, task-workflow.mdc]
+relatedStandards: [project-planning/documentation.md, database/schema.md]
+---
+
+# AI Interaction Rules & Persona
+
+> **📝 Note:** This is a template rule. Adapt it for your specific project needs.
+
+This document defines the behavior and standards for AI agents (Cursor, Windsurf, etc.) interacting with this project.
+
+## Core Directives
+
+### 1. Context Awareness & Scope
+**Rule:** Always check `standards/` before generating code. Do not guess conventions.
+
+**Scope Clarification:** You are the **Developer Agent**.
+- `AGENTS.md` is your memory (project context and goals)
+- `standards/` are your laws (coding standards and patterns)
+- Runtime AI agents (if any) do NOT see these files
+
+**Action:**
+- Before creating components, check relevant standards
+- Before creating database tables, check `standards/database/schema.md`
+- Use established patterns instead of inventing new ones
+
+### 2. Module Usage (Don't Reinvent the Wheel)
+**Rule:** Check for existing solutions before writing new boilerplate.
+
+**Action:**
+- Check `lib/` or `modules/` for reusable utilities
+- Use project-standard patterns for common tasks
+- Reference existing implementations as examples
+
+### 3. Safety First
+**Rule:** 
+- Never commit secrets (API keys, passwords)
+- Always verify file paths before writing
+- Run security audits when installing new packages
+
+**Action:** 
+- Always use environment variables for secrets
+- Use `.env.example` as template
+- Never hardcode sensitive data
+
+## Coding Behavior
+
+### Refactoring Thresholds
+**Rule:** If you see a file > 200 lines, propose a refactor into smaller components or utilities.
+
+### Error Handling Standard
+**Rule:** Every external call (API, DB) must be wrapped in proper error handling.
+- Use Result pattern or try/catch
+- Handle errors gracefully
+- Provide useful error messages
+
+### Documentation Hygiene
+**Rule:** Update `CHANGELOG.md` when making significant changes.
+- Document new features
+- Document breaking changes
+- Document bug fixes
+
+### Database Hygiene (CRITICAL)
+**Rule:** Every database migration must include `COMMENT ON` statements for tables and columns.
+
+**Why:** Self-documenting database for future developers and AI agents.
+
+## Self-Correction
+- **Analyze Errors:** Read error messages carefully. Don't blindly retry the same command.
+- **Clarify Ambiguity:** If user request conflicts with standards, ask for clarification.
+
+---
+
+## Related Files
+
+- **Rules:**
+  - [environment.mdc](./environment.mdc) - Environment expectations
+  - [task-workflow.mdc](./task-workflow.mdc) - Development workflow
+- **Standards:**
+  - See `standards/` directory for project-specific standards
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically to all AI agent interactions with this project.**
+
+**Agents should:**
+- Check `standards/` before generating code
+- Use existing patterns and utilities
+- Never commit secrets
+- Update documentation when changing patterns
+- Include database comments for all migrations
+- Analyze errors instead of blindly retrying
+
+---
+
+## Customization Notes
+
+When adapting this rule for your project:
+- Add project-specific conventions
+- Reference your module structure
+- Add tool-specific requirements (e.g., Notion integration)
+- Define your code review process
+- Specify any domain-specific rules

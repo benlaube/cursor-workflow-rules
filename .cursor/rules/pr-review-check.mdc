@@ -1,0 +1,225 @@
+---
+description: Auto-applied rule that validates code quality, functionality, security, and documentation before completing tasks or submitting PRs. Triggers when task is marked complete or PR is requested.
+version: 2.0.0
+lastUpdated: 04-12-2025 12:14:38 EST
+globs: ""
+alwaysApply: true
+type: Workflow Integration Rule - Pre-PR validation
+relatedCommands: []
+relatedRules: [task-workflow.mdc, linting-behavior.mdc, git-pr-preparation.mdc, git-commit-messages.mdc]
+relatedStandards: [process/code-quality-linting-standards.md, project-planning/documentation.md]
+---
+
+# PR Review Check Rule
+
+## When This Rule Applies
+
+This rule **automatically applies** when:
+- Marking a task as complete
+- User requests to submit/create a PR
+- Agent detects work is finishing
+- Before pushing code to remote
+
+---
+
+## Core Principle
+
+**Never submit broken or insecure code.** Before completing work, the agent MUST validate:
+1. Code quality (lint, format, types)
+2. Functionality (build, tests)
+3. Security (no secrets, input validation)
+4. Documentation (functions documented, CHANGELOG updated)
+
+**Source Checklist:** `standards/process/checklists/pr_review_checklist_v1_0.md`
+
+---
+
+## Agent Responsibilities
+
+### 1. Code Quality Validation
+
+#### 1.1 Linting
+- Run: `npm run lint` (or equivalent)
+- If errors: Auto-fix with `npm run lint -- --fix`
+- If still errors: ❌ **ABORT** - Must fix manually
+- If clean: ✅ Proceed
+- See `standards/process/code-quality-linting-standards.md` Section 6.2
+
+#### 1.2 Formatting
+- Run: `npm run format:check` or `prettier --check .`
+- If not formatted: Auto-run `npm run format` or `prettier --write .`
+- ✅ Code formatted
+
+#### 1.3 Type Safety
+- **TypeScript:** Run `tsc --noEmit`
+- **Python:** Run `mypy .`
+- If type errors: ❌ **ABORT** - Fix before PR
+- If clean: ✅ Proceed
+
+#### 1.4 Complexity Check
+- Scan for functions > 200 lines
+- Report as refactoring candidates
+- ⚠️ Warn but don't block PR
+
+### 2. Functionality & Testing
+
+#### 2.1 Build Check
+- Run: `npm run build` (or equivalent)
+- If build fails: ❌ **ABORT** - Fix build errors
+- If succeeds: ✅ Proceed
+
+#### 2.2 Test Coverage
+- Run: `npm test` (or equivalent)
+- If tests fail: ❌ **ABORT** - Fix failing tests
+- Check for new tests covering new functionality
+- If missing: ⚠️ Warn about test coverage
+- If pass: ✅ Proceed
+
+#### 2.3 Edge Cases Review
+- Check for try-catch in async operations
+- Check for input validation
+- ⚠️ Remind to review error handling
+
+### 3. Security & Safety
+
+#### 3.1 Secrets Scan
+- Scan for hardcoded secrets:
+  ```bash
+  grep -rE "sk_live|ghp_|password.*=|api_key.*=" . --exclude-dir={node_modules,.git,dist}
+  ```
+- Check `.env` is not tracked: `git ls-files .env`
+- If secrets found: ❌ **ABORT** - Remove secrets
+- If clean: ✅ Proceed
+
+#### 3.2 .gitignore Validation
+- Verify `.env`, `*.pem`, `*.key`, `logs/` in `.gitignore`
+- If missing: Auto-add entries
+- ✅ Sensitive files ignored
+
+#### 3.3 Input Validation
+- Review API routes for validation (Zod, Pydantic)
+- Check user inputs are validated
+- ⚠️ Warn if validation appears missing
+
+#### 3.4 Dependency Audit
+- Run: `npm audit` (or `pip audit`)
+- If critical/high vulnerabilities: ⚠️ Warn about vulnerabilities
+- If clean: ✅ Proceed
+
+### 4. Documentation
+
+#### 4.1 Function Documentation
+- Scan exported functions for JSDoc/Pydoc comments
+- If undocumented: ⚠️ Warn about missing docs
+- Suggest adding comments
+
+#### 4.2 Standards Updates
+- Check git diff for architecture changes
+- If architecture changed: ⚠️ Prompt to update `standards/`
+
+#### 4.3 Changelog
+- Detect user-facing changes from git diff
+- If CHANGELOG.md not updated: ⚠️ Prompt to update
+- Reference: `standards/documentation.md` Section 7 for format
+- If updated: ✅ Proceed
+
+#### 4.4 TODO Cleanup
+- Scan for `TODO` or `FIXME` comments
+- List them for review
+- ⚠️ Suggest tracking TODOs before PR
+
+### 5. Final Verification
+
+#### 5.1 Debug Code Cleanup
+- Scan for `console.log`, `debugger`, `print(` statements
+- If found: ⚠️ Warn to remove debug code
+- Suggest cleanup before PR
+
+#### 5.2 Port Conflicts
+- Verify no hardcoded ports introduced
+- ✅ No environment issues
+
+---
+
+## Auto-Fix Capabilities
+
+This rule will automatically:
+- Run `npm run lint -- --fix` for linting issues
+- Run `npm run format` for formatting
+- Add missing `.gitignore` entries
+- **Note:** Will NOT auto-fix type errors, test failures, or remove secrets
+
+---
+
+## Output Examples
+
+### Success Case
+```
+✅ PR Review Check complete – ready to submit PR.
+
+Summary:
+- Code Quality: ✅ Lint, format, types all pass
+- Functionality: ✅ Build succeeds, all tests pass  
+- Security: ✅ No secrets, inputs validated
+- Documentation: ✅ Functions documented, CHANGELOG updated
+- Clean: ✅ No debug code
+
+Ready to submit PR.
+```
+
+### Failure Case
+```
+❌ PR Review Check failed. Fix before PR:
+
+Issues:
+- Code Quality: 5 linter errors in src/utils/helpers.ts
+- Functionality: Build error in src/api/routes.ts:45
+- Security: Hardcoded API key in src/config.ts:12
+- Documentation: CHANGELOG.md not updated
+
+Cannot submit PR until issues resolved.
+```
+
+---
+
+## Integration with Task Workflow
+
+This rule integrates with `task-workflow.mdc`:
+- Runs automatically at "After Completing a Task" phase
+- Prevents submitting broken code
+- Enforces quality standards
+- Enables auto-fixing for common issues
+
+---
+
+## Related Files
+
+- **Rules:**
+  - [task-workflow.mdc](./task-workflow.mdc) - Development workflow integration
+  - [linting-behavior.mdc](./linting-behavior.mdc) - Linting behavior and expectations
+  - [auto-heal.mdc](./auto-heal.mdc) - Auto-healing strategies
+  - [git-pr-preparation.mdc](./git-pr-preparation.mdc) - PR preparation and validation
+  - [git-commit-messages.mdc](./git-commit-messages.mdc) - Commit message validation
+- **Standards:**
+  - [code-quality-linting-standards.md](../../standards/process/code-quality-linting-standards.md) - Linting requirements
+  - [documentation.md](../../standards/project-planning/documentation.md) - Documentation standards
+  - [git-repository-standards.md](../../standards/process/git-repository-standards.md) - Git workflow standards
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically when completing tasks or requesting PRs.**
+
+**Agents should:**
+1. Detect when task is being marked complete or PR is requested
+2. Run comprehensive validation automatically
+3. Auto-fix issues that can be fixed (lint, format, .gitignore)
+4. ABORT if critical issues found (secrets, failing tests, build errors)
+5. WARN about non-critical issues (missing tests, debug code, TODOs)
+6. Only allow PR submission when all critical checks pass
+
+**Trigger conditions:**
+- User says "done", "complete", "ready for PR", "create PR"
+- Agent marks TODO as completed
+- Before final code submission

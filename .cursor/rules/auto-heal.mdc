@@ -1,9 +1,13 @@
 ---
-description: Auto-heal Runtime & Error Recovery
-version: 2.0.0
-lastUpdated: 2025-01-27
-globs: "**/*"
+description: Autonomous runtime management and automatic error recovery strategies
+version: 2.1.0
+lastUpdated: 2025-12-04
+globs: **/*
 alwaysApply: true
+type: Error Recovery Rule - Automatic error detection and fixing
+relatedCommands: [pre-flight-check.md, launch-debug-fix.md]
+relatedRules: [environment.mdc, task-workflow.mdc]
+relatedStandards: [architecture/supabase-local-setup.md, process/code-quality-linting-standards.md]
 ---
 
 # Auto-Healing Runtime Rule
@@ -159,7 +163,7 @@ The agent acts as an autonomous runtime manager. When errors occur, try to fix t
 **Linter Errors:**
 - Auto-fix if possible (`npm run lint -- --fix`, `prettier --write .`, `black .`, `ruff check --fix`)
 - Otherwise manual fix
-- Check linting configuration matches project standards (see `standards/process/linting.md`)
+- Check linting configuration matches project standards (see `standards/process/code-quality-linting-standards.md`)
 
 **Env Missing:**
 - Copy `.env.example` to `.env` if `.env` is missing
@@ -682,7 +686,7 @@ To avoid common errors:
 4.  **Error Handling:** Use Result pattern and proper error handling from the start
 5.  **Logging:** Implement proper logging to catch issues early (see `modules/logger-module`)
 6.  **Testing:** Write tests to catch errors before deployment
-7.  **Code Quality:** Follow linting and formatting standards (see `standards/process/linting.md`)
+7.  **Code Quality:** Follow linting and formatting standards (see `standards/process/code-quality-linting-standards.md`)
 
 ---
 
@@ -692,5 +696,36 @@ To avoid common errors:
 - **Logger Module:** `modules/logger-module/README.md` - Logging and log file management
 - **Task Workflow:** `.cursor/rules/task-workflow.mdc` - Integration with development workflow
 - **Environment Setup:** `.cursor/rules/environment.mdc` - Environment and container management
-- **Linting Standards:** `standards/process/linting.md` - Code quality and linting requirements
+- **Linting Standards:** `standards/process/code-quality-linting-standards.md` - Code quality and linting requirements
 - **Configuration Standards:** `standards/configuration.md` - Environment variable standards
+
+---
+
+## Related Files
+
+- **Commands:**
+  - [pre-flight-check.md](../commands/pre-flight-check.md) - Pre-flight validation that triggers error checks
+  - [launch-debug-fix.md](../commands/launch-debug-fix.md) - Iterative debugging and auto-healing for launch errors
+- **Rules:**
+  - [environment.mdc](./environment.mdc) - Environment setup and container management rules
+  - [task-workflow.mdc](./task-workflow.mdc) - Development workflow integration
+- **Standards:**
+  - [supabase-local-setup.md](../../standards/architecture/supabase-local-setup.md) - Supabase container isolation guidelines
+  - [code-quality-linting-standards.md](../../standards/process/code-quality-linting-standards.md) - Linting standards for code quality
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically when errors occur during development.**
+
+**Agents should:**
+- Automatically attempt to fix common errors (ports, dependencies, database connections, containers)
+- Follow the error recovery strategies defined in each section
+- Use Result pattern from `modules/error-handler` for robust error handling
+- Implement retry logic with exponential backoff for transient failures
+- Only affect project-specific Docker/Supabase containers (never all containers)
+- Verify fixes work by re-running the command that failed
+- Analyze log files to detect and categorize errors for auto-fix vs propose-fix
+
+**Critical:** When managing Docker/Supabase containers, always use project-specific commands to avoid affecting other projects' containers.

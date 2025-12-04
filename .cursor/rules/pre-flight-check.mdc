@@ -1,0 +1,192 @@
+---
+description: Auto-applied rule that validates environment and repository state before starting any coding task. Triggers when beginning new work or making significant changes.
+version: 2.0.0
+lastUpdated: 04-12-2025 12:14:38 EST
+globs: ""
+alwaysApply: true
+type: Workflow Integration Rule - Pre-flight validation before coding
+relatedCommands: []
+relatedRules: [task-workflow.mdc, auto-heal.mdc, linting-behavior.mdc, git-workflow-integration.mdc, git-branch-naming.mdc]
+relatedStandards: [process/code-quality-linting-standards.md]
+---
+
+# Pre-Flight Check Rule
+
+## When This Rule Applies
+
+This rule **automatically applies** when:
+- Starting a new task or feature
+- Beginning significant code changes
+- The agent detects this is the start of a work session
+
+---
+
+## Core Principle
+
+**Never start coding in a broken environment.** Before making changes, the agent MUST validate:
+1. Git status is clean and synced
+2. Dependencies are installed
+3. Environment is configured
+4. Baseline tests and build pass
+
+**Source Checklist:** `standards/process/checklists/pre_flight_checklist_v1_0.md`
+
+---
+
+## Agent Responsibilities
+
+### 1. Git Status Validation
+
+**Before starting work, verify git state:**
+
+1. **Check Current Branch:**
+   - Get current branch: `git branch --show-current`
+   - If on `main` or `master`: ⚠️ Warn about working on main branch
+   - Suggest creating feature branch if needed
+
+2. **Check Working Tree:**
+   - Run: `git status --porcelain`
+   - If uncommitted changes exist: ⚠️ Warn about dirty working tree
+   - If clean: ✅ Proceed
+
+3. **Sync with Remote:**
+   - Check if behind: `git fetch origin && git rev-list HEAD..origin/main --count`
+   - If behind: ⚠️ Warn about being out of sync
+   - If up to date: ✅ Proceed
+
+### 2. Environment Validation
+
+**Verify environment is ready:**
+
+1. **Dependencies Check:**
+   - **Node.js:** Check if `node_modules` exists
+     - If missing: Auto-run `npm install`
+   - **Python:** Check if `.venv` exists
+     - If missing: Auto-create and run `pip install -r requirements.txt`
+   - ✅ Dependencies installed
+
+2. **Configuration Check:**
+   - Verify `.env` exists (or `.env.local`)
+   - If missing: Auto-copy from `.env.example`
+   - Compare keys between `.env` and `.env.example`
+   - Warn about missing keys
+   - ✅ Configuration complete
+
+3. **Secrets Validation:**
+   - For Supabase: Verify `SUPABASE_URL` and `SUPABASE_ANON_KEY` set
+   - For other services: Check required API keys
+   - ✅ Secrets configured
+
+### 3. Baseline Integrity
+
+**Verify codebase is healthy:**
+
+1. **Tests:**
+   - Run: `npm test` (or equivalent)
+   - If tests fail: ❌ **ABORT** - Fix tests first
+   - If pass: ✅ Proceed
+
+2. **Build:**
+   - Run: `npm run build` (or equivalent)
+   - If build fails: ❌ **ABORT** - Fix build first
+   - If succeeds: ✅ Proceed
+
+3. **Linter:**
+   - Run: `npm run lint`
+   - If errors: ⚠️ Warn, consider auto-fixing
+   - Auto-fix if possible: `npm run lint -- --fix`
+   - See `standards/process/code-quality-linting-standards.md` Section 6.1
+
+### 4. Task Understanding
+
+**Before proceeding, verify:**
+
+1. **Requirements Clear:**
+   - Prompt if task is unclear: "Do you understand the goal?"
+   - Suggest reviewing requirements if needed
+
+2. **Documentation Review:**
+   - Check `standards/` for relevant patterns
+   - List applicable standards for the task
+
+3. **Planning:**
+   - Suggest creating TODO list for complex tasks
+
+---
+
+## Auto-Healing Actions
+
+This rule will automatically:
+- Install missing dependencies
+- Create `.env` from `.env.example`
+- Auto-fix linter errors (if fixable)
+- Run these actions WITHOUT asking first (self-healing)
+
+---
+
+## Output Examples
+
+### Success Case
+```
+✅ Pre-flight check complete – safe to start coding.
+
+Summary:
+- Git: Clean working tree, synced with origin/main
+- Environment: Dependencies installed, .env configured
+- Baseline: Tests pass, build succeeds, linter clean
+- Task: Requirements clear, ready to proceed
+```
+
+### Failure Case
+```
+❌ Pre-flight check failed. Address these issues:
+
+Issues:
+- Git: Working tree has uncommitted changes
+- Tests: 2 tests failing in auth.test.ts
+- Linter: 5 errors in src/utils/helpers.ts
+
+Cannot proceed until issues are resolved.
+```
+
+---
+
+## Integration with Task Workflow
+
+This rule integrates with `task-workflow.mdc`:
+- Runs automatically at start of "Before Starting a Task" phase
+- Prevents coding in broken environment
+- Enables auto-healing for common issues
+
+---
+
+## Related Files
+
+- **Rules:**
+  - [task-workflow.mdc](./task-workflow.mdc) - Development workflow integration
+  - [auto-heal.mdc](./auto-heal.mdc) - Auto-healing strategies
+  - [linting-behavior.mdc](./linting-behavior.mdc) - Linting behavior
+  - [git-workflow-integration.mdc](./git-workflow-integration.mdc) - Git workflow coordination
+  - [git-branch-naming.mdc](./git-branch-naming.mdc) - Branch naming conventions
+- **Standards:**
+  - [code-quality-linting-standards.md](../../standards/process/code-quality-linting-standards.md) - Linting requirements
+  - [git-repository-standards.md](../../standards/process/git-repository-standards.md) - Git workflow standards
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically when starting new work.**
+
+**Agents should:**
+1. Detect when starting new task or significant work
+2. Run pre-flight validation checks automatically
+3. Auto-heal common issues (dependencies, .env, linter)
+4. ABORT if critical issues found (failing tests, broken build)
+5. Warn about non-critical issues (dirty git, TODOs)
+6. Only proceed when environment is validated
+
+**Trigger conditions:**
+- User asks to "start task", "begin feature", "implement X"
+- Agent detects start of work session
+- Before making first significant code change

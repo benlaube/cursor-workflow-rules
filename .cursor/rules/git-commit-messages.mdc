@@ -1,0 +1,344 @@
+---
+description: Enforces Conventional Commits format and pre-commit security checks. Applies when committing code or validating commit messages.
+version: 1.0.0
+lastUpdated: 04-12-2025 12:42:51 EST
+globs: ""
+alwaysApply: true
+type: Conditional Rule - Commit message validation and security
+relatedCommands: []
+relatedRules: [git-branch-naming.mdc, git-hooks-standards.mdc, git-workflow-integration.mdc]
+relatedStandards: [process/git-repository-standards.md]
+---
+
+# Git Commit Messages Rule
+
+## When This Rule Applies
+
+This rule **automatically applies** when:
+- Committing code
+- Validating commit messages
+- Staging files for commit
+- Preparing to commit changes
+
+---
+
+## Core Principle
+
+**All commits must follow Conventional Commits format for semantic, machine-readable history.** Pre-commit security checks prevent secrets and sensitive files from being committed.
+
+**Source Standard:** `standards/process/git-repository-standards.md` Section C (Commit Message Standards)
+
+---
+
+## Agent Responsibilities
+
+### 1. Commit Message Format Validation
+
+#### 1.1 Conventional Commits Format
+Commit messages MUST follow this format:
+
+```
+<type>(<scope>): <subject>
+
+[optional body]
+
+[optional footer]
+```
+
+**Required Components:**
+- **Type:** One of the allowed types (see Section 1.2)
+- **Subject:** Short description (≤50 characters, imperative mood)
+
+**Optional Components:**
+- **Scope:** Context of change (e.g., `auth`, `api`, `ui`)
+- **Body:** Detailed explanation (WHY, not just WHAT)
+- **Footer:** Breaking changes, issue references
+
+#### 1.2 Allowed Types
+- **`feat`**: A new feature (correlates with MINOR in SemVer)
+- **`fix`**: A bug fix (correlates with PATCH in SemVer)
+- **`docs`**: Documentation only changes
+- **`style`**: Formatting, missing semi-colons, etc (no code change)
+- **`refactor`**: A code change that neither fixes a bug nor adds a feature
+- **`perf`**: A code change that improves performance
+- **`test`**: Adding missing tests or correcting existing tests
+- **`chore`**: Build process or auxiliary tool changes
+
+#### 1.3 Subject Validation Rules
+
+**Length:** ≤ 50 characters
+- ✅ Good: `feat(auth): add google oauth login support` (42 chars)
+- ❌ Bad: `feat(auth): add comprehensive google oauth login support with refresh tokens` (78 chars)
+
+**Imperative Mood:** Should start with verb (add, fix, update, remove, etc.)
+- ✅ Good: `fix(api): handle null response in user profile`
+- ❌ Bad: `fix(api): handled null response in user profile` (past tense)
+- ❌ Bad: `fix(api): handling null response in user profile` (gerund)
+
+**Descriptive:** Must clearly describe what changed
+- ✅ Good: `docs(readme): update installation instructions`
+- ❌ Bad: `docs(readme): update` (too vague)
+- ❌ Bad: `docs(readme): misc changes` (not semantic)
+
+#### 1.4 Scope Guidelines
+Scope is optional but recommended when change affects specific area:
+- **Examples:** `auth`, `api`, `ui`, `db`, `config`, `tests`
+- **When to use:** When change is scoped to specific module/area
+- **When to omit:** When change affects multiple areas or entire codebase
+
+#### 1.5 Body Guidelines
+Body is optional but recommended for complex changes:
+
+**Include body when:**
+- Change requires explanation (WHY, not just WHAT)
+- Breaking changes are introduced
+- Multiple related changes in one commit
+
+**Body format:**
+- Separate from subject with blank line
+- Wrap at 72 characters
+- Use imperative mood
+- Explain motivation and context
+
+**Example:**
+```
+feat(auth): add refresh token rotation
+
+Implement automatic refresh token rotation to improve security.
+Tokens are rotated on each refresh to prevent token reuse attacks.
+This change requires updating client libraries to handle new token format.
+
+BREAKING CHANGE: Token response format changed from {token} to {accessToken, refreshToken}
+```
+
+#### 1.6 Footer Guidelines
+Footer is optional, used for:
+- Breaking changes: `BREAKING CHANGE: <description>`
+- Issue references: `Closes #123`, `Fixes #456`
+- Co-authors: `Co-authored-by: Name <email>`
+
+### 2. Pre-Commit Security Checks
+
+#### 2.1 Secrets Scanning
+**CRITICAL:** Scan staged files for secrets before allowing commit.
+
+**Scan for patterns:**
+- API keys: `api_key`, `apikey`, `API_KEY`
+- Passwords: `password`, `pwd`, `passwd`
+- Secrets: `secret`, `SECRET`, `secrets`
+- Tokens: `token`, `TOKEN`, `access_token`, `refresh_token`
+- Service keys: `sk_live`, `sk_test` (Stripe)
+- GitHub tokens: `ghp_`, `gho_`, `ghu_`, `ghs_`, `ghr_`
+- AWS keys: `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`
+- Database credentials: `DATABASE_URL`, `DB_PASSWORD`
+
+**Command to scan:**
+```bash
+git diff --cached | grep -iE "password|api_key|secret|token|sk_live|ghp_" | grep -v "^---\|^+++\|^-.*password.*="
+```
+
+**If secrets found:**
+- ❌ **ABORT COMMIT** - "Secrets detected in staged files. Remove before committing."
+- List files containing secrets
+- Suggest: "Remove secrets from code and use environment variables instead"
+
+**If clean:**
+- ✅ "No secrets in staged files"
+
+#### 2.2 .env File Protection
+**CRITICAL:** Never allow `.env` files to be committed.
+
+**Check if .env is staged:**
+```bash
+git diff --cached --name-only | grep -E "^\.env$"
+```
+
+**If .env staged:**
+- ❌ **ABORT COMMIT** - ".env file is staged. Remove from staging: `git reset HEAD .env`"
+- Verify `.env` is in `.gitignore`
+- Suggest: "Use `.env.example` for template, keep `.env` local only"
+
+**If clean:**
+- ✅ ".env not staged"
+
+#### 2.3 Other Sensitive Files
+Check for other sensitive file patterns:
+- `*.pem`, `*.key` (private keys)
+- `credentials.json`, `secrets.json`
+- `*.env.local`, `.env.*.local`
+
+**If found:**
+- ❌ "Sensitive files detected. Remove from staging or add to .gitignore"
+
+### 3. Staged Files Validation
+
+#### 3.1 Check Staged Files Exist
+Before committing, verify files are staged:
+
+**Command:**
+```bash
+git diff --cached --name-only
+```
+
+**If no staged files:**
+- ⚠️ "No files staged. Run `git add` first."
+- List modified but unstaged files
+- Suggest: "Stage files with `git add <file>` or `git add .`"
+
+**If staged:**
+- ✅ "Files staged for commit"
+- List staged files for confirmation
+
+#### 3.2 Validate Commit Type Alignment
+When possible, align commit type with branch type:
+
+**Examples:**
+- Branch: `feat/user-auth` → Commit: `feat(auth): add login form`
+- Branch: `fix/api-timeout` → Commit: `fix(api): handle timeout errors`
+- Branch: `docs/update-readme` → Commit: `docs(readme): update installation`
+
+**If mismatch:**
+- ⚠️ "Commit type '{type}' doesn't match branch type. Consider aligning."
+- Don't block commit, but suggest alignment
+
+### 4. Commit Message Examples
+
+#### 4.1 Good Examples
+
+**Simple feature:**
+```
+feat(auth): add google oauth login support
+```
+
+**Feature with body:**
+```
+feat(api): implement rate limiting
+
+Add rate limiting middleware to prevent API abuse.
+Limits requests to 100 per minute per IP address.
+Uses Redis for distributed rate limiting across instances.
+```
+
+**Bug fix:**
+```
+fix(api): handle null response in user profile
+
+Previously, null responses from user service caused 500 errors.
+Now returns 404 with proper error message when user not found.
+```
+
+**Documentation:**
+```
+docs(readme): update installation instructions
+
+Add steps for setting up local development environment.
+Include required environment variables and database setup.
+```
+
+**Breaking change:**
+```
+feat(auth): migrate to JWT tokens
+
+Replace session-based auth with JWT tokens for better scalability.
+
+BREAKING CHANGE: Clients must update to use Authorization header instead of cookies.
+```
+
+#### 4.2 Bad Examples
+
+**Past tense:**
+```
+❌ fix(api): fixed null response bug
+✅ fix(api): handle null response in user profile
+```
+
+**Too vague:**
+```
+❌ feat: update code
+✅ feat(auth): add google oauth login support
+```
+
+**Too long:**
+```
+❌ feat(auth): add comprehensive google oauth login support with refresh tokens and error handling
+✅ feat(auth): add google oauth login support
+```
+
+**Not semantic:**
+```
+❌ misc changes
+✅ chore(deps): update dependencies to latest versions
+```
+
+**Missing type:**
+```
+❌ add login form
+✅ feat(ui): add login form component
+```
+
+---
+
+## Integration with Other Rules
+
+This rule works with:
+
+### `git-branch-naming.mdc`
+- Commit type should align with branch type when possible
+- Example: `feat/` branch should have `feat:` commits
+
+### `git-hooks-standards.mdc`
+- Pre-commit hooks should implement these same checks
+- Commit-msg hooks should validate Conventional Commits format
+
+### `git-workflow-integration.mdc`
+- Coordinates git status validation
+- Ensures working tree is ready for commit
+
+### `git-repository-hygiene.mdc`
+- Ensures .gitignore includes .env patterns
+- Validates no sensitive files are tracked
+
+---
+
+## Related Files
+
+- **Rules:**
+  - [git-branch-naming.mdc](./git-branch-naming.mdc) - Branch naming conventions
+  - [git-hooks-standards.mdc](./git-hooks-standards.mdc) - Git hooks configuration
+  - [git-workflow-integration.mdc](./git-workflow-integration.mdc) - Git workflow coordination
+  - [git-repository-hygiene.mdc](./git-repository-hygiene.mdc) - Repository hygiene checks
+- **Standards:**
+  - [git-repository-standards.md](../../standards/process/git-repository-standards.md) - Git workflow standards (Section C: Commit Message Standards)
+
+---
+
+## How to Use This Rule
+
+**This rule applies automatically when committing code or validating commit messages.**
+
+**Agents should:**
+1. Always validate commit message follows Conventional Commits format
+2. Ensure subject is ≤50 characters and uses imperative mood
+3. Scan staged files for secrets before committing (ABORT if found)
+4. Check if .env files are staged (ABORT if found)
+5. Verify files are staged before committing
+6. Align commit type with branch type when possible
+7. Use scope when change affects specific area
+8. Include body for complex changes or breaking changes
+9. Never use vague messages like "update code" or "misc changes"
+10. Always use semantic commit types (feat, fix, docs, etc.)
+
+**Pre-commit checklist:**
+- [ ] Commit message follows format: `<type>(<scope>): <subject>`
+- [ ] Type is one of allowed types (feat, fix, docs, style, refactor, perf, test, chore)
+- [ ] Subject is ≤50 characters
+- [ ] Subject uses imperative mood
+- [ ] No secrets in staged files
+- [ ] .env file not staged
+- [ ] Files are staged for commit
+- [ ] Commit type aligns with branch type (when possible)
+
+**Security checks (MANDATORY):**
+- [ ] Secrets scan passed
+- [ ] .env file not staged
+- [ ] No sensitive files staged

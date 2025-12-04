@@ -10,7 +10,7 @@
 
 **Version:** 1.1
 
-**Related Command:** `.cursor/commands/pre-flight-check.md`
+**Related Rule:** `.cursor/rules/pre-flight-check.mdc` (auto-applied)
 
 ---
 
@@ -23,7 +23,7 @@ This checklist combines actionable validation items with detailed execution guid
 - Confirm baseline integrity (tests, build, linter)
 - Understand task requirements
 
-**Automated Checks:** The `pre-flight-check.md` command performs many of these checks automatically. Use this checklist for manual verification and comprehensive review.
+**Automated Checks:** The `pre-flight-check.mdc` rule performs many of these checks automatically when starting tasks. Use this checklist for manual verification and comprehensive review.
 
 **Important:** This is the **first command** you should run before making significant changes.
 
@@ -177,8 +177,8 @@ This checklist combines actionable validation items with detailed execution guid
      - Warn: "⚠️ Linter errors found. Consider fixing before adding new code."
      - Option to auto-fix: `npm run lint -- --fix` (if available)
    - If clean: ✅ "No linter errors"
-   - **Reference:** See `standards/process/linting.md` Section 6.1 for detailed pre-flight lint requirements
-   - **Reference:** See `standards/process/linting.md` Section 6.1 for detailed pre-flight lint requirements
+   - **Reference:** See `standards/process/code-quality-linting-standards.md` Section 6.1 for detailed pre-flight lint requirements
+   - **Reference:** See `standards/process/code-quality-linting-standards.md` Section 6.1 for detailed pre-flight lint requirements
 
 ---
 
@@ -273,5 +273,5 @@ This checklist is referenced in `AGENTS.md` as the **first step** in the standar
 
 ---
 
-*This is the comprehensive checklist for pre-flight validation. Use the `pre-flight-check.md` command for automated checks, and this checklist for manual verification.*
+*This is the comprehensive checklist for pre-flight validation. The `pre-flight-check.mdc` rule runs these checks automatically when starting tasks. Use this checklist for manual verification.*
 
