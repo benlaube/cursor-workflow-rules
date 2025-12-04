@@ -1,13 +1,16 @@
 ---
 description: Coordinates git operations and validates git status. Always active to ensure git workflow rules work together and git state is validated.
-version: 1.0.0
-lastUpdated: 04-12-2025 12:42:51 EST
-globs: ""
+version: 1.0.4
+created: 12-04-2025
+lastUpdated: 12-04-2025 16:13:13 EST
 alwaysApply: true
+globs: ""
 type: Behavioral Rule - Git workflow coordination
+applicability: When files matching globs are edited.
+dependencies: []
 relatedCommands: []
-relatedRules: [git-branch-naming.mdc, git-commit-messages.mdc, git-pr-preparation.mdc, git-repository-hygiene.mdc, git-hooks-standards.mdc, task-workflow.mdc]
-relatedStandards: [process/git-repository-standards.md]
+relatedRules: [[git-branch-naming.mdc](./git-branch-naming.mdc), [git-commit-messages.mdc](./git-commit-messages.mdc), [git-pr-preparation.mdc](./git-pr-preparation.mdc), [git-repository-hygiene.mdc](./git-repository-hygiene.mdc), [git-hooks-standards.mdc](./git-hooks-standards.mdc), [task-workflow.mdc](../task-workflow.mdc)]
+relatedStandards: [[process/git-repository-standards.md](../../standards/process/git-repository-standards.md)]
 ---
 
 # Git Workflow Integration Rule
@@ -208,7 +211,7 @@ Agent: "Preparing PR..."
 - Check working tree is clean or has uncommitted changes
 - Sync with remote if needed
 
-**Reference:** See `task-workflow.mdc` and `pre-flight-check.mdc`
+**Reference:** See `../task-workflow.mdc` and `../pre-flight-check.mdc`
 
 #### 4.2 During Task
 **Git operations:**
@@ -223,7 +226,7 @@ Agent: "Preparing PR..."
 - Run pre-PR validation
 - Prepare for PR submission
 
-**Reference:** See `task-workflow.mdc` and `pr-review-check.mdc`
+**Reference:** See `../task-workflow.mdc` and `../pr-review-check.mdc`
 
 ### 5. Error Recovery
 
@@ -343,9 +346,9 @@ This rule coordinates:
 - `git-hooks-standards.mdc` - Hook configuration
 
 ### Workflow Rules
-- `task-workflow.mdc` - Task lifecycle integration
-- `pre-flight-check.mdc` - Pre-flight validation
-- `pr-review-check.mdc` - Pre-PR validation
+- `../task-workflow.mdc` - Task lifecycle integration
+- `../pre-flight-check.mdc` - Pre-flight validation
+- `../pr-review-check.mdc` - Pre-PR validation
 
 ---
 
@@ -357,11 +360,11 @@ This rule coordinates:
   - [git-pr-preparation.mdc](./git-pr-preparation.mdc) - PR preparation
   - [git-repository-hygiene.mdc](./git-repository-hygiene.mdc) - Repository hygiene
   - [git-hooks-standards.mdc](./git-hooks-standards.mdc) - Git hooks configuration
-  - [task-workflow.mdc](./task-workflow.mdc) - Task lifecycle
-  - [pre-flight-check.mdc](./pre-flight-check.mdc) - Pre-flight validation
-  - [pr-review-check.mdc](./pr-review-check.mdc) - Pre-PR validation
+  - [task-workflow.mdc](../task-workflow.mdc) - Task lifecycle
+  - [pre-flight-check.mdc](../pre-flight-check.mdc) - Pre-flight validation
+  - [pr-review-check.mdc](../pr-review-check.mdc) - Pre-PR validation
 - **Standards:**
-  - [git-repository-standards.md](../../standards/process/git-repository-standards.md) - Git workflow standards (Sections A, F)
+  - [git-repository-standards.md](../../../standards/process/git-repository-standards.md) - Git workflow standards (Sections A, F)
 
 ---
 

@@ -1,13 +1,16 @@
 ---
 description: Monitors repository hygiene including .gitignore patterns, tracked sensitive files, and stale branches. Always active for repository maintenance.
-version: 1.0.0
-lastUpdated: 04-12-2025 12:42:51 EST
-globs: ""
+version: 1.0.4
+created: 12-04-2025
+lastUpdated: 12-04-2025 16:13:13 EST
 alwaysApply: true
+globs: ""
 type: Behavioral Rule - Repository maintenance and hygiene
+applicability: When files matching globs are edited.
+dependencies: []
 relatedCommands: []
-relatedRules: [git-commit-messages.mdc, git-workflow-integration.mdc]
-relatedStandards: [process/git-repository-standards.md]
+relatedRules: [[git-commit-messages.mdc](./git-commit-messages.mdc), [git-workflow-integration.mdc](./git-workflow-integration.mdc)]
+relatedStandards: [[process/git-repository-standards.md](../../standards/process/git-repository-standards.md)]
 ---
 
 # Git Repository Hygiene Rule
@@ -334,7 +337,7 @@ This rule works with:
   - [git-commit-messages.mdc](./git-commit-messages.mdc) - Pre-commit security checks
   - [git-workflow-integration.mdc](./git-workflow-integration.mdc) - Git workflow coordination
 - **Standards:**
-  - [git-repository-standards.md](../../standards/process/git-repository-standards.md) - Git workflow standards (Section E: .gitignore Standards)
+  - [git-repository-standards.md](../../../standards/process/git-repository-standards.md) - Git workflow standards (Section E: .gitignore Standards)
 
 ---
 

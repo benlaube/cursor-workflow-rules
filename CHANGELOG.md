@@ -44,6 +44,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Related Standards:** Implements `standards/process/code-quality-linting-standards.md`
 
 ### Changed
+- **Git Rules Organization** (04-12-2025 16:34:28 EST)
+  - **Reorganized:** Moved all git-related rules into `.cursor/rules/git/` subdirectory for better organization
+  - **Files Moved:**
+    - `git-workflow-integration.mdc` → `git/git-workflow-integration.mdc`
+    - `git-branch-naming.mdc` → `git/git-branch-naming.mdc`
+    - `git-commit-messages.mdc` → `git/git-commit-messages.mdc`
+    - `git-pr-preparation.mdc` → `git/git-pr-preparation.mdc`
+    - `git-repository-hygiene.mdc` → `git/git-repository-hygiene.mdc`
+    - `git-hooks-standards.mdc` → `git/git-hooks-standards.mdc`
+  - **Updated:** All cross-references in rules, standards, and AGENTS.md to use new paths
+  - **Benefits:** Improved discoverability, logical grouping, cleaner rules directory structure
+  - **Related:** Follows nested rules strategy from `standards/process/cursor-rules-standards.md`
+
 - **Cursor Rules Metadata Links** (12-04-2025 16:13:13 EST)
   - **Updated:** All `.cursor/rules/*.mdc` metadata lists now use markdown links (dependencies, relatedCommands, relatedRules, relatedStandards) with correct relative paths.
   - **Versions:** Patch-bumped every rule and refreshed timestamps during link conversion.

@@ -1,13 +1,16 @@
 ---
 description: Auto-applied rule that validates code quality, functionality, security, and documentation before completing tasks or submitting PRs. Triggers when task is marked complete or PR is requested.
-version: 2.0.0
-lastUpdated: 04-12-2025 12:14:38 EST
-globs: ""
+version: 2.0.4
+created: 12-04-2025
+lastUpdated: 12-04-2025 16:13:13 EST
 alwaysApply: true
+globs: ""
 type: Workflow Integration Rule - Pre-PR validation
+applicability: When files matching globs are edited.
+dependencies: []
 relatedCommands: []
-relatedRules: [task-workflow.mdc, linting-behavior.mdc, git-pr-preparation.mdc, git-commit-messages.mdc]
-relatedStandards: [process/code-quality-linting-standards.md, project-planning/documentation.md]
+relatedRules: [[task-workflow.mdc](./task-workflow.mdc), [linting-behavior.mdc](./linting-behavior.mdc), [git-pr-preparation.mdc](./git/git-pr-preparation.mdc), [git-commit-messages.mdc](./git/git-commit-messages.mdc)]
+relatedStandards: [[process/code-quality-linting-standards.md](../standards/process/code-quality-linting-standards.md), [project-planning/documentation-management.md](../standards/project-planning/documentation-management.md)]
 ---
 
 # PR Review Check Rule
@@ -120,7 +123,7 @@ This rule **automatically applies** when:
 #### 4.3 Changelog
 - Detect user-facing changes from git diff
 - If CHANGELOG.md not updated: ⚠️ Prompt to update
-- Reference: `standards/documentation.md` Section 7 for format
+- Reference: `standards/project-planning/documentation-management.md` Section 7 for format
 - If updated: ✅ Proceed
 
 #### 4.4 TODO Cleanup
@@ -198,11 +201,11 @@ This rule integrates with `task-workflow.mdc`:
   - [task-workflow.mdc](./task-workflow.mdc) - Development workflow integration
   - [linting-behavior.mdc](./linting-behavior.mdc) - Linting behavior and expectations
   - [auto-heal.mdc](./auto-heal.mdc) - Auto-healing strategies
-  - [git-pr-preparation.mdc](./git-pr-preparation.mdc) - PR preparation and validation
-  - [git-commit-messages.mdc](./git-commit-messages.mdc) - Commit message validation
+  - [git-pr-preparation.mdc](./git/git-pr-preparation.mdc) - PR preparation and validation
+  - [git-commit-messages.mdc](./git/git-commit-messages.mdc) - Commit message validation
 - **Standards:**
   - [code-quality-linting-standards.md](../../standards/process/code-quality-linting-standards.md) - Linting requirements
-  - [documentation.md](../../standards/project-planning/documentation.md) - Documentation standards
+  - [documentation-management.md](../../standards/project-planning/documentation-management.md) - Documentation standards
   - [git-repository-standards.md](../../standards/process/git-repository-standards.md) - Git workflow standards
 
 ---

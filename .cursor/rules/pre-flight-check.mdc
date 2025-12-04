@@ -1,13 +1,16 @@
 ---
 description: Auto-applied rule that validates environment and repository state before starting any coding task. Triggers when beginning new work or making significant changes.
-version: 2.0.0
-lastUpdated: 04-12-2025 12:14:38 EST
-globs: ""
+version: 2.0.4
+created: 12-04-2025
+lastUpdated: 12-04-2025 16:13:13 EST
 alwaysApply: true
+globs: ""
 type: Workflow Integration Rule - Pre-flight validation before coding
+applicability: When files matching globs are edited.
+dependencies: []
 relatedCommands: []
-relatedRules: [task-workflow.mdc, auto-heal.mdc, linting-behavior.mdc, git-workflow-integration.mdc, git-branch-naming.mdc]
-relatedStandards: [process/code-quality-linting-standards.md]
+relatedRules: [[task-workflow.mdc](./task-workflow.mdc), [auto-heal.mdc](./auto-heal.mdc), [linting-behavior.mdc](./linting-behavior.mdc), [git-workflow-integration.mdc](./git/git-workflow-integration.mdc), [git-branch-naming.mdc](./git/git-branch-naming.mdc)]
+relatedStandards: [[process/code-quality-linting-standards.md](../standards/process/code-quality-linting-standards.md)]
 ---
 
 # Pre-Flight Check Rule
@@ -166,8 +169,8 @@ This rule integrates with `task-workflow.mdc`:
   - [task-workflow.mdc](./task-workflow.mdc) - Development workflow integration
   - [auto-heal.mdc](./auto-heal.mdc) - Auto-healing strategies
   - [linting-behavior.mdc](./linting-behavior.mdc) - Linting behavior
-  - [git-workflow-integration.mdc](./git-workflow-integration.mdc) - Git workflow coordination
-  - [git-branch-naming.mdc](./git-branch-naming.mdc) - Branch naming conventions
+  - [git-workflow-integration.mdc](./git/git-workflow-integration.mdc) - Git workflow coordination
+  - [git-branch-naming.mdc](./git/git-branch-naming.mdc) - Branch naming conventions
 - **Standards:**
   - [code-quality-linting-standards.md](../../standards/process/code-quality-linting-standards.md) - Linting requirements
   - [git-repository-standards.md](../../standards/process/git-repository-standards.md) - Git workflow standards

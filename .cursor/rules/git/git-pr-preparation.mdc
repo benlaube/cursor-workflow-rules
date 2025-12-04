@@ -1,13 +1,16 @@
 ---
 description: Validates branch and commits before PR, auto-generates PR title and description template. Applies when preparing PRs, marking tasks complete, or requesting reviews.
-version: 1.0.0
-lastUpdated: 04-12-2025 12:42:51 EST
-globs: ""
+version: 1.0.4
+created: 12-04-2025
+lastUpdated: 12-04-2025 16:13:13 EST
 alwaysApply: true
+globs: ""
 type: Conditional Rule - PR preparation and validation
+applicability: When files matching globs are edited.
+dependencies: []
 relatedCommands: []
-relatedRules: [git-branch-naming.mdc, git-commit-messages.mdc, pr-review-check.mdc, git-workflow-integration.mdc]
-relatedStandards: [process/git-repository-standards.md]
+relatedRules: [[git-branch-naming.mdc](./git-branch-naming.mdc), [git-commit-messages.mdc](./git-commit-messages.mdc), [pr-review-check.mdc](../pr-review-check.mdc), [git-workflow-integration.mdc](./git-workflow-integration.mdc)]
+relatedStandards: [[process/git-repository-standards.md](../../standards/process/git-repository-standards.md)]
 ---
 
 # Git PR Preparation Rule
@@ -218,7 +221,7 @@ Generate this template:
 - [ ] No console.log or debug code
 - [ ] No commented-out code
 
-**Reference:** See `pr-review-check.mdc` for complete pre-PR validation.
+**Reference:** See `../pr-review-check.mdc` for complete pre-PR validation.
 
 #### 5.2 Security
 **Before PR, verify:**
@@ -351,7 +354,7 @@ This rule works with:
 - Validates commit messages in PR
 - Uses commit messages to generate PR description
 
-### `pr-review-check.mdc`
+### `../pr-review-check.mdc`
 - Runs comprehensive pre-PR validation
 - Ensures code quality, security, documentation
 
@@ -366,11 +369,11 @@ This rule works with:
 - **Rules:**
   - [git-branch-naming.mdc](./git-branch-naming.mdc) - Branch naming conventions
   - [git-commit-messages.mdc](./git-commit-messages.mdc) - Commit message validation
-  - [pr-review-check.mdc](./pr-review-check.mdc) - Pre-PR validation
+  - [pr-review-check.mdc](../pr-review-check.mdc) - Pre-PR validation
   - [git-workflow-integration.mdc](./git-workflow-integration.mdc) - Git workflow coordination
 - **Standards:**
-  - [git-repository-standards.md](../../standards/process/git-repository-standards.md) - Git workflow standards (Section D: Pull Request Process)
-  - [pr_review_checklist_v1_0.md](../../standards/process/checklists/pr_review_checklist_v1_0.md) - PR review checklist
+  - [git-repository-standards.md](../../../standards/process/git-repository-standards.md) - Git workflow standards (Section D: Pull Request Process)
+  - [pr_review_checklist_v1_0.md](../../../standards/process/checklists/pr_review_checklist_v1_0.md) - PR review checklist
 
 ---
 
@@ -390,7 +393,7 @@ This rule works with:
    - Test Plan (prompt user if needed)
    - Checklist (standard items)
 7. Remind to use "Squash and Merge" when merging
-8. Reference `pr-review-check.mdc` for complete pre-PR validation
+8. Reference `../pr-review-check.mdc` for complete pre-PR validation
 
 **Pre-PR checklist:**
 - [ ] Branch is not main/master

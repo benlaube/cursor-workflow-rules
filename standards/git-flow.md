@@ -8,12 +8,12 @@
 - **Type:** Governing Standard - Defines requirements for Git workflow
 - **Applicability:** All git operations throughout development lifecycle
 - **Related Rules:**
-  - [git-branch-naming.mdc](../../.cursor/rules/git-branch-naming.mdc) - Enforces branch naming conventions (Section B)
-  - [git-commit-messages.mdc](../../.cursor/rules/git-commit-messages.mdc) - Enforces commit message standards (Section C)
-  - [git-pr-preparation.mdc](../../.cursor/rules/git-pr-preparation.mdc) - PR preparation and validation (Section D)
-  - [git-repository-hygiene.mdc](../../.cursor/rules/git-repository-hygiene.mdc) - Repository hygiene and .gitignore standards (Section E)
-  - [git-hooks-standards.mdc](../../.cursor/rules/git-hooks-standards.mdc) - Git hooks configuration standards
-  - [git-workflow-integration.mdc](../../.cursor/rules/git-workflow-integration.mdc) - Coordinates git operations and AI agent behavior (Sections A, F)
+  - [git-branch-naming.mdc](../../.cursor/rules/git/git-branch-naming.mdc) - Enforces branch naming conventions (Section B)
+  - [git-commit-messages.mdc](../../.cursor/rules/git/git-commit-messages.mdc) - Enforces commit message standards (Section C)
+  - [git-pr-preparation.mdc](../../.cursor/rules/git/git-pr-preparation.mdc) - PR preparation and validation (Section D)
+  - [git-repository-hygiene.mdc](../../.cursor/rules/git/git-repository-hygiene.mdc) - Repository hygiene and .gitignore standards (Section E)
+  - [git-hooks-standards.mdc](../../.cursor/rules/git/git-hooks-standards.mdc) - Git hooks configuration standards
+  - [git-workflow-integration.mdc](../../.cursor/rules/git/git-workflow-integration.mdc) - Coordinates git operations and AI agent behavior (Sections A, F)
 
 ---
 

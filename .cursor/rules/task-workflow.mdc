@@ -1,13 +1,16 @@
 ---
 description: Standard development task workflow from pre-flight to post-flight. Applies throughout development lifecycle.
-version: 1.3.0
-lastUpdated: 04-12-2025 12:14:38 EST
-globs: ""
+version: 1.4.0
+created: 12-04-2025
+lastUpdated: 04-12-2025 16:20:33 EST
 alwaysApply: true
+globs: ""
 type: Workflow Integration Rule - Manages task lifecycle and development workflow
-relatedCommands: [create-start-scripts.md, project-audit.md, audit-security.md]
-relatedRules: [pre-flight-check.mdc, pr-review-check.mdc, auto-heal.mdc, environment.mdc, date-time.mdc, workflow-standards-documentation-maintenance.mdc, documentation-dependency-tracking.mdc, git-workflow-integration.mdc, git-branch-naming.mdc, git-commit-messages.mdc, git-pr-preparation.mdc]
-relatedStandards: [project-planning/documentation.md, process/checklists/pre_flight_checklist_v1_0.md, process/checklists/pr_review_checklist_v1_0.md]
+applicability: When files matching globs are edited.
+dependencies: []
+relatedCommands: [[create-start-scripts.md](../commands/create-start-scripts.md), [project-audit.md](../commands/project-audit.md), [audit-security.md](../commands/audit-security.md)]
+relatedRules: [[pre-flight-check.mdc](./pre-flight-check.mdc), [pr-review-check.mdc](./pr-review-check.mdc), [auto-heal.mdc](./auto-heal.mdc), [environment.mdc](./environment.mdc), [date-time.mdc](./date-time.mdc), [workflow-standards-documentation-maintenance.mdc](./workflow-standards-documentation-maintenance.mdc), [documentation-dependency-tracking.mdc](./documentation-dependency-tracking.mdc), [git-workflow-integration.mdc](./git/git-workflow-integration.mdc), [git-branch-naming.mdc](./git/git-branch-naming.mdc), [git-commit-messages.mdc](./git/git-commit-messages.mdc), [git-pr-preparation.mdc](./git/git-pr-preparation.mdc)]
+relatedStandards: [[project-planning/documentation-management.md](../standards/project-planning/documentation-management.md), [process/checklists/pre_flight_checklist_v1_0.md](../standards/process/checklists/pre_flight_checklist_v1_0.md), [process/checklists/pr_review_checklist_v1_0.md](../standards/process/checklists/pr_review_checklist_v1_0.md)]
 ---
 
 # Task Workflow Rule
@@ -18,7 +21,7 @@ relatedStandards: [project-planning/documentation.md, process/checklists/pre_fli
 
 Before writing code, the agent MUST:
 1.  **Pre-Flight Validation:** The `pre-flight-check.mdc` rule automatically validates:
-    - Git status (clean working tree, synced with remote) - See `git-workflow-integration.mdc`
+    - Git status (clean working tree, synced with remote) - See `git/git-workflow-integration.mdc`
     - Dependencies (installed and up to date)
     - Environment (.env configured, secrets loaded)
     - Baseline integrity (tests pass, build succeeds, linter clean)
@@ -60,16 +63,29 @@ Before confirming completion:
     - Documentation (functions documented, CHANGELOG updated)
     - See `standards/process/checklists/pr_review_checklist_v1_0.md` for complete checklist
 2.  **Update Docs:** 
-    - Update `CHANGELOG.md` for user-facing changes (see `standards/documentation.md` Section 7 for format guidelines).
+    - Update `CHANGELOG.md` for user-facing changes (see `standards/project-planning/documentation-management.md` Section 7 for format guidelines).
     - For database schema changes, update `CHANGELOG-DATABASE.md` with timestamped entries (per user rules).
     - Update relevant `standards/` if architecture changed.
     - Follow `.cursor/rules/workflow-standards-documentation-maintenance.mdc` for comprehensive documentation update requirements.
-3.  **Verify Launch:** Run `.cursor/commands/launch.mdc` one last time to ensure no regression.
-4.  **Launch & Debug Dev Server:** After completing a task or integration:
-    - Launch the development server using `.cursor/commands/launch.mdc` so the user can see changes and test them. This should be done automatically unless the user explicitly requests otherwise.
+3.  **Commit Uncommitted Changes (if any):**
+    - Check for uncommitted changes: `git status --porcelain`
+    - If uncommitted changes exist:
+      - Stage all changes: `git add .`
+      - Generate semantic commit message from changes (follow Conventional Commits format)
+      - Commit: `git commit -m "{type}({scope}): {description}"`
+      - Validate commit message follows standards (see `git/git-commit-messages.mdc`)
+    - If no uncommitted changes: ✅ Proceed to validation
+4.  **Verify Launch:** Run `launch` command (`.cursor/commands/launch.md`) one last time to ensure no regression.
+5.  **Launch & Debug Dev Server:** After completing a task or integration:
+    - Launch the development server using `launch` command (`.cursor/commands/launch.md`) so the user can see changes and test them. This should be done automatically unless the user explicitly requests otherwise.
+    - The `launch` command uses `start_app.sh` (or generates it via `create-start-scripts` if missing)
     - If errors occur during launch, use `launch-debug-fix` command (`.cursor/commands/launch-debug-fix.md` - if available) to iteratively debug and auto-heal errors until the dev environment is healthy.
     - The `launch-debug-fix` command integrates with `.cursor/rules/auto-heal.mdc` for automatic error recovery (port conflicts, missing dependencies, database connections, etc.).
-5.  **Update Notion (If Project is Bound):** If a Notion Project Binding rule exists:
+6.  **Push to Remote (if ready for PR):**
+    - Only push if user requests PR or explicitly asks to push
+    - Validate branch and commits before pushing (see `git/git-pr-preparation.mdc`)
+    - Push branch: `git push -u origin {branch-name}` (if not already pushed)
+7.  **Update Notion (If Project is Bound):** If a Notion Project Binding rule exists:
     - Update any related Notion tasks: Set status to "Done" and add a comment with commit hash/PR number.
     - Sync project metadata to Notion "Dev Projects" database if significant changes occurred (see `.cursor/commands/notion-sync-project-metadata`).
     - Create new tasks for any follow-up work or technical debt discovered during the task.
@@ -96,10 +112,10 @@ See `AGENTS.md` Section 6.5 for full lifecycle context.
 
 ## 5. Documentation & Versioning
 
-- **Documentation Standards:** Follow `standards/documentation.md` for documentation management rules.
+- **Documentation Standards:** Follow `standards/project-planning/documentation-management.md` for documentation management rules.
 - **Documentation Maintenance:** Follow `.cursor/rules/workflow-standards-documentation-maintenance.mdc` for comprehensive documentation update requirements.
 - **Changelogs:** 
-  - Update `CHANGELOG.md` for user-facing changes (see `standards/documentation.md` Section 7 for format guidelines).
+  - Update `CHANGELOG.md` for user-facing changes (see `standards/project-planning/documentation-management.md` Section 7 for format guidelines).
   - Update `CHANGELOG-DATABASE.md` for database schema changes (per user rules).
 - **Versioning:** If editing a standard or documentation file, increment the version metadata at the top of the file (see `.cursor/rules/environment.mdc` for version numbering rules).
 - **New Features:** If you added a new feature, ensure it is documented in `standards/` or `docs/`.
@@ -111,12 +127,12 @@ This rule integrates with the following related rules and standards:
 - **`.cursor/rules/auto-heal.mdc`** - Error recovery strategies and autonomous runtime management (auto-healing for ports, dependencies, database connections, containers)
 - **`.cursor/rules/environment.mdc`** - Environment setup, versioning standards, temporal awareness, and container management
 - **`.cursor/rules/workflow-standards-documentation-maintenance.mdc`** - Comprehensive documentation maintenance requirements
-- **`.cursor/rules/git-workflow-integration.mdc`** - Coordinates git operations and validates git status
-- **`.cursor/rules/git-branch-naming.mdc`** - Enforces branch naming conventions and prevents direct commits to main/master
-- **`.cursor/rules/git-commit-messages.mdc`** - Enforces Conventional Commits format and pre-commit security checks
-- **`.cursor/rules/git-pr-preparation.mdc`** - Validates branch and commits before PR, auto-generates PR description
+- **`.cursor/rules/git/git-workflow-integration.mdc`** - Coordinates git operations and validates git status
+- **`.cursor/rules/git/git-branch-naming.mdc`** - Enforces branch naming conventions and prevents direct commits to main/master
+- **`.cursor/rules/git/git-commit-messages.mdc`** - Enforces Conventional Commits format and pre-commit security checks
+- **`.cursor/rules/git/git-pr-preparation.mdc`** - Validates branch and commits before PR, auto-generates PR description
 - **`AGENTS.md` Section 6** - Standard Developer Lifecycle with complete command and checklist references
-- **`standards/documentation.md`** - Documentation management standards and changelog format guidelines
+- **`standards/project-planning/documentation-management.md`** - Documentation management standards and changelog format guidelines
 
 ---
 
@@ -134,12 +150,12 @@ This rule integrates with the following related rules and standards:
   - [date-time.mdc](./date-time.mdc) - Date and time awareness
   - [workflow-standards-documentation-maintenance.mdc](./workflow-standards-documentation-maintenance.mdc) - Documentation maintenance
   - [documentation-dependency-tracking.mdc](./documentation-dependency-tracking.mdc) - Dependency tracking
-  - [git-workflow-integration.mdc](./git-workflow-integration.mdc) - Git workflow coordination
-  - [git-branch-naming.mdc](./git-branch-naming.mdc) - Branch naming conventions
-  - [git-commit-messages.mdc](./git-commit-messages.mdc) - Commit message validation
-  - [git-pr-preparation.mdc](./git-pr-preparation.mdc) - PR preparation
+  - [git-workflow-integration.mdc](./git/git-workflow-integration.mdc) - Git workflow coordination
+  - [git-branch-naming.mdc](./git/git-branch-naming.mdc) - Branch naming conventions
+  - [git-commit-messages.mdc](./git/git-commit-messages.mdc) - Commit message validation
+  - [git-pr-preparation.mdc](./git/git-pr-preparation.mdc) - PR preparation
 - **Standards:**
-  - [documentation.md](../../standards/project-planning/documentation.md) - Documentation management standards
+  - [documentation-management.md](../../standards/project-planning/documentation-management.md) - Documentation management standards
   - [pre_flight_checklist_v1_0.md](../../standards/process/checklists/pre_flight_checklist_v1_0.md) - Pre-flight checklist
   - [pr_review_checklist_v1_0.md](../../standards/process/checklists/pr_review_checklist_v1_0.md) - PR review checklist
 

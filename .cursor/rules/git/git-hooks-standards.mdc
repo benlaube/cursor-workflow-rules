@@ -1,13 +1,16 @@
 ---
 description: Standards for configuring git hooks including pre-commit, commit-msg, and pre-push hooks. Applies when setting up repositories or configuring git hooks.
-version: 1.0.0
-lastUpdated: 04-12-2025 12:42:51 EST
-globs: ""
+version: 1.0.4
+created: 12-04-2025
+lastUpdated: 12-04-2025 16:13:13 EST
 alwaysApply: true
+globs: ""
 type: Conditional Rule - Git hooks configuration standards
+applicability: When files matching globs are edited.
+dependencies: []
 relatedCommands: []
-relatedRules: [git-commit-messages.mdc, git-repository-hygiene.mdc]
-relatedStandards: [process/git-repository-standards.md]
+relatedRules: [[git-commit-messages.mdc](./git-commit-messages.mdc), [git-repository-hygiene.mdc](./git-repository-hygiene.mdc)]
+relatedStandards: [[process/git-repository-standards.md](../../standards/process/git-repository-standards.md)]
 ---
 
 # Git Hooks Standards Rule
@@ -483,7 +486,7 @@ This rule works with:
   - [git-commit-messages.mdc](./git-commit-messages.mdc) - Commit message validation (hooks should implement)
   - [git-repository-hygiene.mdc](./git-repository-hygiene.mdc) - Security checks (hooks should implement)
 - **Standards:**
-  - [git-repository-standards.md](../../standards/process/git-repository-standards.md) - Git workflow standards
+  - [git-repository-standards.md](../../../standards/process/git-repository-standards.md) - Git workflow standards
 
 ---
 

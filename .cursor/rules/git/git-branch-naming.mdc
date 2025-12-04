@@ -1,13 +1,16 @@
 ---
 description: Enforces branch naming conventions and prevents direct commits to main/master. Applies when creating branches, validating branch names, or switching branches.
-version: 1.0.0
-lastUpdated: 04-12-2025 12:42:51 EST
-globs: ""
+version: 1.0.4
+created: 12-04-2025
+lastUpdated: 12-04-2025 16:13:13 EST
 alwaysApply: true
+globs: ""
 type: Conditional Rule - Branch naming and protection
+applicability: When files matching globs are edited.
+dependencies: []
 relatedCommands: []
-relatedRules: [git-workflow-integration.mdc]
-relatedStandards: [process/git-repository-standards.md]
+relatedRules: [[git-workflow-integration.mdc](./git-workflow-integration.mdc)]
+relatedStandards: [[process/git-repository-standards.md](../../standards/process/git-repository-standards.md)]
 ---
 
 # Git Branch Naming Rule
@@ -240,7 +243,7 @@ This rule works with:
   - [git-commit-messages.mdc](./git-commit-messages.mdc) - Commit message validation
   - [git-pr-preparation.mdc](./git-pr-preparation.mdc) - PR preparation
 - **Standards:**
-  - [git-repository-standards.md](../../standards/process/git-repository-standards.md) - Git workflow standards (Section B: Branching Strategy)
+  - [git-repository-standards.md](../../../standards/process/git-repository-standards.md) - Git workflow standards (Section B: Branching Strategy)
 
 ---
 

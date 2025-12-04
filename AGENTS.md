@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Created:** 2025-01-27
-- **Last Updated:** 2025-12-04
+- **Last Updated:** 04-12-2025 16:31:26 EST
 - **Version:** 1.0
 - **Description:** Project context and memory for AI Developer Agent
 
@@ -64,7 +64,7 @@ We are currently focusing on:
 - "AGENTS.md is project-specific (this repository), while templates/file-templates/AGENTS-TEMPLATE.md is the template for other projects."
 - "Rules in `.cursor/rules/` are auto-applied when this repository is integrated into other projects."
 - "The workflow-standards-documentation-maintenance rule is specific to this repository and should be adapted or removed when integrating into other projects."
-- "All documentation follows the standards defined in `standards/project-planning/documentation.md`."
+- "All documentation follows the standards defined in `standards/project-planning/documentation-management.md`."
 - "Module READMEs should focus on usage, while standards focus on creation/structure patterns."
 - "Documentation dependencies are tracked bidirectionally - when File A references File B, both files should reference each other (if appropriate). The documentation-dependency-tracking rule ensures this automatically."
 - "Metadata in documentation files must include Dependencies field with markdown links - this enables easy navigation and ensures cross-reference integrity."
@@ -74,7 +74,9 @@ We are currently focusing on:
 
 ## 6. Standard Developer Lifecycle
 
-Follow this lifecycle for all development work. Each step has a corresponding command and checklist.
+**Authoritative Rule:** `.cursor/rules/task-workflow.mdc` - Auto-applied workflow rule that orchestrates the complete development lifecycle.
+
+Follow this lifecycle for all development work. Each step has a corresponding command and checklist. See `.cursor/rules/task-workflow.mdc` for complete workflow details including git operations, launch procedures, and Notion integration.
 
 ### 6.1 Before Coding
 **Rule:** `pre-flight-check.mdc` (`.cursor/rules/pre-flight-check.mdc`) - Auto-applied  
@@ -139,8 +141,15 @@ Run these:
 
 ## 7. Agent Rules of Engagement
 
+> **What the AI Agent Reviews First:**
+> 1. **AGENTS.md** (this file) - Read at start of every session for project context and memory
+> 2. **`.cursor/rules/task-workflow.mdc`** - Auto-applied workflow rule that orchestrates the complete development lifecycle
+> 3. **Auto-applied rules** - Rules marked with `alwaysApply: true` are automatically active
+> 4. **Context-specific rules** - Rules that apply based on file patterns or operations being performed
+
 ### 7.1 Pre-Flight (Before Any Coding)
 1. **Pre-flight validation runs automatically** (`.cursor/rules/pre-flight-check.mdc`)
+   - Triggered by `.cursor/rules/task-workflow.mdc` Section 1
    - Auto-validates environment and baseline integrity
    - Prevents working on broken codebase
    - Self-heals common issues (dependencies, .env, linter)
@@ -176,9 +185,9 @@ Run these:
 6. **Update Docs:** If you change the architecture, update the docs
    - Update `standards/` if architecture changes
    - Update `CHANGELOG.md` for user-facing changes
-   - See `standards/project-planning/documentation.md` Section 7 for changelog guidelines
+   - See `standards/project-planning/documentation-management.md` Section 7 for changelog guidelines
    - **Follow `.cursor/rules/workflow-standards-documentation-maintenance.mdc`** for comprehensive documentation update requirements
-   - **See `standards/project-planning/documentation.md`** for complete documentation management standards
+   - **See `standards/project-planning/documentation-management.md`** for complete documentation management standards
 
 ### 7.7 Safe Operations
 7. **Safe Mode:** Do not delete data without confirmation
@@ -237,25 +246,29 @@ All commands are located in `.cursor/commands/`:
 - **`verify_access_control`** - Access control validation
 
 **Rules (Auto-Applied):**
+- **`.cursor/rules/task-workflow.mdc`** - **CRITICAL:** Complete development lifecycle workflow from pre-flight to post-flight. Orchestrates all development phases including git operations, launch procedures, and task completion. **Read this first when starting any task.**
+- **`.cursor/rules/pre-flight-check.mdc`** - Environment validation before coding starts (auto-applied at task start)
+- **`.cursor/rules/pr-review-check.mdc`** - Pre-PR validation (auto-applied when completing tasks)
 - **`.cursor/rules/linting-behavior.mdc`** - Linting behavior and expectations for AI agents (applies automatically)
 - **`.cursor/rules/date-time.mdc`** - Date and time awareness for AI agents (applies automatically)
 - **`.cursor/rules/supabase-rls-policy-review.mdc`** - Deep RLS policy analysis (applies automatically when Supabase detected)
 - **`.cursor/rules/workflow-standards-documentation-maintenance.mdc`** - Documentation maintenance requirements (project-specific to Workflow Rules repository)
 - **`.cursor/rules/documentation-dependency-tracking.mdc`** - Ensures documentation dependencies and cross-references are maintained when files are modified (applies automatically)
 - **`.cursor/rules/cursor-rule-creation.mdc`** - Ensures Cursor rules follow proper structure and metadata standards (applies when creating/modifying rules)
+- **`.cursor/rules/command-creation.mdc`** - Ensures Cursor commands follow proper structure and metadata standards (applies when creating/modifying commands)
 - **`.cursor/rules/readme-standards.mdc`** - Ensures README.md files follow standard structure and content requirements (applies when creating/modifying README files)
 - **Git Workflow Rules:**
-  - **`.cursor/rules/git-branch-naming.mdc`** - Enforces branch naming conventions and prevents direct commits to main/master (applies when creating/validating branches)
-  - **`.cursor/rules/git-commit-messages.mdc`** - Enforces Conventional Commits format and pre-commit security checks (applies when committing code)
-  - **`.cursor/rules/git-pr-preparation.mdc`** - Validates branch and commits before PR, auto-generates PR description (applies when preparing PRs)
-  - **`.cursor/rules/git-repository-hygiene.mdc`** - Monitors .gitignore patterns and tracked sensitive files (always active)
-  - **`.cursor/rules/git-hooks-standards.mdc`** - Standards for configuring git hooks (applies when setting up repositories)
-  - **`.cursor/rules/git-workflow-integration.mdc`** - Coordinates git operations and validates git status (always active)
+  - **`.cursor/rules/git/git-branch-naming.mdc`** - Enforces branch naming conventions and prevents direct commits to main/master (applies when creating/validating branches)
+  - **`.cursor/rules/git/git-commit-messages.mdc`** - Enforces Conventional Commits format and pre-commit security checks (applies when committing code)
+  - **`.cursor/rules/git/git-pr-preparation.mdc`** - Validates branch and commits before PR, auto-generates PR description (applies when preparing PRs)
+  - **`.cursor/rules/git/git-repository-hygiene.mdc`** - Monitors .gitignore patterns and tracked sensitive files (always active)
+  - **`.cursor/rules/git/git-hooks-standards.mdc`** - Standards for configuring git hooks (applies when setting up repositories)
+  - **`.cursor/rules/git/git-workflow-integration.mdc`** - Coordinates git operations and validates git status (always active)
 
 ### 8.3 Standards (Governing Documents)
 All standards are located in `standards/`:
 
-- **Documentation:** `standards/project-planning/documentation.md` - Documentation management rules
+- **Documentation:** `standards/project-planning/documentation-management.md` - Documentation management rules
 - **Documentation Index:** `standards/project-planning/documentation-standards.md` - Comprehensive documentation guide and index
 - **Cursor Rules:** `standards/process/cursor-rules-standards.md` - Standards for creating and maintaining Cursor rules
 - **Linting:** `standards/process/code-quality-linting-standards.md` - Linting requirements, tools, and policies
@@ -271,7 +284,7 @@ All standards are located in `standards/`:
 
 | Situation | Command | Checklist | Standard |
 |-----------|---------|-----------|----------|
-| Starting new task | Auto (`.cursor/rules/pre-flight-check.mdc`) | `pre_flight_checklist_v1_0.md` | - |
+| Starting new task | Auto (`.cursor/rules/task-workflow.mdc` → `pre-flight-check.mdc`) | `pre_flight_checklist_v1_0.md` | - |
 | Launching dev env | `./start_app.sh dev` (or `create-start-scripts` if missing) | - | `application-launch.md` |
 | Before PR | Auto (`.cursor/rules/pr-review-check.mdc`) | `pr_review_checklist_v1_0.md` | - |
 | Lint check | `validate-code-quality` (`.cursor/commands/validate-code-quality.md`) | `linting_checklist_v1_0.md` | `code-quality-linting-standards.md` |
@@ -285,6 +298,6 @@ All standards are located in `standards/`:
 
 ---
 
-*Last Updated: 2025-12-02*
+*Last Updated: 04-12-2025 16:31:26 EST*
 
 **Maintenance:** Update the "Last Updated" date whenever you modify this file. See `.cursor/rules/workflow-standards-documentation-maintenance.mdc` for comprehensive documentation update requirements.
